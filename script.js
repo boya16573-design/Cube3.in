@@ -506,4 +506,30 @@ document.addEventListener(
     }
 
   }
+  async function testSupabase() {
+  const { data, error } = await supabaseClient
+    .from("creators")
+    .select("*");
+
+  if (error) {
+    document.body.insertAdjacentHTML(
+      "afterbegin",
+      `<div style="padding:20px;background:#fee;color:#900;font-size:16px;">
+        ❌ Supabase Error:<br>${error.message}
+      </div>`
+    );
+    return;
+  }
+
+  document.body.insertAdjacentHTML(
+    "afterbegin",
+    `<div style="padding:20px;background:#efe;color:#060;font-size:16px;">
+      ✅ Supabase Connected!<br>
+      Creators found: ${data.length}
+    </div>`
+  );
+}
+
+testSupabase();
+  
 );
