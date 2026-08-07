@@ -6,7 +6,7 @@ const SUPABASE_URL =
   "https://zjgtceurzsvjkspkvroz.supabase.co";
 
 const SUPABASE_PUBLISHABLE_KEY =
-  "YOUR_PUBLISHABLE_KEY";
+  "sb_publishable_q9x-cmieOqpj3_rw3AGcEA_K-uynMSm"
 
 let supabaseClient;
 let creators = [];
