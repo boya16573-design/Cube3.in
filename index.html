@@ -1389,6 +1389,35 @@
 
 
   </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+<script>
+const SUPABASE_URL =
+  "https://zjgtceurzsvjkspkvroz.supabase.co";
+
+const SUPABASE_PUBLISHABLE_KEY =
+  "sb_publishable_q9x-cmieOqpj3_rw3AGcEA_K-uynMSm";
+
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY
+);
+
+async function testConnection() {
+  const { data, error } = await supabaseClient
+    .from("creators")
+    .select("*")
+    .limit(1);
+
+  if (error) {
+    console.error("❌ Cube3 connection failed:", error);
+  } else {
+    console.log("✅ Cube3 connected to Supabase!");
+    console.log(data);
+  }
+}
+
+testConnection();
+</script>
 </body>
 </html>
