@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cube3 | Creators × Brands</title><meta name="description" content="Cube3 connects content creators with brands for discovery, promotion and campaigns.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <a class="brand" href="#"><span>CUBE</span><b>3</b></a>
+  <nav><a href="#creators">Creators</a><a href="#brands">Brands</a><a href="#campaigns">Campaigns</a></nav>
+  <div class="nav-actions"><button class="ghost" onclick="openModal('creator')">I'm a Creator</button><button class="primary" onclick="openModal('brand')">I'm a Brand</button></div>
+</header>
+
+<main>
+<section class="hero">
+  <div>
+    <p class="kicker">CREATORS × BRANDS</p>
+    <h1>Where creators get <em>discovered.</em><br>Where brands get <em>noticed.</em></h1>
+    <p class="sub">Cube3 is a discovery and promotion platform connecting creative people with brands, campaigns and audiences.</p>
+    <div class="buttons"><button class="primary big" onclick="openModal('creator')">Join as Creator →</button><button class="ghost big" onclick="openModal('brand')">Promote a Brand</button></div>
+    <div class="stats"><div><b>Discover</b><span>Creative talent</span></div><div><b>Promote</b><span>Products & campaigns</span></div><div><b>Grow</b><span>Audience & reach</span></div></div>
+  </div>
+  <div class="hero-card"><div class="orbit"></div><div class="cube">C3</div><div class="floating f1">🎬 Creator</div><div class="floating f2">📣 Brand</div><div class="floating f3">🚀 Campaign</div></div>
+</section>
+
+<section id="creators" class="section">
+ <div class="heading"><div><p class="kicker">FOR CREATORS</p><h2>Turn your work into opportunities.</h2></div><button class="text-btn" onclick="openModal('creator')">Create profile →</button></div>
+ <div class="cards">
+  <article><div class="icon">🎥</div><h3>Showcase</h3><p>Build a profile for your videos, art, music, writing and projects.</p></article>
+  <article><div class="icon">🔎</div><h3>Get discovered</h3><p>Put your work in front of brands and people looking for fresh talent.</p></article>
+  <article><div class="icon">🤝</div><h3>Find campaigns</h3><p>Discover promotional opportunities that fit your audience and style.</p></article>
+ </div>
+</section>
+
+<section id="brands" class="section dark">
+ <div class="heading"><div><p class="kicker">FOR BRANDS</p><h2>Put your next campaign in motion.</h2></div><button class="text-btn" onclick="openModal('brand')">Launch campaign →</button></div>
+ <div class="brand-grid"><div class="campaign"><span>FEATURED CAMPAIGN</span><strong>Launch your next product with creators.</strong><p>Find relevant creators, publish a campaign and measure results.</p><button class="primary" onclick="openModal('brand')">Start a campaign</button></div>
+ <div class="steps"><div><b>01</b><span>Find creators</span></div><div><b>02</b><span>Run campaigns</span></div><div><b>03</b><span>Measure results</span></div></div></div>
+</section>
+
+<section id="campaigns" class="section">
+ <p class="kicker">DISCOVER</p><h2>Trending on Cube3</h2>
+ <div class="discover">
+  <article><div class="visual v1">🌿</div><div class="meta">CREATOR · NATURE</div><h3>Stories from the wild</h3><p>Short-form visual storytelling</p><button onclick="toast('Creator profile coming soon')">View creator</button></article>
+  <article><div class="visual v2">⚡</div><div class="meta">BRAND · TECHNOLOGY</div><h3>Future starts here</h3><p>Product campaign looking for creators</p><button onclick="toast('Campaign details coming soon')">View campaign</button></article>
+  <article><div class="visual v3">🎨</div><div class="meta">CREATOR · DESIGN</div><h3>Independent visual artist</h3><p>Illustration, motion and digital art</p><button onclick="toast('Creator profile coming soon')">View creator</button></article>
+ </div>
+</section>
+
+<section class="cta"><p class="kicker">CUBE3</p><h2>Build your audience. Build your brand.</h2><p>One platform for creative discovery and brand promotion.</p><div><button class="primary big" onclick="openModal('creator')">Join as Creator</button><button class="ghost big" onclick="openModal('brand')">Join as Brand</button></div></section>
+</main>
+
+<footer><a class="brand" href="#"><span>CUBE</span><b>3</b></a><span>© 2026 Cube3 · Creator & Brand Platform</span></footer>
+
+<div id="modal" class="modal"><div class="modal-box"><button class="x" onclick="closeModal()">×</button><p class="kicker" id="modalKicker">JOIN CUBE3</p><h2 id="modalTitle">Create your profile</h2><form onsubmit="submitForm(event)"><input required id="name" placeholder="Name / Brand name"><input required type="email" placeholder="Email address"><select id="type"><option>Creator</option><option>Brand</option></select><input placeholder="Website or social profile"><textarea placeholder="Tell us what you create or promote"></textarea><button class="primary big">Continue →</button></form></div></div>
+<div id="toast"></div>
+<script src="script.js"></script>
+</body></html>
