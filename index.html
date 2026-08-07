@@ -1,4 +1,732 @@
-<!doctype html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Cube3 | Creators × Brands</title>
+  <meta name="description"
+        content="Cube3 connects creators, brands and ideas in one place. Discover campaigns, advertisements and creative opportunities.">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f7f7f8;
+      color: #111;
+      line-height: 1.5;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255,255,255,0.95);
+      border-bottom: 1px solid #e5e5e5;
+      backdrop-filter: blur(10px);
+    }
+
+    .nav {
+      max-width: 1200px;
+      margin: auto;
+      height: 70px;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
+
+    .logo span {
+      color: #6c4cff;
+    }
+
+    nav {
+      display: flex;
+      gap: 25px;
+      align-items: center;
+    }
+
+    nav a {
+      color: #333;
+      text-decoration: none;
+      font-size: 15px;
+    }
+
+    nav a:hover {
+      color: #6c4cff;
+    }
+
+    .menu {
+      display: none;
+      font-size: 25px;
+      cursor: pointer;
+    }
+
+    .hero {
+      max-width: 1200px;
+      margin: auto;
+      padding: 90px 20px 70px;
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 8px 14px;
+      background: #eeeaff;
+      color: #6042e8;
+      border-radius: 30px;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 22px;
+    }
+
+    .hero h1 {
+      font-size: clamp(42px, 7vw, 82px);
+      line-height: 0.98;
+      letter-spacing: -4px;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .hero h1 span {
+      color: #6c4cff;
+    }
+
+    .hero p {
+      max-width: 650px;
+      margin: 25px auto;
+      color: #666;
+      font-size: 18px;
+    }
+
+    .search {
+      max-width: 650px;
+      margin: 35px auto;
+      display: flex;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 16px;
+      padding: 7px;
+      box-shadow: 0 10px 35px rgba(0,0,0,0.07);
+    }
+
+    .search input {
+      flex: 1;
+      border: 0;
+      outline: 0;
+      padding: 14px;
+      font-size: 16px;
+      min-width: 0;
+    }
+
+    .search button {
+      border: 0;
+      background: #6c4cff;
+      color: white;
+      border-radius: 11px;
+      padding: 0 24px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .section {
+      max-width: 1200px;
+      margin: auto;
+      padding: 60px 20px;
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+    }
+
+    .section-title h2 {
+      font-size: 30px;
+    }
+
+    .section-title a {
+      color: #6c4cff;
+      text-decoration: none;
+    }
+
+    .categories {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+    }
+
+    .category {
+      background: white;
+      padding: 25px;
+      border: 1px solid #e5e5e5;
+      border-radius: 18px;
+      transition: 0.2s;
+      cursor: pointer;
+    }
+
+    .category:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+
+    .category-icon {
+      font-size: 30px;
+      margin-bottom: 12px;
+    }
+
+    .category h3 {
+      margin-bottom: 5px;
+    }
+
+    .category p {
+      color: #777;
+      font-size: 14px;
+    }
+
+    .ads {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .ad-card {
+      background: white;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid #e5e5e5;
+      transition: 0.2s;
+    }
+
+    .ad-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+    }
+
+    .ad-image {
+      height: 190px;
+      background: linear-gradient(135deg, #111, #6c4cff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 42px;
+      font-weight: 800;
+    }
+
+    .ad-info {
+      padding: 18px;
+    }
+
+    .ad-info small {
+      color: #777;
+    }
+
+    .ad-info h3 {
+      margin: 5px 0;
+    }
+
+    .ad-info p {
+      color: #666;
+      font-size: 14px;
+    }
+
+    .tags {
+      margin-top: 12px;
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      padding: 5px 9px;
+      background: #f0efff;
+      color: #6042e8;
+      border-radius: 8px;
+      font-size: 12px;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 25px;
+    }
+
+    .big-card {
+      padding: 40px;
+      border-radius: 25px;
+      background: #111;
+      color: white;
+    }
+
+    .big-card:nth-child(2) {
+      background: #6c4cff;
+    }
+
+    .big-card h2 {
+      font-size: 35px;
+      margin-bottom: 15px;
+    }
+
+    .big-card p {
+      color: #ccc;
+      margin-bottom: 25px;
+    }
+
+    .big-card:nth-child(2) p {
+      color: #eee;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 12px 20px;
+      border-radius: 10px;
+      background: white;
+      color: #111;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      text-align: center;
+    }
+
+    .stat {
+      background: white;
+      border: 1px solid #e5e5e5;
+      border-radius: 18px;
+      padding: 30px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 38px;
+      color: #6c4cff;
+    }
+
+    footer {
+      margin-top: 50px;
+      background: #111;
+      color: white;
+      padding: 50px 20px;
+    }
+
+    .footer-inner {
+      max-width: 1200px;
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      gap: 30px;
+    }
+
+    footer p {
+      color: #aaa;
+      max-width: 400px;
+    }
+
+    footer a {
+      color: #ccc;
+      text-decoration: none;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .copyright {
+      max-width: 1200px;
+      margin: 40px auto 0;
+      padding-top: 20px;
+      border-top: 1px solid #333;
+      color: #777;
+      font-size: 13px;
+    }
+
+    @media(max-width: 800px) {
+
+      nav {
+        display: none;
+      }
+
+      .menu {
+        display: block;
+      }
+
+      .hero {
+        padding-top: 60px;
+      }
+
+      .hero h1 {
+        letter-spacing: -2px;
+      }
+
+      .categories {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .ads {
+        grid-template-columns: 1fr;
+      }
+
+      .split {
+        grid-template-columns: 1fr;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-inner {
+        flex-direction: column;
+      }
+    }
+
+    @media(max-width: 450px) {
+
+      .categories {
+        grid-template-columns: 1fr;
+      }
+
+      .search {
+        flex-direction: column;
+        gap: 7px;
+        background: transparent;
+        border: 0;
+        box-shadow: none;
+      }
+
+      .search input {
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 11px;
+      }
+
+      .search button {
+        height: 50px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="nav">
+
+    <div class="logo">
+      Cube<span>3</span>
+    </div>
+
+    <nav>
+      <a href="#discover">Discover</a>
+      <a href="#categories">Categories</a>
+      <a href="#creators">Creators</a>
+      <a href="#brands">Brands</a>
+    </nav>
+
+    <div class="menu">☰</div>
+
+  </div>
+</header>
+
+
+<main>
+
+<section class="hero">
+
+  <div class="badge">
+    Creators × Brands
+  </div>
+
+  <h1>
+    Discover the world of
+    <span>creative advertising.</span>
+  </h1>
+
+  <p>
+    Explore advertisements, discover brands, find creative inspiration
+    and connect ideas with opportunities.
+  </p>
+
+  <div class="search">
+    <input
+      type="search"
+      id="searchInput"
+      placeholder="Search brands, ads, creators..."
+    >
+
+    <button onclick="searchSite()">
+      Search
+    </button>
+  </div>
+
+</section>
+
+
+<section class="section" id="categories">
+
+  <div class="section-title">
+    <h2>Explore categories</h2>
+    <a href="#">View all</a>
+  </div>
+
+  <div class="categories">
+
+    <div class="category">
+      <div class="category-icon">📺</div>
+      <h3>TV Ads</h3>
+      <p>Discover television advertising.</p>
+    </div>
+
+    <div class="category">
+      <div class="category-icon">▶️</div>
+      <h3>YouTube</h3>
+      <p>Explore video campaigns.</p>
+    </div>
+
+    <div class="category">
+      <div class="category-icon">📱</div>
+      <h3>Social Media</h3>
+      <p>Find campaigns across social platforms.</p>
+    </div>
+
+    <div class="category">
+      <div class="category-icon">📰</div>
+      <h3>Print</h3>
+      <p>Explore print advertisements.</p>
+    </div>
+
+  </div>
+
+</section>
+
+
+<section class="section" id="discover">
+
+  <div class="section-title">
+    <h2>Trending campaigns</h2>
+    <a href="#">Explore →</a>
+  </div>
+
+  <div class="ads">
+
+    <article class="ad-card">
+
+      <div class="ad-image">
+        AD
+      </div>
+
+      <div class="ad-info">
+
+        <small>Featured campaign</small>
+
+        <h3>Creative Campaign</h3>
+
+        <p>
+          A place for memorable advertising and creative ideas.
+        </p>
+
+        <div class="tags">
+          <span class="tag">Video</span>
+          <span class="tag">Digital</span>
+        </div>
+
+      </div>
+
+    </article>
+
+
+    <article class="ad-card">
+
+      <div class="ad-image">
+        C3
+      </div>
+
+      <div class="ad-info">
+
+        <small>Featured campaign</small>
+
+        <h3>Brand Story</h3>
+
+        <p>
+          Discover how brands turn ideas into campaigns.
+        </p>
+
+        <div class="tags">
+          <span class="tag">Brand</span>
+          <span class="tag">Story</span>
+        </div>
+
+      </div>
+
+    </article>
+
+
+    <article class="ad-card">
+
+      <div class="ad-image">
+        ✦
+      </div>
+
+      <div class="ad-info">
+
+        <small>Creative spotlight</small>
+
+        <h3>Creative Ideas</h3>
+
+        <p>
+          Inspiration for creators, marketers and businesses.
+        </p>
+
+        <div class="tags">
+          <span class="tag">Creative</span>
+          <span class="tag">Ideas</span>
+        </div>
+
+      </div>
+
+    </article>
+
+  </div>
+
+</section>
+
+
+<section class="section" id="creators">
+
+  <div class="split">
+
+    <div class="big-card">
+
+      <h2>For creators.</h2>
+
+      <p>
+        Discover campaigns, study creative work and showcase
+        your own ideas to brands.
+      </p>
+
+      <a href="#" class="button">
+        Join as Creator
+      </a>
+
+    </div>
+
+
+    <div class="big-card" id="brands">
+
+      <h2>For brands.</h2>
+
+      <p>
+        Discover creative talent and build campaigns that people
+        remember.
+      </p>
+
+      <a href="#" class="button">
+        Join as Brand
+      </a>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<section class="section">
+
+  <div class="section-title">
+    <h2>Cube3 in numbers</h2>
+  </div>
+
+  <div class="stats">
+
+    <div class="stat">
+      <strong>0+</strong>
+      Advertisements
+    </div>
+
+    <div class="stat">
+      <strong>0+</strong>
+      Creators
+    </div>
+
+    <div class="stat">
+      <strong>0+</strong>
+      Brands
+    </div>
+
+  </div>
+
+</section>
+
+</main>
+
+
+<footer>
+
+  <div class="footer-inner">
+
+    <div>
+      <div class="logo">
+        Cube<span>3</span>
+      </div>
+
+      <p>
+        Creators × Brands. A growing home for advertising,
+        creativity and ideas.
+      </p>
+    </div>
+
+    <div>
+      <a href="#discover">Discover</a>
+      <a href="#categories">Categories</a>
+      <a href="#creators">Creators</a>
+      <a href="#brands">Brands</a>
+    </div>
+
+  </div>
+
+  <div class="copyright">
+    © 2026 Cube3. All rights reserved.
+  </div>
+
+</footer>
+
+
+<script>
+
+function searchSite() {
+
+  const input = document.getElementById("searchInput");
+
+  const query = input.value.trim();
+
+  if (!query) {
+    alert("Please enter something to search.");
+    return;
+  }
+
+  alert("Cube3 search: " + query);
+
+}
+
+</script>
+
+</body>
+</html><!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
