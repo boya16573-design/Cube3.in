@@ -1,25 +1,28 @@
-// ================================
-// CUBE3 + SUPABASE
-// ================================
+// ==========================================
+// CUBE3 - SUPABASE CREATOR DIRECTORY
+// ==========================================
 
 const SUPABASE_URL =
   "https://zjgtceurzsvjkspkvroz.supabase.co";
 
 const SUPABASE_PUBLISHABLE_KEY =
-  "sb_publishable_q9x-cmieOqpj3_rw3AGcEA_K-uynMSm"
+  "sb_publishable_q9x-cmieOqpj3_rw3AGcEA_K-uynMSm";
 
 let supabaseClient;
-let creators = [];
+let allCreators = [];
 
-// ================================
-// INITIALIZE SUPABASE
-// ================================
+// ==========================================
+// START
+// ==========================================
 
-function initializeSupabase() {
+document.addEventListener("DOMContentLoaded", () => {
 
   if (!window.supabase) {
-    console.error("Supabase library was not loaded.");
-    return false;
+    showMessage(
+      "Supabase library did not load.",
+      true
+    );
+    return;
   }
 
   supabaseClient = window.supabase.createClient(
@@ -27,29 +30,26 @@ function initializeSupabase() {
     SUPABASE_PUBLISHABLE_KEY
   );
 
-  console.log("✅ Supabase initialized");
+  console.log("Cube3: Supabase connected");
 
-  return true;
-}
+  loadCreators();
+
+  setupSearch();
+
+  setupFilters();
+
+});
 
 
-// ================================
+// ==========================================
 // LOAD CREATORS
-// ================================
+// ==========================================
 
 async function loadCreators() {
 
-  if (!supabaseClient) {
-    console.error("Supabase is not initialized.");
-    return;
-  }
+  showMessage("Loading creators...");
 
-  console.log("Loading Cube3 creators...");
-
-  const {
-    data,
-    error
-  } = await supabaseClient
+  const { data, error } = await supabaseClient
     .from("creators")
     .select("*")
     .order("created_at", {
@@ -58,367 +58,421 @@ async function loadCreators() {
 
   if (error) {
 
-    console.error(
-      "❌ Supabase database error:",
-      error
+    console.error(error);
+
+    showMessage(
+      "Unable to load creators: " +
+      error.message,
+      true
     );
 
     return;
   }
 
-  creators = data || [];
+  allCreators = data || [];
 
   console.log(
-    "✅ Creators loaded:",
-    creators
+    "Cube3 creators:",
+    allCreators
   );
 
-  displayCreators(creators);
+  renderCreators(allCreators);
+
 }
 
 
-// ================================
-// DISPLAY CREATORS
-// ================================
+// ==========================================
+// RENDER CREATORS
+// ==========================================
 
-function displayCreators(list) {
+function renderCreators(creators) {
 
   const grid =
     document.getElementById("creatorGrid");
 
   if (!grid) {
-    console.warn(
-      "creatorGrid element not found."
+
+    console.error(
+      "creatorGrid was not found in index.html"
     );
 
     return;
   }
 
-  if (!list.length) {
+  if (creators.length === 0) {
 
     grid.innerHTML = `
-      <div class="empty">
+      <div class="empty-state">
         No creators found.
       </div>
     `;
 
+    updateCount(0);
+
     return;
   }
 
-  grid.innerHTML = list.map(
-    creator => {
+  grid.innerHTML = creators
+    .map(createCreatorCard)
+    .join("");
 
-      const youtube =
-        formatNumber(
-          creator.youtube_subscribers
-        );
-
-      const instagram =
-        formatNumber(
-          creator.instagram_followers
-        );
-
-      const facebook =
-        formatNumber(
-          creator.facebook_followers
-        );
-
-      const x =
-        formatNumber(
-          creator.x_followers
-        );
-
-      return `
-
-        <article class="creator-card">
-
-          <div class="creator-cover">
-
-            <div class="creator-avatar">
-              ${getInitials(creator.name)}
-            </div>
-
-            ${
-              creator.verified
-                ? `<span class="verified">
-                     ✓ Verified
-                   </span>`
-                : ""
-            }
-
-          </div>
-
-
-          <div class="creator-content">
-
-            <h3>
-              ${escapeHTML(
-                creator.name
-              )}
-            </h3>
-
-
-            <div class="creator-handle">
-              ${
-                escapeHTML(
-                  creator.username || ""
-                )
-              }
-            </div>
-
-
-            <p class="creator-description">
-
-              ${
-                escapeHTML(
-                  creator.description ||
-                  "Cube3 creator"
-                )
-              }
-
-            </p>
-
-
-            <span class="category">
-
-              ${
-                escapeHTML(
-                  creator.category ||
-                  "Creator"
-                ).toUpperCase()
-              }
-
-            </span>
-
-
-            <div class="stats">
-
-              <div class="stat">
-
-                <strong>
-                  ${youtube}
-                </strong>
-
-                <span>
-                  YouTube
-                </span>
-
-              </div>
-
-
-              <div class="stat">
-
-                <strong>
-                  ${instagram}
-                </strong>
-
-                <span>
-                  Instagram
-                </span>
-
-              </div>
-
-
-              <div class="stat">
-
-                <strong>
-                  ${x}
-                </strong>
-
-                <span>
-                  X
-                </span>
-
-              </div>
-
-            </div>
-
-
-            <div class="social-links">
-
-              ${
-                creator.youtube_url
-                  ? `
-                    <a
-                      class="social"
-                      href="${safeURL(
-                        creator.youtube_url
-                      )}"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      ▶ YouTube
-                    </a>
-                  `
-                  : ""
-              }
-
-
-              ${
-                creator.instagram_url
-                  ? `
-                    <a
-                      class="social"
-                      href="${safeURL(
-                        creator.instagram_url
-                      )}"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      ◎ Instagram
-                    </a>
-                  `
-                  : ""
-              }
-
-
-              ${
-                creator.x_url
-                  ? `
-                    <a
-                      class="social"
-                      href="${safeURL(
-                        creator.x_url
-                      )}"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      𝕏 X
-                    </a>
-                  `
-                  : ""
-              }
-
-            </div>
-
-
-            <a
-              class="collab"
-              href="mailto:hello@cube3.in?subject=Creator Collaboration"
-            >
-              Contact for Collaboration
-            </a>
-
-          </div>
-
-        </article>
-
-      `;
-
-    }
-  ).join("");
+  updateCount(creators.length);
 
 }
 
 
-// ================================
-// SEARCH
-// ================================
+// ==========================================
+// CREATOR CARD
+// ==========================================
 
-function searchCreators() {
+function createCreatorCard(creator) {
+
+  const initials =
+    getInitials(creator.name);
+
+  const category =
+    creator.category || "Creator";
+
+  const verified =
+    creator.verified
+      ? `
+        <span class="verified">
+          ✓ Verified
+        </span>
+      `
+      : "";
+
+  const youtube =
+    formatNumber(
+      creator.youtube_subscribers
+    );
+
+  const instagram =
+    formatNumber(
+      creator.instagram_followers
+    );
+
+  const xFollowers =
+    formatNumber(
+      creator.x_followers
+    );
+
+  const youtubeLink =
+    creator.youtube_url
+      ? `
+        <a
+          class="social"
+          href="${safeUrl(creator.youtube_url)}"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          ▶ YouTube
+        </a>
+      `
+      : "";
+
+  const instagramLink =
+    creator.instagram_url
+      ? `
+        <a
+          class="social"
+          href="${safeUrl(creator.instagram_url)}"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          ◎ Instagram
+        </a>
+      `
+      : "";
+
+  const xLink =
+    creator.x_url
+      ? `
+        <a
+          class="social"
+          href="${safeUrl(creator.x_url)}"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          𝕏 X
+        </a>
+      `
+      : "";
+
+  return `
+    <article
+      class="creator-card"
+      data-name="${escapeHTML(creator.name)}"
+      data-category="${escapeHTML(category)}"
+    >
+
+      <div class="creator-cover">
+
+        <div class="creator-avatar">
+          ${escapeHTML(initials)}
+        </div>
+
+        ${verified}
+
+      </div>
+
+
+      <div class="creator-content">
+
+        <h3 class="creator-name">
+          ${escapeHTML(creator.name)}
+        </h3>
+
+
+        <div class="creator-handle">
+          ${escapeHTML(
+            creator.username || ""
+          )}
+        </div>
+
+
+        <p class="creator-description">
+          ${escapeHTML(
+            creator.description ||
+            "Creator on Cube3."
+          )}
+        </p>
+
+
+        <span class="category">
+          ${escapeHTML(
+            category.toUpperCase()
+          )}
+        </span>
+
+
+        <div class="stats">
+
+          <div class="stat">
+            <strong>
+              ${youtube}
+            </strong>
+            <span>YouTube</span>
+          </div>
+
+          <div class="stat">
+            <strong>
+              ${instagram}
+            </strong>
+            <span>Instagram</span>
+          </div>
+
+          <div class="stat">
+            <strong>
+              ${xFollowers}
+            </strong>
+            <span>X</span>
+          </div>
+
+        </div>
+
+
+        <div class="social-links">
+
+          ${youtubeLink}
+
+          ${instagramLink}
+
+          ${xLink}
+
+        </div>
+
+
+        <a
+          href="mailto:hello@cube3.in?subject=Creator Collaboration"
+          class="collab"
+        >
+          Contact for Collaboration
+        </a>
+
+      </div>
+
+    </article>
+  `;
+}
+
+
+// ==========================================
+// SEARCH
+// ==========================================
+
+function setupSearch() {
 
   const input =
-    document.getElementById(
-      "creatorSearch"
-    );
+    document.getElementById("searchInput");
 
   if (!input) return;
 
-  const search =
-    input.value
-      .toLowerCase()
-      .trim();
+  input.addEventListener(
+    "input",
+    () => {
+
+      const query =
+        input.value
+          .toLowerCase()
+          .trim();
+
+      const filtered =
+        allCreators.filter(
+          creator => {
+
+            const text = [
+              creator.name,
+              creator.username,
+              creator.category,
+              creator.description
+            ]
+              .filter(Boolean)
+              .join(" ")
+              .toLowerCase();
+
+            return text.includes(query);
+          }
+        );
+
+      renderCreators(filtered);
+
+    }
+  );
+
+}
 
 
-  const results =
-    creators.filter(
-      creator => {
+// ==========================================
+// CATEGORY FILTERS
+// ==========================================
 
-        const text = [
+function setupFilters() {
 
-          creator.name,
-          creator.username,
-          creator.category,
-          creator.description
+  const filters =
+    document.querySelectorAll(".filter");
 
-        ]
-          .join(" ")
-          .toLowerCase();
+  filters.forEach(filter => {
 
+    filter.addEventListener(
+      "click",
+      () => {
 
-        return text.includes(search);
+        filters.forEach(button => {
+          button.classList.remove("active");
+        });
+
+        filter.classList.add("active");
+
+        const category =
+          filter.dataset.category;
+
+        if (
+          !category ||
+          category === "all"
+        ) {
+
+          renderCreators(allCreators);
+
+          return;
+        }
+
+        const filtered =
+          allCreators.filter(
+            creator =>
+              String(
+                creator.category || ""
+              ).toLowerCase() ===
+              category.toLowerCase()
+          );
+
+        renderCreators(filtered);
 
       }
     );
 
-
-  displayCreators(results);
+  });
 
 }
 
 
-// ================================
+// ==========================================
+// COUNT
+// ==========================================
+
+function updateCount(count) {
+
+  const counter =
+    document.getElementById(
+      "creatorCount"
+    );
+
+  if (!counter) return;
+
+  counter.textContent =
+    `${count} creator${count === 1 ? "" : "s"}`;
+
+}
+
+
+// ==========================================
 // NUMBER FORMAT
-// ================================
+// ==========================================
 
-function formatNumber(number) {
+function formatNumber(value) {
 
-  const n =
-    Number(number || 0);
+  const number =
+    Number(value || 0);
 
-
-  if (n >= 1000000) {
+  if (number >= 1000000) {
 
     return (
-      (n / 1000000)
+      (number / 1000000)
         .toFixed(1)
-        .replace(".0", "")
-      + "M"
+        .replace(".0", "") +
+      "M"
     );
 
   }
 
-
-  if (n >= 1000) {
+  if (number >= 1000) {
 
     return (
-      (n / 1000)
+      (number / 1000)
         .toFixed(1)
-        .replace(".0", "")
-      + "K"
+        .replace(".0", "") +
+      "K"
     );
 
   }
 
+  return number.toString();
 
-  return String(n);
 }
 
 
-// ================================
+// ==========================================
 // INITIALS
-// ================================
+// ==========================================
 
 function getInitials(name) {
 
   if (!name) return "C3";
 
-
   return name
-    .split(" ")
+    .trim()
+    .split(/\s+/)
     .slice(0, 2)
-    .map(
-      word => word.charAt(0)
-    )
+    .map(word => word[0])
     .join("")
     .toUpperCase();
 
 }
 
 
-// ================================
-// SECURITY
-// ================================
+// ==========================================
+// HTML SECURITY
+// ==========================================
 
 function escapeHTML(value) {
 
@@ -432,17 +486,16 @@ function escapeHTML(value) {
 }
 
 
-// ================================
-// SAFE URL
-// ================================
+// ==========================================
+// URL SECURITY
+// ==========================================
 
-function safeURL(value) {
+function safeUrl(value) {
 
   try {
 
     const url =
       new URL(value);
-
 
     if (
       url.protocol === "https:" ||
@@ -456,80 +509,44 @@ function safeURL(value) {
   } catch (error) {
 
     console.warn(
-      "Invalid URL:",
+      "Invalid social URL:",
       value
     );
 
   }
 
-
   return "#";
+
 }
 
 
-// ================================
-// START
-// ================================
+// ==========================================
+// MESSAGE
+// ==========================================
 
-document.addEventListener(
-  "DOMContentLoaded",
-  async () => {
+function showMessage(
+  message,
+  error = false
+) {
 
-    console.log(
-      "🚀 Cube3 starting..."
+  const grid =
+    document.getElementById(
+      "creatorGrid"
     );
 
+  if (!grid) return;
 
-    const connected =
-      initializeSupabase();
+  grid.innerHTML = `
+    <div
+      style="
+        padding:30px;
+        text-align:center;
+        width:100%;
+      "
+    >
+      ${error ? "❌" : "⏳"}
+      ${escapeHTML(message)}
+    </div>
+  `;
 
-
-    if (!connected) return;
-
-
-    await loadCreators();
-
-
-    const search =
-      document.getElementById(
-        "creatorSearch"
-      );
-
-
-    if (search) {
-
-      search.addEventListener(
-        "input",
-        searchCreators
-      );
-
-    }
-
-  }
-  async function testSupabase() {
-  const { data, error } = await supabaseClient
-    .from("creators")
-    .select("*");
-
-  if (error) {
-    document.body.insertAdjacentHTML(
-      "afterbegin",
-      `<div style="padding:20px;background:#fee;color:#900;font-size:16px;">
-        ❌ Supabase Error:<br>${error.message}
-      </div>`
-    );
-    return;
-  }
-
-  document.body.insertAdjacentHTML(
-    "afterbegin",
-    `<div style="padding:20px;background:#efe;color:#060;font-size:16px;">
-      ✅ Supabase Connected!<br>
-      Creators found: ${data.length}
-    </div>`
-  );
 }
-
-testSupabase();
-  
-);
