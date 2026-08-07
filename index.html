@@ -1,369 +1,523 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+  <meta name="description"
+        content="Cube3 - Discover creators, social media accounts and brands.">
+
+  <meta name="theme-color" content="#0b0f19">
 
   <title>Cube3 | Creators × Brands</title>
-  <meta name="description"
-        content="Cube3 connects creators, brands and ideas in one place. Discover campaigns, advertisements and creative opportunities.">
 
   <style>
     * {
-      box-sizing: border-box;
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #080b12;
+      --card: #111722;
+      --card-hover: #161e2d;
+      --text: #ffffff;
+      --muted: #9aa4b2;
+      --border: rgba(255,255,255,0.08);
+      --accent: #7c5cff;
+      --accent2: #00c2ff;
+      --success: #35d07f;
     }
 
     body {
-      font-family: Arial, Helvetica, sans-serif;
-      background: #f7f7f8;
-      color: #111;
+      font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+      background:
+        radial-gradient(
+          circle at top,
+          #17203a 0%,
+          var(--bg) 45%
+        );
+
+      color: var(--text);
+      min-height: 100vh;
       line-height: 1.5;
     }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* NAVBAR */
 
     header {
       position: sticky;
       top: 0;
-      z-index: 100;
-      background: rgba(255,255,255,0.95);
-      border-bottom: 1px solid #e5e5e5;
-      backdrop-filter: blur(10px);
+      z-index: 1000;
+
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+
+      background: rgba(8,11,18,0.82);
+      border-bottom: 1px solid var(--border);
     }
 
     .nav {
       max-width: 1200px;
       margin: auto;
-      height: 70px;
-      padding: 0 20px;
+
+      padding: 18px 24px;
+
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 20px;
     }
 
     .logo {
-      font-size: 28px;
+      font-size: 25px;
       font-weight: 800;
       letter-spacing: -1px;
     }
 
     .logo span {
-      color: #6c4cff;
+      color: var(--accent);
     }
 
-    nav {
+    .nav-links {
       display: flex;
       gap: 25px;
-      align-items: center;
+      color: var(--muted);
+      font-size: 14px;
     }
 
-    nav a {
-      color: #333;
-      text-decoration: none;
-      font-size: 15px;
+    .nav-links a:hover {
+      color: white;
     }
 
-    nav a:hover {
-      color: #6c4cff;
+    .nav-button {
+      background: white;
+      color: black;
+
+      padding: 10px 17px;
+      border-radius: 10px;
+
+      font-size: 14px;
+      font-weight: 700;
     }
 
-    .menu {
-      display: none;
-      font-size: 25px;
-      cursor: pointer;
-    }
+    /* HERO */
 
     .hero {
       max-width: 1200px;
       margin: auto;
-      padding: 90px 20px 70px;
+      padding: 90px 24px 50px;
       text-align: center;
     }
 
     .badge {
-      display: inline-block;
-      padding: 8px 14px;
-      background: #eeeaff;
-      color: #6042e8;
-      border-radius: 30px;
-      font-size: 14px;
-      font-weight: 600;
-      margin-bottom: 22px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+
+      padding: 7px 12px;
+
+      border: 1px solid var(--border);
+      border-radius: 999px;
+
+      color: #c9c2ff;
+      background: rgba(124,92,255,0.1);
+
+      font-size: 13px;
+      margin-bottom: 20px;
     }
 
     .hero h1 {
-      font-size: clamp(42px, 7vw, 82px);
+      font-size: clamp(42px, 7vw, 78px);
       line-height: 0.98;
       letter-spacing: -4px;
-      max-width: 900px;
+
+      max-width: 850px;
       margin: auto;
     }
 
-    .hero h1 span {
-      color: #6c4cff;
+    .gradient-text {
+      background:
+        linear-gradient(
+          90deg,
+          #ffffff,
+          #9d8cff,
+          #48dfff
+        );
+
+      -webkit-background-clip: text;
+      background-clip: text;
+
+      color: transparent;
     }
 
     .hero p {
       max-width: 650px;
       margin: 25px auto;
-      color: #666;
-      font-size: 18px;
+
+      color: var(--muted);
+      font-size: 17px;
     }
 
-    .search {
-      max-width: 650px;
-      margin: 35px auto;
-      display: flex;
-      background: white;
-      border: 1px solid #ddd;
-      border-radius: 16px;
-      padding: 7px;
-      box-shadow: 0 10px 35px rgba(0,0,0,0.07);
+    /* SEARCH */
+
+    .search-area {
+      max-width: 900px;
+      margin: 30px auto 0;
     }
 
-    .search input {
-      flex: 1;
-      border: 0;
-      outline: 0;
-      padding: 14px;
-      font-size: 16px;
-      min-width: 0;
-    }
+    .search-box {
+      width: 100%;
 
-    .search button {
-      border: 0;
-      background: #6c4cff;
+      padding: 17px 20px;
+
+      background: rgba(255,255,255,0.06);
+
+      border: 1px solid var(--border);
+      border-radius: 14px;
+
       color: white;
-      border-radius: 11px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    .search-box:focus {
+      border-color: var(--accent);
+      box-shadow:
+        0 0 0 3px rgba(124,92,255,0.12);
+    }
+
+    /* FILTERS */
+
+    .filters {
+      max-width: 1200px;
+      margin: 10px auto 30px;
+
       padding: 0 24px;
-      font-weight: 600;
+
+      display: flex;
+      gap: 10px;
+
+      overflow-x: auto;
+    }
+
+    .filter {
+      white-space: nowrap;
+
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+
+      color: var(--muted);
+
+      padding: 9px 15px;
+
+      border-radius: 999px;
+
       cursor: pointer;
     }
+
+    .filter:hover,
+    .filter.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    /* CREATOR SECTION */
 
     .section {
       max-width: 1200px;
       margin: auto;
-      padding: 60px 20px;
+      padding: 20px 24px 80px;
     }
 
-    .section-title {
+    .section-heading {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: end;
+
       margin-bottom: 25px;
     }
 
-    .section-title h2 {
+    .section-heading h2 {
       font-size: 30px;
+      letter-spacing: -1px;
     }
 
-    .section-title a {
-      color: #6c4cff;
-      text-decoration: none;
-    }
-
-    .categories {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 15px;
-    }
-
-    .category {
-      background: white;
-      padding: 25px;
-      border: 1px solid #e5e5e5;
-      border-radius: 18px;
-      transition: 0.2s;
-      cursor: pointer;
-    }
-
-    .category:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-    }
-
-    .category-icon {
-      font-size: 30px;
-      margin-bottom: 12px;
-    }
-
-    .category h3 {
-      margin-bottom: 5px;
-    }
-
-    .category p {
-      color: #777;
+    .creator-count {
+      color: var(--muted);
       font-size: 14px;
     }
 
-    .ads {
+    .creator-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+
+      grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
       gap: 20px;
     }
 
-    .ad-card {
-      background: white;
-      border-radius: 18px;
+    /* CREATOR CARD */
+
+    .creator-card {
+      background:
+        linear-gradient(
+          145deg,
+          rgba(255,255,255,0.06),
+          rgba(255,255,255,0.025)
+        );
+
+      border: 1px solid var(--border);
+
+      border-radius: 20px;
+
       overflow: hidden;
-      border: 1px solid #e5e5e5;
-      transition: 0.2s;
+
+      transition:
+        transform .25s ease,
+        border-color .25s ease,
+        background .25s ease;
     }
 
-    .ad-card:hover {
+    .creator-card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+      background: var(--card-hover);
+      border-color: rgba(124,92,255,0.4);
     }
 
-    .ad-image {
-      height: 190px;
-      background: linear-gradient(135deg, #111, #6c4cff);
+    .creator-cover {
+      height: 120px;
+
+      background:
+        linear-gradient(
+          135deg,
+          #30206b,
+          #123b59
+        );
+
+      position: relative;
+    }
+
+    .creator-avatar {
+      width: 82px;
+      height: 82px;
+
+      border-radius: 50%;
+
+      position: absolute;
+
+      bottom: -40px;
+      left: 22px;
+
+      border: 4px solid var(--card);
+
+      background: #252b38;
+
       display: flex;
       align-items: center;
       justify-content: center;
-      color: white;
-      font-size: 42px;
+
+      font-size: 27px;
       font-weight: 800;
     }
 
-    .ad-info {
-      padding: 18px;
-    }
+    .verified {
+      position: absolute;
 
-    .ad-info small {
-      color: #777;
-    }
+      right: 20px;
+      top: 20px;
 
-    .ad-info h3 {
-      margin: 5px 0;
-    }
+      background: rgba(53,208,127,.12);
 
-    .ad-info p {
-      color: #666;
-      font-size: 14px;
-    }
+      color: var(--success);
 
-    .tags {
-      margin-top: 12px;
-      display: flex;
-      gap: 7px;
-      flex-wrap: wrap;
-    }
+      border: 1px solid rgba(53,208,127,.25);
 
-    .tag {
       padding: 5px 9px;
-      background: #f0efff;
-      color: #6042e8;
-      border-radius: 8px;
-      font-size: 12px;
+
+      border-radius: 999px;
+
+      font-size: 11px;
+      font-weight: 700;
     }
 
-    .split {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 25px;
+    .creator-content {
+      padding: 55px 20px 20px;
     }
 
-    .big-card {
-      padding: 40px;
-      border-radius: 25px;
-      background: #111;
-      color: white;
+    .creator-name {
+      font-size: 20px;
+      font-weight: 750;
     }
 
-    .big-card:nth-child(2) {
-      background: #6c4cff;
+    .creator-handle {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 2px;
     }
 
-    .big-card h2 {
-      font-size: 35px;
-      margin-bottom: 15px;
+    .creator-description {
+      color: var(--muted);
+      font-size: 14px;
+      margin: 15px 0;
+      min-height: 42px;
     }
 
-    .big-card p {
-      color: #ccc;
-      margin-bottom: 25px;
-    }
-
-    .big-card:nth-child(2) p {
-      color: #eee;
-    }
-
-    .button {
+    .category {
       display: inline-block;
-      padding: 12px 20px;
-      border-radius: 10px;
-      background: white;
-      color: #111;
-      text-decoration: none;
-      font-weight: 600;
+
+      padding: 5px 9px;
+
+      background: rgba(124,92,255,.1);
+      color: #bdb3ff;
+
+      border-radius: 7px;
+
+      font-size: 11px;
+      font-weight: 700;
+
+      margin-bottom: 18px;
     }
+
+    /* STATS */
 
     .stats {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-      text-align: center;
+
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+
+      margin-bottom: 18px;
     }
 
     .stat {
-      background: white;
-      border: 1px solid #e5e5e5;
-      border-radius: 18px;
-      padding: 30px;
+      padding: 13px 5px;
+      text-align: center;
+    }
+
+    .stat:not(:last-child) {
+      border-right: 1px solid var(--border);
     }
 
     .stat strong {
       display: block;
-      font-size: 38px;
-      color: #6c4cff;
+      font-size: 15px;
     }
 
-    footer {
-      margin-top: 50px;
-      background: #111;
-      color: white;
-      padding: 50px 20px;
-    }
-
-    .footer-inner {
-      max-width: 1200px;
-      margin: auto;
-      display: flex;
-      justify-content: space-between;
-      gap: 30px;
-    }
-
-    footer p {
-      color: #aaa;
-      max-width: 400px;
-    }
-
-    footer a {
-      color: #ccc;
-      text-decoration: none;
+    .stat span {
       display: block;
-      margin-bottom: 8px;
+
+      color: var(--muted);
+
+      font-size: 10px;
+      margin-top: 2px;
     }
 
-    .copyright {
-      max-width: 1200px;
-      margin: 40px auto 0;
-      padding-top: 20px;
-      border-top: 1px solid #333;
-      color: #777;
+    /* SOCIAL LINKS */
+
+    .social-links {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+
+      gap: 8px;
+    }
+
+    .social {
+      padding: 10px;
+
+      text-align: center;
+
+      background: rgba(255,255,255,.04);
+
+      border: 1px solid var(--border);
+
+      border-radius: 9px;
+
+      font-size: 12px;
+      color: var(--muted);
+
+      transition: .2s;
+    }
+
+    .social:hover {
+      color: white;
+      background: rgba(255,255,255,.09);
+    }
+
+    /* COLLAB BUTTON */
+
+    .collab {
+      display: block;
+
+      margin-top: 12px;
+
+      padding: 11px;
+
+      text-align: center;
+
+      border-radius: 9px;
+
+      background: white;
+      color: black;
+
+      font-weight: 700;
       font-size: 13px;
     }
 
-    @media(max-width: 800px) {
+    .collab:hover {
+      opacity: .9;
+    }
 
-      nav {
+    /* FOOTER */
+
+    footer {
+      border-top: 1px solid var(--border);
+
+      padding: 35px 24px;
+
+      text-align: center;
+
+      color: var(--muted);
+
+      font-size: 13px;
+    }
+
+    footer strong {
+      color: white;
+    }
+
+    /* MOBILE */
+
+    @media (max-width: 850px) {
+
+      .creator-grid {
+        grid-template-columns:
+          repeat(2, minmax(0, 1fr));
+      }
+
+      .nav-links {
         display: none;
       }
+    }
 
-      .menu {
-        display: block;
-      }
+    @media (max-width: 600px) {
 
       .hero {
         padding-top: 60px;
@@ -373,415 +527,868 @@
         letter-spacing: -2px;
       }
 
-      .categories {
-        grid-template-columns: repeat(2, 1fr);
+      .hero p {
+        font-size: 15px;
       }
 
-      .ads {
+      .creator-grid {
         grid-template-columns: 1fr;
       }
 
-      .split {
-        grid-template-columns: 1fr;
+      .nav-button {
+        display: none;
       }
 
-      .stats {
-        grid-template-columns: 1fr;
-      }
-
-      .footer-inner {
-        flex-direction: column;
+      .section-heading h2 {
+        font-size: 25px;
       }
     }
 
-    @media(max-width: 450px) {
-
-      .categories {
-        grid-template-columns: 1fr;
-      }
-
-      .search {
-        flex-direction: column;
-        gap: 7px;
-        background: transparent;
-        border: 0;
-        box-shadow: none;
-      }
-
-      .search input {
-        background: white;
-        border: 1px solid #ddd;
-        border-radius: 11px;
-      }
-
-      .search button {
-        height: 50px;
-      }
+    .hidden {
+      display: none !important;
     }
+
   </style>
 </head>
 
 <body>
 
-<header>
-  <div class="nav">
+  <!-- NAVIGATION -->
 
-    <div class="logo">
-      Cube<span>3</span>
+  <header>
+    <nav class="nav">
+
+      <a href="#" class="logo">
+        Cube<span>3</span>
+      </a>
+
+      <div class="nav-links">
+        <a href="#creators">Creators</a>
+        <a href="#brands">Brands</a>
+        <a href="#about">About</a>
+      </div>
+
+      <a href="#creators" class="nav-button">
+        Explore Creators
+      </a>
+
+    </nav>
+  </header>
+
+
+  <!-- HERO -->
+
+  <main>
+
+    <section class="hero">
+
+      <div class="badge">
+        ✦ Creators × Brands
+      </div>
+
+      <h1>
+        Discover the
+        <span class="gradient-text">
+          creators
+        </span>
+        shaping the internet.
+      </h1>
+
+      <p>
+        Find creators, explore their social audiences,
+        discover their content and connect them with brands.
+      </p>
+
+      <div class="search-area">
+
+        <input
+          id="searchInput"
+          class="search-box"
+          type="search"
+          placeholder="Search creators, categories or platforms..."
+          autocomplete="off"
+        >
+
+      </div>
+
+    </section>
+
+
+    <!-- FILTERS -->
+
+    <div class="filters">
+
+      <button class="filter active" data-category="all">
+        All
+      </button>
+
+      <button class="filter" data-category="technology">
+        Technology
+      </button>
+
+      <button class="filter" data-category="gaming">
+        Gaming
+      </button>
+
+      <button class="filter" data-category="education">
+        Education
+      </button>
+
+      <button class="filter" data-category="entertainment">
+        Entertainment
+      </button>
+
+      <button class="filter" data-category="business">
+        Business
+      </button>
+
     </div>
 
-    <nav>
-      <a href="#discover">Discover</a>
-      <a href="#categories">Categories</a>
-      <a href="#creators">Creators</a>
-      <a href="#brands">Brands</a>
-    </nav>
 
-    <div class="menu">☰</div>
+    <!-- CREATORS -->
 
-  </div>
-</header>
-
-
-<main>
-
-<section class="hero">
-
-  <div class="badge">
-    Creators × Brands
-  </div>
-
-  <h1>
-    Discover the world of
-    <span>creative advertising.</span>
-  </h1>
-
-  <p>
-    Explore advertisements, discover brands, find creative inspiration
-    and connect ideas with opportunities.
-  </p>
-
-  <div class="search">
-    <input
-      type="search"
-      id="searchInput"
-      placeholder="Search brands, ads, creators..."
+    <section
+      id="creators"
+      class="section"
     >
 
-    <button onclick="searchSite()">
-      Search
-    </button>
-  </div>
+      <div class="section-heading">
 
-</section>
-
-
-<section class="section" id="categories">
-
-  <div class="section-title">
-    <h2>Explore categories</h2>
-    <a href="#">View all</a>
-  </div>
-
-  <div class="categories">
-
-    <div class="category">
-      <div class="category-icon">📺</div>
-      <h3>TV Ads</h3>
-      <p>Discover television advertising.</p>
-    </div>
-
-    <div class="category">
-      <div class="category-icon">▶️</div>
-      <h3>YouTube</h3>
-      <p>Explore video campaigns.</p>
-    </div>
-
-    <div class="category">
-      <div class="category-icon">📱</div>
-      <h3>Social Media</h3>
-      <p>Find campaigns across social platforms.</p>
-    </div>
-
-    <div class="category">
-      <div class="category-icon">📰</div>
-      <h3>Print</h3>
-      <p>Explore print advertisements.</p>
-    </div>
-
-  </div>
-
-</section>
-
-
-<section class="section" id="discover">
-
-  <div class="section-title">
-    <h2>Trending campaigns</h2>
-    <a href="#">Explore →</a>
-  </div>
-
-  <div class="ads">
-
-    <article class="ad-card">
-
-      <div class="ad-image">
-        AD
-      </div>
-
-      <div class="ad-info">
-
-        <small>Featured campaign</small>
-
-        <h3>Creative Campaign</h3>
-
-        <p>
-          A place for memorable advertising and creative ideas.
-        </p>
-
-        <div class="tags">
-          <span class="tag">Video</span>
-          <span class="tag">Digital</span>
+        <div>
+          <h2>Featured Creators</h2>
         </div>
 
-      </div>
-
-    </article>
-
-
-    <article class="ad-card">
-
-      <div class="ad-image">
-        C3
-      </div>
-
-      <div class="ad-info">
-
-        <small>Featured campaign</small>
-
-        <h3>Brand Story</h3>
-
-        <p>
-          Discover how brands turn ideas into campaigns.
-        </p>
-
-        <div class="tags">
-          <span class="tag">Brand</span>
-          <span class="tag">Story</span>
-        </div>
+        <span
+          id="creatorCount"
+          class="creator-count"
+        >
+          6 creators
+        </span>
 
       </div>
 
-    </article>
+
+      <div
+        id="creatorGrid"
+        class="creator-grid"
+      >
+
+        <!-- CREATOR 1 -->
+
+        <article
+          class="creator-card"
+          data-name="Alex Morgan"
+          data-category="technology"
+        >
+
+          <div class="creator-cover">
+
+            <div class="creator-avatar">
+              AM
+            </div>
+
+            <span class="verified">
+              ✓ Verified
+            </span>
+
+          </div>
+
+          <div class="creator-content">
+
+            <h3 class="creator-name">
+              Alex Morgan
+            </h3>
+
+            <div class="creator-handle">
+              @alexmorgan
+            </div>
+
+            <p class="creator-description">
+              Technology, gadgets and future-focused content.
+            </p>
+
+            <span class="category">
+              TECHNOLOGY
+            </span>
+
+            <div class="stats">
+
+              <div class="stat">
+                <strong>1.2M</strong>
+                <span>YouTube</span>
+              </div>
+
+              <div class="stat">
+                <strong>850K</strong>
+                <span>Instagram</span>
+              </div>
+
+              <div class="stat">
+                <strong>220K</strong>
+                <span>X</span>
+              </div>
+
+            </div>
+
+            <div class="social-links">
+
+              <a
+                class="social"
+                href="https://youtube.com/"
+                target="_blank"
+                rel="noopener"
+              >
+                ▶ YouTube
+              </a>
+
+              <a
+                class="social"
+                href="https://instagram.com/"
+                target="_blank"
+                rel="noopener"
+              >
+                ◎ Instagram
+              </a>
+
+              <a
+                class="social"
+                href="https://x.com/"
+                target="_blank"
+                rel="noopener"
+              >
+                𝕏 X
+              </a>
+
+            </div>
+
+            <a
+              href="mailto:hello@cube3.in?subject=Creator Collaboration"
+              class="collab"
+            >
+              Contact for Collaboration
+            </a>
+
+          </div>
+
+        </article>
 
 
-    <article class="ad-card">
+        <!-- CREATOR 2 -->
 
-      <div class="ad-image">
-        ✦
+        <article
+          class="creator-card"
+          data-name="Ryan Tech"
+          data-category="technology"
+        >
+
+          <div class="creator-cover">
+
+            <div class="creator-avatar">
+              RT
+            </div>
+
+            <span class="verified">
+              ✓ Verified
+            </span>
+
+          </div>
+
+          <div class="creator-content">
+
+            <h3 class="creator-name">
+              Ryan Tech
+            </h3>
+
+            <div class="creator-handle">
+              @ryantech
+            </div>
+
+            <p class="creator-description">
+              Reviews, software, AI and emerging technology.
+            </p>
+
+            <span class="category">
+              TECHNOLOGY
+            </span>
+
+            <div class="stats">
+
+              <div class="stat">
+                <strong>780K</strong>
+                <span>YouTube</span>
+              </div>
+
+              <div class="stat">
+                <strong>410K</strong>
+                <span>Instagram</span>
+              </div>
+
+              <div class="stat">
+                <strong>95K</strong>
+                <span>X</span>
+              </div>
+
+            </div>
+
+            <div class="social-links">
+
+              <a
+                class="social"
+                href="https://youtube.com/"
+                target="_blank"
+                rel="noopener"
+              >
+                ▶ YouTube
+              </a>
+
+              <a
+                class="social"
+                href="https://instagram.com/"
+                target="_blank"
+                rel="noopener"
+              >
+                ◎ Instagram
+              </a>
+
+              <a
+                class="social"
+                href="https://x.com/"
+                target="_blank"
+                rel="noopener"
+              >
+                𝕏 X
+              </a>
+
+            </div>
+
+            <a
+              href="mailto:hello@cube3.in?subject=Creator Collaboration"
+              class="collab"
+            >
+              Contact for Collaboration
+            </a>
+
+          </div>
+
+        </article>
+
+
+        <!-- CREATOR 3 -->
+
+        <article
+          class="creator-card"
+          data-name="GameVerse"
+          data-category="gaming"
+        >
+
+          <div class="creator-cover">
+
+            <div class="creator-avatar">
+              GV
+            </div>
+
+            <span class="verified">
+              ✓ Verified
+            </span>
+
+          </div>
+
+          <div class="creator-content">
+
+            <h3 class="creator-name">
+              GameVerse
+            </h3>
+
+            <div class="creator-handle">
+              @gameverse
+            </div>
+
+            <p class="creator-description">
+              Gaming videos, livestreams and esports content.
+            </p>
+
+            <span class="category">
+              GAMING
+            </span>
+
+            <div class="stats">
+
+              <div class="stat">
+                <strong>2.4M</strong>
+                <span>YouTube</span>
+              </div>
+
+              <div class="stat">
+                <strong>950K</strong>
+                <span>Instagram</span>
+              </div>
+
+              <div class="stat">
+                <strong>310K</strong>
+                <span>X</span>
+              </div>
+
+            </div>
+
+            <div class="social-links">
+
+              <a
+                class="social"
+                href="https://youtube.com/"
+                target="_blank"
+                rel="noopener"
+              >
+                ▶ YouTube
+              </a>
+
+              <a
+                class="social"
+                href="https://instagram.com/"
+                target="_blank"
+                rel="noopener"
+              >
+                ◎ Instagram
+              </a>
+
+              <a
+                class="social"
+                href="https://x.com/"
+                target="_blank"
+                rel="noopener"
+              >
+                𝕏 X
+              </a>
+
+            </div>
+
+            <a
+              href="mailto:hello@cube3.in?subject=Creator Collaboration"
+              class="collab"
+            >
+              Contact for Collaboration
+            </a>
+
+          </div>
+
+        </article>
+
+
+        <!-- CREATOR 4 -->
+
+        <article
+          class="creator-card"
+          data-name="Learn Lab"
+          data-category="education"
+        >
+
+          <div class="creator-cover">
+
+            <div class="creator-avatar">
+              LL
+            </div>
+
+          </div>
+
+          <div class="creator-content">
+
+            <h3 class="creator-name">
+              Learn Lab
+            </h3>
+
+            <div class="creator-handle">
+              @learnlab
+            </div>
+
+            <p class="creator-description">
+              Science, mathematics and educational content.
+            </p>
+
+            <span class="category">
+              EDUCATION
+            </span>
+
+            <div class="stats">
+
+              <div class="stat">
+                <strong>620K</strong>
+                <span>YouTube</span>
+              </div>
+
+              <div class="stat">
+                <strong>180K</strong>
+                <span>Instagram</span>
+              </div>
+
+              <div class="stat">
+                <strong>40K</strong>
+                <span>X</span>
+              </div>
+
+            </div>
+
+            <div class="social-links">
+
+              <a
+                class="social"
+                href="https://youtube.com/"
+                target="_blank"
+                rel="noopener"
+              >
+                ▶ YouTube
+              </a>
+
+              <a
+                class="social"
+                href="https://instagram.com/"
+                target="_blank"
+                rel="noopener"
+              >
+                ◎ Instagram
+              </a>
+
+              <a
+                class="social"
+                href="https://x.com/"
+                target="_blank"
+                rel="noopener"
+              >
+                𝕏 X
+              </a>
+
+            </div>
+
+            <a
+              href="mailto:hello@cube3.in?subject=Creator Collaboration"
+              class="collab"
+            >
+              Contact for Collaboration
+            </a>
+
+          </div>
+
+        </article>
+
+
+        <!-- CREATOR 5 -->
+
+        <article
+          class="creator-card"
+          data-name="Business Insider"
+          data-category="business"
+        >
+
+          <div class="creator-cover">
+
+            <div class="creator-avatar">
+              BI
+            </div>
+
+          </div>
+
+          <div class="creator-content">
+
+            <h3 class="creator-name">
+              Business Insider
+            </h3>
+
+            <div class="creator-handle">
+              @businessinsider
+            </div>
+
+            <p class="creator-description">
+              Entrepreneurship, startups and business stories.
+            </p>
+
+            <span class="category">
+              BUSINESS
+            </span>
+
+            <div class="stats">
+
+              <div class="stat">
+                <strong>900K</strong>
+                <span>YouTube</span>
+              </div>
+
+              <div class="stat">
+                <strong>510K</strong>
+                <span>Instagram</span>
+              </div>
+
+              <div class="stat">
+                <strong>120K</strong>
+                <span>X</span>
+              </div>
+
+            </div>
+
+            <div class="social-links">
+
+              <a
+                class="social"
+                href="https://youtube.com/"
+                target="_blank"
+                rel="noopener"
+              >
+                ▶ YouTube
+              </a>
+
+              <a
+                class="social"
+                href="https://instagram.com/"
+                target="_blank"
+                rel="noopener"
+              >
+                ◎ Instagram
+              </a>
+
+              <a
+                class="social"
+                href="https://x.com/"
+                target="_blank"
+                rel="noopener"
+              >
+                𝕏 X
+              </a>
+
+            </div>
+
+            <a
+              href="mailto:hello@cube3.in?subject=Creator Collaboration"
+              class="collab"
+            >
+              Contact for Collaboration
+            </a>
+
+          </div>
+
+        </article>
+
+
+        <!-- CREATOR 6 -->
+
+        <article
+          class="creator-card"
+          data-name="Entertainment Hub"
+          data-category="entertainment"
+        >
+
+          <div class="creator-cover">
+
+            <div class="creator-avatar">
+              EH
+            </div>
+
+          </div>
+
+          <div class="creator-content">
+
+            <h3 class="creator-name">
+              Entertainment Hub
+            </h3>
+
+            <div class="creator-handle">
+              @entertainmenthub
+            </div>
+
+            <p class="creator-description">
+              Entertainment, culture and digital media.
+            </p>
+
+            <span class="category">
+              ENTERTAINMENT
+            </span>
+
+            <div class="stats">
+
+              <div class="stat">
+                <strong>3.1M</strong>
+                <span>YouTube</span>
+              </div>
+
+              <div class="stat">
+                <strong>1.8M</strong>
+                <span>Instagram</span>
+              </div>
+
+              <div class="stat">
+                <strong>450K</strong>
+                <span>X</span>
+              </div>
+
+            </div>
+
+            <div class="social-links">
+
+              <a
+                class="social"
+                href="https://youtube.com/"
+                target="_blank"
+                rel="noopener"
+              >
+                ▶ YouTube
+              </a>
+
+              <a
+                class="social"
+                href="https://instagram.com/"
+                target="_blank"
+                rel="noopener"
+              >
+                ◎ Instagram
+              </a>
+
+              <a
+                class="social"
+                href="https://x.com/"
+                target="_blank"
+                rel="noopener"
+              >
+                𝕏 X
+              </a>
+
+            </div>
+
+            <a
+              href="mailto:hello@cube3.in?subject=Creator Collaboration"
+              class="collab"
+            >
+              Contact for Collaboration
+            </a>
+
+          </div>
+
+        </article>
+
       </div>
 
-      <div class="ad-info">
+    </section>
 
-        <small>Creative spotlight</small>
-
-        <h3>Creative Ideas</h3>
-
-        <p>
-          Inspiration for creators, marketers and businesses.
-        </p>
-
-        <div class="tags">
-          <span class="tag">Creative</span>
-          <span class="tag">Ideas</span>
-        </div>
-
-      </div>
-
-    </article>
-
-  </div>
-
-</section>
+  </main>
 
 
-<section class="section" id="creators">
+  <!-- FOOTER -->
 
-  <div class="split">
+  <footer>
 
-    <div class="big-card">
+    <strong>Cube3</strong>
+    © 2026 Creators × Brands
 
-      <h2>For creators.</h2>
+    <br><br>
 
-      <p>
-        Discover campaigns, study creative work and showcase
-        your own ideas to brands.
-      </p>
+    Discover creators. Connect brands. Build partnerships.
 
-      <a href="#" class="button">
-        Join as Creator
-      </a>
-
-    </div>
+  </footer>
 
 
-    <div class="big-card" id="brands">
+  <!-- JAVASCRIPT -->
 
-      <h2>For brands.</h2>
+  <script>
 
-      <p>
-        Discover creative talent and build campaigns that people
-        remember.
-      </p>
+    const searchInput =
+      document.getElementById("searchInput");
 
-      <a href="#" class="button">
-        Join as Brand
-      </a>
+    const cards =
+      document.querySelectorAll(".creator-card");
 
-    </div>
+    const filters =
+      document.querySelectorAll(".filter");
 
-  </div>
-
-</section>
+    const count =
+      document.getElementById("creatorCount");
 
 
-<section class="section">
-
-  <div class="section-title">
-    <h2>Cube3 in numbers</h2>
-  </div>
-
-  <div class="stats">
-
-    <div class="stat">
-      <strong>0+</strong>
-      Advertisements
-    </div>
-
-    <div class="stat">
-      <strong>0+</strong>
-      Creators
-    </div>
-
-    <div class="stat">
-      <strong>0+</strong>
-      Brands
-    </div>
-
-  </div>
-
-</section>
-
-</main>
+    let selectedCategory = "all";
 
 
-<footer>
+    function filterCreators() {
 
-  <div class="footer-inner">
+      const query =
+        searchInput.value
+          .toLowerCase()
+          .trim();
 
-    <div>
-      <div class="logo">
-        Cube<span>3</span>
-      </div>
-
-      <p>
-        Creators × Brands. A growing home for advertising,
-        creativity and ideas.
-      </p>
-    </div>
-
-    <div>
-      <a href="#discover">Discover</a>
-      <a href="#categories">Categories</a>
-      <a href="#creators">Creators</a>
-      <a href="#brands">Brands</a>
-    </div>
-
-  </div>
-
-  <div class="copyright">
-    © 2026 Cube3. All rights reserved.
-  </div>
-
-</footer>
+      let visible = 0;
 
 
-<script>
+      cards.forEach(card => {
 
-function searchSite() {
+        const name =
+          card.dataset.name.toLowerCase();
 
-  const input = document.getElementById("searchInput");
+        const category =
+          card.dataset.category.toLowerCase();
 
-  const query = input.value.trim();
+        const text =
+          card.innerText.toLowerCase();
 
-  if (!query) {
-    alert("Please enter something to search.");
-    return;
-  }
 
-  alert("Cube3 search: " + query);
+        const matchesSearch =
+          !query ||
+          name.includes(query) ||
+          category.includes(query) ||
+          text.includes(query);
 
-}
 
-</script>
+        const matchesCategory =
+          selectedCategory === "all" ||
+          category === selectedCategory;
+
+
+        if (
+          matchesSearch &&
+          matchesCategory
+        ) {
+
+          card.classList.remove("hidden");
+
+          visible++;
+
+        } else {
+
+          card.classList.add("hidden");
+
+        }
+
+      });
+
+
+      count.textContent =
+        `${visible} creator${visible === 1 ? "" : "s"}`;
+
+    }
+
+
+    searchInput.addEventListener(
+      "input",
+      filterCreators
+    );
+
+
+    filters.forEach(button => {
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          filters.forEach(
+            item => item.classList.remove("active")
+          );
+
+          button.classList.add("active");
+
+          selectedCategory =
+            button.dataset.category;
+
+          filterCreators();
+
+        }
+      );
+
+    });
+
+
+  </script>
 
 </body>
-</html><!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Cube3 | Creators × Brands</title><meta name="description" content="Cube3 connects content creators with brands for discovery, promotion and campaigns.">
-<link rel="stylesheet" href="style.css">
-</head>
-<body>
-<header>
-  <a class="brand" href="#"><span>CUBE</span><b>3</b></a>
-  <nav><a href="#creators">Creators</a><a href="#brands">Brands</a><a href="#campaigns">Campaigns</a></nav>
-  <div class="nav-actions"><button class="ghost" onclick="openModal('creator')">I'm a Creator</button><button class="primary" onclick="openModal('brand')">I'm a Brand</button></div>
-</header>
-
-<main>
-<section class="hero">
-  <div>
-    <p class="kicker">CREATORS × BRANDS</p>
-    <h1>Where creators get <em>discovered.</em><br>Where brands get <em>noticed.</em></h1>
-    <p class="sub">Cube3 is a discovery and promotion platform connecting creative people with brands, campaigns and audiences.</p>
-    <div class="buttons"><button class="primary big" onclick="openModal('creator')">Join as Creator →</button><button class="ghost big" onclick="openModal('brand')">Promote a Brand</button></div>
-    <div class="stats"><div><b>Discover</b><span>Creative talent</span></div><div><b>Promote</b><span>Products & campaigns</span></div><div><b>Grow</b><span>Audience & reach</span></div></div>
-  </div>
-  <div class="hero-card"><div class="orbit"></div><div class="cube">C3</div><div class="floating f1">🎬 Creator</div><div class="floating f2">📣 Brand</div><div class="floating f3">🚀 Campaign</div></div>
-</section>
-
-<section id="creators" class="section">
- <div class="heading"><div><p class="kicker">FOR CREATORS</p><h2>Turn your work into opportunities.</h2></div><button class="text-btn" onclick="openModal('creator')">Create profile →</button></div>
- <div class="cards">
-  <article><div class="icon">🎥</div><h3>Showcase</h3><p>Build a profile for your videos, art, music, writing and projects.</p></article>
-  <article><div class="icon">🔎</div><h3>Get discovered</h3><p>Put your work in front of brands and people looking for fresh talent.</p></article>
-  <article><div class="icon">🤝</div><h3>Find campaigns</h3><p>Discover promotional opportunities that fit your audience and style.</p></article>
- </div>
-</section>
-
-<section id="brands" class="section dark">
- <div class="heading"><div><p class="kicker">FOR BRANDS</p><h2>Put your next campaign in motion.</h2></div><button class="text-btn" onclick="openModal('brand')">Launch campaign →</button></div>
- <div class="brand-grid"><div class="campaign"><span>FEATURED CAMPAIGN</span><strong>Launch your next product with creators.</strong><p>Find relevant creators, publish a campaign and measure results.</p><button class="primary" onclick="openModal('brand')">Start a campaign</button></div>
- <div class="steps"><div><b>01</b><span>Find creators</span></div><div><b>02</b><span>Run campaigns</span></div><div><b>03</b><span>Measure results</span></div></div></div>
-</section>
-
-<section id="campaigns" class="section">
- <p class="kicker">DISCOVER</p><h2>Trending on Cube3</h2>
- <div class="discover">
-  <article><div class="visual v1">🌿</div><div class="meta">CREATOR · NATURE</div><h3>Stories from the wild</h3><p>Short-form visual storytelling</p><button onclick="toast('Creator profile coming soon')">View creator</button></article>
-  <article><div class="visual v2">⚡</div><div class="meta">BRAND · TECHNOLOGY</div><h3>Future starts here</h3><p>Product campaign looking for creators</p><button onclick="toast('Campaign details coming soon')">View campaign</button></article>
-  <article><div class="visual v3">🎨</div><div class="meta">CREATOR · DESIGN</div><h3>Independent visual artist</h3><p>Illustration, motion and digital art</p><button onclick="toast('Creator profile coming soon')">View creator</button></article>
- </div>
-</section>
-
-<section class="cta"><p class="kicker">CUBE3</p><h2>Build your audience. Build your brand.</h2><p>One platform for creative discovery and brand promotion.</p><div><button class="primary big" onclick="openModal('creator')">Join as Creator</button><button class="ghost big" onclick="openModal('brand')">Join as Brand</button></div></section>
-</main>
-
-<footer><a class="brand" href="#"><span>CUBE</span><b>3</b></a><span>© 2026 Cube3 · Creator & Brand Platform</span></footer>
-
-<div id="modal" class="modal"><div class="modal-box"><button class="x" onclick="closeModal()">×</button><p class="kicker" id="modalKicker">JOIN CUBE3</p><h2 id="modalTitle">Create your profile</h2><form onsubmit="submitForm(event)"><input required id="name" placeholder="Name / Brand name"><input required type="email" placeholder="Email address"><select id="type"><option>Creator</option><option>Brand</option></select><input placeholder="Website or social profile"><textarea placeholder="Tell us what you create or promote"></textarea><button class="primary big">Continue →</button></form></div></div>
-<div id="toast"></div>
-<script src="script.js"></script>
-</body></html>
+</html>
