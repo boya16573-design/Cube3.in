@@ -1,0 +1,3 @@
+async function signUpUser(fullName,email,password,role){const{data,error}=await supabaseClient.auth.signUp({email,password,options:{data:{full_name:fullName,role}}});if(error)throw error;return data}
+async function loginUser(email,password){const{data,error}=await supabaseClient.auth.signInWithPassword({email,password});if(error)throw error;return data}
+async function logoutUser(){const{error}=await supabaseClient.auth.signOut();if(error)throw error}

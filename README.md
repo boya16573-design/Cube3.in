@@ -1,12 +1,14 @@
-# Cube3 Creator × Brand Platform
+# Cube3
+Upload all files to your GitHub repository.
 
-Frontend starter for Cube3, a platform connecting content creators and brands.
+## Setup
+1. Upload these files.
+2. Open Supabase > SQL Editor.
+3. Paste schema.sql and click Run.
+4. Open supabase-client.js.
+5. Replace YOUR_PROJECT with your Supabase project URL.
+6. Replace YOUR_PUBLISHABLE_KEY with your publishable key.
+7. Never put a secret/service-role key in GitHub.
+8. Enable GitHub Pages after uploading.
 
-## Free deployment
-Upload `index.html`, `style.css`, and `script.js` to GitHub Pages, Cloudflare Pages, Netlify, or Vercel.
-
-## Current version
-The forms are frontend-only demos. A production platform needs authentication, database, media storage, moderation, campaign management, analytics and payments.
-
-## Domain
-If you own `cube3.co`, connect it to your hosting provider's custom-domain settings. Domain registration and renewal are separate from hosting.
+This starter connects creator discovery, campaigns and authentication to Supabase.
