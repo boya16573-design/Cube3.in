@@ -13,5 +13,5 @@ async function signIn(email,password){
 }
 async function signOut(){const {error}=await authClient.auth.signOut();if(error)throw error;location.href="/";}
 async function currentUser(){const {data}=await authClient.auth.getUser();return data.user||null;}
-async function requireUser(){const u=await currentUser();if(!u)location.href="/pages/login.html";return u;}
+async function requireUser(){const u=await currentUser();if(!u)location.href="login.html";return u;}
 window.Cube3Auth={signUp,signIn,signOut,currentUser,requireUser};
