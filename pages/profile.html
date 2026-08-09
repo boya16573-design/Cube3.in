@@ -429,7 +429,7 @@
       const { error: profileError } =
         await supabase
           .from("profiles")
-          .update({
+          .upsert({
             full_name: fullName,
             bio: bio,
             updated_at: new Date().toISOString()
