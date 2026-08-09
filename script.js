@@ -6,7 +6,8 @@ document.querySelectorAll(".filter").forEach(b=>b.onclick=()=>{document.querySel
 const modal=document.getElementById("modal");function openAuth(login){modal.classList.remove("hidden");document.getElementById("authTitle").textContent=login?"Login to Cube3":"Join Cube3";document.getElementById("fullName").style.display=login?"none":"block";document.getElementById("role").style.display=login?"none":"block";document.getElementById("switch").textContent=login?"Need an account? Sign up":"Already have an account? Login";modal.dataset.login=login?"1":"0"}document.getElementById("loginBtn").onclick=()=>openAuth(true);document.getElementById("signupBtn").onclick=()=>openAuth(false);document.getElementById("close").onclick=()=>modal.classList.add("hidden");document.getElementById("switch").onclick=()=>openAuth(modal.dataset.login!=="1");
 document.getElementById("authForm").onsubmit=async e=>{e.preventDefault();let m=document.getElementById("authMessage");m.textContent="Working...";try{if(modal.dataset.login==="1")await loginUser(email.value,password.value);else await signUpUser(fullName.value,email.value,password.value,role.value);m.textContent="Success. Check email verification if enabled.";setTimeout(()=>modal.classList.add("hidden"),1200)}catch(err){m.textContent=err.message}};loadCreators();loadCampaigns()
     async function loadCreators() {
-  const grid = document.getElementById("creatorGrid");
+  
+        const grid = document.getElementById("creatorGrid");
   const count = document.getElementById("creatorCount");
 
   try {
