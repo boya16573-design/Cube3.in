@@ -332,7 +332,7 @@
 
       if (profile) {
 
-        roleInput.value = profile.role || "creator";
+        roleInput.value = currentUser.user_metadata?.role || "creator";
 
         document.getElementById("fullName").value =
           profile.full_name || "";
