@@ -1,2 +1,9 @@
-async function getCreators(category="all",search=""){let q=supabaseClient.from("creators").select("*").order("youtube_followers",{ascending:false});if(category!=="all")q=q.eq("category",category);if(search.trim())q=q.or(`handle.ilike.%${search}%,category.ilike.%${search}%,description.ilike.%${search}%`);const{data,error}=await q;if(error)throw error;return data||[]}
-async function getCampaigns(){const{data,error}=await supabaseClient.from("campaigns").select("*,brands(company_name,logo_url)").eq("status","open").order("created_at",{ascending:false});if(error)throw error;return data||[]}
+async function apiFetch(path,options={}){
+  const user=await Cube3Auth.currentUser();
+  const headers={"Content-Type":"application/json",...(options.headers||{})};
+  if(user){const {data}=await cube3Supabase.auth.getSession();if(data.session?.access_token)headers.Authorization=`Bearer ${data.session.access_token}`;}
+  const r=await fetch(`${CUBE3_CONFIG.API_BASE_URL}${path}`,{...options,headers});
+  const j=await r.json().catch(()=>({}));
+  if(!r.ok)throw new Error(j.error||`Request failed: ${r.status}`);return j;
+}
+window.Cube3API={apiFetch};
