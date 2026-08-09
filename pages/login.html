@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | Cube3</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #08090d;
+      color: #f5f5f7;
+      font-family: Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 430px;
+      background: #11131a;
+      border: 1px solid #252936;
+      border-radius: 20px;
+      padding: 32px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.35);
+    }
+
+    .logo {
+      text-align: center;
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .logo span {
+      color: #9277ff;
+    }
+
+    h1 {
+      text-align: center;
+      margin: 10px 0;
+      font-size: 28px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #969aa8;
+      margin-bottom: 28px;
+    }
+
+    label {
+      display: block;
+      margin: 16px 0 7px;
+      color: #c9cbd4;
+      font-size: 14px;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px 15px;
+      border-radius: 10px;
+      border: 1px solid #303441;
+      background: #090b10;
+      color: white;
+      font-size: 16px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #9277ff;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 24px;
+      padding: 15px;
+      border: 0;
+      border-radius: 10px;
+      background: #9277ff;
+      color: white;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: .6;
+      cursor: wait;
+    }
+
+    #message {
+      margin-top: 18px;
+      text-align: center;
+      min-height: 24px;
+      color: #ff8f8f;
+    }
+
+    .signup {
+      text-align: center;
+      margin-top: 24px;
+      color: #969aa8;
+    }
+
+    .signup a {
+      color: #a28aff;
+      text-decoration: none;
+    }
+
+    .back {
+      display: block;
+      text-align: center;
+      margin-top: 18px;
+      color: #777c8b;
+      text-decoration: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="card">
+
+    <div class="logo">Cube<span>3</span></div>
+
+    <h1>Welcome back</h1>
+
+    <div class="subtitle">
+      Login to your Cube3 account
+    </div>
+
+    <form id="loginForm">
+
+      <label for="email">Email</label>
+
+      <input
+        id="email"
+        type="email"
+        placeholder="you@example.com"
+        required
+      >
+
+      <label for="password">Password</label>
+
+      <input
+        id="password"
+        type="password"
+        placeholder="Your password"
+        required
+      >
+
+      <button id="loginButton" type="submit">
+        Login
+      </button>
+
+      <div id="message"></div>
+
+    </form>
+
+    <div class="signup">
+      Don't have an account?
+      <a href="signup.html">Create one</a>
+    </div>
+
+    <a class="back" href="../index.html">
+      ← Back to Cube3
+    </a>
+
+  </div>
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- IMPORTANT:
+       These files are currently in the ROOT of your repository,
+       so ../ is required from pages/login.html.
+  -->
+
+  <script src="../supabase-config.js"></script>
+  <script src="../supabase-client.js"></script>
+  <script src="../auth.js"></script>
+
+  <script>
+    const form = document.getElementById("loginForm");
+    const button = document.getElementById("loginButton");
+    const message = document.getElementById("message");
+
+    form.addEventListener("submit", async function(event) {
+      event.preventDefault();
+
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      message.textContent = "";
+      button.disabled = true;
+      button.textContent = "Logging in...";
+
+      try {
+
+        await Cube3Auth.signIn(email, password);
+
+        message.style.color = "#72e6a2";
+        message.textContent = "Login successful!";
+
+        setTimeout(() => {
+          window.location.href = "../index.html";
+        }, 700);
+
+      } catch (error) {
+
+        console.error(error);
+
+        message.style.color = "#ff8f8f";
+        message.textContent =
+          error.message || "Login failed.";
+
+        button.disabled = false;
+        button.textContent = "Login";
+      }
+    });
+  </script>
+
+</body>
+</html>
