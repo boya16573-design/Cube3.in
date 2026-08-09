@@ -316,8 +316,9 @@
 
       if (!currentUser) return;
 
-      document.getElementById("email").value =
-        currentUser.email || "";
+      document.getElementById("email").value = currentUser.email || "";
+roleInput.value = currentUser.user_metadata?.role || "creator";
+setRoleFields(roleInput.value);
 
       const { data: profile, error } =
         await supabase
@@ -436,7 +437,7 @@
             role: roleInput.value,
             updated_at: new Date().toISOString()
           });
-          .eq("id", currentUser.id);
+          
 
       if (profileError) throw profileError;
 
