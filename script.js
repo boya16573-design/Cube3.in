@@ -11,7 +11,7 @@ document.getElementById("authForm").onsubmit=async e=>{e.preventDefault();let m=
   const count = document.getElementById("creatorCount");
 
   try {
-    const response = await fetch("/api/creators");
+    const response = await fetch("https://cube3-in.onrender.com/api/creators");
     const result = await response.json();
 
     if (!result.success) {
