@@ -430,10 +430,12 @@
         await supabase
           .from("profiles")
           .upsert({
+            id: currentUser.id,
             full_name: fullName,
             bio: bio,
+            role: roleInput.value,
             updated_at: new Date().toISOString()
-          })
+          });
           .eq("id", currentUser.id);
 
       if (profileError) throw profileError;
