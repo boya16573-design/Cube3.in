@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>My Profile - Cube3</title>
+
+  <link rel="stylesheet" href="../style.css">
+
+  <style>
+    body {
+      margin: 0;
+      background: #08080d;
+      color: #fff;
+      font-family: Arial, sans-serif;
+    }
+
+    nav {
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 7%;
+      border-bottom: 1px solid #20212a;
+      background: #090a0f;
+    }
+
+    .logo {
+      font-size: 25px;
+      font-weight: 800;
+    }
+
+    .logo span {
+      color: #9b7cff;
+    }
+
+    nav a {
+      color: #aaa;
+      text-decoration: none;
+      margin-left: 20px;
+    }
+
+    .container {
+      max-width: 850px;
+      margin: 50px auto;
+      padding: 20px;
+    }
+
+    .card {
+      background: #11121a;
+      border: 1px solid #292b38;
+      border-radius: 18px;
+      padding: 28px;
+      margin-bottom: 25px;
+    }
+
+    h1 {
+      font-size: 34px;
+      margin-bottom: 8px;
+    }
+
+    .muted {
+      color: #9699a8;
+    }
+
+    label {
+      display: block;
+      margin: 18px 0 8px;
+      color: #d6d7df;
+      font-size: 14px;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 13px;
+      background: #090a10;
+      border: 1px solid #303241;
+      border-radius: 9px;
+      color: white;
+      font-size: 15px;
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    button {
+      margin-top: 24px;
+      padding: 14px 22px;
+      background: #9274ff;
+      border: none;
+      border-radius: 9px;
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #a48aff;
+    }
+
+    .danger {
+      background: #3a171b;
+      color: #ff9da6;
+      margin-left: 10px;
+    }
+
+    .message {
+      margin-top: 18px;
+      padding: 12px;
+      border-radius: 8px;
+      display: none;
+    }
+
+    .success {
+      display: block;
+      background: #12351f;
+      color: #83efa0;
+    }
+
+    .error {
+      display: block;
+      background: #39171b;
+      color: #ff9ca5;
+    }
+
+    .brand-fields,
+    .creator-fields {
+      display: none;
+    }
+
+    .visible {
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+
+<nav>
+  <div class="logo">Cube<span>3</span></div>
+
+  <div>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="profile.html">Profile</a>
+  </div>
+</nav>
+
+<div class="container">
+
+  <div class="card">
+
+    <h1>My Profile</h1>
+
+    <p class="muted">
+      Complete your Cube3 profile so people can discover you.
+    </p>
+
+    <form id="profileForm">
+
+      <label>Account type</label>
+
+      <select id="role" disabled>
+        <option value="creator">Creator</option>
+        <option value="brand">Brand</option>
+      </select>
+
+      <label>Full name</label>
+
+      <input id="fullName" type="text" required>
+
+      <label>Email</label>
+
+      <input id="email" type="email" disabled>
+
+      <div id="creatorFields" class="creator-fields">
+
+        <h2>Creator information</h2>
+
+        <label>Creator handle</label>
+        <input
+          id="handle"
+          type="text"
+          placeholder="@yourhandle"
+        >
+
+        <label>Category</label>
+
+        <select id="category">
+          <option value="">Select category</option>
+          <option>Technology</option>
+          <option>Gaming</option>
+          <option>Education</option>
+          <option>Entertainment</option>
+          <option>Business</option>
+          <option>Fashion</option>
+          <option>Fitness</option>
+          <option>Travel</option>
+          <option>Food</option>
+          <option>Other</option>
+        </select>
+
+        <label>YouTube URL</label>
+        <input id="youtubeUrl" type="url">
+
+        <label>Instagram URL</label>
+        <input id="instagramUrl" type="url">
+
+        <label>X URL</label>
+        <input id="xUrl" type="url">
+
+        <label>Portfolio URL</label>
+        <input id="portfolioUrl" type="url">
+
+      </div>
+
+      <div id="brandFields" class="brand-fields">
+
+        <h2>Brand information</h2>
+
+        <label>Company name</label>
+        <input id="companyName" type="text">
+
+        <label>Website</label>
+        <input id="websiteUrl" type="url">
+
+        <label>Industry</label>
+        <input id="industry" type="text">
+
+        <label>Logo URL</label>
+        <input id="logoUrl" type="url">
+
+        <label>Description</label>
+        <textarea id="description"></textarea>
+
+      </div>
+
+      <label>Bio</label>
+
+      <textarea
+        id="bio"
+        placeholder="Tell people about yourself..."
+      ></textarea>
+
+      <button id="saveButton" type="submit">
+        Save profile
+      </button>
+
+      <button
+        type="button"
+        class="danger"
+        onclick="Cube3Auth.signOut()"
+      >
+        Log out
+      </button>
+
+    </form>
+
+    <div id="message" class="message"></div>
+
+  </div>
+
+</div>
+
+<script src="../config.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="../supabase-client.js"></script>
+<script src="../auth.js"></script>
+
+<script>
+  const supabase = window.cube3Supabase;
+
+  let currentUser = null;
+
+  const form = document.getElementById("profileForm");
+  const roleInput = document.getElementById("role");
+
+  const creatorFields =
+    document.getElementById("creatorFields");
+
+  const brandFields =
+    document.getElementById("brandFields");
+
+  const message =
+    document.getElementById("message");
+
+  function showMessage(text, type) {
+    message.textContent = text;
+    message.className = "message " + type;
+  }
+
+  function setRoleFields(role) {
+
+    creatorFields.classList.remove("visible");
+    brandFields.classList.remove("visible");
+
+    if (role === "creator") {
+      creatorFields.classList.add("visible");
+    }
+
+    if (role === "brand") {
+      brandFields.classList.add("visible");
+    }
+  }
+
+  async function loadProfile() {
+
+    try {
+
+      currentUser = await Cube3Auth.requireUser();
+
+      if (!currentUser) return;
+
+      document.getElementById("email").value =
+        currentUser.email || "";
+
+      const { data: profile, error } =
+        await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", currentUser.id)
+          .single();
+
+      if (error && error.code !== "PGRST116") {
+        throw error;
+      }
+
+      if (profile) {
+
+        roleInput.value = profile.role || "creator";
+
+        document.getElementById("fullName").value =
+          profile.full_name || "";
+
+        document.getElementById("bio").value =
+          profile.bio || "";
+
+        setRoleFields(profile.role);
+
+        if (profile.role === "creator") {
+
+          const { data: creator } =
+            await supabase
+              .from("creator_profiles")
+              .select("*")
+              .eq("id", currentUser.id)
+              .maybeSingle();
+
+          if (creator) {
+
+            document.getElementById("handle").value =
+              creator.handle || "";
+
+            document.getElementById("category").value =
+              creator.category || "";
+
+            document.getElementById("youtubeUrl").value =
+              creator.youtube_url || "";
+
+            document.getElementById("instagramUrl").value =
+              creator.instagram_url || "";
+
+            document.getElementById("xUrl").value =
+              creator.x_url || "";
+
+            document.getElementById("portfolioUrl").value =
+              creator.portfolio_url || "";
+          }
+
+        } else {
+
+          const { data: brand } =
+            await supabase
+              .from("brand_profiles")
+              .select("*")
+              .eq("id", currentUser.id)
+              .maybeSingle();
+
+          if (brand) {
+
+            document.getElementById("companyName").value =
+              brand.company_name || "";
+
+            document.getElementById("websiteUrl").value =
+              brand.website_url || "";
+
+            document.getElementById("industry").value =
+              brand.industry || "";
+
+            document.getElementById("logoUrl").value =
+              brand.logo_url || "";
+
+            document.getElementById("description").value =
+              brand.description || "";
+          }
+        }
+      }
+
+    } catch (error) {
+
+      console.error(error);
+
+      showMessage(
+        error.message || "Could not load profile.",
+        "error"
+      );
+    }
+  }
+
+  form.addEventListener("submit", async function(event) {
+
+    event.preventDefault();
+
+    const role = roleInput.value;
+
+    try {
+
+      const fullName =
+        document.getElementById("fullName").value.trim();
+
+      const bio =
+        document.getElementById("bio").value.trim();
+
+      const { error: profileError } =
+        await supabase
+          .from("profiles")
+          .update({
+            full_name: fullName,
+            bio: bio,
+            updated_at: new Date().toISOString()
+          })
+          .eq("id", currentUser.id);
+
+      if (profileError) throw profileError;
+
+      if (role === "creator") {
+
+        const creatorData = {
+          id: currentUser.id,
+          handle:
+            document.getElementById("handle").value.trim(),
+          category:
+            document.getElementById("category").value,
+          youtube_url:
+            document.getElementById("youtubeUrl").value.trim(),
+          instagram_url:
+            document.getElementById("instagramUrl").value.trim(),
+          x_url:
+            document.getElementById("xUrl").value.trim(),
+          portfolio_url:
+            document.getElementById("portfolioUrl").value.trim()
+        };
+
+        const { error } =
+          await supabase
+            .from("creator_profiles")
+            .upsert(creatorData);
+
+        if (error) throw error;
+
+      } else {
+
+        const brandData = {
+          id: currentUser.id,
+          company_name:
+            document.getElementById("companyName").value.trim(),
+          website_url:
+            document.getElementById("websiteUrl").value.trim(),
+          industry:
+            document.getElementById("industry").value.trim(),
+          logo_url:
+            document.getElementById("logoUrl").value.trim(),
+          description:
+            document.getElementById("description").value.trim()
+        };
+
+        const { error } =
+          await supabase
+            .from("brand_profiles")
+            .upsert(brandData);
+
+        if (error) throw error;
+      }
+
+      showMessage(
+        "Profile saved successfully!",
+        "success"
+      );
+
+    } catch (error) {
+
+      console.error(error);
+
+      showMessage(
+        error.message || "Could not save profile.",
+        "error"
+      );
+    }
+  });
+
+  loadProfile();
+</script>
+
+</body>
+</html>
