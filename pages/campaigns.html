@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Campaigns - Cube3</title>
+
+  <link rel="stylesheet" href="../style.css">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #08090d;
+      color: #fff;
+      font-family: Arial, sans-serif;
+    }
+
+    nav {
+      height: 66px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 6%;
+      background: #090a0f;
+      border-bottom: 1px solid #232530;
+    }
+
+    .logo {
+      font-size: 27px;
+      font-weight: 800;
+    }
+
+    .logo span {
+      color: #9878ff;
+    }
+
+    nav a {
+      color: #aaa;
+      text-decoration: none;
+      margin-left: 20px;
+    }
+
+    nav a:hover {
+      color: white;
+    }
+
+    .container {
+      max-width: 1150px;
+      margin: auto;
+      padding: 40px 20px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 38px;
+    }
+
+    .header p {
+      color: #9295a4;
+    }
+
+    .create-button {
+      background: #9274ff;
+      color: white;
+      border: 0;
+      border-radius: 9px;
+      padding: 13px 18px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 30px;
+    }
+
+    .filters input,
+    .filters select,
+    .modal input,
+    .modal select,
+    .modal textarea {
+      width: 100%;
+      padding: 13px;
+      border-radius: 9px;
+      border: 1px solid #30333f;
+      background: #101117;
+      color: white;
+      outline: none;
+    }
+
+    .filters input:focus,
+    .filters select:focus,
+    .modal input:focus,
+    .modal select:focus,
+    .modal textarea:focus {
+      border-color: #9274ff;
+    }
+
+    .campaign-grid {
+      display: grid;
+      grid-template-columns:
+        repeat(auto-fit, minmax(290px, 1fr));
+      gap: 20px;
+    }
+
+    .campaign {
+      background: #11131a;
+      border: 1px solid #292c38;
+      border-radius: 16px;
+      padding: 22px;
+      transition: .2s;
+    }
+
+    .campaign:hover {
+      transform: translateY(-3px);
+      border-color: #51477a;
+    }
+
+    .campaign-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .campaign h2 {
+      margin: 0;
+      font-size: 21px;
+    }
+
+    .favorite {
+      background: transparent;
+      border: 0;
+      color: #777b8b;
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    .favorite.active {
+      color: #ffcf5c;
+    }
+
+    .description {
+      color: #9b9eac;
+      line-height: 1.55;
+      min-height: 70px;
+    }
+
+    .tags {
+      margin: 12px 0;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 6px 9px;
+      border-radius: 20px;
+      background: #1d1930;
+      color: #a98fff;
+      font-size: 12px;
+      margin: 3px;
+    }
+
+    .details {
+      border-top: 1px solid #272934;
+      margin-top: 15px;
+      padding-top: 15px;
+      color: #bbbcc5;
+      line-height: 1.8;
+    }
+
+    .apply-button {
+      width: 100%;
+      margin-top: 15px;
+      padding: 12px;
+      border: 0;
+      border-radius: 8px;
+      background: #9274ff;
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .apply-button:hover {
+      background: #a68dff;
+    }
+
+    .loading,
+    .empty {
+      grid-column: 1 / -1;
+      padding: 40px;
+      text-align: center;
+      background: #11131a;
+      border: 1px solid #292c38;
+      border-radius: 15px;
+      color: #9699a8;
+    }
+
+    /* Modal */
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.75);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 1000;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+    }
+
+    .modal {
+      width: 100%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      background: #11131a;
+      border: 1px solid #303340;
+      border-radius: 18px;
+      padding: 28px;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h2 {
+      margin: 0;
+    }
+
+    .close {
+      border: 0;
+      background: transparent;
+      color: #aaa;
+      font-size: 25px;
+      cursor: pointer;
+    }
+
+    .modal label {
+      display: block;
+      margin: 16px 0 7px;
+      color: #d4d5dc;
+      font-size: 14px;
+    }
+
+    .modal textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    .modal-submit {
+      width: 100%;
+      padding: 14px;
+      margin-top: 20px;
+      border: 0;
+      border-radius: 9px;
+      background: #9274ff;
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .message {
+      margin-top: 15px;
+      padding: 11px;
+      border-radius: 8px;
+      display: none;
+    }
+
+    .success {
+      display: block;
+      background: #12351f;
+      color: #82eea0;
+    }
+
+    .error {
+      display: block;
+      background: #39171b;
+      color: #ff9ca5;
+    }
+
+    @media (max-width: 700px) {
+
+      nav {
+        padding: 0 18px;
+      }
+
+      nav a {
+        margin-left: 8px;
+        font-size: 13px;
+      }
+
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .filters {
+        grid-template-columns: 1fr;
+      }
+
+      .header h1 {
+        font-size: 30px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<nav>
+
+  <div class="logo">
+    Cube<span>3</span>
+  </div>
+
+  <div>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="profile.html">Profile</a>
+    <a href="campaigns.html">Campaigns</a>
+    <a href="#" id="logout">Logout</a>
+  </div>
+
+</nav>
+
+
+<div class="container">
+
+  <div class="header">
+
+    <div>
+      <h1>Campaigns</h1>
+
+      <p>
+        Discover brand opportunities and connect with creators.
+      </p>
+    </div>
+
+    <button
+      id="createCampaignButton"
+      class="create-button"
+      style="display:none;"
+    >
+      + Create Campaign
+    </button>
+
+  </div>
+
+
+  <div class="filters">
+
+    <input
+      id="search"
+      type="search"
+      placeholder="Search campaigns..."
+    >
+
+    <select id="categoryFilter">
+
+      <option value="">All categories</option>
+
+      <option>Technology</option>
+      <option>Gaming</option>
+      <option>Education</option>
+      <option>Entertainment</option>
+      <option>Business</option>
+      <option>Fashion</option>
+      <option>Fitness</option>
+      <option>Travel</option>
+      <option>Food</option>
+
+    </select>
+
+
+    <select id="platformFilter">
+
+      <option value="">All platforms</option>
+
+      <option>YouTube</option>
+      <option>Instagram</option>
+      <option>TikTok</option>
+      <option>Facebook</option>
+      <option>X</option>
+      <option>Website</option>
+      <option>Other</option>
+
+    </select>
+
+  </div>
+
+
+  <div
+    id="campaignGrid"
+    class="campaign-grid"
+  >
+
+    <div class="loading">
+      Loading campaigns...
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- APPLY MODAL -->
+
+<div
+  id="applyModal"
+  class="modal-overlay"
+>
+
+  <div class="modal">
+
+    <div class="modal-header">
+
+      <h2>
+        Apply to Campaign
+      </h2>
+
+      <button
+        class="close"
+        onclick="closeApplyModal()"
+      >
+        ×
+      </button>
+
+    </div>
+
+    <form id="applicationForm">
+
+      <input
+        type="hidden"
+        id="applicationCampaignId"
+      >
+
+      <label>
+        Your pitch
+      </label>
+
+      <textarea
+        id="pitch"
+        placeholder="Tell the brand why you're a good fit..."
+        required
+      ></textarea>
+
+      <button
+        class="modal-submit"
+        type="submit"
+      >
+        Submit Application
+      </button>
+
+      <div id="applicationMessage" class="message"></div>
+
+    </form>
+
+  </div>
+
+</div>
+
+
+<!-- CREATE CAMPAIGN MODAL -->
+
+<div
+  id="createModal"
+  class="modal-overlay"
+>
+
+  <div class="modal">
+
+    <div class="modal-header">
+
+      <h2>
+        Create Campaign
+      </h2>
+
+      <button
+        class="close"
+        onclick="closeCreateModal()"
+      >
+        ×
+      </button>
+
+    </div>
+
+    <form id="campaignForm">
+
+      <label>
+        Campaign title
+      </label>
+
+      <input
+        id="campaignTitle"
+        type="text"
+        placeholder="Example: Promote our new product"
+        required
+      >
+
+
+      <label>
+        Description
+      </label>
+
+      <textarea
+        id="campaignDescription"
+        placeholder="Describe the campaign..."
+        required
+      ></textarea>
+
+
+      <label>
+        Budget (₹)
+      </label>
+
+      <input
+        id="campaignBudget"
+        type="number"
+        min="0"
+        step="0.01"
+        placeholder="50000"
+      >
+
+
+      <label>
+        Category
+      </label>
+
+      <select id="campaignCategory">
+
+        <option value="Technology">Technology</option>
+        <option value="Gaming">Gaming</option>
+        <option value="Education">Education</option>
+        <option value="Entertainment">Entertainment</option>
+        <option value="Business">Business</option>
+        <option value="Fashion">Fashion</option>
+        <option value="Fitness">Fitness</option>
+        <option value="Travel">Travel</option>
+        <option value="Food">Food</option>
+
+      </select>
+
+
+      <label>
+        Platform
+      </label>
+
+      <select id="campaignPlatform">
+
+        <option>YouTube</option>
+        <option>Instagram</option>
+        <option>TikTok</option>
+        <option>Facebook</option>
+        <option>X</option>
+        <option>Website</option>
+        <option>Other</option>
+
+      </select>
+
+
+      <label>
+        Location
+      </label>
+
+      <input
+        id="campaignLocation"
+        type="text"
+        placeholder="India / Remote"
+      >
+
+
+      <label>
+        Requirements
+      </label>
+
+      <textarea
+        id="campaignRequirements"
+        placeholder="Creator requirements..."
+      ></textarea>
+
+
+      <label>
+        Application deadline
+      </label>
+
+      <input
+        id="campaignDeadline"
+        type="date"
+      >
+
+
+      <button
+        class="modal-submit"
+        type="submit"
+      >
+        Publish Campaign
+      </button>
+
+      <div
+        id="campaignMessage"
+        class="message"
+      ></div>
+
+    </form>
+
+  </div>
+
+</div>
+
+
+<script src="../config.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="../supabase-client.js"></script>
+<script src="../auth.js"></script>
+
+
+<script>
+
+  const supabase = window.cube3Supabase;
+
+  let currentUser = null;
+  let currentRole = null;
+  let campaigns = [];
+
+
+  async function initialize() {
+
+    try {
+
+      currentUser =
+        await Cube3Auth.requireUser();
+
+      if (!currentUser) return;
+
+
+      const { data: profile, error } =
+        await supabase
+          .from("profiles")
+          .select("role, full_name")
+          .eq("id", currentUser.id)
+          .single();
+
+
+      if (error) throw error;
+
+
+      currentRole = profile.role;
+
+
+      if (currentRole === "brand") {
+
+        document
+          .getElementById("createCampaignButton")
+          .style.display = "block";
+
+      }
+
+
+      await loadCampaigns();
+
+
+    } catch (error) {
+
+      console.error(error);
+
+      document.getElementById("campaignGrid").innerHTML = `
+        <div class="empty">
+          Could not initialize campaigns.
+          <br>
+          ${escapeHTML(error.message)}
+        </div>
+      `;
+
+    }
+
+  }
+
+
+  async function loadCampaigns() {
+
+    const grid =
+      document.getElementById("campaignGrid");
+
+    grid.innerHTML = `
+      <div class="loading">
+        Loading campaigns...
+      </div>
+    `;
+
+
+    const { data, error } =
+      await supabase
+        .from("campaigns")
+        .select("*")
+        .eq("status", "open")
+        .order("created_at", {
+          ascending: false
+        });
+
+
+    if (error) {
+
+      console.error(error);
+
+      grid.innerHTML = `
+        <div class="empty">
+          ${escapeHTML(error.message)}
+        </div>
+      `;
+
+      return;
+
+    }
+
+
+    campaigns = data || [];
+
+    renderCampaigns();
+
+  }
+
+
+  function renderCampaigns() {
+
+    const search =
+      document
+        .getElementById("search")
+        .value
+        .toLowerCase()
+        .trim();
+
+
+    const category =
+      document
+        .getElementById("categoryFilter")
+        .value;
+
+
+    const platform =
+      document
+        .getElementById("platformFilter")
+        .value;
+
+
+    const filtered =
+      campaigns.filter(campaign => {
+
+        const matchesSearch =
+          !search ||
+          (campaign.title || "")
+            .toLowerCase()
+            .includes(search) ||
+          (campaign.description || "")
+            .toLowerCase()
+            .includes(search) ||
+          (campaign.requirements || "")
+            .toLowerCase()
+            .includes(search);
+
+
+        const matchesCategory =
+          !category ||
+          campaign.category === category;
+
+
+        const matchesPlatform =
+          !platform ||
+          campaign.platform === platform;
+
+
+        return (
+          matchesSearch &&
+          matchesCategory &&
+          matchesPlatform
+        );
+
+      });
+
+
+    const grid =
+      document.getElementById("campaignGrid");
+
+
+    if (!filtered.length) {
+
+      grid.innerHTML = `
+        <div class="empty">
+          No campaigns found.
+        </div>
+      `;
+
+      return;
+
+    }
+
+
+    grid.innerHTML =
+      filtered.map(renderCampaign).join("");
+
+    loadFavorites();
+
+  }
+
+
+  function renderCampaign(campaign) {
+
+    return `
+
+      <article class="campaign">
+
+        <div class="campaign-top">
+
+          <h2>
+            ${escapeHTML(campaign.title)}
+          </h2>
+
+          <button
+            class="favorite"
+            id="favorite-${campaign.id}"
+            onclick="toggleFavorite('${campaign.id}')"
+            title="Favorite"
+          >
+            ☆
+          </button>
+
+        </div>
+
+
+        <p class="description">
+          ${escapeHTML(
+            campaign.description ||
+            "No description provided."
+          )}
+        </p>
+
+
+        <div class="tags">
+
+          ${
+            campaign.category
+            ? `<span class="tag">
+                ${escapeHTML(campaign.category)}
+              </span>`
+            : ""
+          }
+
+          ${
+            campaign.platform
+            ? `<span class="tag">
+                ${escapeHTML(campaign.platform)}
+              </span>`
+            : ""
+          }
+
+          ${
+            campaign.location
+            ? `<span class="tag">
+                ${escapeHTML(campaign.location)}
+              </span>`
+            : ""
+          }
+
+        </div>
+
+
+        <div class="details">
+
+          ${
+            campaign.budget
+            ? `
+              💰 Budget:
+              ₹${Number(campaign.budget)
+                .toLocaleString("en-IN")}
+            `
+            : "💰 Budget: Negotiable"
+          }
+
+          <br>
+
+          ${
+            campaign.deadline
+            ? `
+              📅 Deadline:
+              ${escapeHTML(campaign.deadline)}
+            `
+            : "📅 No deadline"
+          }
+
+          ${
+            campaign.requirements
+            ? `
+              <br>
+              📋 ${escapeHTML(campaign.requirements)}
+            `
+            : ""
+          }
+
+        </div>
+
+
+        ${
+          currentRole === "creator"
+          ? `
+            <button
+              class="apply-button"
+              onclick="openApplyModal('${campaign.id}')"
+            >
+              Apply Now
+            </button>
+          `
+          : ""
+        }
+
+      </article>
+
+    `;
+
+  }
+
+
+  async function loadFavorites() {
+
+    if (!currentUser) return;
+
+
+    const { data, error } =
+      await supabase
+        .from("favorites")
+        .select("campaign_id")
+        .eq("user_id", currentUser.id)
+        .not("campaign_id", "is", null);
+
+
+    if (error) {
+
+      console.error(error);
+      return;
+
+    }
+
+
+    const favoriteIds =
+      new Set(
+        (data || []).map(item => item.campaign_id)
+      );
+
+
+    favoriteIds.forEach(id => {
+
+      const button =
+        document.getElementById(
+          "favorite-" + id
+        );
+
+      if (button) {
+
+        button.textContent = "★";
+        button.classList.add("active");
+
+      }
+
+    });
+
+  }
+
+
+  async function toggleFavorite(campaignId) {
+
+    if (!currentUser) return;
+
+
+    const { data, error } =
+      await supabase
+        .from("favorites")
+        .select("id")
+        .eq("user_id", currentUser.id)
+        .eq("campaign_id", campaignId)
+        .maybeSingle();
+
+
+    if (error) {
+
+      console.error(error);
+      return;
+
+    }
+
+
+    if (data) {
+
+      await supabase
+        .from("favorites")
+        .delete()
+        .eq("id", data.id);
+
+
+    } else {
+
+      await supabase
+        .from("favorites")
+        .insert({
+          user_id: currentUser.id,
+          campaign_id: campaignId
+        });
+
+    }
+
+
+    await loadFavorites();
+
+  }
+
+
+  function openApplyModal(campaignId) {
+
+    document
+      .getElementById("applicationCampaignId")
+      .value = campaignId;
+
+    document
+      .getElementById("pitch")
+      .value = "";
+
+    document
+      .getElementById("applicationMessage")
+      .className = "message";
+
+    document
+      .getElementById("applyModal")
+      .classList.add("show");
+
+  }
+
+
+  function closeApplyModal() {
+
+    document
+      .getElementById("applyModal")
+      .classList.remove("show");
+
+  }
+
+
+  document
+    .getElementById("applicationForm")
+    .addEventListener("submit", async function(event) {
+
+      event.preventDefault();
+
+
+      const campaignId =
+        document
+          .getElementById("applicationCampaignId")
+          .value;
+
+
+      const pitch =
+        document
+          .getElementById("pitch")
+          .value
+          .trim();
+
+
+      const message =
+        document.getElementById(
+          "applicationMessage"
+        );
+
+
+      try {
+
+        const { error } =
+          await supabase
+            .from("campaign_applications")
+            .insert({
+              campaign_id: campaignId,
+              creator_id: currentUser.id,
+              pitch: pitch,
+              status: "pending"
+            });
+
+
+        if (error) throw error;
+
+
+        message.textContent =
+          "Application submitted successfully!";
+
+        message.className =
+          "message success";
+
+
+        setTimeout(
+          closeApplyModal,
+          1500
+        );
+
+
+      } catch (error) {
+
+        console.error(error);
+
+        message.textContent =
+          error.message ||
+          "Could not submit application.";
+
+        message.className =
+          "message error";
+
+      }
+
+    });
+
+
+  document
+    .getElementById("createCampaignButton")
+    .addEventListener("click", function() {
+
+      document
+        .getElementById("createModal")
+        .classList.add("show");
+
+    });
+
+
+  function closeCreateModal() {
+
+    document
+      .getElementById("createModal")
+      .classList.remove("show");
+
+  }
+
+
+  document
+    .getElementById("campaignForm")
+    .addEventListener("submit", async function(event) {
+
+      event.preventDefault();
+
+
+      const message =
+        document.getElementById(
+          "campaignMessage"
+        );
+
+
+      try {
+
+        const campaign = {
+
+          brand_id: currentUser.id,
+
+          title:
+            document
+              .getElementById("campaignTitle")
+              .value
+              .trim(),
+
+          description:
+            document
+              .getElementById("campaignDescription")
+              .value
+              .trim(),
+
+          budget:
+            Number(
+              document
+                .getElementById("campaignBudget")
+                .value || 0
+            ),
+
+          category:
+            document
+              .getElementById("campaignCategory")
+              .value,
+
+          platform:
+            document
+              .getElementById("campaignPlatform")
+              .value,
+
+          location:
+            document
+              .getElementById("campaignLocation")
+              .value
+              .trim(),
+
+          requirements:
+            document
+              .getElementById("campaignRequirements")
+              .value
+              .trim(),
+
+          deadline:
+            document
+              .getElementById("campaignDeadline")
+              .value || null,
+
+          status: "open"
+
+        };
+
+
+        const { error } =
+          await supabase
+            .from("campaigns")
+            .insert(campaign);
+
+
+        if (error) throw error;
+
+
+        message.textContent =
+          "Campaign published successfully!";
+
+        message.className =
+          "message success";
+
+
+        document
+          .getElementById("campaignForm")
+          .reset();
+
+
+        await loadCampaigns();
+
+
+        setTimeout(
+          closeCreateModal,
+          1200
+        );
+
+
+      } catch (error) {
+
+        console.error(error);
+
+        message.textContent =
+          error.message ||
+          "Could not create campaign.";
+
+        message.className =
+          "message error";
+
+      }
+
+    });
+
+
+  document
+    .getElementById("search")
+    .addEventListener(
+      "input",
+      renderCampaigns
+    );
+
+
+  document
+    .getElementById("categoryFilter")
+    .addEventListener(
+      "change",
+      renderCampaigns
+    );
+
+
+  document
+    .getElementById("platformFilter")
+    .addEventListener(
+      "change",
+      renderCampaigns
+    );
+
+
+  document
+    .getElementById("logout")
+    .addEventListener("click", async function(event) {
+
+      event.preventDefault();
+
+      await Cube3Auth.signOut();
+
+    });
+
+
+  function escapeHTML(value) {
+
+    return String(value || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
+  }
+
+
+  initialize();
+
+</script>
+
+</body>
+</html>
