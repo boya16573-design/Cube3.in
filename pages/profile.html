@@ -446,6 +446,71 @@
 
           </div>
 
+
+          <div class="social-input">
+
+            <span>TikTok</span>
+
+            <input
+              id="tiktok"
+              type="url"
+              placeholder="https://tiktok.com/@username"
+            >
+
+          </div>
+
+
+          <div class="social-input">
+
+            <span>Facebook</span>
+
+            <input
+              id="facebook"
+              type="url"
+              placeholder="https://facebook.com/username"
+            >
+
+          </div>
+
+
+          <div class="social-input">
+
+            <span>Snapchat</span>
+
+            <input
+              id="snapchat"
+              type="url"
+              placeholder="https://snapchat.com/add/username"
+            >
+
+          </div>
+
+
+          <div class="social-input">
+
+            <span>LinkedIn</span>
+
+            <input
+              id="linkedin"
+              type="url"
+              placeholder="https://linkedin.com/in/username"
+            >
+
+          </div>
+
+
+          <div class="social-input">
+
+            <span>Threads</span>
+
+            <input
+              id="threads"
+              type="url"
+              placeholder="https://threads.net/@username"
+            >
+
+          </div>
+
         </div>
 
       </div>
@@ -560,41 +625,56 @@
 
   async function init() {
 
-    if (!supabase) {
+    try {
+
+      if (!supabase) {
+
+        showMessage(
+          "Supabase client is not configured.",
+          true
+        );
+
+        return;
+
+      }
+
+
+      const {
+        data: {
+          session
+        },
+        error
+      } =
+        await supabase.auth.getSession();
+
+
+      if (error || !session) {
+
+        window.location.href =
+          "login.html";
+
+        return;
+
+      }
+
+
+      user = session.user;
+
+
+      await loadProfile();
+
+    } catch (error) {
+
+      console.error(error);
+
+      document.getElementById("displayName").textContent = "Error loading profile";
 
       showMessage(
-        "Supabase client is not configured.",
+        error.message || "Something went wrong loading your profile.",
         true
       );
 
-      return;
-
     }
-
-
-    const {
-      data: {
-        session
-      },
-      error
-    } =
-      await supabase.auth.getSession();
-
-
-    if (error || !session) {
-
-      window.location.href =
-        "login.html";
-
-      return;
-
-    }
-
-
-    user = session.user;
-
-
-    await loadProfile();
 
   }
 
@@ -738,6 +818,36 @@
       .value =
         data.portfolio_url || "";
 
+
+    document
+      .getElementById("tiktok")
+      .value =
+        data.tiktok_url || "";
+
+
+    document
+      .getElementById("facebook")
+      .value =
+        data.facebook_url || "";
+
+
+    document
+      .getElementById("snapchat")
+      .value =
+        data.snapchat_url || "";
+
+
+    document
+      .getElementById("linkedin")
+      .value =
+        data.linkedin_url || "";
+
+
+    document
+      .getElementById("threads")
+      .value =
+        data.threads_url || "";
+
   }
 
 
@@ -871,6 +981,8 @@
 
     const profileUpdate = {
 
+      id: currentUser.id,
+
       full_name: fullName,
 
       bio:
@@ -890,8 +1002,7 @@
     } =
       await supabase
         .from("profiles")
-        .update(profileUpdate)
-        .eq("id", currentUser.id);
+        .upsert(profileUpdate);
 
 
     if (profileError)
@@ -935,6 +1046,36 @@
         document
           .getElementById("portfolio")
           .value
+          .trim(),
+
+      tiktok_url:
+        document
+          .getElementById("tiktok")
+          .value
+          .trim(),
+
+      facebook_url:
+        document
+          .getElementById("facebook")
+          .value
+          .trim(),
+
+      snapchat_url:
+        document
+          .getElementById("snapchat")
+          .value
+          .trim(),
+
+      linkedin_url:
+        document
+          .getElementById("linkedin")
+          .value
+          .trim(),
+
+      threads_url:
+        document
+          .getElementById("threads")
+          .value
           .trim()
 
     };
@@ -973,15 +1114,16 @@
     } =
       await supabase
         .from("profiles")
-        .update({
+        .upsert({
+
+          id: currentUser.id,
 
           full_name: companyName,
 
           updated_at:
             new Date().toISOString()
 
-        })
-        .eq("id", currentUser.id);
+        });
 
 
     if (profileError)
