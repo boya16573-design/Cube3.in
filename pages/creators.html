@@ -69,6 +69,26 @@
       .replace(/"/g, "&quot;").replace(/'/g, "&#039;");
   }
 
+  function formatCount(n) {
+    if (!n || n <= 0) return "";
+    if (n >= 1000000) return (n / 1000000).toFixed(1).replace(/\.0$/, "") + "M";
+    if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, "") + "K";
+    return String(n);
+  }
+
+  var COUNT_FIELDS = {
+    youtube_url: "youtube_subscribers", instagram_url: "instagram_followers", x_url: "x_followers",
+    tiktok_url: "tiktok_followers", facebook_url: "facebook_followers", snapchat_url: "snapchat_followers",
+    linkedin_url: "linkedin_followers", threads_url: "threads_followers"
+  };
+
+  function linkWithCount(c, urlField, label) {
+    if (!c[urlField]) return "";
+    var countField = COUNT_FIELDS[urlField];
+    var count = countField && c[countField] ? formatCount(c[countField]) : "";
+    return '<a href="' + escapeHTML(c[urlField]) + '" target="_blank" rel="noopener">' + label + (count ? " · " + count : "") + '</a>';
+  }
+
   async function init() {
     try {
       await Cube3Auth.requireUser();
@@ -121,9 +141,9 @@
         '<p class="bio">' + escapeHTML(c.bio || "No bio yet.") + '</p>' +
         (c.category ? '<span class="tag">' + escapeHTML(c.category) + '</span>' : "") +
         '<div class="links">' +
-          (c.youtube_url ? '<a href="' + escapeHTML(c.youtube_url) + '" target="_blank" rel="noopener">YouTube</a>' : "") +
-          (c.instagram_url ? '<a href="' + escapeHTML(c.instagram_url) + '" target="_blank" rel="noopener">Instagram</a>' : "") +
-          (c.x_url ? '<a href="' + escapeHTML(c.x_url) + '" target="_blank" rel="noopener">X</a>' : "") +
+          linkWithCount(c, "youtube_url", "YouTube") +
+          linkWithCount(c, "instagram_url", "Instagram") +
+          linkWithCount(c, "x_url", "X") +
           (c.portfolio_url ? '<a href="' + escapeHTML(c.portfolio_url) + '" target="_blank" rel="noopener">Portfolio</a>' : "") +
         '</div>' +
       '</div>';
