@@ -1,29 +1,30 @@
 /* Cube3 — shared design system */
-
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+/* Font is now loaded via <link> tags in each page's <head> instead of
+   @import here, since @import blocks CSS parsing until the font file
+   is fetched. See the <head> of any page for the font <link> tags. */
 
 :root{
-  --violet:#6c5ce7;
-  --violet-deep:#4b3fc4;
-  --violet-dim: rgba(108,92,231,0.10);
-  --coral:#ff8f65;
-  --ink:#161826;
-  --ink-muted:#6b7086;
-  --ink-faint:#9a9eb0;
-  --line:#e7e6f0;
+  --violet:#0284c7;
+  --violet-deep:#0369a1;
+  --violet-dim: #e0f2fe;
+  --coral:#0ea5e9;
+  --ink:#0f172a;
+  --ink-muted:#475569;
+  --ink-faint:#94a3b8;
+  --line:#e2e8f0;
   --panel:#ffffff;
-  --paper:#f7f4ee;
+  --paper:#f8fafc;
   --success-bg:#e8f7ee; --success-fg:#1f8a4c;
   --error-bg:#fdeceb;   --error-fg:#c13a2e;
 
-  --shadow-xs: 0 1px 2px rgba(22,24,38,0.04);
-  --shadow-sm: 0 2px 8px rgba(22,24,38,0.06);
-  --shadow-md: 0 8px 24px rgba(22,24,38,0.08);
-  --shadow-lg: 0 20px 50px rgba(22,24,38,0.10);
-  --shadow-violet: 0 10px 24px rgba(108,92,231,0.22);
+  --shadow-xs: 0 1px 2px rgba(15,23,42,0.04);
+  --shadow-sm: 0 2px 8px rgba(15,23,42,0.06);
+  --shadow-md: 0 8px 24px rgba(15,23,42,0.08);
+  --shadow-lg: 0 20px 50px rgba(15,23,42,0.10);
+  --shadow-violet: 0 8px 18px rgba(2,132,199,0.22);
   --radius-sm: 8px;
-  --radius-md: 14px;
-  --radius-lg: 20px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
 }
 
 *{box-sizing:border-box;}
@@ -33,7 +34,7 @@ body{
   font-family:'Inter', sans-serif; line-height:1.5;
   -webkit-font-smoothing:antialiased;
 }
-h1,h2,h3{font-family:'Space Grotesk',sans-serif; margin:0; color:var(--ink);}
+h1,h2,h3{font-family:'Inter',sans-serif; font-weight:800; letter-spacing:-0.02em; margin:0; color:var(--ink);}
 a{color:inherit; text-decoration:none;}
 :focus-visible{outline:2px solid var(--violet); outline-offset:3px; border-radius:4px;}
 
@@ -50,7 +51,7 @@ header.site-header{
   transition: box-shadow .2s ease;
 }
 nav.wrap{display:flex; align-items:center; justify-content:space-between; padding:16px 24px;}
-.brand{display:flex; align-items:center; gap:9px; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:18px;}
+.brand{display:flex; align-items:center; gap:9px; font-family:'Inter',sans-serif; font-weight:800; letter-spacing:-0.01em; font-size:18px;}
 .brand .mark{width:20px; height:20px; flex-shrink:0;}
 .nav-links{display:flex; align-items:center; gap:24px;}
 .nav-links a{font-size:14px; color:var(--ink-muted); font-weight:500; margin-left:24px;}
@@ -80,7 +81,7 @@ nav.wrap{display:flex; align-items:center; justify-content:space-between; paddin
 .card:hover{box-shadow:var(--shadow-md); transform:translateY(-2px);}
 .stat{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius-sm); padding:20px; box-shadow:var(--shadow-xs); transition:box-shadow .2s ease;}
 .stat:hover{box-shadow:var(--shadow-sm);}
-.stat b{display:block; font-family:'Space Grotesk',sans-serif; font-size:27px; letter-spacing:-0.01em;}
+.stat b{display:block; font-family:'Inter',sans-serif; font-weight:800; font-size:27px; letter-spacing:-0.02em;}
 .stat span, .stat .label{font-size:12px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.04em; font-weight:600;}
 
 /* ---------- Forms ---------- */
