@@ -1,1322 +1,352 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Campaigns - Cube3</title>
+<link rel="stylesheet" href="/style.css">
+<style>
+  .filters{display:grid; grid-template-columns:2fr 1fr 1fr; gap:12px; margin:24px 0 30px;}
+  @media (max-width:700px){ .filters{grid-template-columns:1fr;} }
+  .campaign-top{display:flex; justify-content:space-between; gap:10px; align-items:flex-start;}
+  .favorite{background:transparent; border:0; color:var(--ink-faint); font-size:20px; cursor:pointer; line-height:1;}
+  .favorite.active{color:#f0b429;}
+  .details{border-top:1px solid var(--line); margin-top:12px; padding-top:12px; color:var(--ink-muted); font-size:13px; line-height:1.7;}
 
-  <title>Campaigns - Cube3</title>
-
-  <link rel="stylesheet" href="/css/style.css">
-
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      background: #08090d;
-      color: #fff;
-      font-family: Arial, sans-serif;
-    }
-
-    nav {
-      height: 66px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 6%;
-      background: #090a0f;
-      border-bottom: 1px solid #232530;
-    }
-
-    .logo {
-      font-size: 27px;
-      font-weight: 800;
-    }
-
-    .logo span {
-      color: #9878ff;
-    }
-
-    nav a {
-      color: #aaa;
-      text-decoration: none;
-      margin-left: 20px;
-    }
-
-    nav a:hover {
-      color: white;
-    }
-
-    .container {
-      max-width: 1150px;
-      margin: auto;
-      padding: 40px 20px;
-    }
-
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 20px;
-      margin-bottom: 30px;
-    }
-
-    .header h1 {
-      margin: 0;
-      font-size: 38px;
-    }
-
-    .header p {
-      color: #9295a4;
-    }
-
-    .create-button {
-      background: #9274ff;
-      color: white;
-      border: 0;
-      border-radius: 9px;
-      padding: 13px 18px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .filters {
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 30px;
-    }
-
-    .filters input,
-    .filters select,
-    .modal input,
-    .modal select,
-    .modal textarea {
-      width: 100%;
-      padding: 13px;
-      border-radius: 9px;
-      border: 1px solid #30333f;
-      background: #101117;
-      color: white;
-      outline: none;
-    }
-
-    .filters input:focus,
-    .filters select:focus,
-    .modal input:focus,
-    .modal select:focus,
-    .modal textarea:focus {
-      border-color: #9274ff;
-    }
-
-    .campaign-grid {
-      display: grid;
-      grid-template-columns:
-        repeat(auto-fit, minmax(290px, 1fr));
-      gap: 20px;
-    }
-
-    .campaign {
-      background: #11131a;
-      border: 1px solid #292c38;
-      border-radius: 16px;
-      padding: 22px;
-      transition: .2s;
-    }
-
-    .campaign:hover {
-      transform: translateY(-3px);
-      border-color: #51477a;
-    }
-
-    .campaign-top {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .campaign h2 {
-      margin: 0;
-      font-size: 21px;
-    }
-
-    .favorite {
-      background: transparent;
-      border: 0;
-      color: #777b8b;
-      font-size: 22px;
-      cursor: pointer;
-    }
-
-    .favorite.active {
-      color: #ffcf5c;
-    }
-
-    .description {
-      color: #9b9eac;
-      line-height: 1.55;
-      min-height: 70px;
-    }
-
-    .tags {
-      margin: 12px 0;
-    }
-
-    .tag {
-      display: inline-block;
-      padding: 6px 9px;
-      border-radius: 20px;
-      background: #1d1930;
-      color: #a98fff;
-      font-size: 12px;
-      margin: 3px;
-    }
-
-    .details {
-      border-top: 1px solid #272934;
-      margin-top: 15px;
-      padding-top: 15px;
-      color: #bbbcc5;
-      line-height: 1.8;
-    }
-
-    .apply-button {
-      width: 100%;
-      margin-top: 15px;
-      padding: 12px;
-      border: 0;
-      border-radius: 8px;
-      background: #9274ff;
-      color: white;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .apply-button:hover {
-      background: #a68dff;
-    }
-
-    .loading,
-    .empty {
-      grid-column: 1 / -1;
-      padding: 40px;
-      text-align: center;
-      background: #11131a;
-      border: 1px solid #292c38;
-      border-radius: 15px;
-      color: #9699a8;
-    }
-
-    /* Modal */
-
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.75);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      z-index: 1000;
-    }
-
-    .modal-overlay.show {
-      display: flex;
-    }
-
-    .modal {
-      width: 100%;
-      max-width: 600px;
-      max-height: 90vh;
-      overflow-y: auto;
-      background: #11131a;
-      border: 1px solid #303340;
-      border-radius: 18px;
-      padding: 28px;
-    }
-
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .modal-header h2 {
-      margin: 0;
-    }
-
-    .close {
-      border: 0;
-      background: transparent;
-      color: #aaa;
-      font-size: 25px;
-      cursor: pointer;
-    }
-
-    .modal label {
-      display: block;
-      margin: 16px 0 7px;
-      color: #d4d5dc;
-      font-size: 14px;
-    }
-
-    .modal textarea {
-      min-height: 110px;
-      resize: vertical;
-    }
-
-    .modal-submit {
-      width: 100%;
-      padding: 14px;
-      margin-top: 20px;
-      border: 0;
-      border-radius: 9px;
-      background: #9274ff;
-      color: white;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .message {
-      margin-top: 15px;
-      padding: 11px;
-      border-radius: 8px;
-      display: none;
-    }
-
-    .success {
-      display: block;
-      background: #12351f;
-      color: #82eea0;
-    }
-
-    .error {
-      display: block;
-      background: #39171b;
-      color: #ff9ca5;
-    }
-
-    @media (max-width: 700px) {
-
-      nav {
-        padding: 0 18px;
-      }
-
-      nav a {
-        margin-left: 8px;
-        font-size: 13px;
-      }
-
-      .header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .filters {
-        grid-template-columns: 1fr;
-      }
-
-      .header h1 {
-        font-size: 30px;
-      }
-    }
-  </style>
+  .modal-overlay{position:fixed; inset:0; background:rgba(22,24,38,0.45); display:none; align-items:center; justify-content:center; padding:20px; z-index:1000;}
+  .modal-overlay.show{display:flex;}
+  .modal{width:100%; max-width:560px; max-height:88vh; overflow-y:auto; background:var(--panel); border:1px solid var(--line); border-radius:18px; padding:26px;}
+  .modal-header{display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;}
+  .close-btn{border:0; background:transparent; color:var(--ink-faint); font-size:22px; cursor:pointer;}
+</style>
 </head>
-
 <body>
 
-<nav>
-
-  <div class="logo">
-    Cube<span>3</span>
-  </div>
-
-  <div>
-    <a href="dashboard.html">Dashboard</a>
-    <a href="profile.html">Profile</a>
-    <a href="#" id="logout">Logout</a>
-  </div>
-
-</nav>
-
+<header class="site-header">
+  <nav class="wrap">
+    <a class="brand" href="/index.html">
+      <svg class="mark" viewBox="0 0 24 24" fill="none"><path d="M12 2L21 7V17L12 22L3 17V7L12 2Z" fill="#6c5ce7"/></svg>
+      Cube3
+    </a>
+    <div class="nav-links">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="campaigns.html" class="active">Campaigns</a>
+      <a href="creators.html">Creators</a>
+      <a href="inbox.html">Messages</a>
+      <a href="profile.html">Profile</a>
+      <a href="#" id="logout">Logout</a>
+    </div>
+  </nav>
+</header>
 
 <div class="container">
 
-  <div class="header">
-
+  <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap;">
     <div>
-      <h1>Campaigns</h1>
-
-      <p>
-        Discover brand opportunities and connect with creators.
-      </p>
+      <h1 style="font-size:30px;">Campaigns</h1>
+      <p class="muted">Discover brand opportunities and connect with creators.</p>
     </div>
-
-    <button
-      id="createCampaignButton"
-      class="create-button"
-      style="display:none;"
-    >
-      + Create Campaign
-    </button>
-
+    <button id="createCampaignButton" class="btn btn-primary" style="display:none;">+ Create campaign</button>
   </div>
-
 
   <div class="filters">
-
-    <input
-      id="search"
-      type="search"
-      placeholder="Search campaigns..."
-    >
-
+    <input id="search" type="search" placeholder="Search campaigns...">
     <select id="categoryFilter">
-
       <option value="">All categories</option>
-
-      <option>Technology</option>
-      <option>Gaming</option>
-      <option>Education</option>
-      <option>Entertainment</option>
-      <option>Business</option>
-      <option>Fashion</option>
-      <option>Fitness</option>
-      <option>Travel</option>
-      <option>Food</option>
-
+      <option>Technology</option><option>Gaming</option><option>Education</option>
+      <option>Entertainment</option><option>Business</option><option>Fashion</option>
+      <option>Fitness</option><option>Travel</option><option>Food</option>
     </select>
-
-
     <select id="platformFilter">
-
       <option value="">All platforms</option>
-
-      <option>YouTube</option>
-      <option>Instagram</option>
-      <option>TikTok</option>
-      <option>Facebook</option>
-      <option>X</option>
-      <option>Website</option>
-      <option>Other</option>
-
+      <option>YouTube</option><option>Instagram</option><option>TikTok</option>
+      <option>Facebook</option><option>X</option><option>Website</option><option>Other</option>
     </select>
-
   </div>
 
-
-  <div
-    id="campaignGrid"
-    class="campaign-grid"
-  >
-
-    <div class="loading">
-      Loading campaigns...
-    </div>
-
+  <div id="campaignGrid" class="grid-cards">
+    <div class="loading-state">Loading campaigns...</div>
   </div>
-
 </div>
-
 
 <!-- APPLY MODAL -->
-
-<div
-  id="applyModal"
-  class="modal-overlay"
->
-
+<div id="applyModal" class="modal-overlay">
   <div class="modal">
-
     <div class="modal-header">
-
-      <h2>
-        Apply to Campaign
-      </h2>
-
-      <button
-        class="close"
-        onclick="closeApplyModal()"
-      >
-        ×
-      </button>
-
+      <h2 style="font-size:20px;">Apply to campaign</h2>
+      <button class="close-btn" onclick="closeApplyModal()">×</button>
     </div>
-
     <form id="applicationForm">
-
-      <input
-        type="hidden"
-        id="applicationCampaignId"
-      >
-
-      <label>
-        Your pitch
-      </label>
-
-      <textarea
-        id="pitch"
-        placeholder="Tell the brand why you're a good fit..."
-        required
-      ></textarea>
-
-      <button
-        class="modal-submit"
-        type="submit"
-      >
-        Submit Application
-      </button>
-
+      <input type="hidden" id="applicationCampaignId">
+      <label for="pitch">Your pitch</label>
+      <textarea id="pitch" placeholder="Tell the brand why you're a good fit..." required></textarea>
+      <button class="btn btn-primary btn-block" type="submit" style="margin-top:18px;">Submit application</button>
       <div id="applicationMessage" class="message"></div>
-
     </form>
-
   </div>
-
 </div>
-
 
 <!-- CREATE CAMPAIGN MODAL -->
-
-<div
-  id="createModal"
-  class="modal-overlay"
->
-
+<div id="createModal" class="modal-overlay">
   <div class="modal">
-
     <div class="modal-header">
-
-      <h2>
-        Create Campaign
-      </h2>
-
-      <button
-        class="close"
-        onclick="closeCreateModal()"
-      >
-        ×
-      </button>
-
+      <h2 style="font-size:20px;">Create campaign</h2>
+      <button class="close-btn" onclick="closeCreateModal()">×</button>
     </div>
-
     <form id="campaignForm">
+      <label for="campaignTitle">Campaign title</label>
+      <input id="campaignTitle" type="text" placeholder="Example: Promote our new product" required>
 
-      <label>
-        Campaign title
-      </label>
+      <label for="campaignDescription">Description</label>
+      <textarea id="campaignDescription" placeholder="Describe the campaign..." required></textarea>
 
-      <input
-        id="campaignTitle"
-        type="text"
-        placeholder="Example: Promote our new product"
-        required
-      >
+      <label for="campaignBudget">Budget (₹)</label>
+      <input id="campaignBudget" type="number" min="0" step="0.01" placeholder="50000">
 
-
-      <label>
-        Description
-      </label>
-
-      <textarea
-        id="campaignDescription"
-        placeholder="Describe the campaign..."
-        required
-      ></textarea>
-
-
-      <label>
-        Budget (₹)
-      </label>
-
-      <input
-        id="campaignBudget"
-        type="number"
-        min="0"
-        step="0.01"
-        placeholder="50000"
-      >
-
-
-      <label>
-        Category
-      </label>
-
+      <label for="campaignCategory">Category</label>
       <select id="campaignCategory">
-
-        <option value="Technology">Technology</option>
-        <option value="Gaming">Gaming</option>
-        <option value="Education">Education</option>
-        <option value="Entertainment">Entertainment</option>
-        <option value="Business">Business</option>
-        <option value="Fashion">Fashion</option>
-        <option value="Fitness">Fitness</option>
-        <option value="Travel">Travel</option>
-        <option value="Food">Food</option>
-
+        <option value="Technology">Technology</option><option value="Gaming">Gaming</option>
+        <option value="Education">Education</option><option value="Entertainment">Entertainment</option>
+        <option value="Business">Business</option><option value="Fashion">Fashion</option>
+        <option value="Fitness">Fitness</option><option value="Travel">Travel</option><option value="Food">Food</option>
       </select>
 
-
-      <label>
-        Platform
-      </label>
-
+      <label for="campaignPlatform">Platform</label>
       <select id="campaignPlatform">
-
-        <option>YouTube</option>
-        <option>Instagram</option>
-        <option>TikTok</option>
-        <option>Facebook</option>
-        <option>X</option>
-        <option>Website</option>
-        <option>Other</option>
-
+        <option>YouTube</option><option>Instagram</option><option>TikTok</option>
+        <option>Facebook</option><option>X</option><option>Website</option><option>Other</option>
       </select>
 
+      <label for="campaignLocation">Location</label>
+      <input id="campaignLocation" type="text" placeholder="India / Remote">
 
-      <label>
-        Location
-      </label>
+      <label for="campaignRequirements">Requirements</label>
+      <textarea id="campaignRequirements" placeholder="Creator requirements..."></textarea>
 
-      <input
-        id="campaignLocation"
-        type="text"
-        placeholder="India / Remote"
-      >
+      <label for="campaignDeadline">Application deadline</label>
+      <input id="campaignDeadline" type="date">
 
-
-      <label>
-        Requirements
-      </label>
-
-      <textarea
-        id="campaignRequirements"
-        placeholder="Creator requirements..."
-      ></textarea>
-
-
-      <label>
-        Application deadline
-      </label>
-
-      <input
-        id="campaignDeadline"
-        type="date"
-      >
-
-
-      <button
-        class="modal-submit"
-        type="submit"
-      >
-        Publish Campaign
-      </button>
-
-      <div
-        id="campaignMessage"
-        class="message"
-      ></div>
-
+      <button class="btn btn-primary btn-block" type="submit" style="margin-top:18px;">Publish campaign</button>
+      <div id="campaignMessage" class="message"></div>
     </form>
-
   </div>
-
 </div>
 
-
 <script src="/config.js"></script>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <script src="/supabase-client.js"></script>
 <script src="/auth.js"></script>
 
-
 <script>
+(function () {
+  var supabase = window.cube3Supabase;
+  var currentUser = null;
+  var currentRole = null;
+  var campaigns = [];
 
-  const supabase = window.cube3Supabase;
-
-  let currentUser = null;
-  let currentRole = null;
-  let campaigns = [];
-
+  function escapeHTML(value) {
+    return String(value || "")
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+  }
 
   async function initialize() {
-
     try {
-
-      currentUser =
-        await Cube3Auth.requireUser();
-
+      currentUser = await Cube3Auth.requireUser();
       if (!currentUser) return;
 
+      var { data: profile, error } = await supabase.from("profiles").select("role, full_name").eq("id", currentUser.id).single();
+      if (error && error.code !== "PGRST116") throw error;
 
-      const { data: profile, error } =
-        await supabase
-          .from("profiles")
-          .select("role, full_name")
-          .eq("id", currentUser.id)
-          .single();
-
-
-      if (error) throw error;
-
-
-      currentRole = profile.role;
-
+      currentRole = profile ? profile.role : "creator";
 
       if (currentRole === "brand") {
-
-        document
-          .getElementById("createCampaignButton")
-          .style.display = "block";
-
+        document.getElementById("createCampaignButton").style.display = "inline-flex";
       }
-
 
       await loadCampaigns();
 
-
     } catch (error) {
-
       console.error(error);
-
-      document.getElementById("campaignGrid").innerHTML = `
-        <div class="empty">
-          Could not initialize campaigns.
-          <br>
-          ${escapeHTML(error.message)}
-        </div>
-      `;
-
+      document.getElementById("campaignGrid").innerHTML = '<div class="empty-state">Could not load campaigns. ' + escapeHTML(error.message) + '</div>';
     }
-
   }
-
 
   async function loadCampaigns() {
+    var grid = document.getElementById("campaignGrid");
+    grid.innerHTML = '<div class="loading-state">Loading campaigns...</div>';
 
-    const grid =
-      document.getElementById("campaignGrid");
-
-    grid.innerHTML = `
-      <div class="loading">
-        Loading campaigns...
-      </div>
-    `;
-
-
-    const { data, error } =
-      await supabase
-        .from("campaigns")
-        .select("*")
-        .eq("status", "open")
-        .order("created_at", {
-          ascending: false
-        });
-
+    var { data, error } = await supabase.from("campaigns").select("*").eq("status", "open").order("created_at", { ascending: false });
 
     if (error) {
-
-      console.error(error);
-
-      grid.innerHTML = `
-        <div class="empty">
-          ${escapeHTML(error.message)}
-        </div>
-      `;
-
+      grid.innerHTML = '<div class="empty-state">' + escapeHTML(error.message) + '</div>';
       return;
-
     }
-
 
     campaigns = data || [];
-
     renderCampaigns();
-
   }
-
 
   function renderCampaigns() {
+    var search = document.getElementById("search").value.toLowerCase().trim();
+    var category = document.getElementById("categoryFilter").value;
+    var platform = document.getElementById("platformFilter").value;
 
-    const search =
-      document
-        .getElementById("search")
-        .value
-        .toLowerCase()
-        .trim();
+    var filtered = campaigns.filter(function (c) {
+      var matchesSearch = !search ||
+        (c.title || "").toLowerCase().includes(search) ||
+        (c.description || "").toLowerCase().includes(search) ||
+        (c.requirements || "").toLowerCase().includes(search);
+      var matchesCategory = !category || c.category === category;
+      var matchesPlatform = !platform || c.platform === platform;
+      return matchesSearch && matchesCategory && matchesPlatform;
+    });
 
-
-    const category =
-      document
-        .getElementById("categoryFilter")
-        .value;
-
-
-    const platform =
-      document
-        .getElementById("platformFilter")
-        .value;
-
-
-    const filtered =
-      campaigns.filter(campaign => {
-
-        const matchesSearch =
-          !search ||
-          (campaign.title || "")
-            .toLowerCase()
-            .includes(search) ||
-          (campaign.description || "")
-            .toLowerCase()
-            .includes(search) ||
-          (campaign.requirements || "")
-            .toLowerCase()
-            .includes(search);
-
-
-        const matchesCategory =
-          !category ||
-          campaign.category === category;
-
-
-        const matchesPlatform =
-          !platform ||
-          campaign.platform === platform;
-
-
-        return (
-          matchesSearch &&
-          matchesCategory &&
-          matchesPlatform
-        );
-
-      });
-
-
-    const grid =
-      document.getElementById("campaignGrid");
-
+    var grid = document.getElementById("campaignGrid");
 
     if (!filtered.length) {
-
-      grid.innerHTML = `
-        <div class="empty">
-          No campaigns found.
-        </div>
-      `;
-
+      grid.innerHTML = '<div class="empty-state">No campaigns found.</div>';
       return;
-
     }
 
-
-    grid.innerHTML =
-      filtered.map(renderCampaign).join("");
-
+    grid.innerHTML = filtered.map(renderCampaign).join("");
     loadFavorites();
-
   }
-
 
   function renderCampaign(campaign) {
-
-    return `
-
-      <article class="campaign">
-
-        <div class="campaign-top">
-
-          <h2>
-            ${escapeHTML(campaign.title)}
-          </h2>
-
-          <button
-            class="favorite"
-            id="favorite-${campaign.id}"
-            onclick="toggleFavorite('${campaign.id}')"
-            title="Favorite"
-          >
-            ☆
-          </button>
-
-        </div>
-
-
-        <p class="description">
-          ${escapeHTML(
-            campaign.description ||
-            "No description provided."
-          )}
-        </p>
-
-
-        <div class="tags">
-
-          ${
-            campaign.category
-            ? `<span class="tag">
-                ${escapeHTML(campaign.category)}
-              </span>`
-            : ""
-          }
-
-          ${
-            campaign.platform
-            ? `<span class="tag">
-                ${escapeHTML(campaign.platform)}
-              </span>`
-            : ""
-          }
-
-          ${
-            campaign.location
-            ? `<span class="tag">
-                ${escapeHTML(campaign.location)}
-              </span>`
-            : ""
-          }
-
-        </div>
-
-
-        <div class="details">
-
-          ${
-            campaign.budget
-            ? `
-              💰 Budget:
-              ₹${Number(campaign.budget)
-                .toLocaleString("en-IN")}
-            `
-            : "💰 Budget: Negotiable"
-          }
-
-          <br>
-
-          ${
-            campaign.deadline
-            ? `
-              📅 Deadline:
-              ${escapeHTML(campaign.deadline)}
-            `
-            : "📅 No deadline"
-          }
-
-          ${
-            campaign.requirements
-            ? `
-              <br>
-              📋 ${escapeHTML(campaign.requirements)}
-            `
-            : ""
-          }
-
-        </div>
-
-
-        ${
-          currentRole === "creator"
-          ? `
-            <button
-              class="apply-button"
-              onclick="openApplyModal('${campaign.id}')"
-            >
-              Apply Now
-            </button>
-          `
-          : ""
-        }
-
-      </article>
-
-    `;
-
+    return '' +
+      '<div class="card">' +
+        '<div class="campaign-top">' +
+          '<h3 style="font-size:18px;">' + escapeHTML(campaign.title) + '</h3>' +
+          '<button class="favorite" id="favorite-' + campaign.id + '" onclick="toggleFavorite(\'' + campaign.id + '\')" title="Favorite">☆</button>' +
+        '</div>' +
+        '<p class="muted" style="font-size:13.5px; min-height:50px;">' + escapeHTML(campaign.description || "No description provided.") + '</p>' +
+        '<div>' +
+          (campaign.category ? '<span class="tag">' + escapeHTML(campaign.category) + '</span>' : "") +
+          (campaign.platform ? '<span class="tag">' + escapeHTML(campaign.platform) + '</span>' : "") +
+          (campaign.location ? '<span class="tag">' + escapeHTML(campaign.location) + '</span>' : "") +
+        '</div>' +
+        '<div class="details">' +
+          (campaign.budget ? 'Budget: ₹' + Number(campaign.budget).toLocaleString("en-IN") : "Budget: Negotiable") + '<br>' +
+          (campaign.deadline ? 'Deadline: ' + escapeHTML(campaign.deadline) : "No deadline") +
+          (campaign.requirements ? '<br>' + escapeHTML(campaign.requirements) : "") +
+        '</div>' +
+        (currentRole === "creator" ? '<button class="btn btn-primary btn-block" style="margin-top:14px;" onclick="openApplyModal(\'' + campaign.id + '\')">Apply now</button>' : '') +
+      '</div>';
   }
-
 
   async function loadFavorites() {
-
     if (!currentUser) return;
+    var { data, error } = await supabase.from("favorites").select("campaign_id").eq("user_id", currentUser.id).not("campaign_id", "is", null);
+    if (error) { console.error(error); return; }
 
-
-    const { data, error } =
-      await supabase
-        .from("favorites")
-        .select("campaign_id")
-        .eq("user_id", currentUser.id)
-        .not("campaign_id", "is", null);
-
-
-    if (error) {
-
-      console.error(error);
-      return;
-
-    }
-
-
-    const favoriteIds =
-      new Set(
-        (data || []).map(item => item.campaign_id)
-      );
-
-
-    favoriteIds.forEach(id => {
-
-      const button =
-        document.getElementById(
-          "favorite-" + id
-        );
-
-      if (button) {
-
-        button.textContent = "★";
-        button.classList.add("active");
-
-      }
-
+    var favoriteIds = new Set((data || []).map(function (item) { return item.campaign_id; }));
+    favoriteIds.forEach(function (id) {
+      var button = document.getElementById("favorite-" + id);
+      if (button) { button.textContent = "★"; button.classList.add("active"); }
     });
-
   }
 
-
-  async function toggleFavorite(campaignId) {
-
+  window.toggleFavorite = async function (campaignId) {
     if (!currentUser) return;
-
-
-    const { data, error } =
-      await supabase
-        .from("favorites")
-        .select("id")
-        .eq("user_id", currentUser.id)
-        .eq("campaign_id", campaignId)
-        .maybeSingle();
-
-
-    if (error) {
-
-      console.error(error);
-      return;
-
-    }
-
+    var { data, error } = await supabase.from("favorites").select("id").eq("user_id", currentUser.id).eq("campaign_id", campaignId).maybeSingle();
+    if (error) { console.error(error); return; }
 
     if (data) {
-
-      await supabase
-        .from("favorites")
-        .delete()
-        .eq("id", data.id);
-
-
+      await supabase.from("favorites").delete().eq("id", data.id);
     } else {
-
-      await supabase
-        .from("favorites")
-        .insert({
-          user_id: currentUser.id,
-          campaign_id: campaignId
-        });
-
+      await supabase.from("favorites").insert({ user_id: currentUser.id, campaign_id: campaignId });
     }
-
-
     await loadFavorites();
-
-  }
-
-
-  function openApplyModal(campaignId) {
-
-    document
-      .getElementById("applicationCampaignId")
-      .value = campaignId;
-
-    document
-      .getElementById("pitch")
-      .value = "";
-
-    document
-      .getElementById("applicationMessage")
-      .className = "message";
-
-    document
-      .getElementById("applyModal")
-      .classList.add("show");
-
-  }
-
-
-  function closeApplyModal() {
-
-    document
-      .getElementById("applyModal")
-      .classList.remove("show");
-
-  }
-
-
-  document
-    .getElementById("applicationForm")
-    .addEventListener("submit", async function(event) {
-
-      event.preventDefault();
-
-
-      const campaignId =
-        document
-          .getElementById("applicationCampaignId")
-          .value;
-
-
-      const pitch =
-        document
-          .getElementById("pitch")
-          .value
-          .trim();
-
-
-      const message =
-        document.getElementById(
-          "applicationMessage"
-        );
-
-
-      try {
-
-        const { error } =
-          await supabase
-            .from("campaign_applications")
-            .insert({
-              campaign_id: campaignId,
-              creator_id: currentUser.id,
-              pitch: pitch,
-              status: "pending"
-            });
-
-
-        if (error) throw error;
-
-
-        message.textContent =
-          "Application submitted successfully!";
-
-        message.className =
-          "message success";
-
-
-        setTimeout(
-          closeApplyModal,
-          1500
-        );
-
-
-      } catch (error) {
-
-        console.error(error);
-
-        message.textContent =
-          error.message ||
-          "Could not submit application.";
-
-        message.className =
-          "message error";
-
-      }
-
-    });
-
-
-  document
-    .getElementById("createCampaignButton")
-    .addEventListener("click", function() {
-
-      document
-        .getElementById("createModal")
-        .classList.add("show");
-
-    });
-
-
-  function closeCreateModal() {
-
-    document
-      .getElementById("createModal")
-      .classList.remove("show");
-
-  }
-
-
-  document
-    .getElementById("campaignForm")
-    .addEventListener("submit", async function(event) {
-
-      event.preventDefault();
-
-
-      const message =
-        document.getElementById(
-          "campaignMessage"
-        );
-
-
-      try {
-
-        const campaign = {
-
-          brand_id: currentUser.id,
-
-          title:
-            document
-              .getElementById("campaignTitle")
-              .value
-              .trim(),
-
-          description:
-            document
-              .getElementById("campaignDescription")
-              .value
-              .trim(),
-
-          budget:
-            Number(
-              document
-                .getElementById("campaignBudget")
-                .value || 0
-            ),
-
-          category:
-            document
-              .getElementById("campaignCategory")
-              .value,
-
-          platform:
-            document
-              .getElementById("campaignPlatform")
-              .value,
-
-          location:
-            document
-              .getElementById("campaignLocation")
-              .value
-              .trim(),
-
-          requirements:
-            document
-              .getElementById("campaignRequirements")
-              .value
-              .trim(),
-
-          deadline:
-            document
-              .getElementById("campaignDeadline")
-              .value || null,
-
-          status: "open"
-
-        };
-
-
-        const { error } =
-          await supabase
-            .from("campaigns")
-            .insert(campaign);
-
-
-        if (error) throw error;
-
-
-        message.textContent =
-          "Campaign published successfully!";
-
-        message.className =
-          "message success";
-
-
-        document
-          .getElementById("campaignForm")
-          .reset();
-
-
-        await loadCampaigns();
-
-
-        setTimeout(
-          closeCreateModal,
-          1200
-        );
-
-
-      } catch (error) {
-
-        console.error(error);
-
-        message.textContent =
-          error.message ||
-          "Could not create campaign.";
-
-        message.className =
-          "message error";
-
-      }
-
-    });
-
-
-  document
-    .getElementById("search")
-    .addEventListener(
-      "input",
-      renderCampaigns
-    );
-
-
-  document
-    .getElementById("categoryFilter")
-    .addEventListener(
-      "change",
-      renderCampaigns
-    );
-
-
-  document
-    .getElementById("platformFilter")
-    .addEventListener(
-      "change",
-      renderCampaigns
-    );
-
-
-  document
-    .getElementById("logout")
-    .addEventListener("click", async function(event) {
-
-      event.preventDefault();
-
-      await Cube3Auth.signOut();
-
-    });
-
-
-  function escapeHTML(value) {
-
-    return String(value || "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-
-  }
-
+  };
+
+  window.openApplyModal = function (campaignId) {
+    document.getElementById("applicationCampaignId").value = campaignId;
+    document.getElementById("pitch").value = "";
+    document.getElementById("applicationMessage").className = "message";
+    document.getElementById("applyModal").classList.add("show");
+  };
+
+  window.closeApplyModal = function () {
+    document.getElementById("applyModal").classList.remove("show");
+  };
+
+  document.getElementById("applicationForm").addEventListener("submit", async function (event) {
+    event.preventDefault();
+    var campaignId = document.getElementById("applicationCampaignId").value;
+    var pitch = document.getElementById("pitch").value.trim();
+    var message = document.getElementById("applicationMessage");
+
+    try {
+      var { error } = await supabase.from("campaign_applications").insert({
+        campaign_id: campaignId, creator_id: currentUser.id, pitch: pitch, status: "pending"
+      });
+      if (error) throw error;
+
+      message.textContent = "Application submitted successfully!";
+      message.className = "message success";
+      setTimeout(window.closeApplyModal, 1400);
+
+    } catch (error) {
+      console.error(error);
+      message.textContent = error.message || "Could not submit application.";
+      message.className = "message error";
+    }
+  });
+
+  document.getElementById("createCampaignButton").addEventListener("click", function () {
+    document.getElementById("createModal").classList.add("show");
+  });
+
+  window.closeCreateModal = function () {
+    document.getElementById("createModal").classList.remove("show");
+  };
+
+  document.getElementById("campaignForm").addEventListener("submit", async function (event) {
+    event.preventDefault();
+    var message = document.getElementById("campaignMessage");
+
+    try {
+      var campaign = {
+        brand_id: currentUser.id,
+        title: document.getElementById("campaignTitle").value.trim(),
+        description: document.getElementById("campaignDescription").value.trim(),
+        budget: Number(document.getElementById("campaignBudget").value || 0),
+        category: document.getElementById("campaignCategory").value,
+        platform: document.getElementById("campaignPlatform").value,
+        location: document.getElementById("campaignLocation").value.trim(),
+        requirements: document.getElementById("campaignRequirements").value.trim(),
+        deadline: document.getElementById("campaignDeadline").value || null,
+        status: "open"
+      };
+
+      var { error } = await supabase.from("campaigns").insert(campaign);
+      if (error) throw error;
+
+      message.textContent = "Campaign published successfully!";
+      message.className = "message success";
+      document.getElementById("campaignForm").reset();
+      await loadCampaigns();
+      setTimeout(window.closeCreateModal, 1100);
+
+    } catch (error) {
+      console.error(error);
+      message.textContent = error.message || "Could not create campaign.";
+      message.className = "message error";
+    }
+  });
+
+  document.getElementById("search").addEventListener("input", renderCampaigns);
+  document.getElementById("categoryFilter").addEventListener("change", renderCampaigns);
+  document.getElementById("platformFilter").addEventListener("change", renderCampaigns);
+
+  document.getElementById("logout").addEventListener("click", async function (event) {
+    event.preventDefault();
+    await Cube3Auth.signOut();
+  });
 
   initialize();
-
+})();
 </script>
 
 </body>
