@@ -6,18 +6,37 @@
 <title>Profile - Cube3</title>
 <link rel="stylesheet" href="/style.css">
 <style>
-  .profile-header{display:flex; gap:22px; align-items:center; padding-bottom:24px; border-bottom:1px solid var(--line); margin-bottom:24px;}
+  .profile-top{display:flex; gap:32px; align-items:center; padding:10px 0 24px;}
   .avatar-wrapper{position:relative; flex-shrink:0;}
-  .avatar{width:96px; height:96px; border-radius:50%; object-fit:cover; background:var(--violet-dim); border:3px solid var(--panel); box-shadow:0 0 0 1px var(--line); display:block;}
-  .upload-button{position:absolute; bottom:0; right:0; width:30px; height:30px; border-radius:50%; border:3px solid var(--paper); background:var(--violet); color:#fff; cursor:pointer; font-size:13px; display:flex; align-items:center; justify-content:center;}
-  .profile-title h1{font-size:24px; margin-bottom:6px;}
-  .role-badge{display:inline-block; padding:5px 11px; border-radius:20px; background:var(--violet-dim); color:var(--violet-deep); font-size:12px; font-weight:600;}
-  .section{padding:22px 0; border-bottom:1px solid var(--line);}
-  .section:last-of-type{border-bottom:0; padding-bottom:0;}
-  .section h2{font-size:17px; margin-bottom:16px;}
+  .avatar{width:110px; height:110px; border-radius:50%; object-fit:cover; background:var(--violet-dim); border:1px solid var(--line); display:block;}
+  .upload-button{position:absolute; bottom:2px; right:2px; width:30px; height:30px; border-radius:50%; border:3px solid var(--paper); background:var(--violet); color:#fff; cursor:pointer; font-size:13px; display:flex; align-items:center; justify-content:center;}
+  .identity{flex:1; min-width:0;}
+  .identity-row{display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:14px;}
+  .identity-row h1{font-size:20px;}
+  .role-badge{display:inline-block; padding:4px 10px; border-radius:20px; background:var(--violet-dim); color:var(--violet-deep); font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:.02em;}
+
+  .stats-row{display:flex; gap:32px; margin-bottom:16px;}
+  .stats-row .stat-item b{display:block; font-family:'Space Grotesk',sans-serif; font-size:18px;}
+  .stats-row .stat-item span{font-size:12.5px; color:var(--ink-muted);}
+
+  .handle-line{color:var(--ink-muted); font-size:13.5px; margin-bottom:4px;}
+  .bio-text{font-size:14px; line-height:1.5; white-space:pre-wrap; margin-bottom:10px; max-width:480px;}
+
+  .link-row{display:flex; flex-wrap:wrap; gap:8px 16px; margin-bottom:4px;}
+  .link-row a{display:inline-flex; align-items:center; gap:5px; font-size:13px; color:var(--violet-deep); font-weight:600;}
+  .link-row a svg{width:15px; height:15px;}
+
+  @media (max-width:600px){
+    .profile-top{flex-direction:column; align-items:flex-start; gap:16px;}
+    .stats-row{gap:22px;}
+  }
+
+  .section{padding:22px 0; border-top:1px solid var(--line);}
+  .section h2{font-size:16px; margin-bottom:16px;}
   .social-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
-  @media (max-width:600px){ .social-grid{grid-template-columns:1fr;} .profile-header{flex-direction:column; text-align:center;} }
-  .hidden{display:none;}
+  @media (max-width:600px){ .social-grid{grid-template-columns:1fr;} }
+
+  .hidden{display:none !important;}
 </style>
 </head>
 <body>
@@ -39,54 +58,52 @@
   </nav>
 </header>
 
-<div class="container-narrow" style="max-width:640px;">
+<div class="container" style="max-width:720px;">
 
-  <div class="card">
-
-    <div class="profile-header">
+  <!-- VIEW MODE -->
+  <div id="viewMode">
+    <div class="profile-top">
       <div class="avatar-wrapper">
-        <img id="avatar" class="avatar" src="https://placehold.co/96x96/e7e6f0/6c5ce7?text=%20" alt="Profile picture">
+        <img id="avatar" class="avatar" src="https://placehold.co/110x110/e7e6f0/6c5ce7?text=%20" alt="Profile picture">
         <button type="button" class="upload-button" onclick="document.getElementById('avatarInput').click()" aria-label="Change photo">📷</button>
         <input id="avatarInput" type="file" accept="image/*" hidden>
       </div>
-      <div class="profile-title">
-        <h1 id="displayName">Loading...</h1>
-        <span id="role" class="role-badge">...</span>
+
+      <div class="identity">
+        <div class="identity-row">
+          <h1 id="displayName">Loading...</h1>
+          <span id="role" class="role-badge">...</span>
+          <button class="btn btn-ghost" style="margin-left:auto;" onclick="enterEditMode()">Edit profile</button>
+        </div>
+
+        <div class="stats-row" id="statsRow"></div>
+
+        <div id="handleLine" class="handle-line"></div>
+        <p id="bioText" class="bio-text"></p>
+        <div id="linkRow" class="link-row"></div>
       </div>
     </div>
+  </div>
 
+  <!-- EDIT MODE -->
+  <div id="editMode" class="hidden">
     <form id="profileForm">
 
-      <!-- CREATOR PROFILE -->
-      <div id="creatorSection" class="hidden">
-
-        <div class="section">
+      <div id="creatorFields" class="hidden">
+        <div class="section" style="border-top:0; padding-top:10px;">
           <h2>Creator information</h2>
-
           <label for="creatorName">Full name</label>
           <input id="creatorName" type="text" placeholder="Your name">
-
           <label for="handle">Creator handle</label>
           <input id="handle" type="text" placeholder="@yourname">
-
           <label for="category">Category</label>
           <select id="category">
             <option value="">Select category</option>
-            <option>Content Creator</option>
-            <option>Influencer</option>
-            <option>YouTuber</option>
-            <option>Instagram Creator</option>
-            <option>Gaming</option>
-            <option>Education</option>
-            <option>Technology</option>
-            <option>Fashion</option>
-            <option>Fitness</option>
-            <option>Travel</option>
-            <option>Music</option>
-            <option>Photography</option>
-            <option>Other</option>
+            <option>Content Creator</option><option>Influencer</option><option>YouTuber</option>
+            <option>Instagram Creator</option><option>Gaming</option><option>Education</option>
+            <option>Technology</option><option>Fashion</option><option>Fitness</option>
+            <option>Travel</option><option>Music</option><option>Photography</option><option>Other</option>
           </select>
-
           <label for="creatorBio">Bio</label>
           <textarea id="creatorBio" maxlength="1000" placeholder="Tell brands about yourself, your audience and your content..."></textarea>
         </div>
@@ -105,36 +122,23 @@
             <div><label for="threads">Threads</label><input id="threads" type="url" placeholder="https://threads.net/@username"></div>
           </div>
         </div>
-
       </div>
 
-      <!-- BRAND PROFILE -->
-      <div id="brandSection" class="hidden">
-        <div class="section">
+      <div id="brandFields" class="hidden">
+        <div class="section" style="border-top:0; padding-top:10px;">
           <h2>Company information</h2>
-
           <label for="companyName">Company name</label>
           <input id="companyName" type="text" placeholder="Your company name">
-
           <label for="industry">Industry</label>
           <select id="industry">
             <option value="">Select industry</option>
-            <option>Technology</option>
-            <option>Finance</option>
-            <option>Education</option>
-            <option>Healthcare</option>
-            <option>Gaming</option>
-            <option>Fashion</option>
-            <option>Food</option>
-            <option>Travel</option>
-            <option>Entertainment</option>
-            <option>Retail</option>
-            <option>Other</option>
+            <option>Technology</option><option>Finance</option><option>Education</option>
+            <option>Healthcare</option><option>Gaming</option><option>Fashion</option>
+            <option>Food</option><option>Travel</option><option>Entertainment</option>
+            <option>Retail</option><option>Other</option>
           </select>
-
           <label for="companyBio">Company bio</label>
           <textarea id="companyBio" maxlength="1500" placeholder="Tell creators about your company..."></textarea>
-
           <label for="website">Company website</label>
           <input id="website" type="url" placeholder="https://yourcompany.com">
         </div>
@@ -142,31 +146,48 @@
 
       <div class="section" style="display:flex; gap:10px;">
         <button id="saveButton" class="btn btn-primary" type="submit" style="flex:1;">Save profile</button>
+        <button type="button" class="btn btn-ghost" onclick="exitEditMode()">Cancel</button>
         <button type="button" class="btn btn-danger" onclick="handleLogout()">Log out</button>
       </div>
-
     </form>
 
     <div id="message" class="message"></div>
-
   </div>
+
 </div>
 
-<script src="/config.js?v=2"></script>
+<script src="/config.js?v=3"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/supabase-client.js?v=2"></script>
-<script src="/auth.js?v=2"></script>
+<script src="/supabase-client.js?v=3"></script>
+<script src="/auth.js?v=3"></script>
 
 <script>
-  const supabase = window.cube3Supabase;
-  let user = null;
-  let role = null;
+(function () {
+
+  var cube3supabase = window.cube3Supabase;
+  var user = null;
+  var role = null;
+  var latestProfile = null;
+  var latestCreator = null;
+  var latestBrand = null;
 
   function showMessage(text, type) {
-    const box = document.getElementById("message");
+    var box = document.getElementById("message");
     box.textContent = text;
     box.className = "message " + type;
   }
+
+  function escapeHTML(value) {
+    return String(value || "")
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+  }
+
+  var LINK_ICONS = {
+    youtube_url: "YouTube", instagram_url: "Instagram", x_url: "X", portfolio_url: "Portfolio",
+    tiktok_url: "TikTok", facebook_url: "Facebook", snapchat_url: "Snapchat",
+    linkedin_url: "LinkedIn", threads_url: "Threads", website_url: "Website"
+  };
 
   async function init() {
     try {
@@ -181,80 +202,133 @@
   }
 
   async function loadProfile() {
-    const { data: profile, error } =
-      await window.withTimeout(
-        supabase.from("profiles").select("*").eq("id", user.id).single(),
-        10000,
-        "Loading your profile"
-      );
+    var result = await window.withTimeout(
+      cube3supabase.from("profiles").select("*").eq("id", user.id).single(),
+      10000,
+      "Loading your profile"
+    );
+    var profile = result.data;
+    var error = result.error;
 
     if (error && error.code !== "PGRST116") throw error;
 
-    role = profile?.role || user.user_metadata?.role || "creator";
+    latestProfile = profile;
+    role = (profile && profile.role) || (user.user_metadata && user.user_metadata.role) || "creator";
 
-    document.getElementById("displayName").textContent =
-      profile?.full_name || user.email || "Cube3 User";
-
+    var displayName = (profile && profile.full_name) || user.email || "Cube3 User";
+    document.getElementById("displayName").textContent = displayName;
     document.getElementById("role").textContent = role === "creator" ? "Creator" : "Brand";
 
-    if (profile?.avatar_url) {
+    if (profile && profile.avatar_url) {
       document.getElementById("avatar").src = profile.avatar_url;
     }
 
     if (role === "creator") {
-      document.getElementById("creatorSection").classList.remove("hidden");
-      document.getElementById("creatorName").value = profile?.full_name || "";
-      document.getElementById("creatorBio").value = profile?.bio || "";
-      await loadCreatorProfile();
+      var cr = await cube3supabase.from("creator_profiles").select("*").eq("id", user.id).maybeSingle();
+      latestCreator = cr.data;
+      renderCreatorView(profile, latestCreator);
     } else {
-      document.getElementById("brandSection").classList.remove("hidden");
-      await loadBrandProfile();
+      var br = await cube3supabase.from("brand_profiles").select("*").eq("id", user.id).maybeSingle();
+      latestBrand = br.data;
+      renderBrandView(profile, latestBrand);
     }
   }
 
-  async function loadCreatorProfile() {
-    const { data } = await supabase.from("creator_profiles").select("*").eq("id", user.id).maybeSingle();
-    if (!data) return;
-
-    document.getElementById("handle").value = data.handle || "";
-    document.getElementById("category").value = data.category || "";
-    document.getElementById("youtube").value = data.youtube_url || "";
-    document.getElementById("instagram").value = data.instagram_url || "";
-    document.getElementById("x").value = data.x_url || "";
-    document.getElementById("portfolio").value = data.portfolio_url || "";
-    document.getElementById("tiktok").value = data.tiktok_url || "";
-    document.getElementById("facebook").value = data.facebook_url || "";
-    document.getElementById("snapchat").value = data.snapchat_url || "";
-    document.getElementById("linkedin").value = data.linkedin_url || "";
-    document.getElementById("threads").value = data.threads_url || "";
+  function renderLinks(dataObj, keys) {
+    var row = document.getElementById("linkRow");
+    var html = "";
+    keys.forEach(function (key) {
+      var url = dataObj && dataObj[key];
+      if (url) {
+        html += '<a href="' + escapeHTML(url) + '" target="_blank" rel="noopener">' + LINK_ICONS[key] + '</a>';
+      }
+    });
+    row.innerHTML = html;
   }
 
-  async function loadBrandProfile() {
-    const { data } = await supabase.from("brand_profiles").select("*").eq("id", user.id).maybeSingle();
-    if (!data) return;
+  async function renderCreatorView(profile, creator) {
+    document.getElementById("handleLine").textContent = creator && creator.handle ? "@" + creator.handle.replace(/^@/, "") : "";
+    document.getElementById("bioText").textContent = (profile && profile.bio) || "No bio yet.";
+    renderLinks(creator, ["youtube_url","instagram_url","x_url","portfolio_url","tiktok_url","facebook_url","snapchat_url","linkedin_url","threads_url"]);
 
-    document.getElementById("companyName").value = data.company_name || "";
-    document.getElementById("industry").value = data.industry || "";
-    document.getElementById("companyBio").value = data.description || "";
-    document.getElementById("website").value = data.website_url || "";
-    if (data.logo_url) document.getElementById("avatar").src = data.logo_url;
+    var { count: appCount } = await cube3supabase.from("campaign_applications").select("*", { count: "exact", head: true }).eq("creator_id", user.id);
+    var { count: favCount } = await cube3supabase.from("favorites").select("*", { count: "exact", head: true }).eq("user_id", user.id);
+
+    document.getElementById("statsRow").innerHTML =
+      '<div class="stat-item"><b>' + (appCount ?? 0) + '</b><span>Applied</span></div>' +
+      '<div class="stat-item"><b>' + (favCount ?? 0) + '</b><span>Favorites</span></div>' +
+      '<div class="stat-item"><b>' + (creator && creator.category ? escapeHTML(creator.category) : "—") + '</b><span>Category</span></div>';
+
+    document.getElementById("creatorFields").classList.remove("hidden");
+    document.getElementById("brandFields").classList.add("hidden");
+
+    document.getElementById("creatorName").value = (profile && profile.full_name) || "";
+    document.getElementById("creatorBio").value = (profile && profile.bio) || "";
+    if (creator) {
+      document.getElementById("handle").value = creator.handle || "";
+      document.getElementById("category").value = creator.category || "";
+      document.getElementById("youtube").value = creator.youtube_url || "";
+      document.getElementById("instagram").value = creator.instagram_url || "";
+      document.getElementById("x").value = creator.x_url || "";
+      document.getElementById("portfolio").value = creator.portfolio_url || "";
+      document.getElementById("tiktok").value = creator.tiktok_url || "";
+      document.getElementById("facebook").value = creator.facebook_url || "";
+      document.getElementById("snapchat").value = creator.snapchat_url || "";
+      document.getElementById("linkedin").value = creator.linkedin_url || "";
+      document.getElementById("threads").value = creator.threads_url || "";
+    }
   }
 
-  document.getElementById("profileForm").addEventListener("submit", async function(event) {
+  async function renderBrandView(profile, brand) {
+    document.getElementById("handleLine").textContent = brand && brand.industry ? brand.industry : "";
+    document.getElementById("bioText").textContent = (brand && brand.description) || "No company bio yet.";
+    renderLinks(brand, ["website_url"]);
+
+    var { count: campaignCount } = await cube3supabase.from("campaigns").select("*", { count: "exact", head: true }).eq("brand_id", user.id);
+    var { count: appReceived } = await (async () => {
+      var { data: myCampaigns } = await cube3supabase.from("campaigns").select("id").eq("brand_id", user.id);
+      var ids = (myCampaigns || []).map(function (c) { return c.id; });
+      if (!ids.length) return { count: 0 };
+      return cube3supabase.from("campaign_applications").select("*", { count: "exact", head: true }).in("campaign_id", ids);
+    })();
+
+    document.getElementById("statsRow").innerHTML =
+      '<div class="stat-item"><b>' + (campaignCount ?? 0) + '</b><span>Campaigns</span></div>' +
+      '<div class="stat-item"><b>' + (appReceived ?? 0) + '</b><span>Applications</span></div>';
+
+    document.getElementById("brandFields").classList.remove("hidden");
+    document.getElementById("creatorFields").classList.add("hidden");
+
+    document.getElementById("companyName").value = (brand && brand.company_name) || (profile && profile.full_name) || "";
+    if (brand) {
+      document.getElementById("industry").value = brand.industry || "";
+      document.getElementById("companyBio").value = brand.description || "";
+      document.getElementById("website").value = brand.website_url || "";
+      if (brand.logo_url) document.getElementById("avatar").src = brand.logo_url;
+    }
+  }
+
+  window.enterEditMode = function () {
+    document.getElementById("viewMode").classList.add("hidden");
+    document.getElementById("editMode").classList.remove("hidden");
+  };
+
+  window.exitEditMode = function () {
+    document.getElementById("editMode").classList.add("hidden");
+    document.getElementById("viewMode").classList.remove("hidden");
+  };
+
+  document.getElementById("profileForm").addEventListener("submit", async function (event) {
     event.preventDefault();
-    const button = document.getElementById("saveButton");
+    var button = document.getElementById("saveButton");
     button.disabled = true;
     button.textContent = "Saving...";
 
     try {
-      if (role === "creator") {
-        await saveCreator();
-      } else {
-        await saveBrand();
-      }
+      if (role === "creator") { await saveCreator(); } else { await saveBrand(); }
       showMessage("Profile saved successfully.", "success");
       await loadProfile();
-
+      window.exitEditMode();
     } catch (error) {
       console.error(error);
       showMessage(error.message || "Could not save profile.", "error");
@@ -265,18 +339,16 @@
   });
 
   async function saveCreator() {
-    const fullName = document.getElementById("creatorName").value.trim();
+    var fullName = document.getElementById("creatorName").value.trim();
 
-    const { error: profileError } = await supabase.from("profiles").upsert({
-      id: user.id,
-      full_name: fullName,
+    var { error: profileError } = await cube3supabase.from("profiles").upsert({
+      id: user.id, full_name: fullName,
       bio: document.getElementById("creatorBio").value.trim(),
-      role: "creator",
-      updated_at: new Date().toISOString()
+      role: "creator", updated_at: new Date().toISOString()
     });
     if (profileError) throw profileError;
 
-    const { error } = await supabase.from("creator_profiles").upsert({
+    var { error } = await cube3supabase.from("creator_profiles").upsert({
       id: user.id,
       handle: document.getElementById("handle").value.trim(),
       category: document.getElementById("category").value,
@@ -294,19 +366,15 @@
   }
 
   async function saveBrand() {
-    const companyName = document.getElementById("companyName").value.trim();
+    var companyName = document.getElementById("companyName").value.trim();
 
-    const { error: profileError } = await supabase.from("profiles").upsert({
-      id: user.id,
-      full_name: companyName,
-      role: "brand",
-      updated_at: new Date().toISOString()
+    var { error: profileError } = await cube3supabase.from("profiles").upsert({
+      id: user.id, full_name: companyName, role: "brand", updated_at: new Date().toISOString()
     });
     if (profileError) throw profileError;
 
-    const { error } = await supabase.from("brand_profiles").upsert({
-      id: user.id,
-      company_name: companyName,
+    var { error } = await cube3supabase.from("brand_profiles").upsert({
+      id: user.id, company_name: companyName,
       website_url: document.getElementById("website").value.trim(),
       industry: document.getElementById("industry").value,
       description: document.getElementById("companyBio").value.trim()
@@ -317,48 +385,47 @@
   document.getElementById("avatarInput").addEventListener("change", uploadAvatar);
 
   async function uploadAvatar(event) {
-    const file = event.target.files[0];
+    var file = event.target.files[0];
     if (!file) return;
-
     if (!file.type.startsWith("image/")) { showMessage("Please select an image.", "error"); return; }
     if (file.size > 5 * 1024 * 1024) { showMessage("Image must be smaller than 5 MB.", "error"); return; }
 
     try {
-      const extension = file.name.split(".").pop();
-      const path = `${user.id}/${Date.now()}.${extension}`;
+      var extension = file.name.split(".").pop();
+      var path = user.id + "/" + Date.now() + "." + extension;
 
-      const { error: uploadError } = await supabase.storage.from("avatars").upload(path, file, { upsert: true });
+      var { error: uploadError } = await cube3supabase.storage.from("avatars").upload(path, file, { upsert: true });
       if (uploadError) throw uploadError;
 
-      const { data } = supabase.storage.from("avatars").getPublicUrl(path);
-      const imageUrl = data.publicUrl;
+      var { data } = cube3supabase.storage.from("avatars").getPublicUrl(path);
+      var imageUrl = data.publicUrl;
 
       document.getElementById("avatar").src = imageUrl;
-
-      await supabase.from("profiles").upsert({ id: user.id, avatar_url: imageUrl, updated_at: new Date().toISOString() });
+      await cube3supabase.from("profiles").upsert({ id: user.id, avatar_url: imageUrl, updated_at: new Date().toISOString() });
 
       if (role === "brand") {
-        await supabase.from("brand_profiles").update({ logo_url: imageUrl }).eq("id", user.id);
+        await cube3supabase.from("brand_profiles").update({ logo_url: imageUrl }).eq("id", user.id);
       }
 
       showMessage("Image uploaded successfully.", "success");
-
     } catch (error) {
       console.error(error);
       showMessage("Image upload failed: " + error.message, "error");
     }
   }
 
-  async function handleLogout() {
+  window.handleLogout = async function () {
     try { await Cube3Auth.signOut(); } catch (error) { console.error(error); }
-  }
+  };
 
-  document.getElementById("logout").addEventListener("click", async function(event) {
+  document.getElementById("logout").addEventListener("click", async function (event) {
     event.preventDefault();
-    await handleLogout();
+    await window.handleLogout();
   });
 
   init();
+
+})();
 </script>
 
 </body>
