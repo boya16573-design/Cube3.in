@@ -104,12 +104,12 @@
     if (error) throw error;
 
     var ids = (creatorProfiles || []).map(function (c) { return c.id; });
-    var { data: profiles } = await supabase.from("profiles").select("id, full_name, bio").in("id", ids);
+    var { data: profiles } = await supabase.from("profiles").select("id, full_name, bio, avatar_url").in("id", ids);
     var profileById = {}; (profiles || []).forEach(function (p) { profileById[p.id] = p; });
 
     creators = (creatorProfiles || []).map(function (c) {
       var p = profileById[c.id];
-      return Object.assign({}, c, { fullName: p ? p.full_name : "Unnamed creator", bio: p ? p.bio : "" });
+      return Object.assign({}, c, { fullName: p ? p.full_name : "Unnamed creator", bio: p ? p.bio : "", avatarUrl: p ? p.avatar_url : "" });
     });
 
     render();
@@ -135,15 +135,26 @@
     }
 
     grid.innerHTML = filtered.map(function (c) {
+      var avatarSrc = c.avatarUrl || "https://placehold.co/48x48/e7e6f0/6c5ce7?text=%20";
       return '<div class="card">' +
-        '<h3>' + escapeHTML(c.fullName) + '</h3>' +
-        '<div class="handle">' + (c.handle ? "@" + escapeHTML(c.handle.replace(/^@/, "")) : "") + '</div>' +
+        '<div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">' +
+          '<img src="' + escapeHTML(avatarSrc) + '" alt="" style="width:48px; height:48px; border-radius:50%; object-fit:cover; background:var(--violet-dim); border:1px solid var(--line);">' +
+          '<div>' +
+            '<h3 style="margin:0;">' + escapeHTML(c.fullName) + '</h3>' +
+            '<div class="handle" style="margin:0;">' + (c.handle ? "@" + escapeHTML(c.handle.replace(/^@/, "")) : "") + '</div>' +
+          '</div>' +
+        '</div>' +
         '<p class="bio">' + escapeHTML(c.bio || "No bio yet.") + '</p>' +
         (c.category ? '<span class="tag">' + escapeHTML(c.category) + '</span>' : "") +
         '<div class="links">' +
           linkWithCount(c, "youtube_url", "YouTube") +
           linkWithCount(c, "instagram_url", "Instagram") +
           linkWithCount(c, "x_url", "X") +
+          linkWithCount(c, "tiktok_url", "TikTok") +
+          linkWithCount(c, "facebook_url", "Facebook") +
+          linkWithCount(c, "snapchat_url", "Snapchat") +
+          linkWithCount(c, "linkedin_url", "LinkedIn") +
+          linkWithCount(c, "threads_url", "Threads") +
           (c.portfolio_url ? '<a href="' + escapeHTML(c.portfolio_url) + '" target="_blank" rel="noopener">Portfolio</a>' : "") +
         '</div>' +
       '</div>';
