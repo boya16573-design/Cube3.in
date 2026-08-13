@@ -1,549 +1,183 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-  <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
-  <title>Dashboard - Cube3</title>
-
-  <link rel="stylesheet" href="/css/style.css">
-
-  <style>
-
-    body {
-      margin: 0;
-      background: #08080d;
-      color: white;
-      font-family: Arial, sans-serif;
-    }
-
-    nav {
-      height: 65px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 6%;
-      background: #090a0f;
-      border-bottom: 1px solid #20212a;
-    }
-
-    .logo {
-      font-size: 26px;
-      font-weight: 800;
-    }
-
-    .logo span {
-      color: #9b7cff;
-    }
-
-    nav a {
-      color: #aaa;
-      text-decoration: none;
-      margin-left: 22px;
-    }
-
-    .container {
-      max-width: 1100px;
-      margin: auto;
-      padding: 40px 20px;
-    }
-
-    .welcome {
-      margin-bottom: 35px;
-    }
-
-    .welcome h1 {
-      font-size: 38px;
-      margin-bottom: 8px;
-    }
-
-    .muted {
-      color: #9295a5;
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns:
-        repeat(auto-fit, minmax(200px, 1fr));
-
-      gap: 18px;
-      margin-bottom: 40px;
-    }
-
-    .stat {
-      background: #11121a;
-      border: 1px solid #292b38;
-      border-radius: 15px;
-      padding: 22px;
-    }
-
-    .stat-number {
-      font-size: 30px;
-      font-weight: 800;
-      color: #a184ff;
-    }
-
-    .section {
-      margin-top: 40px;
-    }
-
-    .section h2 {
-      font-size: 25px;
-    }
-
-    .campaigns {
-      display: grid;
-      grid-template-columns:
-        repeat(auto-fit, minmax(280px, 1fr));
-
-      gap: 20px;
-    }
-
-    .campaign {
-      background: #11121a;
-      border: 1px solid #292b38;
-      border-radius: 15px;
-      padding: 22px;
-    }
-
-    .campaign h3 {
-      margin-top: 0;
-      font-size: 21px;
-    }
-
-    .campaign p {
-      color: #9c9fad;
-      line-height: 1.5;
-    }
-
-    .tag {
-      display: inline-block;
-      background: #1d1930;
-      color: #a88cff;
-      padding: 6px 10px;
-      border-radius: 20px;
-      font-size: 12px;
-      margin: 3px;
-    }
-
-    .campaign button {
-      width: 100%;
-      padding: 12px;
-      margin-top: 15px;
-      background: #9274ff;
-      border: 0;
-      border-radius: 8px;
-      color: white;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .empty {
-      padding: 30px;
-      background: #11121a;
-      border: 1px solid #292b38;
-      border-radius: 15px;
-      color: #999baa;
-    }
-
-    .loading {
-      color: #999baa;
-    }
-
-    @media (max-width: 600px) {
-
-      nav {
-        padding: 0 18px;
-      }
-
-      nav a {
-        margin-left: 10px;
-        font-size: 13px;
-      }
-
-      .welcome h1 {
-        font-size: 30px;
-      }
-
-    }
-
-  </style>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard - Cube3</title>
+<link rel="stylesheet" href="/style.css">
 </head>
-
 <body>
 
-<nav>
-
-  <div class="logo">
-    Cube<span>3</span>
-  </div>
-
-  <div>
-
-    <a href="../index.html">
-      Home
+<header class="site-header">
+  <nav class="wrap">
+    <a class="brand" href="/index.html">
+      <svg class="mark" viewBox="0 0 24 24" fill="none"><path d="M12 2L21 7V17L12 22L3 17V7L12 2Z" fill="#6c5ce7"/></svg>
+      Cube3
     </a>
-
-    <a href="profile.html">
-      Profile
-    </a>
-
-    <a href="#" id="logout">
-      Logout
-    </a>
-
-  </div>
-
-</nav>
+    <div class="nav-links">
+      <a href="dashboard.html" class="active">Dashboard</a>
+      <a href="campaigns.html">Campaigns</a>
+      <a href="creators.html">Creators</a>
+      <a href="applications.html" id="brandApplicationsLink" style="display:none;">Applications</a>
+      <a href="my-applications.html" id="creatorApplicationsLink" style="display:none;">My Applications</a>
+      <a href="inbox.html">Messages</a>
+      <a href="profile.html">Profile</a>
+      <a href="#" id="logout">Logout</a>
+    </div>
+  </nav>
+</header>
 
 <div class="container">
 
-  <div class="welcome">
-
-    <h1 id="welcomeText">
-      Welcome to Cube3
-    </h1>
-
-    <p class="muted">
-      Discover creators, campaigns and opportunities.
-    </p>
-
+  <div style="margin-bottom:30px;">
+    <h1 id="welcomeText" style="font-size:32px;">Welcome to Cube3</h1>
+    <p class="muted">Discover creators, campaigns and opportunities.</p>
   </div>
 
-
-  <div class="stats">
-
-    <div class="stat">
-
-      <div class="stat-number" id="campaignCount">
-        -
-      </div>
-
-      <div class="muted">
-        Open campaigns
-      </div>
-
-    </div>
-
-
-    <div class="stat">
-
-      <div class="stat-number">
-        0
-      </div>
-
-      <div class="muted">
-        Applications
-      </div>
-
-    </div>
-
-
-    <div class="stat">
-
-      <div class="stat-number">
-        0
-      </div>
-
-      <div class="muted">
-        Favorites
-      </div>
-
-    </div>
-
+  <div class="grid-stats" style="margin-bottom:40px;">
+    <div class="stat"><b id="campaignCount">—</b><span class="label">Open campaigns</span></div>
+    <div class="stat"><b id="applicationCount">—</b><span class="label" id="applicationLabel">Applications</span></div>
+    <div class="stat"><b id="favoriteCount">—</b><span class="label">Favorites</span></div>
   </div>
 
-
-  <div class="section">
-
-    <h2>
-      Open Campaigns
-    </h2>
-
-    <div
-      id="campaigns"
-      class="campaigns"
-    >
-
-      <div class="loading">
-        Loading campaigns...
-      </div>
-
+  <div style="margin-top:40px;">
+    <h2 style="font-size:22px; margin-bottom:16px;">Open Campaigns</h2>
+    <div id="campaigns" class="grid-cards">
+      <div class="loading-state">Loading campaigns...</div>
     </div>
-
   </div>
 
-
-  <div class="section">
-
-    <h2>
-      Quick actions
-    </h2>
-
-    <div class="stats">
-
-      <a
-        href="profile.html"
-        class="stat"
-        style="text-decoration:none;color:white"
-      >
-
-        <h3>
-          Complete profile
-        </h3>
-
-        <p class="muted">
-          Add your creator or brand information.
-        </p>
-
+  <div style="margin-top:40px;">
+    <h2 style="font-size:22px; margin-bottom:16px;">Quick actions</h2>
+    <div class="grid-stats">
+      <a href="profile.html" class="stat" style="text-decoration:none; display:block;">
+        <h3 style="font-size:16px; margin-bottom:4px;">Complete profile</h3>
+        <p class="muted" style="margin:0; font-size:13px;">Add your creator or brand information.</p>
       </a>
-
-
-      <a
-        href="campaigns.html"
-        class="stat"
-        style="text-decoration:none;color:white"
-      >
-
-        <h3>
-          Browse campaigns
-        </h3>
-
-        <p class="muted">
-          Find opportunities available on Cube3.
-        </p>
-
+      <a href="campaigns.html" class="stat" style="text-decoration:none; display:block;">
+        <h3 style="font-size:16px; margin-bottom:4px;">Browse campaigns</h3>
+        <p class="muted" style="margin:0; font-size:13px;">Find opportunities available on Cube3.</p>
       </a>
-
     </div>
-
   </div>
 
 </div>
 
-
 <script src="/config.js"></script>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <script src="/supabase-client.js"></script>
 <script src="/auth.js"></script>
 
 <script>
-
   const supabase = window.cube3Supabase;
-
   let user = null;
+  let role = null;
 
-
-  async function loadDashboard() {
-
-    try {
-
-      user = await Cube3Auth.requireUser();
-
-      if (!user) return;
-
-
-      const { data: profile, error: profileError } =
-        await supabase
-          .from("profiles")
-          .select("full_name, role")
-          .eq("id", user.id)
-          .single();
-
-
-      if (profileError) {
-        console.error(profileError);
-      }
-
-
-      if (profile) {
-
-        const name =
-          profile.full_name ||
-          user.email ||
-          "Cube3 user";
-
-        document.getElementById("welcomeText").textContent =
-          "Welcome, " + name;
-
-      }
-
-
-      await loadCampaigns();
-
-    } catch (error) {
-
-      console.error(error);
-
-    }
-
+  function escapeHTML(value) {
+    return String(value || "")
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#039;");
   }
 
+  async function loadDashboard() {
+    try {
+      user = await Cube3Auth.requireUser();
+      if (!user) return;
+
+      const { data: profile, error: profileError } =
+        await supabase.from("profiles").select("full_name, role").eq("id", user.id).single();
+
+      if (profileError) console.error(profileError);
+
+      if (profile) {
+        role = profile.role;
+        const name = profile.full_name || user.email || "Cube3 user";
+        document.getElementById("welcomeText").textContent = "Welcome, " + name;
+
+        if (role === "brand") {
+          document.getElementById("brandApplicationsLink").style.display = "inline";
+          document.getElementById("applicationLabel").textContent = "Applications received";
+        } else {
+          document.getElementById("creatorApplicationsLink").style.display = "inline";
+          document.getElementById("applicationLabel").textContent = "Applications sent";
+        }
+      }
+
+      await loadCampaigns();
+      await loadCounts();
+
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function loadCounts() {
+    try {
+      const { count: favoriteCount } =
+        await supabase.from("favorites").select("*", { count: "exact", head: true }).eq("user_id", user.id);
+      document.getElementById("favoriteCount").textContent = favoriteCount ?? 0;
+
+      if (role === "brand") {
+        const { data: myCampaigns } = await supabase.from("campaigns").select("id").eq("brand_id", user.id);
+        const campaignIds = (myCampaigns || []).map(c => c.id);
+
+        if (campaignIds.length) {
+          const { count } = await supabase.from("campaign_applications").select("*", { count: "exact", head: true }).in("campaign_id", campaignIds);
+          document.getElementById("applicationCount").textContent = count ?? 0;
+        } else {
+          document.getElementById("applicationCount").textContent = 0;
+        }
+      } else {
+        const { count } = await supabase.from("campaign_applications").select("*", { count: "exact", head: true }).eq("creator_id", user.id);
+        document.getElementById("applicationCount").textContent = count ?? 0;
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   async function loadCampaigns() {
-
-    const container =
-      document.getElementById("campaigns");
-
+    const container = document.getElementById("campaigns");
     try {
-
-      const { data, error } =
-        await supabase
-          .from("campaigns")
-          .select("*")
-          .eq("status", "open")
-          .order("created_at", {
-            ascending: false
-          });
-
-
+      const { data, error } = await supabase.from("campaigns").select("*").eq("status", "open").order("created_at", { ascending: false });
       if (error) throw error;
 
-
-      document.getElementById("campaignCount")
-        .textContent = data.length;
-
+      document.getElementById("campaignCount").textContent = data.length;
 
       if (!data.length) {
-
-        container.innerHTML = `
-          <div class="empty">
-            No open campaigns yet.
-          </div>
-        `;
-
+        container.innerHTML = `<div class="empty-state">No open campaigns yet.</div>`;
         return;
       }
 
-
       container.innerHTML = data.map(campaign => `
-
-        <div class="campaign">
-
-          <h3>
-            ${escapeHTML(campaign.title)}
-          </h3>
-
-          <p>
-            ${escapeHTML(
-              campaign.description ||
-              "No description available."
-            )}
-          </p>
-
+        <div class="card">
+          <h3 style="font-size:18px; margin-bottom:6px;">${escapeHTML(campaign.title)}</h3>
+          <p class="muted" style="font-size:13.5px; margin:0 0 10px;">${escapeHTML(campaign.description || "No description available.")}</p>
           <div>
-
-            ${
-              campaign.category
-              ? `<span class="tag">
-                  ${escapeHTML(campaign.category)}
-                </span>`
-              : ""
-            }
-
-            ${
-              campaign.platform
-              ? `<span class="tag">
-                  ${escapeHTML(campaign.platform)}
-                </span>`
-              : ""
-            }
-
+            ${campaign.category ? `<span class="tag">${escapeHTML(campaign.category)}</span>` : ""}
+            ${campaign.platform ? `<span class="tag">${escapeHTML(campaign.platform)}</span>` : ""}
           </div>
-
-          ${
-            campaign.budget
-            ? `<p>
-                <strong>
-                  Budget: ₹${Number(campaign.budget).toLocaleString("en-IN")}
-                </strong>
-              </p>`
-            : ""
-          }
-
-          ${
-            campaign.deadline
-            ? `<p>
-                Deadline: ${escapeHTML(campaign.deadline)}
-              </p>`
-            : ""
-          }
-
-          <button
-            onclick="viewCampaign('${campaign.id}')"
-          >
-            View Campaign
-          </button>
-
+          ${campaign.budget ? `<p style="margin:10px 0 0; font-size:13.5px;"><strong>Budget: ₹${Number(campaign.budget).toLocaleString("en-IN")}</strong></p>` : ""}
+          <button class="btn btn-primary btn-block" style="margin-top:14px;" onclick="viewCampaign('${campaign.id}')">View Campaign</button>
         </div>
-
       `).join("");
 
-
     } catch (error) {
-
       console.error(error);
-
-      container.innerHTML = `
-        <div class="empty">
-          Could not load campaigns.
-        </div>
-      `;
-
+      container.innerHTML = `<div class="empty-state">Could not load campaigns.</div>`;
     }
-
   }
-
-
-  function escapeHTML(value) {
-
-    return String(value || "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-
-  }
-
 
   function viewCampaign(id) {
-
-    window.location.href =
-      "campaigns.html?id=" +
-      encodeURIComponent(id);
-
+    window.location.href = "campaigns.html?id=" + encodeURIComponent(id);
   }
 
-
-  document.getElementById("logout")
-    .addEventListener("click", async function(event) {
-
-      event.preventDefault();
-
-      try {
-
-        await Cube3Auth.signOut();
-
-      } catch (error) {
-
-        console.error(error);
-
-      }
-
-    });
-
+  document.getElementById("logout").addEventListener("click", async function(event) {
+    event.preventDefault();
+    try { await Cube3Auth.signOut(); } catch (error) { console.error(error); }
+  });
 
   loadDashboard();
-
 </script>
 
 </body>
