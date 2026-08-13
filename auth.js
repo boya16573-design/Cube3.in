@@ -1,4 +1,14 @@
 const authClient = window.cube3Supabase;
+
+function withTimeout(promise, ms, label) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) =>
+      setTimeout(() => reject(new Error(`${label} timed out after ${ms / 1000}s. Check your connection and try again.`)), ms)
+    )
+  ]);
+}
+
 async function signUp(email,password,role,fullName){
   const {data,error}=await authClient.auth.signUp({
     email,password,options:{data:{role,full_name:fullName}}
@@ -7,11 +17,24 @@ async function signUp(email,password,role,fullName){
   return data.session ? {message:"Account created.",user:data.user}
     : {message:"Account created. Check your email to confirm your account."};
 }
+
 async function signIn(email,password){
   const {data,error}=await authClient.auth.signInWithPassword({email,password});
   if(error) throw error; return data;
 }
+
 async function signOut(){const {error}=await authClient.auth.signOut();if(error)throw error;location.href="/";}
-async function currentUser(){const {data}=await authClient.auth.getUser();return data.user||null;}
-async function requireUser(){const u=await currentUser();if(!u)location.href="login.html";return u;}
+
+async function currentUser(){
+  const {data}=await withTimeout(authClient.auth.getUser(), 10000, "Checking your login");
+  return data.user||null;
+}
+
+async function requireUser(){
+  const u=await currentUser();
+  if(!u)location.href="login.html";
+  return u;
+}
+
 window.Cube3Auth={signUp,signIn,signOut,currentUser,requireUser};
+
