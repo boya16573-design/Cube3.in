@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Applications - Cube3</title>
+<link rel="stylesheet" href="/style.css">
+<style>
+  .application-card{margin-top:16px;}
+  .application-card .brand-name{color:var(--ink-muted); font-size:12.5px; margin-bottom:10px;}
+  .pitch-label{color:var(--ink-faint); font-size:11.5px; text-transform:uppercase; letter-spacing:.04em;}
+  .pitch{color:var(--ink); font-size:13.5px; line-height:1.5; margin-top:6px;}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="wrap">
+    <a class="brand" href="/index.html">
+      <svg class="mark" viewBox="0 0 24 24" fill="none"><path d="M12 2L21 7V17L12 22L3 17V7L12 2Z" fill="#6c5ce7"/></svg>
+      Cube3
+    </a>
+    <div class="nav-links">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="campaigns.html">Campaigns</a>
+      <a href="creators.html">Creators</a>
+      <a href="my-applications.html" class="active">My Applications</a>
+      <a href="inbox.html">Messages</a>
+      <a href="profile.html">Profile</a>
+    </div>
+  </nav>
+</header>
+
+<div class="container">
+  <h1 style="font-size:30px;">My Applications</h1>
+  <p class="muted">Track the campaigns you've applied to.</p>
+
+  <div id="content">
+    <div class="loading-state">Loading your applications...</div>
+  </div>
+</div>
+
+<script src="/config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/supabase-client.js"></script>
+<script src="/auth.js"></script>
+
+<script>
+(function () {
+  var supabase = window.cube3Supabase;
+  var currentUser = null;
+
+  function escapeHTML(value) {
+    return String(value || "")
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+  }
+
+  async function init() {
+    var content = document.getElementById("content");
+    try {
+      currentUser = await Cube3Auth.requireUser();
+      if (!currentUser) return;
+
+      var { data: applications, error } = await supabase.from("campaign_applications").select("id, campaign_id, pitch, status, created_at").eq("creator_id", currentUser.id).order("created_at", { ascending: false });
+      if (error) throw error;
+
+      if (!applications.length) {
+        content.innerHTML = '<div class="empty-state">You haven\'t applied to any campaigns yet. <a href="campaigns.html" style="color:var(--violet);">Browse open campaigns</a>.</div>';
+        return;
+      }
+
+      var campaignIds = Array.from(new Set(applications.map(function (a) { return a.campaign_id; })));
+      var { data: campaignList } = await supabase.from("campaigns").select("id, title, brand_id").in("id", campaignIds);
+
+      var campaignById = {}; (campaignList || []).forEach(function (c) { campaignById[c.id] = c; });
+      var brandIds = Array.from(new Set((campaignList || []).map(function (c) { return c.brand_id; })));
+
+      var { data: brandProfiles } = await supabase.from("brand_profiles").select("id, company_name").in("id", brandIds);
+      var brandById = {}; (brandProfiles || []).forEach(function (b) { brandById[b.id] = b; });
+
+      content.innerHTML = applications.map(function (app) {
+        var campaign = campaignById[app.campaign_id];
+        var brand = campaign ? brandById[campaign.brand_id] : null;
+
+        return '<div class="card application-card">' +
+          '<span class="status-badge ' + app.status + '">' + escapeHTML(app.status) + '</span>' +
+          '<h3 style="font-size:17px; margin:8px 0 2px;">' + escapeHTML(campaign ? campaign.title : "Campaign no longer available") + '</h3>' +
+          '<div class="brand-name">' + escapeHTML(brand ? brand.company_name : "") + '</div>' +
+          '<div class="pitch-label">Your pitch</div>' +
+          '<p class="pitch">' + escapeHTML(app.pitch) + '</p>' +
+        '</div>';
+      }).join("");
+
+    } catch (error) {
+      console.error(error);
+      content.innerHTML = '<div class="empty-state">Could not load your applications. ' + escapeHTML(error.message) + '</div>';
+    }
+  }
+
+  init();
+})();
+</script>
+
+</body>
+</html>
