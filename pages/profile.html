@@ -459,7 +459,8 @@
       var imageUrl = data.publicUrl;
 
       document.getElementById("avatar").src = imageUrl;
-      await cube3supabase.from("profiles").upsert({ id: user.id, avatar_url: imageUrl, updated_at: new Date().toISOString() });
+      var avatarSaveResult = await cube3supabase.from("profiles").upsert({ id: user.id, avatar_url: imageUrl, role: role, updated_at: new Date().toISOString() });
+      if (avatarSaveResult.error) throw avatarSaveResult.error;
 
       if (role === "brand") {
         await cube3supabase.from("brand_profiles").update({ logo_url: imageUrl }).eq("id", user.id);
