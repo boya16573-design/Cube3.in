@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Messages - Cube3</title>
+<link rel="stylesheet" href="/style.css">
+<style>
+  .layout{display:grid; grid-template-columns:300px 1fr; max-width:1000px; margin:30px auto; min-height:65vh; border:1px solid var(--line); border-radius:16px; overflow:hidden; background:var(--panel);}
+  .conversations{border-right:1px solid var(--line); overflow-y:auto;}
+  .conversations h2{font-size:15px; padding:16px; margin:0; border-bottom:1px solid var(--line);}
+  .conversation{padding:13px 16px; border-bottom:1px solid var(--line); cursor:pointer;}
+  .conversation:hover{background:var(--paper);}
+  .conversation.active{background:var(--violet-dim);}
+  .conversation .name{font-weight:700; font-size:13.5px;}
+  .conversation .campaign{color:var(--ink-muted); font-size:11.5px; margin-top:2px;}
+  .conversation .preview{color:var(--ink-faint); font-size:11.5px; margin-top:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+
+  .thread{display:flex; flex-direction:column;}
+  .thread-header{padding:16px; border-bottom:1px solid var(--line); font-weight:700; font-size:14px;}
+  .thread-messages{flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:9px;}
+  .bubble{max-width:70%; padding:9px 13px; border-radius:14px; font-size:13.5px; line-height:1.4;}
+  .bubble.mine{align-self:flex-end; background:var(--violet); color:#fff; border-bottom-right-radius:4px;}
+  .bubble.theirs{align-self:flex-start; background:var(--paper); color:var(--ink); border-bottom-left-radius:4px;}
+  .thread-input{display:flex; gap:10px; padding:14px; border-top:1px solid var(--line);}
+  .thread-input input{flex:1;}
+
+  @media (max-width:750px){ .layout{grid-template-columns:1fr;} .conversations{max-height:220px;} }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="wrap">
+    <a class="brand" href="/index.html">
+      <svg class="mark" viewBox="0 0 24 24" fill="none"><path d="M12 2L21 7V17L12 22L3 17V7L12 2Z" fill="#6c5ce7"/></svg>
+      Cube3
+    </a>
+    <div class="nav-links">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="campaigns.html">Campaigns</a>
+      <a href="creators.html">Creators</a>
+      <a href="inbox.html" class="active">Messages</a>
+      <a href="profile.html">Profile</a>
+    </div>
+  </nav>
+</header>
+
+<div class="layout">
+  <div class="conversations">
+    <h2>Conversations</h2>
+    <div id="conversationList"><div class="loading-state">Loading...</div></div>
+  </div>
+  <div class="thread" id="threadPanel">
+    <div class="loading-state" style="margin:auto;">Select a conversation to start chatting.</div>
+  </div>
+</div>
+
+<script src="/config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/supabase-client.js"></script>
+<script src="/auth.js"></script>
+
+<script>
+(function () {
+  var supabase = window.cube3Supabase;
+  var currentUser = null;
+  var role = null;
+  var conversations = [];
+  var activeApplicationId = null;
+
+  function escapeHTML(value) {
+    return String(value || "")
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+  }
+
+  async function init() {
+    try {
+      currentUser = await Cube3Auth.requireUser();
+      if (!currentUser) return;
+
+      var { data: profile, error } = await supabase.from("profiles").select("role").eq("id", currentUser.id).single();
+      if (error && error.code !== "PGRST116") throw error;
+      role = profile ? profile.role : "creator";
+
+      await loadConversations();
+
+    } catch (error) {
+      console.error(error);
+      document.getElementById("conversationList").innerHTML = '<div class="empty-state">Could not load messages. ' + escapeHTML(error.message) + '</div>';
+    }
+  }
+
+  async function loadConversations() {
+    var list = document.getElementById("conversationList");
+    var applications = [];
+
+    if (role === "brand") {
+      var { data: myCampaigns } = await supabase.from("campaigns").select("id, title").eq("brand_id", currentUser.id);
+      var campaignIds = (myCampaigns || []).map(function (c) { return c.id; });
+      var campaignById = {}; (myCampaigns || []).forEach(function (c) { campaignById[c.id] = c; });
+
+      if (campaignIds.length) {
+        var { data: apps } = await supabase.from("campaign_applications").select("id, campaign_id, creator_id").in("campaign_id", campaignIds).eq("status", "accepted");
+        applications = (apps || []).map(function (a) {
+          return Object.assign({}, a, { campaignTitle: campaignById[a.campaign_id] ? campaignById[a.campaign_id].title : "", otherPartyId: a.creator_id });
+        });
+      }
+    } else {
+      var { data: apps2 } = await supabase.from("campaign_applications").select("id, campaign_id, creator_id").eq("creator_id", currentUser.id).eq("status", "accepted");
+      var campaignIds2 = Array.from(new Set((apps2 || []).map(function (a) { return a.campaign_id; })));
+      var { data: campaignList } = await supabase.from("campaigns").select("id, title, brand_id").in("id", campaignIds2);
+      var campaignById2 = {}; (campaignList || []).forEach(function (c) { campaignById2[c.id] = c; });
+
+      applications = (apps2 || []).map(function (a) {
+        var c = campaignById2[a.campaign_id];
+        return Object.assign({}, a, { campaignTitle: c ? c.title : "", otherPartyId: c ? c.brand_id : null });
+      });
+    }
+
+    if (!applications.length) {
+      list.innerHTML = '<div class="empty-state">No conversations yet. Messaging unlocks once an application is accepted.</div>';
+      return;
+    }
+
+    var otherIds = Array.from(new Set(applications.map(function (a) { return a.otherPartyId; }).filter(Boolean)));
+    var { data: profiles } = await supabase.from("profiles").select("id, full_name").in("id", otherIds);
+    var nameById = {}; (profiles || []).forEach(function (p) { nameById[p.id] = p.full_name; });
+
+    var { data: lastMessages } = await supabase.from("messages").select("application_id, body, created_at").in("application_id", applications.map(function (a) { return a.id; })).order("created_at", { ascending: false });
+
+    var previewByApp = {};
+    (lastMessages || []).forEach(function (m) { if (!previewByApp[m.application_id]) previewByApp[m.application_id] = m.body; });
+
+    conversations = applications.map(function (a) {
+      return Object.assign({}, a, { otherName: nameById[a.otherPartyId] || "Unknown", preview: previewByApp[a.id] || "No messages yet" });
+    });
+
+    list.innerHTML = conversations.map(function (c) {
+      return '<div class="conversation" id="conv-' + c.id + '" onclick="openConversation(\'' + c.id + '\')">' +
+        '<div class="name">' + escapeHTML(c.otherName) + '</div>' +
+        '<div class="campaign">' + escapeHTML(c.campaignTitle) + '</div>' +
+        '<div class="preview">' + escapeHTML(c.preview) + '</div>' +
+      '</div>';
+    }).join("");
+  }
+
+  window.openConversation = async function (applicationId) {
+    activeApplicationId = applicationId;
+    document.querySelectorAll(".conversation").forEach(function (el) { el.classList.remove("active"); });
+    var el = document.getElementById("conv-" + applicationId);
+    if (el) el.classList.add("active");
+
+    var conv = conversations.filter(function (c) { return c.id === applicationId; })[0];
+    var panel = document.getElementById("threadPanel");
+
+    panel.innerHTML =
+      '<div class="thread-header">' + escapeHTML(conv ? conv.otherName : "") + ' · ' + escapeHTML(conv ? conv.campaignTitle : "") + '</div>' +
+      '<div class="thread-messages" id="threadMessages"><div class="loading-state">Loading messages...</div></div>' +
+      '<div class="thread-input"><input id="messageInput" type="text" placeholder="Type a message..." maxlength="2000"><button id="sendButton" class="btn btn-primary" onclick="sendMessage()">Send</button></div>';
+
+    document.getElementById("messageInput").addEventListener("keydown", function (e) { if (e.key === "Enter") window.sendMessage(); });
+
+    await loadMessages(applicationId);
+  };
+
+  async function loadMessages(applicationId) {
+    var container = document.getElementById("threadMessages");
+    if (!container) return;
+
+    try {
+      var { data, error } = await supabase.from("messages").select("id, sender_id, body, created_at").eq("application_id", applicationId).order("created_at", { ascending: true });
+      if (error) throw error;
+
+      if (!data.length) {
+        container.innerHTML = '<div class="empty-state">No messages yet. Say hello!</div>';
+        return;
+      }
+
+      container.innerHTML = data.map(function (m) {
+        return '<div class="bubble ' + (m.sender_id === currentUser.id ? "mine" : "theirs") + '">' + escapeHTML(m.body) + '</div>';
+      }).join("");
+
+      container.scrollTop = container.scrollHeight;
+
+    } catch (error) {
+      console.error(error);
+      container.innerHTML = '<div class="empty-state">Could not load messages.</div>';
+    }
+  }
+
+  window.sendMessage = async function () {
+    var input = document.getElementById("messageInput");
+    var button = document.getElementById("sendButton");
+    var body = input.value.trim();
+    if (!body || !activeApplicationId) return;
+
+    button.disabled = true;
+    try {
+      var { error } = await supabase.from("messages").insert({ application_id: activeApplicationId, sender_id: currentUser.id, body: body });
+      if (error) throw error;
+      input.value = "";
+      await loadMessages(activeApplicationId);
+    } catch (error) {
+      console.error(error);
+      alert(error.message || "Could not send message.");
+    } finally {
+      button.disabled = false;
+    }
+  };
+
+  init();
+})();
+</script>
+
+</body>
+</html>
