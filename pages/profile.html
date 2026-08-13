@@ -111,15 +111,41 @@
         <div class="section">
           <h2>Social media</h2>
           <div class="social-grid">
-            <div><label for="youtube">YouTube</label><input id="youtube" type="url" placeholder="https://youtube.com/@username"></div>
-            <div><label for="instagram">Instagram</label><input id="instagram" type="url" placeholder="https://instagram.com/username"></div>
-            <div><label for="x">X</label><input id="x" type="url" placeholder="https://x.com/username"></div>
-            <div><label for="portfolio">Portfolio</label><input id="portfolio" type="url" placeholder="https://yourwebsite.com"></div>
-            <div><label for="tiktok">TikTok</label><input id="tiktok" type="url" placeholder="https://tiktok.com/@username"></div>
-            <div><label for="facebook">Facebook</label><input id="facebook" type="url" placeholder="https://facebook.com/username"></div>
-            <div><label for="snapchat">Snapchat</label><input id="snapchat" type="url" placeholder="https://snapchat.com/add/username"></div>
-            <div><label for="linkedin">LinkedIn</label><input id="linkedin" type="url" placeholder="https://linkedin.com/in/username"></div>
-            <div><label for="threads">Threads</label><input id="threads" type="url" placeholder="https://threads.net/@username"></div>
+            <div>
+              <label for="youtube">YouTube</label><input id="youtube" type="url" placeholder="https://youtube.com/@username">
+              <label for="youtubeCount">YouTube subscribers</label><input id="youtubeCount" type="number" min="0" placeholder="e.g. 12400">
+            </div>
+            <div>
+              <label for="instagram">Instagram</label><input id="instagram" type="url" placeholder="https://instagram.com/username">
+              <label for="instagramCount">Instagram followers</label><input id="instagramCount" type="number" min="0" placeholder="e.g. 8200">
+            </div>
+            <div>
+              <label for="x">X</label><input id="x" type="url" placeholder="https://x.com/username">
+              <label for="xCount">X followers</label><input id="xCount" type="number" min="0" placeholder="e.g. 3100">
+            </div>
+            <div>
+              <label for="portfolio">Portfolio</label><input id="portfolio" type="url" placeholder="https://yourwebsite.com">
+            </div>
+            <div>
+              <label for="tiktok">TikTok</label><input id="tiktok" type="url" placeholder="https://tiktok.com/@username">
+              <label for="tiktokCount">TikTok followers</label><input id="tiktokCount" type="number" min="0" placeholder="e.g. 15000">
+            </div>
+            <div>
+              <label for="facebook">Facebook</label><input id="facebook" type="url" placeholder="https://facebook.com/username">
+              <label for="facebookCount">Facebook followers</label><input id="facebookCount" type="number" min="0" placeholder="e.g. 4500">
+            </div>
+            <div>
+              <label for="snapchat">Snapchat</label><input id="snapchat" type="url" placeholder="https://snapchat.com/add/username">
+              <label for="snapchatCount">Snapchat followers</label><input id="snapchatCount" type="number" min="0" placeholder="e.g. 2200">
+            </div>
+            <div>
+              <label for="linkedin">LinkedIn</label><input id="linkedin" type="url" placeholder="https://linkedin.com/in/username">
+              <label for="linkedinCount">LinkedIn followers</label><input id="linkedinCount" type="number" min="0" placeholder="e.g. 900">
+            </div>
+            <div>
+              <label for="threads">Threads</label><input id="threads" type="url" placeholder="https://threads.net/@username">
+              <label for="threadsCount">Threads followers</label><input id="threadsCount" type="number" min="0" placeholder="e.g. 1300">
+            </div>
           </div>
         </div>
       </div>
@@ -183,10 +209,23 @@
       .replace(/"/g, "&quot;").replace(/'/g, "&#039;");
   }
 
+  function formatCount(n) {
+    if (!n || n <= 0) return "";
+    if (n >= 1000000) return (n / 1000000).toFixed(1).replace(/\.0$/, "") + "M";
+    if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, "") + "K";
+    return String(n);
+  }
+
   var LINK_ICONS = {
     youtube_url: "YouTube", instagram_url: "Instagram", x_url: "X", portfolio_url: "Portfolio",
     tiktok_url: "TikTok", facebook_url: "Facebook", snapchat_url: "Snapchat",
     linkedin_url: "LinkedIn", threads_url: "Threads", website_url: "Website"
+  };
+
+  var COUNT_FIELDS = {
+    youtube_url: "youtube_subscribers", instagram_url: "instagram_followers", x_url: "x_followers",
+    tiktok_url: "tiktok_followers", facebook_url: "facebook_followers", snapchat_url: "snapchat_followers",
+    linkedin_url: "linkedin_followers", threads_url: "threads_followers"
   };
 
   async function init() {
@@ -240,7 +279,10 @@
     keys.forEach(function (key) {
       var url = dataObj && dataObj[key];
       if (url) {
-        html += '<a href="' + escapeHTML(url) + '" target="_blank" rel="noopener">' + LINK_ICONS[key] + '</a>';
+        var countField = COUNT_FIELDS[key];
+        var count = countField && dataObj[countField] ? formatCount(dataObj[countField]) : "";
+        var label = LINK_ICONS[key] + (count ? " · " + count : "");
+        html += '<a href="' + escapeHTML(url) + '" target="_blank" rel="noopener">' + label + '</a>';
       }
     });
     row.innerHTML = html;
@@ -268,14 +310,22 @@
       document.getElementById("handle").value = creator.handle || "";
       document.getElementById("category").value = creator.category || "";
       document.getElementById("youtube").value = creator.youtube_url || "";
+      document.getElementById("youtubeCount").value = creator.youtube_subscribers || "";
       document.getElementById("instagram").value = creator.instagram_url || "";
+      document.getElementById("instagramCount").value = creator.instagram_followers || "";
       document.getElementById("x").value = creator.x_url || "";
+      document.getElementById("xCount").value = creator.x_followers || "";
       document.getElementById("portfolio").value = creator.portfolio_url || "";
       document.getElementById("tiktok").value = creator.tiktok_url || "";
+      document.getElementById("tiktokCount").value = creator.tiktok_followers || "";
       document.getElementById("facebook").value = creator.facebook_url || "";
+      document.getElementById("facebookCount").value = creator.facebook_followers || "";
       document.getElementById("snapchat").value = creator.snapchat_url || "";
+      document.getElementById("snapchatCount").value = creator.snapchat_followers || "";
       document.getElementById("linkedin").value = creator.linkedin_url || "";
+      document.getElementById("linkedinCount").value = creator.linkedin_followers || "";
       document.getElementById("threads").value = creator.threads_url || "";
+      document.getElementById("threadsCount").value = creator.threads_followers || "";
     }
   }
 
@@ -353,14 +403,22 @@
       handle: document.getElementById("handle").value.trim(),
       category: document.getElementById("category").value,
       youtube_url: document.getElementById("youtube").value.trim(),
+      youtube_subscribers: Number(document.getElementById("youtubeCount").value) || null,
       instagram_url: document.getElementById("instagram").value.trim(),
+      instagram_followers: Number(document.getElementById("instagramCount").value) || null,
       x_url: document.getElementById("x").value.trim(),
+      x_followers: Number(document.getElementById("xCount").value) || null,
       portfolio_url: document.getElementById("portfolio").value.trim(),
       tiktok_url: document.getElementById("tiktok").value.trim(),
+      tiktok_followers: Number(document.getElementById("tiktokCount").value) || null,
       facebook_url: document.getElementById("facebook").value.trim(),
+      facebook_followers: Number(document.getElementById("facebookCount").value) || null,
       snapchat_url: document.getElementById("snapchat").value.trim(),
+      snapchat_followers: Number(document.getElementById("snapchatCount").value) || null,
       linkedin_url: document.getElementById("linkedin").value.trim(),
-      threads_url: document.getElementById("threads").value.trim()
+      linkedin_followers: Number(document.getElementById("linkedinCount").value) || null,
+      threads_url: document.getElementById("threads").value.trim(),
+      threads_followers: Number(document.getElementById("threadsCount").value) || null
     }, { onConflict: "id" });
     if (error) throw error;
   }
