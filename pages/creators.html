@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Creators - Cube3</title>
+<link rel="stylesheet" href="/style.css">
+<style>
+  .filters{display:grid; grid-template-columns:2fr 1fr; gap:12px; margin:24px 0 30px;}
+  @media (max-width:600px){ .filters{grid-template-columns:1fr;} }
+  .card h3{font-size:16px; margin:0 0 3px;}
+  .card .handle{color:var(--ink-muted); font-size:12.5px; margin-bottom:10px;}
+  .card .bio{color:var(--ink); font-size:13.5px; line-height:1.5; margin-bottom:10px; min-height:38px;}
+  .links{margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;}
+  .links a{color:var(--violet-deep); font-size:12px; font-weight:600;}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="wrap">
+    <a class="brand" href="/index.html">
+      <svg class="mark" viewBox="0 0 24 24" fill="none"><path d="M12 2L21 7V17L12 22L3 17V7L12 2Z" fill="#6c5ce7"/></svg>
+      Cube3
+    </a>
+    <div class="nav-links">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="campaigns.html">Campaigns</a>
+      <a href="creators.html" class="active">Creators</a>
+      <a href="inbox.html">Messages</a>
+      <a href="profile.html">Profile</a>
+    </div>
+  </nav>
+</header>
+
+<div class="container">
+  <h1 style="font-size:30px;">Creators</h1>
+  <p class="muted">Browse and search the Cube3 creator directory.</p>
+
+  <div class="filters">
+    <input id="search" type="search" placeholder="Search by name, handle, or bio...">
+    <select id="categoryFilter">
+      <option value="">All categories</option>
+      <option>Technology</option><option>Gaming</option><option>Education</option>
+      <option>Entertainment</option><option>Business</option><option>Fashion</option>
+      <option>Fitness</option><option>Travel</option><option>Food</option>
+      <option>Content Creator</option><option>Influencer</option><option>Other</option>
+    </select>
+  </div>
+
+  <div id="grid" class="grid-cards">
+    <div class="loading-state">Loading creators...</div>
+  </div>
+</div>
+
+<script src="/config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/supabase-client.js"></script>
+<script src="/auth.js"></script>
+
+<script>
+(function () {
+  var supabase = window.cube3Supabase;
+  var creators = [];
+
+  function escapeHTML(value) {
+    return String(value || "")
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+  }
+
+  async function init() {
+    try {
+      await Cube3Auth.requireUser();
+      await loadCreators();
+    } catch (error) {
+      console.error(error);
+      document.getElementById("grid").innerHTML = '<div class="empty-state">Could not load creators. ' + escapeHTML(error.message) + '</div>';
+    }
+  }
+
+  async function loadCreators() {
+    var { data: creatorProfiles, error } = await supabase.from("creator_profiles").select("*");
+    if (error) throw error;
+
+    var ids = (creatorProfiles || []).map(function (c) { return c.id; });
+    var { data: profiles } = await supabase.from("profiles").select("id, full_name, bio").in("id", ids);
+    var profileById = {}; (profiles || []).forEach(function (p) { profileById[p.id] = p; });
+
+    creators = (creatorProfiles || []).map(function (c) {
+      var p = profileById[c.id];
+      return Object.assign({}, c, { fullName: p ? p.full_name : "Unnamed creator", bio: p ? p.bio : "" });
+    });
+
+    render();
+  }
+
+  function render() {
+    var grid = document.getElementById("grid");
+    var search = document.getElementById("search").value.toLowerCase().trim();
+    var category = document.getElementById("categoryFilter").value;
+
+    var filtered = creators.filter(function (c) {
+      var matchesSearch = !search ||
+        (c.fullName || "").toLowerCase().includes(search) ||
+        (c.handle || "").toLowerCase().includes(search) ||
+        (c.bio || "").toLowerCase().includes(search);
+      var matchesCategory = !category || c.category === category;
+      return matchesSearch && matchesCategory;
+    });
+
+    if (!filtered.length) {
+      grid.innerHTML = '<div class="empty-state">No creators found.</div>';
+      return;
+    }
+
+    grid.innerHTML = filtered.map(function (c) {
+      return '<div class="card">' +
+        '<h3>' + escapeHTML(c.fullName) + '</h3>' +
+        '<div class="handle">' + (c.handle ? "@" + escapeHTML(c.handle.replace(/^@/, "")) : "") + '</div>' +
+        '<p class="bio">' + escapeHTML(c.bio || "No bio yet.") + '</p>' +
+        (c.category ? '<span class="tag">' + escapeHTML(c.category) + '</span>' : "") +
+        '<div class="links">' +
+          (c.youtube_url ? '<a href="' + escapeHTML(c.youtube_url) + '" target="_blank" rel="noopener">YouTube</a>' : "") +
+          (c.instagram_url ? '<a href="' + escapeHTML(c.instagram_url) + '" target="_blank" rel="noopener">Instagram</a>' : "") +
+          (c.x_url ? '<a href="' + escapeHTML(c.x_url) + '" target="_blank" rel="noopener">X</a>' : "") +
+          (c.portfolio_url ? '<a href="' + escapeHTML(c.portfolio_url) + '" target="_blank" rel="noopener">Portfolio</a>' : "") +
+        '</div>' +
+      '</div>';
+    }).join("");
+  }
+
+  document.getElementById("search").addEventListener("input", render);
+  document.getElementById("categoryFilter").addEventListener("change", render);
+
+  init();
+})();
+</script>
+
+</body>
+</html>
