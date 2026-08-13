@@ -47,6 +47,14 @@
       <button id="signupButton" class="btn btn-primary btn-block" type="submit" style="margin-top:18px;">Create Cube3 account</button>
     </form>
 
+    <form id="otpForm" class="hidden">
+      <p class="subtitle" style="margin-bottom:14px;">We sent a 6-digit code to your email. Enter it below to confirm your account.</p>
+      <label for="otpCode">Confirmation code</label>
+      <input id="otpCode" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="123456" required>
+      <button id="otpButton" class="btn btn-primary btn-block" type="submit" style="margin-top:18px;">Verify and continue</button>
+      <button id="resendButton" type="button" class="btn btn-ghost btn-block" style="margin-top:10px;">Resend code</button>
+    </form>
+
     <div id="message" class="message"></div>
 
     <div class="auth-link">Already have an account? <a href="login.html">Log in</a></div>
@@ -61,7 +69,11 @@
 <script>
   const form = document.getElementById("signupForm");
   const button = document.getElementById("signupButton");
+  const otpForm = document.getElementById("otpForm");
+  const otpButton = document.getElementById("otpButton");
+  const resendButton = document.getElementById("resendButton");
   const message = document.getElementById("message");
+  let pendingEmail = "";
 
   function showMessage(text, type) {
     message.textContent = text;
@@ -90,15 +102,66 @@
     button.textContent = "Creating account...";
 
     try {
-      const result = await Cube3Auth.signUp(email, password, role, fullName);
-      showMessage(result.message, "success");
-      setTimeout(() => { window.location.href = "login.html"; }, 2200);
+      await Cube3Auth.signUp(email, password, role, fullName);
+      pendingEmail = email;
+
+      showMessage("Account created! Check your email for a 6-digit code.", "success");
+      form.classList.add("hidden");
+      otpForm.classList.remove("hidden");
 
     } catch (error) {
       console.error(error);
       showMessage(error.message || "Could not create your account.", "error");
       button.disabled = false;
       button.textContent = "Create Cube3 account";
+    }
+  });
+
+  otpForm.addEventListener("submit", async function(event) {
+    event.preventDefault();
+
+    const code = document.getElementById("otpCode").value.trim();
+    otpButton.disabled = true;
+    otpButton.textContent = "Verifying...";
+
+    try {
+      const { error } = await window.cube3Supabase.auth.verifyOtp({
+        email: pendingEmail,
+        token: code,
+        type: "signup"
+      });
+
+      if (error) throw error;
+
+      showMessage("Email confirmed! Redirecting...", "success");
+      setTimeout(() => { window.location.href = "dashboard.html"; }, 1000);
+
+    } catch (error) {
+      console.error(error);
+      showMessage(error.message || "Invalid or expired code. Try again or resend.", "error");
+      otpButton.disabled = false;
+      otpButton.textContent = "Verify and continue";
+    }
+  });
+
+  resendButton.addEventListener("click", async function() {
+    resendButton.disabled = true;
+    resendButton.textContent = "Sending...";
+
+    try {
+      const { error } = await window.cube3Supabase.auth.resend({
+        type: "signup",
+        email: pendingEmail
+      });
+      if (error) throw error;
+      showMessage("New code sent to your email.", "success");
+
+    } catch (error) {
+      console.error(error);
+      showMessage(error.message || "Could not resend code.", "error");
+    } finally {
+      resendButton.disabled = false;
+      resendButton.textContent = "Resend code";
     }
   });
 </script>
