@@ -1,189 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Log in - Cube3</title>
-
-  <link rel="stylesheet" href="/css/style.css">
-
-  <style>
-    body {
-      margin: 0;
-      background: #08080d;
-      color: #fff;
-      font-family: Arial, sans-serif;
-    }
-
-    .auth-page {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-    }
-
-    .auth-card {
-      width: 100%;
-      max-width: 460px;
-      background: #11121a;
-      border: 1px solid #292b38;
-      border-radius: 20px;
-      padding: 32px;
-      box-sizing: border-box;
-      box-shadow: 0 20px 60px rgba(0,0,0,.35);
-    }
-
-    .logo {
-      font-size: 28px;
-      font-weight: 800;
-      margin-bottom: 30px;
-    }
-
-    .logo span {
-      color: #9b7cff;
-    }
-
-    h1 {
-      margin-bottom: 8px;
-      font-size: 32px;
-    }
-
-    .subtitle {
-      color: #999baa;
-      margin-bottom: 28px;
-    }
-
-    label {
-      display: block;
-      margin: 18px 0 8px;
-      color: #d7d8df;
-      font-size: 14px;
-    }
-
-    input {
-      width: 100%;
-      box-sizing: border-box;
-      padding: 14px 15px;
-      border-radius: 10px;
-      border: 1px solid #303241;
-      background: #0b0c12;
-      color: white;
-      font-size: 15px;
-      outline: none;
-    }
-
-    input:focus {
-      border-color: #9878ff;
-    }
-
-    button {
-      width: 100%;
-      margin-top: 24px;
-      padding: 15px;
-      border: 0;
-      border-radius: 10px;
-      background: #9274ff;
-      color: white;
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background: #a48aff;
-    }
-
-    button:disabled {
-      opacity: .6;
-      cursor: not-allowed;
-    }
-
-    .message {
-      margin-top: 18px;
-      padding: 12px;
-      border-radius: 9px;
-      display: none;
-      font-size: 14px;
-    }
-
-    .success {
-      display: block;
-      background: #12351f;
-      color: #7ff0a0;
-    }
-
-    .error {
-      display: block;
-      background: #39171b;
-      color: #ff9ca5;
-    }
-
-    .signup-link {
-      text-align: center;
-      margin-top: 22px;
-      color: #999baa;
-    }
-
-    a {
-      color: #a78bfa;
-      text-decoration: none;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Log in - Cube3</title>
+<link rel="stylesheet" href="/style.css">
 </head>
-
 <body>
+
+<header class="site-header">
+  <nav class="wrap">
+    <a class="brand" href="/index.html">
+      <svg class="mark" viewBox="0 0 24 24" fill="none"><path d="M12 2L21 7V17L12 22L3 17V7L12 2Z" fill="#6c5ce7"/></svg>
+      Cube3
+    </a>
+    <div class="nav-links">
+      <a href="/index.html">Home</a>
+    </div>
+  </nav>
+</header>
 
 <div class="auth-page">
   <div class="auth-card">
-
-    <div class="logo">Cube<span>3</span></div>
-
     <h1>Log in</h1>
-    <div class="subtitle">
-      Welcome back. Log in to your Cube3 account.
-    </div>
+    <div class="subtitle">Welcome back. Log in to your Cube3 account.</div>
 
     <form id="loginForm">
-
       <label for="email">Email</label>
-
-      <input
-        id="email"
-        type="email"
-        placeholder="you@example.com"
-        required
-      >
+      <input id="email" type="email" placeholder="you@example.com" required>
 
       <label for="password">Password</label>
+      <input id="password" type="password" placeholder="Your password" required>
 
-      <input
-        id="password"
-        type="password"
-        placeholder="Your password"
-        required
-      >
+      <div style="text-align:right; margin-top:8px;">
+        <a href="forgot-password.html" style="font-size:13px; color:var(--violet); font-weight:600;">Forgot password?</a>
+      </div>
 
-      <button id="loginButton" type="submit">
-        Log in
-      </button>
-
+      <button id="loginButton" class="btn btn-primary btn-block" type="submit" style="margin-top:18px;">Log in</button>
     </form>
 
     <div id="message" class="message"></div>
 
-    <div class="signup-link">
-      Don't have an account?
-      <a href="signup.html">Sign up</a>
-    </div>
-
+    <div class="auth-link">Don't have an account? <a href="signup.html">Sign up</a></div>
   </div>
 </div>
 
 <script src="/config.js"></script>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <script src="/supabase-client.js"></script>
 <script src="/auth.js"></script>
 
@@ -198,7 +61,6 @@
   }
 
   form.addEventListener("submit", async function(event) {
-
     event.preventDefault();
 
     const email = document.getElementById("email").value.trim();
@@ -208,27 +70,13 @@
     button.textContent = "Logging in...";
 
     try {
-
-      // NOTE: assumes auth.js exposes Cube3Auth.signIn(email, password),
-      // matching the Cube3Auth.signUp(...) pattern used in signup.html.
-      // If auth.js uses a different method name, update this call.
       const result = await Cube3Auth.signIn(email, password);
-
       showMessage(result?.message || "Logged in successfully!", "success");
-
-      setTimeout(() => {
-        window.location.href = "dashboard.html";
-      }, 800);
+      setTimeout(() => { window.location.href = "dashboard.html"; }, 700);
 
     } catch (error) {
-
       console.error(error);
-
-      showMessage(
-        error.message || "Could not log in. Check your email and password.",
-        "error"
-      );
-
+      showMessage(error.message || "Could not log in. Check your email and password.", "error");
       button.disabled = false;
       button.textContent = "Log in";
     }
