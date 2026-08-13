@@ -37,4 +37,4 @@ async function requireUser(){
 }
 
 window.Cube3Auth={signUp,signIn,signOut,currentUser,requireUser};
-
+window.withTimeout = withTimeout;
