@@ -82,6 +82,35 @@
       .replace(/"/g, "&quot;").replace(/'/g, "&#039;");
   }
 
+  async function uploadAttachment(file) {
+    if (!file) return null;
+
+    var isImage = file.type.startsWith("image/");
+    var isVideo = file.type.startsWith("video/");
+    if (!isImage && !isVideo) { alert("Only photos and videos can be shared."); return null; }
+    if (file.size > 25 * 1024 * 1024) { alert("File must be smaller than 25 MB."); return null; }
+
+    var extension = file.name.split(".").pop();
+    var path = currentUser.id + "/" + Date.now() + "." + extension;
+
+    var { error } = await supabase.storage.from("message-attachments").upload(path, file);
+    if (error) { alert("Upload failed: " + error.message); return null; }
+
+    var { data } = supabase.storage.from("message-attachments").getPublicUrl(path);
+    return { url: data.publicUrl, type: isImage ? "image" : "video" };
+  }
+
+  function renderBubble(m) {
+    var mine = m.sender_id === currentUser.id;
+    var media = "";
+    if (m.attachment_url) {
+      media = m.attachment_type === "video"
+        ? '<video src="' + escapeHTML(m.attachment_url) + '" controls style="max-width:220px; border-radius:10px; display:block; margin-bottom:' + (m.body ? '6px' : '0') + ';"></video>'
+        : '<img src="' + escapeHTML(m.attachment_url) + '" alt="" style="max-width:220px; border-radius:10px; display:block; margin-bottom:' + (m.body ? '6px' : '0') + '; cursor:pointer;" onclick="window.open(this.src, \'_blank\')">';
+    }
+    return '<div class="bubble ' + (mine ? "mine" : "theirs") + '">' + media + (m.body ? escapeHTML(m.body) : "") + '</div>';
+  }
+
   async function init() {
     try {
       currentUser = await Cube3Auth.requireUser();
@@ -170,7 +199,7 @@
         '<button class="btn btn-ghost btn-sm" onclick="quickReply(\'Can you share more details?\')">Ask for details</button>' +
         '<button class="btn btn-ghost btn-sm" onclick="quickReply(\'I\\'ll get back to you shortly.\')">Will reply soon</button>' +
       '</div>' +
-      '<div class="thread-input"><input id="messageInput" type="text" placeholder="Type a message..." maxlength="2000"><button id="sendButton" class="btn btn-primary" onclick="sendMessage()">Send</button></div>';
+      '<div class="thread-input"><input type="file" id="attachInput" accept="image/*,video/*" hidden onchange="handleAttachSelect()"><button class="btn btn-ghost" onclick="document.getElementById(\'attachInput\').click()" title="Attach photo/video">📎</button><input id="messageInput" type="text" placeholder="Type a message..." maxlength="2000"><button id="sendButton" class="btn btn-primary" onclick="sendMessage()">Send</button></div>';
 
     document.getElementById("messageInput").addEventListener("keydown", function (e) { if (e.key === "Enter") window.sendMessage(); });
 
@@ -212,9 +241,7 @@
         return;
       }
 
-      container.innerHTML = data.map(function (m) {
-        return '<div class="bubble ' + (m.sender_id === currentUser.id ? "mine" : "theirs") + '">' + escapeHTML(m.body) + '</div>';
-      }).join("");
+      container.innerHTML = data.map(function (m) { return renderBubble(m); }).join("");
 
       container.scrollTop = container.scrollHeight;
 
@@ -224,17 +251,43 @@
     }
   }
 
+  var pendingAttachment = null;
+
+  window.handleAttachSelect = async function () {
+    var fileInput = document.getElementById("attachInput");
+    var file = fileInput.files[0];
+    fileInput.value = "";
+    if (!file) return;
+
+    var messageInput = document.getElementById("messageInput");
+    messageInput.placeholder = "Uploading...";
+    var result = await uploadAttachment(file);
+    messageInput.placeholder = "Type a message...";
+    if (!result) return;
+
+    pendingAttachment = result;
+    messageInput.placeholder = "Attachment ready — add a caption or just Send";
+  };
+
   window.sendMessage = async function () {
     var input = document.getElementById("messageInput");
     var button = document.getElementById("sendButton");
     var body = input.value.trim();
-    if (!body || !activeApplicationId) return;
+    if (!body && !pendingAttachment) return;
+    if (!activeApplicationId) return;
 
     button.disabled = true;
     try {
-      var { error } = await supabase.from("messages").insert({ application_id: activeApplicationId, sender_id: currentUser.id, body: body });
+      var payload = { application_id: activeApplicationId, sender_id: currentUser.id, body: body };
+      if (pendingAttachment) {
+        payload.attachment_url = pendingAttachment.url;
+        payload.attachment_type = pendingAttachment.type;
+      }
+      var { error } = await supabase.from("messages").insert(payload);
       if (error) throw error;
       input.value = "";
+      input.placeholder = "Type a message...";
+      pendingAttachment = null;
       await loadMessages(activeApplicationId);
     } catch (error) {
       console.error(error);
@@ -288,7 +341,7 @@
     panel.innerHTML =
       '<div class="thread-header">Direct message</div>' +
       '<div class="thread-messages" id="threadMessages"><div class="loading-state">Loading messages...</div></div>' +
-      '<div class="thread-input"><input id="messageInput" type="text" placeholder="Type a message..." maxlength="2000"><button id="sendButton" class="btn btn-primary" onclick="sendInquiryMessage()">Send</button></div>';
+      '<div class="thread-input"><input type="file" id="inqAttachInput" accept="image/*,video/*" hidden onchange="handleInqAttachSelect()"><button class="btn btn-ghost" onclick="document.getElementById(\'inqAttachInput\').click()" title="Attach photo/video">📎</button><input id="messageInput" type="text" placeholder="Type a message..." maxlength="2000"><button id="sendButton" class="btn btn-primary" onclick="sendInquiryMessage()">Send</button></div>';
 
     document.getElementById("messageInput").addEventListener("keydown", function (e) { if (e.key === "Enter") window.sendInquiryMessage(); });
 
@@ -304,26 +357,50 @@
   async function loadInquiryMessages(inquiryId) {
     var container = document.getElementById("threadMessages");
     if (!container) return;
-    var { data, error } = await supabase.from("inquiry_messages").select("id, sender_id, body").eq("inquiry_id", inquiryId).order("created_at", { ascending: true });
+    var { data, error } = await supabase.from("inquiry_messages").select("id, sender_id, body, attachment_url, attachment_type").eq("inquiry_id", inquiryId).order("created_at", { ascending: true });
     if (error) { container.innerHTML = '<div class="empty-state">Could not load messages.</div>'; return; }
 
     if (!data.length) { container.innerHTML = '<div class="empty-state">No messages yet.</div>'; return; }
 
-    container.innerHTML = data.map(function (m) {
-      return '<div class="bubble ' + (m.sender_id === currentUser.id ? "mine" : "theirs") + '">' + escapeHTML(m.body) + '</div>';
-    }).join("");
+    container.innerHTML = data.map(function (m) { return renderBubble(m); }).join("");
     container.scrollTop = container.scrollHeight;
   }
+
+  var pendingInqAttachment = null;
+
+  window.handleInqAttachSelect = async function () {
+    var fileInput = document.getElementById("inqAttachInput");
+    var file = fileInput.files[0];
+    fileInput.value = "";
+    if (!file) return;
+
+    var messageInput = document.getElementById("messageInput");
+    messageInput.placeholder = "Uploading...";
+    var result = await uploadAttachment(file);
+    messageInput.placeholder = "Type a message...";
+    if (!result) return;
+
+    pendingInqAttachment = result;
+    messageInput.placeholder = "Attachment ready — add a caption or just Send";
+  };
 
   window.sendInquiryMessage = async function () {
     var input = document.getElementById("messageInput");
     var body = input.value.trim();
-    if (!body || !activeInquiryId) return;
+    if (!body && !pendingInqAttachment) return;
+    if (!activeInquiryId) return;
     input.value = "";
+    input.placeholder = "Type a message...";
 
     try {
-      var { error } = await supabase.from("inquiry_messages").insert({ inquiry_id: activeInquiryId, sender_id: currentUser.id, body: body });
+      var payload = { inquiry_id: activeInquiryId, sender_id: currentUser.id, body: body };
+      if (pendingInqAttachment) {
+        payload.attachment_url = pendingInqAttachment.url;
+        payload.attachment_type = pendingInqAttachment.type;
+      }
+      var { error } = await supabase.from("inquiry_messages").insert(payload);
       if (error) throw error;
+      pendingInqAttachment = null;
       await loadInquiryMessages(activeInquiryId);
     } catch (error) {
       console.error(error);
