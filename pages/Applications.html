@@ -69,6 +69,8 @@
       .replace(/"/g, "&quot;").replace(/'/g, "&#039;");
   }
 
+  var STATUS_LABELS = { pending: "Submitted", shortlisted: "Shortlisted", accepted: "Selected", rejected: "Rejected" };
+
   async function init() {
     var content = document.getElementById("content");
     try {
@@ -104,7 +106,7 @@
 
     var campaignIds = campaignList.map(function (c) { return c.id; });
 
-    var { data: applications, error: appsError } = await supabase.from("campaign_applications").select("id, campaign_id, creator_id, pitch, status, created_at").in("campaign_id", campaignIds).order("created_at", { ascending: false });
+    var { data: applications, error: appsError } = await supabase.from("campaign_applications").select("id, campaign_id, creator_id, pitch, status, created_at, proposed_rate, portfolio_url").in("campaign_id", campaignIds).order("created_at", { ascending: false });
     if (appsError) throw appsError;
 
     if (!applications.length) {
@@ -138,20 +140,30 @@
     var creator = creatorById[app.creator_id];
     var handle = creator && creator.handle ? "@" + creator.handle.replace(/^@/, "") : "";
     var category = creator && creator.category ? creator.category : "";
+    var statusLabel = STATUS_LABELS[app.status] || app.status;
+
+    var actions = "";
+    if (app.status === "pending") {
+      actions =
+        '<button class="btn btn-ghost btn-sm" style="background:#e0f2fe; color:#0369a1; border:0;" onclick="updateStatus(\'' + app.id + '\', \'shortlisted\')">Shortlist</button>' +
+        '<button class="accept-btn" onclick="updateStatus(\'' + app.id + '\', \'accepted\')">Select</button>' +
+        '<button class="reject-btn" onclick="updateStatus(\'' + app.id + '\', \'rejected\')">Reject</button>';
+    } else if (app.status === "shortlisted") {
+      actions =
+        '<button class="accept-btn" onclick="updateStatus(\'' + app.id + '\', \'accepted\')">Select</button>' +
+        '<button class="reject-btn" onclick="updateStatus(\'' + app.id + '\', \'rejected\')">Reject</button>';
+    }
 
     return '<div class="application" id="app-' + app.id + '">' +
       '<div class="applicant">' +
-        '<span class="status-badge ' + app.status + '">' + escapeHTML(app.status) + '</span>' +
+        '<span class="status-badge ' + app.status + '">' + escapeHTML(statusLabel) + '</span>' +
         '<h3>' + escapeHTML(name) + '</h3>' +
         '<div class="handle">' + escapeHTML(handle) + (handle && category ? " · " : "") + escapeHTML(category) + '</div>' +
         '<p class="pitch">' + escapeHTML(app.pitch) + '</p>' +
+        (app.proposed_rate ? '<p style="font-size:12.5px; color:var(--ink-muted); margin:6px 0 0;"><strong>Rate:</strong> ₹' + Number(app.proposed_rate).toLocaleString("en-IN") + '</p>' : "") +
+        (app.portfolio_url ? '<p style="font-size:12.5px; margin:4px 0 0;"><a href="' + escapeHTML(app.portfolio_url) + '" target="_blank" rel="noopener" style="color:var(--violet-deep); font-weight:600;">View portfolio / samples</a></p>' : "") +
       '</div>' +
-      '<div class="actions">' +
-        (app.status === "pending" ?
-          '<button class="accept-btn" onclick="updateStatus(\'' + app.id + '\', \'accepted\')">Accept</button>' +
-          '<button class="reject-btn" onclick="updateStatus(\'' + app.id + '\', \'rejected\')">Reject</button>'
-          : "") +
-      '</div>' +
+      '<div class="actions">' + actions + '</div>' +
     '</div>';
   }
 
