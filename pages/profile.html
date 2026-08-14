@@ -78,6 +78,7 @@
         <div class="identity-row">
           <h1 id="displayName">Loading...</h1>
           <span id="role" class="role-badge">...</span>
+          <span id="verifiedBadge" class="role-badge" style="display:none; background:#e8f7ee; color:#1f8a4c;">✓ Verified</span>
           <button class="btn btn-ghost" style="margin-left:auto;" onclick="enterEditMode()">Edit profile</button>
         </div>
 
@@ -215,8 +216,26 @@
           </select>
           <label for="companyBio">Company bio</label>
           <textarea id="companyBio" maxlength="1500" placeholder="Tell creators about your company..."></textarea>
+          <label for="targetAudience">Target audience</label>
+          <textarea id="targetAudience" maxlength="500" placeholder="Who are you trying to reach? e.g. 'Fitness-focused adults 18-30 in urban India'"></textarea>
           <label for="website">Company website</label>
           <input id="website" type="url" placeholder="https://yourcompany.com">
+        </div>
+
+        <div class="section">
+          <h2>Past campaigns & results</h2>
+          <label for="pastCampaignsResults">Highlights</label>
+          <textarea id="pastCampaignsResults" maxlength="1000" placeholder="Share past campaign wins, e.g. '2M impressions with 15 creators in Q1 2026'"></textarea>
+        </div>
+
+        <div class="section">
+          <h2>Social media</h2>
+          <div class="social-grid">
+            <div><label for="brandInstagram">Instagram</label><input id="brandInstagram" type="url" placeholder="https://instagram.com/yourbrand"></div>
+            <div><label for="brandFacebook">Facebook</label><input id="brandFacebook" type="url" placeholder="https://facebook.com/yourbrand"></div>
+            <div><label for="brandLinkedin">LinkedIn</label><input id="brandLinkedin" type="url" placeholder="https://linkedin.com/company/yourbrand"></div>
+            <div><label for="brandX">X</label><input id="brandX" type="url" placeholder="https://x.com/yourbrand"></div>
+          </div>
         </div>
       </div>
 
@@ -378,218 +397,4 @@
       document.getElementById("snapchatCount").value = creator.snapchat_followers || "";
       document.getElementById("linkedin").value = creator.linkedin_url || "";
       document.getElementById("linkedinCount").value = creator.linkedin_followers || "";
-      document.getElementById("threads").value = creator.threads_url || "";
-      document.getElementById("threadsCount").value = creator.threads_followers || "";
-      document.getElementById("engagementRate").value = creator.engagement_rate || "";
-      document.getElementById("avgViews").value = creator.avg_views || "";
-      document.getElementById("audienceAgeRange").value = creator.audience_age_range || "";
-      document.getElementById("audienceGenderSplit").value = creator.audience_gender_split || "";
-      document.getElementById("audienceTopCountry").value = creator.audience_top_country || "";
-      document.getElementById("pastCollabs").value = creator.past_collabs || "";
-      document.getElementById("bestContent").value = creator.best_content || "";
-    }
-  }
-
-  async function renderBrandView(profile, brand) {
-    document.getElementById("handleLine").textContent = brand && brand.industry ? brand.industry : "";
-    document.getElementById("bioText").textContent = (brand && brand.description) || "No company bio yet.";
-    renderLinks(brand, ["website_url"]);
-
-    var { count: campaignCount } = await cube3supabase.from("campaigns").select("*", { count: "exact", head: true }).eq("brand_id", user.id);
-    var { count: appReceived } = await (async () => {
-      var { data: myCampaigns } = await cube3supabase.from("campaigns").select("id").eq("brand_id", user.id);
-      var ids = (myCampaigns || []).map(function (c) { return c.id; });
-      if (!ids.length) return { count: 0 };
-      return cube3supabase.from("campaign_applications").select("*", { count: "exact", head: true }).in("campaign_id", ids);
-    })();
-
-    document.getElementById("statsRow").innerHTML =
-      '<div class="stat-item"><b>' + (campaignCount ?? 0) + '</b><span>Campaigns</span></div>' +
-      '<div class="stat-item"><b>' + (appReceived ?? 0) + '</b><span>Applications</span></div>';
-
-    document.getElementById("brandFields").classList.remove("hidden");
-    document.getElementById("creatorFields").classList.add("hidden");
-
-    document.getElementById("companyName").value = (brand && brand.company_name) || (profile && profile.full_name) || "";
-    if (brand) {
-      document.getElementById("industry").value = brand.industry || "";
-      document.getElementById("companyBio").value = brand.description || "";
-      document.getElementById("website").value = brand.website_url || "";
-      if (brand.logo_url) document.getElementById("avatar").src = brand.logo_url;
-    }
-  }
-
-  function renderAudienceAndPortfolio(creator) {
-    var container = document.getElementById("extraInfo");
-    if (!creator) { container.innerHTML = ""; return; }
-
-    var hasAudience = creator.audience_age_range || creator.audience_gender_split || creator.audience_top_country;
-    var hasPortfolio = creator.past_collabs || creator.best_content;
-
-    var html = "";
-
-    if (hasAudience) {
-      html += '<div style="margin-top:16px;"><div style="font-size:12px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.04em; margin-bottom:6px;">Audience</div>';
-      var bits = [];
-      if (creator.audience_age_range) bits.push(escapeHTML(creator.audience_age_range));
-      if (creator.audience_gender_split) bits.push(escapeHTML(creator.audience_gender_split));
-      if (creator.audience_top_country) bits.push(escapeHTML(creator.audience_top_country));
-      html += '<div style="font-size:13.5px; color:var(--ink);">' + bits.join(" · ") + '</div></div>';
-    }
-
-    if (creator.past_collabs) {
-      html += '<div style="margin-top:16px;"><div style="font-size:12px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.04em; margin-bottom:6px;">Past collaborations</div>';
-      html += '<div style="font-size:13.5px; color:var(--ink); white-space:pre-wrap;">' + escapeHTML(creator.past_collabs) + '</div></div>';
-    }
-
-    if (creator.best_content) {
-      html += '<div style="margin-top:16px;"><div style="font-size:12px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.04em; margin-bottom:6px;">Best content</div>';
-      var links = creator.best_content.split("\n").filter(Boolean);
-      html += '<div style="display:flex; flex-direction:column; gap:4px;">' +
-        links.map(function (l) {
-          var trimmed = l.trim();
-          return '<a href="' + escapeHTML(trimmed) + '" target="_blank" rel="noopener" style="color:var(--violet-deep); font-size:13px; font-weight:600;">' + escapeHTML(trimmed) + '</a>';
-        }).join("") + '</div></div>';
-    }
-
-    container.innerHTML = html;
-  }
-
-  window.enterEditMode = function () {
-    document.getElementById("viewMode").classList.add("hidden");
-    document.getElementById("editMode").classList.remove("hidden");
-  };
-
-  window.exitEditMode = function () {
-    document.getElementById("editMode").classList.add("hidden");
-    document.getElementById("viewMode").classList.remove("hidden");
-  };
-
-  document.getElementById("profileForm").addEventListener("submit", async function (event) {
-    event.preventDefault();
-    var button = document.getElementById("saveButton");
-    button.disabled = true;
-    button.textContent = "Saving...";
-
-    try {
-      if (role === "creator") { await saveCreator(); } else { await saveBrand(); }
-      showMessage("Profile saved successfully.", "success");
-      await loadProfile();
-      window.exitEditMode();
-    } catch (error) {
-      console.error(error);
-      showMessage(error.message || "Could not save profile.", "error");
-    } finally {
-      button.disabled = false;
-      button.textContent = "Save profile";
-    }
-  });
-
-  async function saveCreator() {
-    var fullName = document.getElementById("creatorName").value.trim();
-
-    var { error: profileError } = await cube3supabase.from("profiles").upsert({
-      id: user.id, full_name: fullName,
-      bio: document.getElementById("creatorBio").value.trim(),
-      role: "creator", updated_at: new Date().toISOString()
-    });
-    if (profileError) throw profileError;
-
-    var { error } = await cube3supabase.from("creator_profiles").upsert({
-      id: user.id,
-      handle: document.getElementById("handle").value.trim(),
-      category: document.getElementById("category").value,
-      youtube_url: document.getElementById("youtube").value.trim(),
-      youtube_subscribers: Number(document.getElementById("youtubeCount").value) || null,
-      instagram_url: document.getElementById("instagram").value.trim(),
-      instagram_followers: Number(document.getElementById("instagramCount").value) || null,
-      x_url: document.getElementById("x").value.trim(),
-      x_followers: Number(document.getElementById("xCount").value) || null,
-      portfolio_url: document.getElementById("portfolio").value.trim(),
-      tiktok_url: document.getElementById("tiktok").value.trim(),
-      tiktok_followers: Number(document.getElementById("tiktokCount").value) || null,
-      facebook_url: document.getElementById("facebook").value.trim(),
-      facebook_followers: Number(document.getElementById("facebookCount").value) || null,
-      snapchat_url: document.getElementById("snapchat").value.trim(),
-      snapchat_followers: Number(document.getElementById("snapchatCount").value) || null,
-      linkedin_url: document.getElementById("linkedin").value.trim(),
-      linkedin_followers: Number(document.getElementById("linkedinCount").value) || null,
-      threads_url: document.getElementById("threads").value.trim(),
-      threads_followers: Number(document.getElementById("threadsCount").value) || null,
-      engagement_rate: Number(document.getElementById("engagementRate").value) || null,
-      avg_views: Number(document.getElementById("avgViews").value) || null,
-      audience_age_range: document.getElementById("audienceAgeRange").value,
-      audience_gender_split: document.getElementById("audienceGenderSplit").value.trim(),
-      audience_top_country: document.getElementById("audienceTopCountry").value.trim(),
-      past_collabs: document.getElementById("pastCollabs").value.trim(),
-      best_content: document.getElementById("bestContent").value.trim()
-    }, { onConflict: "id" });
-    if (error) throw error;
-  }
-
-  async function saveBrand() {
-    var companyName = document.getElementById("companyName").value.trim();
-
-    var { error: profileError } = await cube3supabase.from("profiles").upsert({
-      id: user.id, full_name: companyName, role: "brand", updated_at: new Date().toISOString()
-    });
-    if (profileError) throw profileError;
-
-    var { error } = await cube3supabase.from("brand_profiles").upsert({
-      id: user.id, company_name: companyName,
-      website_url: document.getElementById("website").value.trim(),
-      industry: document.getElementById("industry").value,
-      description: document.getElementById("companyBio").value.trim()
-    }, { onConflict: "id" });
-    if (error) throw error;
-  }
-
-  document.getElementById("avatarInput").addEventListener("change", uploadAvatar);
-
-  async function uploadAvatar(event) {
-    var file = event.target.files[0];
-    if (!file) return;
-    if (!file.type.startsWith("image/")) { showMessage("Please select an image.", "error"); return; }
-    if (file.size > 5 * 1024 * 1024) { showMessage("Image must be smaller than 5 MB.", "error"); return; }
-
-    try {
-      var extension = file.name.split(".").pop();
-      var path = user.id + "/" + Date.now() + "." + extension;
-
-      var { error: uploadError } = await cube3supabase.storage.from("avatars").upload(path, file, { upsert: true });
-      if (uploadError) throw uploadError;
-
-      var { data } = cube3supabase.storage.from("avatars").getPublicUrl(path);
-      var imageUrl = data.publicUrl;
-
-      document.getElementById("avatar").src = imageUrl;
-      var avatarSaveResult = await cube3supabase.from("profiles").upsert({ id: user.id, avatar_url: imageUrl, role: role, updated_at: new Date().toISOString() });
-      if (avatarSaveResult.error) throw avatarSaveResult.error;
-
-      if (role === "brand") {
-        await cube3supabase.from("brand_profiles").update({ logo_url: imageUrl }).eq("id", user.id);
-      }
-
-      showMessage("Image uploaded successfully.", "success");
-    } catch (error) {
-      console.error(error);
-      showMessage("Image upload failed: " + error.message, "error");
-    }
-  }
-
-  window.handleLogout = async function () {
-    try { await Cube3Auth.signOut(); } catch (error) { console.error(error); }
-  };
-
-  document.getElementById("logout").addEventListener("click", async function (event) {
-    event.preventDefault();
-    await window.handleLogout();
-  });
-
-  init();
-
-})();
-</script>
-
-</body>
-</html>
+      document.getElementById("threads").value = creator.t
