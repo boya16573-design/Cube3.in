@@ -67,6 +67,8 @@
     </div>
     <div id="chatMessages" style="flex:1; overflow-y:auto; padding:14px; display:flex; flex-direction:column; gap:8px; min-height:200px;"></div>
     <div style="display:flex; gap:8px; padding:12px; border-top:1px solid var(--line);">
+      <input type="file" id="chatAttachInput" accept="image/*,video/*" hidden onchange="handleChatAttachSelect()">
+      <button class="btn btn-ghost" onclick="document.getElementById('chatAttachInput').click()" title="Attach photo/video">📎</button>
       <input id="chatInput" type="text" placeholder="Say hello..." style="flex:1;">
       <button class="btn btn-primary" onclick="sendChatMessage()">Send</button>
     </div>
@@ -97,6 +99,23 @@
     return String(value || "")
       .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+  }
+
+  async function uploadAttachment(file) {
+    if (!file) return null;
+    var isImage = file.type.startsWith("image/");
+    var isVideo = file.type.startsWith("video/");
+    if (!isImage && !isVideo) { alert("Only photos and videos can be shared."); return null; }
+    if (file.size > 25 * 1024 * 1024) { alert("File must be smaller than 25 MB."); return null; }
+
+    var extension = file.name.split(".").pop();
+    var path = currentUser.id + "/" + Date.now() + "." + extension;
+
+    var { error } = await supabase.storage.from("message-attachments").upload(path, file);
+    if (error) { alert("Upload failed: " + error.message); return null; }
+
+    var { data } = supabase.storage.from("message-attachments").getPublicUrl(path);
+    return { url: data.publicUrl, type: isImage ? "image" : "video" };
   }
 
   function formatCount(n) {
@@ -248,7 +267,7 @@
 
   async function loadChatMessages() {
     var box = document.getElementById("chatMessages");
-    var { data, error } = await supabase.from("inquiry_messages").select("id, sender_id, body").eq("inquiry_id", activeInquiryId).order("created_at", { ascending: true });
+    var { data, error } = await supabase.from("inquiry_messages").select("id, sender_id, body, attachment_url, attachment_type").eq("inquiry_id", activeInquiryId).order("created_at", { ascending: true });
 
     if (error) { box.innerHTML = '<div class="empty-state">Could not load messages.</div>'; return; }
 
@@ -258,7 +277,14 @@
     }
 
     box.innerHTML = data.map(function (m) {
-      return '<div class="chat-bubble ' + (m.sender_id === currentUser.id ? "mine" : "theirs") + '">' + escapeHTML(m.body) + '</div>';
+      var mine = m.sender_id === currentUser.id;
+      var media = "";
+      if (m.attachment_url) {
+        media = m.attachment_type === "video"
+          ? '<video src="' + escapeHTML(m.attachment_url) + '" controls style="max-width:200px; border-radius:10px; display:block; margin-bottom:' + (m.body ? '6px' : '0') + ';"></video>'
+          : '<img src="' + escapeHTML(m.attachment_url) + '" alt="" style="max-width:200px; border-radius:10px; display:block; margin-bottom:' + (m.body ? '6px' : '0') + '; cursor:pointer;" onclick="window.open(this.src, \'_blank\')">';
+      }
+      return '<div class="chat-bubble ' + (mine ? "mine" : "theirs") + '">' + media + (m.body ? escapeHTML(m.body) : "") + '</div>';
     }).join("");
     box.scrollTop = box.scrollHeight;
   }
@@ -273,16 +299,42 @@
       .subscribe();
   }
 
+  var pendingChatAttachment = null;
+
+  window.handleChatAttachSelect = async function () {
+    var fileInput = document.getElementById("chatAttachInput");
+    var file = fileInput.files[0];
+    fileInput.value = "";
+    if (!file) return;
+
+    var chatInput = document.getElementById("chatInput");
+    chatInput.placeholder = "Uploading...";
+    var result = await uploadAttachment(file);
+    chatInput.placeholder = "Say hello...";
+    if (!result) return;
+
+    pendingChatAttachment = result;
+    chatInput.placeholder = "Attachment ready — add a caption or just Send";
+  };
+
   window.sendChatMessage = async function () {
     var input = document.getElementById("chatInput");
     var body = input.value.trim();
-    if (!body || !activeInquiryId) return;
+    if (!body && !pendingChatAttachment) return;
+    if (!activeInquiryId) return;
 
     input.value = "";
+    input.placeholder = "Say hello...";
 
     try {
-      var { error } = await supabase.from("inquiry_messages").insert({ inquiry_id: activeInquiryId, sender_id: currentUser.id, body: body });
+      var payload = { inquiry_id: activeInquiryId, sender_id: currentUser.id, body: body };
+      if (pendingChatAttachment) {
+        payload.attachment_url = pendingChatAttachment.url;
+        payload.attachment_type = pendingChatAttachment.type;
+      }
+      var { error } = await supabase.from("inquiry_messages").insert(payload);
       if (error) throw error;
+      pendingChatAttachment = null;
       await loadChatMessages();
     } catch (error) {
       console.error(error);
