@@ -58,6 +58,27 @@
   </div>
 </div>
 
+<!-- CHAT MODAL -->
+<div id="chatModal" class="modal-overlay" style="position:fixed; inset:0; background:rgba(15,23,42,0.45); display:none; align-items:center; justify-content:center; padding:20px; z-index:1000;">
+  <div style="width:100%; max-width:420px; background:var(--panel); border:1px solid var(--line); border-radius:var(--radius-md); overflow:hidden; display:flex; flex-direction:column; max-height:80vh;">
+    <div style="padding:14px 18px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center;">
+      <strong id="chatWithName" style="font-size:14px;"></strong>
+      <button onclick="closeChat()" style="border:0; background:transparent; font-size:20px; cursor:pointer; color:var(--ink-faint);">×</button>
+    </div>
+    <div id="chatMessages" style="flex:1; overflow-y:auto; padding:14px; display:flex; flex-direction:column; gap:8px; min-height:200px;"></div>
+    <div style="display:flex; gap:8px; padding:12px; border-top:1px solid var(--line);">
+      <input id="chatInput" type="text" placeholder="Say hello..." style="flex:1;">
+      <button class="btn btn-primary" onclick="sendChatMessage()">Send</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .chat-bubble{max-width:75%; padding:8px 12px; border-radius:12px; font-size:13px; line-height:1.4;}
+  .chat-bubble.mine{align-self:flex-end; background:var(--violet); color:#fff; border-bottom-right-radius:4px;}
+  .chat-bubble.theirs{align-self:flex-start; background:var(--paper); color:var(--ink); border-bottom-left-radius:4px;}
+</style>
+
 <script src="/config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script>
 <script src="/supabase-client.js"></script>
@@ -67,6 +88,10 @@
 (function () {
   var supabase = window.cube3Supabase;
   var creators = [];
+  var currentUser = null;
+  var currentRole = null;
+  var activeInquiryId = null;
+  var activeChannel = null;
 
   function escapeHTML(value) {
     return String(value || "")
@@ -96,7 +121,12 @@
 
   async function init() {
     try {
-      await Cube3Auth.requireUser();
+      currentUser = await Cube3Auth.requireUser();
+      if (!currentUser) return;
+
+      var { data: profile } = await supabase.from("profiles").select("role").eq("id", currentUser.id).single();
+      currentRole = profile ? profile.role : "creator";
+
       await loadCreators();
     } catch (error) {
       console.error(error);
@@ -177,12 +207,92 @@
           linkWithCount(c, "threads_url", "Threads") +
           (c.portfolio_url ? '<a href="' + escapeHTML(c.portfolio_url) + '" target="_blank" rel="noopener">Portfolio</a>' : "") +
         '</div>' +
+        (currentRole === "brand" ? '<button class="btn btn-primary btn-sm" style="margin-top:12px;" onclick="openChat(\'' + c.id + '\', \'' + escapeHTML(c.fullName).replace(/'/g, "\\'") + '\')">Message</button>' : "") +
       '</div>';
     }).join("");
   }
 
   document.getElementById("search").addEventListener("input", render);
   document.getElementById("categoryFilter").addEventListener("change", render);
+
+  window.openChat = async function (creatorId, creatorName) {
+    document.getElementById("chatWithName").textContent = creatorName;
+    document.getElementById("chatMessages").innerHTML = '<div class="muted" style="font-size:12.5px;">Loading...</div>';
+    document.getElementById("chatModal").style.display = "flex";
+
+    try {
+      var { data: existing } = await supabase.from("creator_inquiries").select("id").eq("brand_id", currentUser.id).eq("creator_id", creatorId).maybeSingle();
+
+      if (existing) {
+        activeInquiryId = existing.id;
+      } else {
+        var { data: created, error } = await supabase.from("creator_inquiries").insert({ brand_id: currentUser.id, creator_id: creatorId }).select("id").single();
+        if (error) throw error;
+        activeInquiryId = created.id;
+      }
+
+      await loadChatMessages();
+      subscribeToChat();
+
+    } catch (error) {
+      console.error(error);
+      document.getElementById("chatMessages").innerHTML = '<div class="empty-state">Could not open chat. ' + escapeHTML(error.message) + '</div>';
+    }
+  };
+
+  window.closeChat = function () {
+    document.getElementById("chatModal").style.display = "none";
+    if (activeChannel) { supabase.removeChannel(activeChannel); activeChannel = null; }
+    activeInquiryId = null;
+  };
+
+  async function loadChatMessages() {
+    var box = document.getElementById("chatMessages");
+    var { data, error } = await supabase.from("inquiry_messages").select("id, sender_id, body").eq("inquiry_id", activeInquiryId).order("created_at", { ascending: true });
+
+    if (error) { box.innerHTML = '<div class="empty-state">Could not load messages.</div>'; return; }
+
+    if (!data.length) {
+      box.innerHTML = '<div class="muted" style="font-size:12.5px; text-align:center;">Say hello to start the conversation.</div>';
+      return;
+    }
+
+    box.innerHTML = data.map(function (m) {
+      return '<div class="chat-bubble ' + (m.sender_id === currentUser.id ? "mine" : "theirs") + '">' + escapeHTML(m.body) + '</div>';
+    }).join("");
+    box.scrollTop = box.scrollHeight;
+  }
+
+  function subscribeToChat() {
+    if (activeChannel) { supabase.removeChannel(activeChannel); activeChannel = null; }
+    activeChannel = supabase
+      .channel("inquiry-" + activeInquiryId)
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "inquiry_messages", filter: "inquiry_id=eq." + activeInquiryId }, function () {
+        loadChatMessages();
+      })
+      .subscribe();
+  }
+
+  window.sendChatMessage = async function () {
+    var input = document.getElementById("chatInput");
+    var body = input.value.trim();
+    if (!body || !activeInquiryId) return;
+
+    input.value = "";
+
+    try {
+      var { error } = await supabase.from("inquiry_messages").insert({ inquiry_id: activeInquiryId, sender_id: currentUser.id, body: body });
+      if (error) throw error;
+      await loadChatMessages();
+    } catch (error) {
+      console.error(error);
+      alert(error.message || "Could not send message.");
+    }
+  };
+
+  document.getElementById("chatInput") && document.getElementById("chatInput").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") window.sendChatMessage();
+  });
 
   init();
 })();
