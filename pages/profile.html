@@ -86,6 +86,7 @@
         <div id="handleLine" class="handle-line"></div>
         <p id="bioText" class="bio-text"></p>
         <div id="linkRow" class="link-row"></div>
+        <div id="extraInfo"></div>
       </div>
     </div>
   </div>
@@ -111,6 +112,50 @@
           </select>
           <label for="creatorBio">Bio</label>
           <textarea id="creatorBio" maxlength="1000" placeholder="Tell brands about yourself, your audience and your content..."></textarea>
+        </div>
+
+        <div class="section">
+          <h2>Engagement stats</h2>
+          <div class="social-grid">
+            <div>
+              <label for="engagementRate">Engagement rate (%)</label>
+              <input id="engagementRate" type="number" min="0" max="100" step="0.1" placeholder="e.g. 4.5">
+            </div>
+            <div>
+              <label for="avgViews">Average views per post</label>
+              <input id="avgViews" type="number" min="0" placeholder="e.g. 25000">
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h2>Audience demographics</h2>
+          <div class="social-grid">
+            <div>
+              <label for="audienceAgeRange">Primary age range</label>
+              <select id="audienceAgeRange">
+                <option value="">Select age range</option>
+                <option>13-17</option><option>18-24</option><option>25-34</option>
+                <option>35-44</option><option>45-54</option><option>55+</option>
+              </select>
+            </div>
+            <div>
+              <label for="audienceGenderSplit">Gender split</label>
+              <input id="audienceGenderSplit" type="text" placeholder="e.g. 60% Female, 40% Male">
+            </div>
+            <div>
+              <label for="audienceTopCountry">Top audience country</label>
+              <input id="audienceTopCountry" type="text" placeholder="e.g. India">
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h2>Portfolio</h2>
+          <label for="pastCollabs">Past brand collaborations</label>
+          <textarea id="pastCollabs" maxlength="1000" placeholder="List brands you've worked with, one per line..."></textarea>
+          <label for="bestContent">Showcase your best content</label>
+          <textarea id="bestContent" maxlength="1000" placeholder="Paste links to your best posts/videos, one per line..."></textarea>
         </div>
 
         <div class="section">
@@ -304,7 +349,11 @@
     document.getElementById("statsRow").innerHTML =
       '<div class="stat-item"><b>' + (appCount ?? 0) + '</b><span>Applied</span></div>' +
       '<div class="stat-item"><b>' + (favCount ?? 0) + '</b><span>Favorites</span></div>' +
-      '<div class="stat-item"><b>' + (creator && creator.category ? escapeHTML(creator.category) : "—") + '</b><span>Category</span></div>';
+      '<div class="stat-item"><b>' + (creator && creator.category ? escapeHTML(creator.category) : "—") + '</b><span>Category</span></div>' +
+      (creator && creator.engagement_rate ? '<div class="stat-item"><b>' + creator.engagement_rate + '%</b><span>Engagement</span></div>' : "") +
+      (creator && creator.avg_views ? '<div class="stat-item"><b>' + formatCount(creator.avg_views) + '</b><span>Avg views</span></div>' : "");
+
+    renderAudienceAndPortfolio(creator);
 
     document.getElementById("creatorFields").classList.remove("hidden");
     document.getElementById("brandFields").classList.add("hidden");
@@ -331,6 +380,13 @@
       document.getElementById("linkedinCount").value = creator.linkedin_followers || "";
       document.getElementById("threads").value = creator.threads_url || "";
       document.getElementById("threadsCount").value = creator.threads_followers || "";
+      document.getElementById("engagementRate").value = creator.engagement_rate || "";
+      document.getElementById("avgViews").value = creator.avg_views || "";
+      document.getElementById("audienceAgeRange").value = creator.audience_age_range || "";
+      document.getElementById("audienceGenderSplit").value = creator.audience_gender_split || "";
+      document.getElementById("audienceTopCountry").value = creator.audience_top_country || "";
+      document.getElementById("pastCollabs").value = creator.past_collabs || "";
+      document.getElementById("bestContent").value = creator.best_content || "";
     }
   }
 
@@ -361,6 +417,42 @@
       document.getElementById("website").value = brand.website_url || "";
       if (brand.logo_url) document.getElementById("avatar").src = brand.logo_url;
     }
+  }
+
+  function renderAudienceAndPortfolio(creator) {
+    var container = document.getElementById("extraInfo");
+    if (!creator) { container.innerHTML = ""; return; }
+
+    var hasAudience = creator.audience_age_range || creator.audience_gender_split || creator.audience_top_country;
+    var hasPortfolio = creator.past_collabs || creator.best_content;
+
+    var html = "";
+
+    if (hasAudience) {
+      html += '<div style="margin-top:16px;"><div style="font-size:12px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.04em; margin-bottom:6px;">Audience</div>';
+      var bits = [];
+      if (creator.audience_age_range) bits.push(escapeHTML(creator.audience_age_range));
+      if (creator.audience_gender_split) bits.push(escapeHTML(creator.audience_gender_split));
+      if (creator.audience_top_country) bits.push(escapeHTML(creator.audience_top_country));
+      html += '<div style="font-size:13.5px; color:var(--ink);">' + bits.join(" · ") + '</div></div>';
+    }
+
+    if (creator.past_collabs) {
+      html += '<div style="margin-top:16px;"><div style="font-size:12px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.04em; margin-bottom:6px;">Past collaborations</div>';
+      html += '<div style="font-size:13.5px; color:var(--ink); white-space:pre-wrap;">' + escapeHTML(creator.past_collabs) + '</div></div>';
+    }
+
+    if (creator.best_content) {
+      html += '<div style="margin-top:16px;"><div style="font-size:12px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.04em; margin-bottom:6px;">Best content</div>';
+      var links = creator.best_content.split("\n").filter(Boolean);
+      html += '<div style="display:flex; flex-direction:column; gap:4px;">' +
+        links.map(function (l) {
+          var trimmed = l.trim();
+          return '<a href="' + escapeHTML(trimmed) + '" target="_blank" rel="noopener" style="color:var(--violet-deep); font-size:13px; font-weight:600;">' + escapeHTML(trimmed) + '</a>';
+        }).join("") + '</div></div>';
+    }
+
+    container.innerHTML = html;
   }
 
   window.enterEditMode = function () {
@@ -423,7 +515,14 @@
       linkedin_url: document.getElementById("linkedin").value.trim(),
       linkedin_followers: Number(document.getElementById("linkedinCount").value) || null,
       threads_url: document.getElementById("threads").value.trim(),
-      threads_followers: Number(document.getElementById("threadsCount").value) || null
+      threads_followers: Number(document.getElementById("threadsCount").value) || null,
+      engagement_rate: Number(document.getElementById("engagementRate").value) || null,
+      avg_views: Number(document.getElementById("avgViews").value) || null,
+      audience_age_range: document.getElementById("audienceAgeRange").value,
+      audience_gender_split: document.getElementById("audienceGenderSplit").value.trim(),
+      audience_top_country: document.getElementById("audienceTopCountry").value.trim(),
+      past_collabs: document.getElementById("pastCollabs").value.trim(),
+      best_content: document.getElementById("bestContent").value.trim()
     }, { onConflict: "id" });
     if (error) throw error;
   }
