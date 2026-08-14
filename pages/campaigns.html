@@ -85,13 +85,6 @@
       <input type="hidden" id="applicationCampaignId">
       <label for="pitch">Your pitch</label>
       <textarea id="pitch" placeholder="Tell the brand why you're a good fit..." required></textarea>
-
-      <label for="proposedRate">Your rate (₹, optional)</label>
-      <input id="proposedRate" type="number" min="0" step="0.01" placeholder="e.g. 15000">
-
-      <label for="portfolioUrl">Portfolio / samples link (optional)</label>
-      <input id="portfolioUrl" type="url" placeholder="Link to past work, reel, or portfolio">
-
       <button class="btn btn-primary btn-block" type="submit" style="margin-top:18px;">Submit application</button>
       <div id="applicationMessage" class="message"></div>
     </form>
@@ -341,8 +334,6 @@
   window.openApplyModal = function (campaignId) {
     document.getElementById("applicationCampaignId").value = campaignId;
     document.getElementById("pitch").value = "";
-    document.getElementById("proposedRate").value = "";
-    document.getElementById("portfolioUrl").value = "";
     document.getElementById("applicationMessage").className = "message";
     document.getElementById("applyModal").classList.add("show");
   };
@@ -359,12 +350,7 @@
 
     try {
       var { error } = await supabase.from("campaign_applications").insert({
-        campaign_id: campaignId,
-        creator_id: currentUser.id,
-        pitch: pitch,
-        proposed_rate: Number(document.getElementById("proposedRate").value) || null,
-        portfolio_url: document.getElementById("portfolioUrl").value.trim() || null,
-        status: "pending"
+        campaign_id: campaignId, creator_id: currentUser.id, pitch: pitch, status: "pending"
       });
       if (error) throw error;
 
