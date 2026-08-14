@@ -1,9 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<link rel="preconnect" href="https://zjgtceurzsvjkspkvroz.supabase.co">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Campaigns - Cube3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="/style.css">
 <style>
   .filters{display:grid; grid-template-columns:2fr 1fr 1fr; gap:12px; margin:24px 0 30px;}
@@ -25,7 +30,7 @@
 <header class="site-header">
   <nav class="wrap">
     <a class="brand" href="/index.html">
-      <svg class="mark" viewBox="0 0 24 24" fill="none"><path d="M12 2L21 7V17L12 22L3 17V7L12 2Z" fill="#6c5ce7"/></svg>
+      <svg class="mark" viewBox="0 0 24 24" fill="none"><path d="M12 2L21 7V17L12 22L3 17V7L12 2Z" fill="#0284c7"/></svg>
       Cube3
     </a>
     <div class="nav-links">
@@ -133,7 +138,7 @@
 </div>
 
 <script src="/config.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script>
 <script src="/supabase-client.js"></script>
 <script src="/auth.js"></script>
 
@@ -155,7 +160,15 @@
       currentUser = await Cube3Auth.requireUser();
       if (!currentUser) return;
 
-      var { data: profile, error } = await supabase.from("profiles").select("role, full_name").eq("id", currentUser.id).single();
+      // Profile (for role) and campaigns don't depend on each other,
+      // so fetch them at the same time instead of one-after-another.
+      var [profileResult] = await Promise.all([
+        supabase.from("profiles").select("role, full_name").eq("id", currentUser.id).single(),
+        loadCampaigns()
+      ]);
+
+      var profile = profileResult.data;
+      var error = profileResult.error;
       if (error && error.code !== "PGRST116") throw error;
 
       currentRole = profile ? profile.role : "creator";
@@ -164,7 +177,7 @@
         document.getElementById("createCampaignButton").style.display = "inline-flex";
       }
 
-      await loadCampaigns();
+      renderCampaigns();
 
     } catch (error) {
       console.error(error);
@@ -351,3 +364,4 @@
 
 </body>
 </html>
+
