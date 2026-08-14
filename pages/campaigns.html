@@ -93,49 +93,90 @@
 
 <!-- CREATE CAMPAIGN MODAL -->
 <div id="createModal" class="modal-overlay">
-  <div class="modal">
+  <div class="modal" style="max-width:640px;">
     <div class="modal-header">
       <h2 style="font-size:20px;">Create campaign</h2>
       <button class="close-btn" onclick="closeCreateModal()">×</button>
     </div>
+
+    <div style="display:flex; gap:6px; margin:16px 0 22px;">
+      <div class="step-dot" data-step="1"></div>
+      <div class="step-dot" data-step="2"></div>
+      <div class="step-dot" data-step="3"></div>
+      <div class="step-dot" data-step="4"></div>
+    </div>
+    <div id="stepLabel" class="muted" style="font-size:12.5px; margin-bottom:14px; text-transform:uppercase; letter-spacing:.04em; font-weight:600;">Step 1 of 4 — Basics</div>
+
     <form id="campaignForm">
-      <label for="campaignTitle">Campaign title</label>
-      <input id="campaignTitle" type="text" placeholder="Example: Promote our new product" required>
 
-      <label for="campaignDescription">Description</label>
-      <textarea id="campaignDescription" placeholder="Describe the campaign..." required></textarea>
+      <!-- STEP 1: Templates + Basics -->
+      <div class="wizard-step" id="wizardStep1">
+        <label>Start from a template (optional)</label>
+        <div id="templateGrid" style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:18px;"></div>
 
-      <label for="campaignBudget">Budget (₹)</label>
-      <input id="campaignBudget" type="number" min="0" step="0.01" placeholder="50000">
+        <label for="campaignTitle">Campaign title</label>
+        <input id="campaignTitle" type="text" placeholder="Example: Promote our new product" required>
 
-      <label for="campaignCategory">Category</label>
-      <select id="campaignCategory">
-        <option value="Technology">Technology</option><option value="Gaming">Gaming</option>
-        <option value="Education">Education</option><option value="Entertainment">Entertainment</option>
-        <option value="Business">Business</option><option value="Fashion">Fashion</option>
-        <option value="Fitness">Fitness</option><option value="Travel">Travel</option><option value="Food">Food</option>
-      </select>
+        <label for="campaignCategory">Category</label>
+        <select id="campaignCategory">
+          <option value="Technology">Technology</option><option value="Gaming">Gaming</option>
+          <option value="Education">Education</option><option value="Entertainment">Entertainment</option>
+          <option value="Business">Business</option><option value="Fashion">Fashion</option>
+          <option value="Fitness">Fitness</option><option value="Travel">Travel</option><option value="Food">Food</option>
+        </select>
 
-      <label for="campaignPlatform">Platform</label>
-      <select id="campaignPlatform">
-        <option>YouTube</option><option>Instagram</option><option>TikTok</option>
-        <option>Facebook</option><option>X</option><option>Website</option><option>Other</option>
-      </select>
+        <label for="campaignPlatform">Platform</label>
+        <select id="campaignPlatform">
+          <option>YouTube</option><option>Instagram</option><option>TikTok</option>
+          <option>Facebook</option><option>X</option><option>Website</option><option>Other</option>
+        </select>
 
-      <label for="campaignLocation">Location</label>
-      <input id="campaignLocation" type="text" placeholder="India / Remote">
+        <label for="campaignDescription">Description</label>
+        <textarea id="campaignDescription" placeholder="Describe the campaign..." required></textarea>
+      </div>
 
-      <label for="campaignRequirements">Requirements</label>
-      <textarea id="campaignRequirements" placeholder="Creator requirements..."></textarea>
+      <!-- STEP 2: Budget & Deliverables -->
+      <div class="wizard-step hidden" id="wizardStep2">
+        <label for="campaignBudget">Budget (₹)</label>
+        <input id="campaignBudget" type="number" min="0" step="0.01" placeholder="50000">
 
-      <label for="campaignDeadline">Application deadline</label>
-      <input id="campaignDeadline" type="date">
+        <label for="campaignRequirements">Deliverables & requirements</label>
+        <textarea id="campaignRequirements" placeholder="e.g. '3 Instagram posts, 1 Reel, minimum 10K followers'"></textarea>
+      </div>
 
-      <button class="btn btn-primary btn-block" type="submit" style="margin-top:18px;">Publish campaign</button>
+      <!-- STEP 3: Timeline & Location -->
+      <div class="wizard-step hidden" id="wizardStep3">
+        <label for="campaignDeadline">Application deadline</label>
+        <input id="campaignDeadline" type="date">
+
+        <label for="campaignLocation">Location</label>
+        <input id="campaignLocation" type="text" placeholder="India / Remote">
+      </div>
+
+      <!-- STEP 4: Review -->
+      <div class="wizard-step hidden" id="wizardStep4">
+        <div id="reviewSummary" style="background:var(--paper); border:1px solid var(--line); border-radius:var(--radius-sm); padding:16px; font-size:13.5px; line-height:1.8;"></div>
+      </div>
+
+      <div style="display:flex; gap:10px; margin-top:20px;">
+        <button type="button" id="wizardBack" class="btn btn-ghost hidden" onclick="window.wizardBack()">Back</button>
+        <button type="button" id="wizardNext" class="btn btn-primary" style="flex:1;" onclick="window.wizardNext()">Next</button>
+        <button type="submit" id="wizardPublish" class="btn btn-primary hidden" style="flex:1;">Publish campaign</button>
+      </div>
+
       <div id="campaignMessage" class="message"></div>
     </form>
   </div>
 </div>
+
+<style>
+  .step-dot{flex:1; height:4px; border-radius:2px; background:var(--line);}
+  .step-dot.active{background:var(--violet);}
+  .step-dot.done{background:var(--success-fg);}
+  .template-card{border:1px solid var(--line); border-radius:var(--radius-sm); padding:10px 12px; cursor:pointer; font-size:12.5px; transition:border-color .15s ease, background .15s ease;}
+  .template-card:hover{border-color:var(--violet);}
+  .template-card b{display:block; font-size:13px; margin-bottom:2px;}
+</style>
 
 <script src="/config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script>
@@ -148,6 +189,23 @@
   var currentUser = null;
   var currentRole = null;
   var campaigns = [];
+  var wizardStep = 1;
+  var TOTAL_STEPS = 4;
+
+  var CAMPAIGN_TEMPLATES = [
+    { name: "Product Launch", category: "Technology", platform: "Instagram",
+      description: "Introduce our new product to your audience with an authentic first-impressions post.",
+      requirements: "1 feed post + 2 stories, must show unboxing/first use." },
+    { name: "Brand Awareness", category: "Business", platform: "YouTube",
+      description: "Help more people discover our brand through genuine storytelling.",
+      requirements: "1 dedicated video mention (60-90 seconds) within a regular upload." },
+    { name: "App Install Push", category: "Technology", platform: "TikTok",
+      description: "Drive installs for our app with a short, engaging demo.",
+      requirements: "1 short-form video showing the app in use, link in bio for 7 days." },
+    { name: "Event Promotion", category: "Entertainment", platform: "Instagram",
+      description: "Spread the word about our upcoming event to your local audience.",
+      requirements: "1 story series (min 3 slides) in the week leading up to the event." }
+  ];
 
   function escapeHTML(value) {
     return String(value || "")
@@ -309,11 +367,91 @@
 
   document.getElementById("createCampaignButton").addEventListener("click", function () {
     document.getElementById("createModal").classList.add("show");
+    renderTemplates();
+    goToStep(1);
   });
 
   window.closeCreateModal = function () {
     document.getElementById("createModal").classList.remove("show");
   };
+
+  function renderTemplates() {
+    var grid = document.getElementById("templateGrid");
+    grid.innerHTML = CAMPAIGN_TEMPLATES.map(function (t, i) {
+      return '<div class="template-card" onclick="window.applyTemplate(' + i + ')">' +
+        '<b>' + escapeHTML(t.name) + '</b>' + escapeHTML(t.platform) + ' · ' + escapeHTML(t.category) +
+        '</div>';
+    }).join("");
+  }
+
+  window.applyTemplate = function (index) {
+    var t = CAMPAIGN_TEMPLATES[index];
+    if (!t) return;
+    document.getElementById("campaignTitle").value = t.name;
+    document.getElementById("campaignCategory").value = t.category;
+    document.getElementById("campaignPlatform").value = t.platform;
+    document.getElementById("campaignDescription").value = t.description;
+    document.getElementById("campaignRequirements").value = t.requirements;
+  };
+
+  function goToStep(step) {
+    wizardStep = step;
+
+    for (var i = 1; i <= TOTAL_STEPS; i++) {
+      var el = document.getElementById("wizardStep" + i);
+      if (el) el.classList.toggle("hidden", i !== step);
+
+      var dot = document.querySelector('.step-dot[data-step="' + i + '"]');
+      if (dot) {
+        dot.classList.toggle("active", i === step);
+        dot.classList.toggle("done", i < step);
+      }
+    }
+
+    var labels = ["", "Basics", "Budget & deliverables", "Timeline & location", "Review & publish"];
+    document.getElementById("stepLabel").textContent = "Step " + step + " of " + TOTAL_STEPS + " — " + labels[step];
+
+    document.getElementById("wizardBack").classList.toggle("hidden", step === 1);
+    document.getElementById("wizardNext").classList.toggle("hidden", step === TOTAL_STEPS);
+    document.getElementById("wizardPublish").classList.toggle("hidden", step !== TOTAL_STEPS);
+
+    if (step === TOTAL_STEPS) renderReview();
+  }
+
+  function validateStep(step) {
+    if (step === 1) {
+      var title = document.getElementById("campaignTitle").value.trim();
+      var description = document.getElementById("campaignDescription").value.trim();
+      if (!title || !description) {
+        alert("Please fill in the campaign title and description before continuing.");
+        return false;
+      }
+    }
+    return true;
+  }
+
+  window.wizardNext = function () {
+    if (!validateStep(wizardStep)) return;
+    if (wizardStep < TOTAL_STEPS) goToStep(wizardStep + 1);
+  };
+
+  window.wizardBack = function () {
+    if (wizardStep > 1) goToStep(wizardStep - 1);
+  };
+
+  function renderReview() {
+    var budget = document.getElementById("campaignBudget").value;
+    var deadline = document.getElementById("campaignDeadline").value;
+
+    document.getElementById("reviewSummary").innerHTML =
+      '<strong>' + escapeHTML(document.getElementById("campaignTitle").value) + '</strong><br>' +
+      escapeHTML(document.getElementById("campaignCategory").value) + ' · ' + escapeHTML(document.getElementById("campaignPlatform").value) + '<br><br>' +
+      escapeHTML(document.getElementById("campaignDescription").value) + '<br><br>' +
+      '<strong>Budget:</strong> ' + (budget ? "₹" + Number(budget).toLocaleString("en-IN") : "Not set") + '<br>' +
+      '<strong>Deliverables:</strong> ' + (escapeHTML(document.getElementById("campaignRequirements").value) || "Not set") + '<br>' +
+      '<strong>Deadline:</strong> ' + (deadline || "Not set") + '<br>' +
+      '<strong>Location:</strong> ' + (escapeHTML(document.getElementById("campaignLocation").value) || "Not set");
+  }
 
   document.getElementById("campaignForm").addEventListener("submit", async function (event) {
     event.preventDefault();
@@ -364,4 +502,3 @@
 
 </body>
 </html>
-
