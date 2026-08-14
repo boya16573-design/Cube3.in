@@ -151,6 +151,7 @@
         '</div>' +
         '<p class="bio">' + escapeHTML(c.bio || "No bio yet.") + '</p>' +
         (c.category ? '<span class="tag">' + escapeHTML(c.category) + '</span>' : "") +
+        (c.engagement_rate ? '<span class="tag">' + c.engagement_rate + '% engagement</span>' : "") +
         '<div class="links">' +
           linkWithCount(c, "youtube_url", "YouTube") +
           linkWithCount(c, "instagram_url", "Instagram") +
