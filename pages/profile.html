@@ -103,6 +103,12 @@
           <input id="creatorName" type="text" placeholder="Your name">
           <label for="handle">Creator handle</label>
           <input id="handle" type="text" placeholder="@yourname">
+          <label for="location">Location</label>
+          <input id="location" type="text" placeholder="e.g. Mumbai, India">
+          <div class="social-grid">
+            <div><label for="rateMin">Rate per post \u2014 min (\u20b9)</label><input id="rateMin" type="number" min="0" placeholder="e.g. 5000"></div>
+            <div><label for="rateMax">Rate per post \u2014 max (\u20b9)</label><input id="rateMax" type="number" min="0" placeholder="e.g. 20000"></div>
+          </div>
           <label for="category">Category</label>
           <select id="category">
             <option value="">Select category</option>
@@ -381,6 +387,9 @@
     document.getElementById("creatorBio").value = (profile && profile.bio) || "";
     if (creator) {
       document.getElementById("handle").value = creator.handle || "";
+      document.getElementById("location").value = creator.location || "";
+      document.getElementById("rateMin").value = creator.rate_min || "";
+      document.getElementById("rateMax").value = creator.rate_max || "";
       document.getElementById("category").value = creator.category || "";
       document.getElementById("youtube").value = creator.youtube_url || "";
       document.getElementById("youtubeCount").value = creator.youtube_subscribers || "";
@@ -389,12 +398,4 @@
       document.getElementById("x").value = creator.x_url || "";
       document.getElementById("xCount").value = creator.x_followers || "";
       document.getElementById("portfolio").value = creator.portfolio_url || "";
-      document.getElementById("tiktok").value = creator.tiktok_url || "";
-      document.getElementById("tiktokCount").value = creator.tiktok_followers || "";
-      document.getElementById("facebook").value = creator.facebook_url || "";
-      document.getElementById("facebookCount").value = creator.facebook_followers || "";
-      document.getElementById("snapchat").value = creator.snapchat_url || "";
-      document.getElementById("snapchatCount").value = creator.snapchat_followers || "";
-      document.getElementById("linkedin").value = creator.linkedin_url || "";
-      document.getElementById("linkedinCount").value = creator.linkedin_followers || "";
-      document.getElementById("threads").value = creator.t
+      document
