@@ -55,6 +55,8 @@
   <div class="conversations">
     <h2>Conversations</h2>
     <div id="conversationList"><div class="loading-state">Loading...</div></div>
+    <h2 style="font-size:13px; padding:14px 16px 6px; margin:0; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-faint); border-top:1px solid var(--line);">Direct messages</h2>
+    <div id="inquiryList" style="padding-bottom:10px;"><div class="loading-state" style="margin:10px;">Loading...</div></div>
   </div>
   <div class="thread" id="threadPanel">
     <div class="loading-state" style="margin:auto;">Select a conversation to start chatting.</div>
@@ -89,7 +91,7 @@
       if (error && error.code !== "PGRST116") throw error;
       role = profile ? profile.role : "creator";
 
-      await loadConversations();
+      await Promise.all([loadConversations(), loadInquiries()]);
 
     } catch (error) {
       console.error(error);
@@ -239,6 +241,93 @@
       alert(error.message || "Could not send message.");
     } finally {
       button.disabled = false;
+    }
+  };
+
+  var activeInquiryId = null;
+  var inquiryChannel = null;
+  var inquiries = [];
+
+  async function loadInquiries() {
+    var list = document.getElementById("inquiryList");
+
+    var query = role === "brand"
+      ? supabase.from("creator_inquiries").select("id, creator_id").eq("brand_id", currentUser.id)
+      : supabase.from("creator_inquiries").select("id, brand_id").eq("creator_id", currentUser.id);
+
+    var { data, error } = await query;
+    if (error) { list.innerHTML = '<div class="empty-state" style="margin:10px;">Could not load direct messages.</div>'; return; }
+
+    inquiries = data || [];
+
+    if (!inquiries.length) {
+      list.innerHTML = '<div class="empty-state" style="margin:10px; font-size:12px;">' + (role === "brand" ? "Message a creator from the Creators page to start." : "No direct messages yet.") + '</div>';
+      return;
+    }
+
+    var otherIds = inquiries.map(function (i) { return role === "brand" ? i.creator_id : i.brand_id; });
+    var { data: profiles } = await supabase.from("profiles").select("id, full_name").in("id", otherIds);
+    var nameById = {}; (profiles || []).forEach(function (p) { nameById[p.id] = p.full_name; });
+
+    list.innerHTML = inquiries.map(function (i) {
+      var otherId = role === "brand" ? i.creator_id : i.brand_id;
+      return '<div class="conversation" id="inq-' + i.id + '" onclick="openInquiryThread(\'' + i.id + '\')">' +
+        '<div class="name">' + escapeHTML(nameById[otherId] || "Unknown") + '</div>' +
+        '<div class="campaign">Direct message</div>' +
+      '</div>';
+    }).join("");
+  }
+
+  window.openInquiryThread = async function (inquiryId) {
+    activeInquiryId = inquiryId;
+    document.querySelectorAll(".conversation").forEach(function (el) { el.classList.remove("active"); });
+    var el = document.getElementById("inq-" + inquiryId);
+    if (el) el.classList.add("active");
+
+    var panel = document.getElementById("threadPanel");
+    panel.innerHTML =
+      '<div class="thread-header">Direct message</div>' +
+      '<div class="thread-messages" id="threadMessages"><div class="loading-state">Loading messages...</div></div>' +
+      '<div class="thread-input"><input id="messageInput" type="text" placeholder="Type a message..." maxlength="2000"><button id="sendButton" class="btn btn-primary" onclick="sendInquiryMessage()">Send</button></div>';
+
+    document.getElementById("messageInput").addEventListener("keydown", function (e) { if (e.key === "Enter") window.sendInquiryMessage(); });
+
+    if (inquiryChannel) { supabase.removeChannel(inquiryChannel); inquiryChannel = null; }
+    inquiryChannel = supabase
+      .channel("inquiry-thread-" + inquiryId)
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "inquiry_messages", filter: "inquiry_id=eq." + inquiryId }, function () { loadInquiryMessages(inquiryId); })
+      .subscribe();
+
+    await loadInquiryMessages(inquiryId);
+  };
+
+  async function loadInquiryMessages(inquiryId) {
+    var container = document.getElementById("threadMessages");
+    if (!container) return;
+    var { data, error } = await supabase.from("inquiry_messages").select("id, sender_id, body").eq("inquiry_id", inquiryId).order("created_at", { ascending: true });
+    if (error) { container.innerHTML = '<div class="empty-state">Could not load messages.</div>'; return; }
+
+    if (!data.length) { container.innerHTML = '<div class="empty-state">No messages yet.</div>'; return; }
+
+    container.innerHTML = data.map(function (m) {
+      return '<div class="bubble ' + (m.sender_id === currentUser.id ? "mine" : "theirs") + '">' + escapeHTML(m.body) + '</div>';
+    }).join("");
+    container.scrollTop = container.scrollHeight;
+  }
+
+  window.sendInquiryMessage = async function () {
+    var input = document.getElementById("messageInput");
+    var body = input.value.trim();
+    if (!body || !activeInquiryId) return;
+    input.value = "";
+
+    try {
+      var { error } = await supabase.from("inquiry_messages").insert({ inquiry_id: activeInquiryId, sender_id: currentUser.id, body: body });
+      if (error) throw error;
+      await loadInquiryMessages(activeInquiryId);
+    } catch (error) {
+      console.error(error);
+      alert(error.message || "Could not send message.");
     }
   };
 
