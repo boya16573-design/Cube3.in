@@ -163,12 +163,39 @@
     panel.innerHTML =
       '<div class="thread-header">' + escapeHTML(conv ? conv.otherName : "") + ' · ' + escapeHTML(conv ? conv.campaignTitle : "") + '</div>' +
       '<div class="thread-messages" id="threadMessages"><div class="loading-state">Loading messages...</div></div>' +
+      '<div style="display:flex; gap:6px; padding:0 14px 8px; flex-wrap:wrap;">' +
+        '<button class="btn btn-ghost btn-sm" onclick="quickReply(\'Sounds good, thank you!\')">👍 Sounds good</button>' +
+        '<button class="btn btn-ghost btn-sm" onclick="quickReply(\'Can you share more details?\')">Ask for details</button>' +
+        '<button class="btn btn-ghost btn-sm" onclick="quickReply(\'I\\'ll get back to you shortly.\')">Will reply soon</button>' +
+      '</div>' +
       '<div class="thread-input"><input id="messageInput" type="text" placeholder="Type a message..." maxlength="2000"><button id="sendButton" class="btn btn-primary" onclick="sendMessage()">Send</button></div>';
 
     document.getElementById("messageInput").addEventListener("keydown", function (e) { if (e.key === "Enter") window.sendMessage(); });
 
+    subscribeToMessages(applicationId);
     await loadMessages(applicationId);
   };
+
+  window.quickReply = function (text) {
+    var input = document.getElementById("messageInput");
+    if (input) { input.value = text; window.sendMessage(); }
+  };
+
+  var activeChannel = null;
+
+  function subscribeToMessages(applicationId) {
+    if (activeChannel) {
+      supabase.removeChannel(activeChannel);
+      activeChannel = null;
+    }
+    activeChannel = supabase
+      .channel("messages-" + applicationId)
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages", filter: "application_id=eq." + applicationId }, function () {
+        loadMessages(applicationId);
+        loadConversations();
+      })
+      .subscribe();
+  }
 
   async function loadMessages(applicationId) {
     var container = document.getElementById("threadMessages");
