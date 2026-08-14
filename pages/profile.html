@@ -1,47 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta charset="UTF-8">
 <link rel="preconnect" href="https://zjgtceurzsvjkspkvroz.supabase.co">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Profile - Cube3</title>
+<title>Collaborations - Cube3</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="/style.css">
 <style>
-  .profile-top{display:flex; gap:32px; align-items:center; padding:10px 0 24px;}
-  .avatar-wrapper{position:relative; flex-shrink:0;}
-  .avatar{width:110px; height:110px; border-radius:50%; object-fit:cover; background:var(--violet-dim); border:1px solid var(--line); display:block;}
-  .upload-button{position:absolute; bottom:2px; right:2px; width:30px; height:30px; border-radius:50%; border:3px solid var(--paper); background:var(--violet); color:#fff; cursor:pointer; font-size:13px; display:flex; align-items:center; justify-content:center;}
-  .identity{flex:1; min-width:0;}
-  .identity-row{display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:14px;}
-  .identity-row h1{font-size:20px;}
-  .role-badge{display:inline-block; padding:4px 10px; border-radius:20px; background:var(--violet-dim); color:var(--violet-deep); font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:.02em;}
-
-  .stats-row{display:flex; gap:32px; margin-bottom:16px;}
-  .stats-row .stat-item b{display:block; font-family:'Space Grotesk',sans-serif; font-size:18px;}
-  .stats-row .stat-item span{font-size:12.5px; color:var(--ink-muted);}
-
-  .handle-line{color:var(--ink-muted); font-size:13.5px; margin-bottom:4px;}
-  .bio-text{font-size:14px; line-height:1.5; white-space:pre-wrap; margin-bottom:10px; max-width:480px;}
-
-  .link-row{display:flex; flex-wrap:wrap; gap:8px 16px; margin-bottom:4px;}
-  .link-row a{display:inline-flex; align-items:center; gap:5px; font-size:13px; color:var(--violet-deep); font-weight:600;}
-  .link-row a svg{width:15px; height:15px;}
-
-  @media (max-width:600px){
-    .profile-top{flex-direction:column; align-items:flex-start; gap:16px;}
-    .stats-row{gap:22px;}
-  }
-
-  .section{padding:22px 0; border-top:1px solid var(--line);}
-  .section h2{font-size:16px; margin-bottom:16px;}
-  .social-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
-  @media (max-width:600px){ .social-grid{grid-template-columns:1fr;} }
-
-  .hidden{display:none !important;}
+  .collab-card{margin-top:18px;}
+  .collab-header{display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap; margin-bottom:14px;}
+  .collab-header h3{font-size:17px; margin:0 0 3px;}
+  .collab-header .party{color:var(--ink-muted); font-size:12.5px;}
+  .progress-bar{height:6px; background:var(--line); border-radius:3px; overflow:hidden; margin-bottom:16px;}
+  .progress-fill{height:100%; background:var(--violet); transition:width .3s ease;}
+  .milestone{border-top:1px solid var(--line); padding:14px 0; display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:flex-start;}
+  .milestone:first-of-type{border-top:0; padding-top:0;}
+  .milestone-info b{font-size:14px; display:block; margin-bottom:2px;}
+  .milestone-info .due{color:var(--ink-faint); font-size:12px;}
+  .milestone-info .submission{margin-top:6px; font-size:12.5px;}
+  .milestone-info .submission a{color:var(--violet-deep); font-weight:600;}
+  .milestone-actions{display:flex; gap:6px; flex-wrap:wrap;}
+  .milestone-actions button, .milestone-actions input{font-size:12.5px;}
+  .btn-sm{padding:7px 12px; font-size:12.5px;}
+  .add-milestone-row{display:flex; gap:8px; margin-top:16px; flex-wrap:wrap;}
+  .add-milestone-row input[type="text"]{flex:1; min-width:160px;}
 </style>
 </head>
 <body>
@@ -56,205 +42,20 @@
       <a href="dashboard.html">Dashboard</a>
       <a href="campaigns.html">Campaigns</a>
       <a href="creators.html">Creators</a>
+      <a href="collaborations.html" class="active">Collaborations</a>
       <a href="inbox.html">Messages</a>
-      <a href="profile.html" class="active">Profile</a>
-      <a href="#" id="logout">Logout</a>
+      <a href="profile.html">Profile</a>
     </div>
   </nav>
 </header>
 
-<div class="container" style="max-width:720px;">
+<div class="container">
+  <h1 style="font-size:30px;">Collaborations</h1>
+  <p class="muted">Track deliverables on your active partnerships.</p>
 
-  <!-- VIEW MODE -->
-  <div id="viewMode">
-    <div class="profile-top">
-      <div class="avatar-wrapper">
-        <img id="avatar" class="avatar" src="https://placehold.co/110x110/e7e6f0/6c5ce7?text=%20" alt="Profile picture">
-        <button type="button" class="upload-button" onclick="document.getElementById('avatarInput').click()" aria-label="Change photo">📷</button>
-        <input id="avatarInput" type="file" accept="image/*" hidden>
-      </div>
-
-      <div class="identity">
-        <div class="identity-row">
-          <h1 id="displayName">Loading...</h1>
-          <span id="role" class="role-badge">...</span>
-          <span id="verifiedBadge" class="role-badge" style="display:none; background:#e8f7ee; color:#1f8a4c;">✓ Verified</span>
-          <button class="btn btn-ghost" style="margin-left:auto;" onclick="enterEditMode()">Edit profile</button>
-        </div>
-
-        <div class="stats-row" id="statsRow"></div>
-
-        <div id="handleLine" class="handle-line"></div>
-        <p id="bioText" class="bio-text"></p>
-        <div id="linkRow" class="link-row"></div>
-        <div id="extraInfo"></div>
-      </div>
-    </div>
+  <div id="content">
+    <div class="loading-state">Loading collaborations...</div>
   </div>
-
-  <!-- EDIT MODE -->
-  <div id="editMode" class="hidden">
-    <form id="profileForm">
-
-      <div id="creatorFields" class="hidden">
-        <div class="section" style="border-top:0; padding-top:10px;">
-          <h2>Creator information</h2>
-          <label for="creatorName">Full name</label>
-          <input id="creatorName" type="text" placeholder="Your name">
-          <label for="handle">Creator handle</label>
-          <input id="handle" type="text" placeholder="@yourname">
-          <label for="location">Location</label>
-          <input id="location" type="text" placeholder="e.g. Mumbai, India">
-          <div class="social-grid">
-            <div><label for="rateMin">Rate per post \u2014 min (\u20b9)</label><input id="rateMin" type="number" min="0" placeholder="e.g. 5000"></div>
-            <div><label for="rateMax">Rate per post \u2014 max (\u20b9)</label><input id="rateMax" type="number" min="0" placeholder="e.g. 20000"></div>
-          </div>
-          <label for="category">Category</label>
-          <select id="category">
-            <option value="">Select category</option>
-            <option>Content Creator</option><option>Influencer</option><option>YouTuber</option>
-            <option>Instagram Creator</option><option>Gaming</option><option>Education</option>
-            <option>Technology</option><option>Fashion</option><option>Fitness</option>
-            <option>Travel</option><option>Music</option><option>Photography</option><option>Other</option>
-          </select>
-          <label for="creatorBio">Bio</label>
-          <textarea id="creatorBio" maxlength="1000" placeholder="Tell brands about yourself, your audience and your content..."></textarea>
-        </div>
-
-        <div class="section">
-          <h2>Engagement stats</h2>
-          <div class="social-grid">
-            <div>
-              <label for="engagementRate">Engagement rate (%)</label>
-              <input id="engagementRate" type="number" min="0" max="100" step="0.1" placeholder="e.g. 4.5">
-            </div>
-            <div>
-              <label for="avgViews">Average views per post</label>
-              <input id="avgViews" type="number" min="0" placeholder="e.g. 25000">
-            </div>
-          </div>
-        </div>
-
-        <div class="section">
-          <h2>Audience demographics</h2>
-          <div class="social-grid">
-            <div>
-              <label for="audienceAgeRange">Primary age range</label>
-              <select id="audienceAgeRange">
-                <option value="">Select age range</option>
-                <option>13-17</option><option>18-24</option><option>25-34</option>
-                <option>35-44</option><option>45-54</option><option>55+</option>
-              </select>
-            </div>
-            <div>
-              <label for="audienceGenderSplit">Gender split</label>
-              <input id="audienceGenderSplit" type="text" placeholder="e.g. 60% Female, 40% Male">
-            </div>
-            <div>
-              <label for="audienceTopCountry">Top audience country</label>
-              <input id="audienceTopCountry" type="text" placeholder="e.g. India">
-            </div>
-          </div>
-        </div>
-
-        <div class="section">
-          <h2>Portfolio</h2>
-          <label for="pastCollabs">Past brand collaborations</label>
-          <textarea id="pastCollabs" maxlength="1000" placeholder="List brands you've worked with, one per line..."></textarea>
-          <label for="bestContent">Showcase your best content</label>
-          <textarea id="bestContent" maxlength="1000" placeholder="Paste links to your best posts/videos, one per line..."></textarea>
-        </div>
-
-        <div class="section">
-          <h2>Social media</h2>
-          <div class="social-grid">
-            <div>
-              <label for="youtube">YouTube</label><input id="youtube" type="url" placeholder="https://youtube.com/@username">
-              <label for="youtubeCount">YouTube subscribers</label><input id="youtubeCount" type="number" min="0" placeholder="e.g. 12400">
-            </div>
-            <div>
-              <label for="instagram">Instagram</label><input id="instagram" type="url" placeholder="https://instagram.com/username">
-              <label for="instagramCount">Instagram followers</label><input id="instagramCount" type="number" min="0" placeholder="e.g. 8200">
-            </div>
-            <div>
-              <label for="x">X</label><input id="x" type="url" placeholder="https://x.com/username">
-              <label for="xCount">X followers</label><input id="xCount" type="number" min="0" placeholder="e.g. 3100">
-            </div>
-            <div>
-              <label for="portfolio">Portfolio</label><input id="portfolio" type="url" placeholder="https://yourwebsite.com">
-            </div>
-            <div>
-              <label for="tiktok">TikTok</label><input id="tiktok" type="url" placeholder="https://tiktok.com/@username">
-              <label for="tiktokCount">TikTok followers</label><input id="tiktokCount" type="number" min="0" placeholder="e.g. 15000">
-            </div>
-            <div>
-              <label for="facebook">Facebook</label><input id="facebook" type="url" placeholder="https://facebook.com/username">
-              <label for="facebookCount">Facebook followers</label><input id="facebookCount" type="number" min="0" placeholder="e.g. 4500">
-            </div>
-            <div>
-              <label for="snapchat">Snapchat</label><input id="snapchat" type="url" placeholder="https://snapchat.com/add/username">
-              <label for="snapchatCount">Snapchat followers</label><input id="snapchatCount" type="number" min="0" placeholder="e.g. 2200">
-            </div>
-            <div>
-              <label for="linkedin">LinkedIn</label><input id="linkedin" type="url" placeholder="https://linkedin.com/in/username">
-              <label for="linkedinCount">LinkedIn followers</label><input id="linkedinCount" type="number" min="0" placeholder="e.g. 900">
-            </div>
-            <div>
-              <label for="threads">Threads</label><input id="threads" type="url" placeholder="https://threads.net/@username">
-              <label for="threadsCount">Threads followers</label><input id="threadsCount" type="number" min="0" placeholder="e.g. 1300">
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div id="brandFields" class="hidden">
-        <div class="section" style="border-top:0; padding-top:10px;">
-          <h2>Company information</h2>
-          <label for="companyName">Company name</label>
-          <input id="companyName" type="text" placeholder="Your company name">
-          <label for="industry">Industry</label>
-          <select id="industry">
-            <option value="">Select industry</option>
-            <option>Technology</option><option>Finance</option><option>Education</option>
-            <option>Healthcare</option><option>Gaming</option><option>Fashion</option>
-            <option>Food</option><option>Travel</option><option>Entertainment</option>
-            <option>Retail</option><option>Other</option>
-          </select>
-          <label for="companyBio">Company bio</label>
-          <textarea id="companyBio" maxlength="1500" placeholder="Tell creators about your company..."></textarea>
-          <label for="targetAudience">Target audience</label>
-          <textarea id="targetAudience" maxlength="500" placeholder="Who are you trying to reach? e.g. 'Fitness-focused adults 18-30 in urban India'"></textarea>
-          <label for="website">Company website</label>
-          <input id="website" type="url" placeholder="https://yourcompany.com">
-        </div>
-
-        <div class="section">
-          <h2>Past campaigns & results</h2>
-          <label for="pastCampaignsResults">Highlights</label>
-          <textarea id="pastCampaignsResults" maxlength="1000" placeholder="Share past campaign wins, e.g. '2M impressions with 15 creators in Q1 2026'"></textarea>
-        </div>
-
-        <div class="section">
-          <h2>Social media</h2>
-          <div class="social-grid">
-            <div><label for="brandInstagram">Instagram</label><input id="brandInstagram" type="url" placeholder="https://instagram.com/yourbrand"></div>
-            <div><label for="brandFacebook">Facebook</label><input id="brandFacebook" type="url" placeholder="https://facebook.com/yourbrand"></div>
-            <div><label for="brandLinkedin">LinkedIn</label><input id="brandLinkedin" type="url" placeholder="https://linkedin.com/company/yourbrand"></div>
-            <div><label for="brandX">X</label><input id="brandX" type="url" placeholder="https://x.com/yourbrand"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="section" style="display:flex; gap:10px;">
-        <button id="saveButton" class="btn btn-primary" type="submit" style="flex:1;">Save profile</button>
-        <button type="button" class="btn btn-ghost" onclick="exitEditMode()">Cancel</button>
-        <button type="button" class="btn btn-danger" onclick="handleLogout()">Log out</button>
-      </div>
-    </form>
-
-    <div id="message" class="message"></div>
-  </div>
-
 </div>
 
 <script src="/config.js"></script>
@@ -264,19 +65,9 @@
 
 <script>
 (function () {
-
-  var cube3supabase = window.cube3Supabase;
-  var user = null;
+  var supabase = window.cube3Supabase;
+  var currentUser = null;
   var role = null;
-  var latestProfile = null;
-  var latestCreator = null;
-  var latestBrand = null;
-
-  function showMessage(text, type) {
-    var box = document.getElementById("message");
-    box.textContent = text;
-    box.className = "message " + type;
-  }
 
   function escapeHTML(value) {
     return String(value || "")
@@ -284,379 +75,245 @@
       .replace(/"/g, "&quot;").replace(/'/g, "&#039;");
   }
 
-  function formatCount(n) {
-    if (!n || n <= 0) return "";
-    if (n >= 1000000) return (n / 1000000).toFixed(1).replace(/\.0$/, "") + "M";
-    if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, "") + "K";
-    return String(n);
-  }
-
-  var LINK_ICONS = {
-    youtube_url: "YouTube", instagram_url: "Instagram", x_url: "X", portfolio_url: "Portfolio",
-    tiktok_url: "TikTok", facebook_url: "Facebook", snapchat_url: "Snapchat",
-    linkedin_url: "LinkedIn", threads_url: "Threads", website_url: "Website"
-  };
-
-  var COUNT_FIELDS = {
-    youtube_url: "youtube_subscribers", instagram_url: "instagram_followers", x_url: "x_followers",
-    tiktok_url: "tiktok_followers", facebook_url: "facebook_followers", snapchat_url: "snapchat_followers",
-    linkedin_url: "linkedin_followers", threads_url: "threads_followers"
-  };
-
   async function init() {
+    var content = document.getElementById("content");
     try {
-      user = await Cube3Auth.requireUser();
-      if (!user) return;
-      await loadProfile();
+      currentUser = await Cube3Auth.requireUser();
+      if (!currentUser) return;
+
+      var { data: profile, error } = await supabase.from("profiles").select("role").eq("id", currentUser.id).single();
+      if (error && error.code !== "PGRST116") throw error;
+      role = profile ? profile.role : "creator";
+
+      await loadCollaborations();
+
     } catch (error) {
       console.error(error);
-      document.getElementById("displayName").textContent = "Error loading profile";
-      showMessage(error.message || "Something went wrong loading your profile.", "error");
+      content.innerHTML = '<div class="empty-state">Could not load collaborations. ' + escapeHTML(error.message) + '</div>';
     }
   }
 
-  async function loadProfile() {
-    var result = await window.withTimeout(
-      cube3supabase.from("profiles").select("*").eq("id", user.id).single(),
-      10000,
-      "Loading your profile"
-    );
-    var profile = result.data;
-    var error = result.error;
+  async function loadCollaborations() {
+    var content = document.getElementById("content");
+    var applications = [];
 
-    if (error && error.code !== "PGRST116") throw error;
+    if (role === "brand") {
+      var { data: myCampaigns } = await supabase.from("campaigns").select("id, title").eq("brand_id", currentUser.id);
+      var campaignIds = (myCampaigns || []).map(function (c) { return c.id; });
+      var campaignById = {}; (myCampaigns || []).forEach(function (c) { campaignById[c.id] = c; });
 
-    latestProfile = profile;
-    role = (profile && profile.role) || (user.user_metadata && user.user_metadata.role) || "creator";
-
-    var displayName = (profile && profile.full_name) || user.email || "Cube3 User";
-    document.getElementById("displayName").textContent = displayName;
-    document.getElementById("role").textContent = role === "creator" ? "Creator" : "Brand";
-
-    if (profile && profile.avatar_url) {
-      document.getElementById("avatar").src = profile.avatar_url;
-    }
-
-    if (role === "creator") {
-      var cr = await cube3supabase.from("creator_profiles").select("*").eq("id", user.id).maybeSingle();
-      latestCreator = cr.data;
-      renderCreatorView(profile, latestCreator);
+      if (campaignIds.length) {
+        var { data: apps } = await supabase.from("campaign_applications").select("id, campaign_id, creator_id").in("campaign_id", campaignIds).eq("status", "accepted");
+        applications = (apps || []).map(function (a) {
+          return Object.assign({}, a, { campaignTitle: campaignById[a.campaign_id] ? campaignById[a.campaign_id].title : "", otherPartyId: a.creator_id });
+        });
+      }
     } else {
-      var br = await cube3supabase.from("brand_profiles").select("*").eq("id", user.id).maybeSingle();
-      latestBrand = br.data;
-      renderBrandView(profile, latestBrand);
-    }
-  }
+      var { data: apps2 } = await supabase.from("campaign_applications").select("id, campaign_id, creator_id").eq("creator_id", currentUser.id).eq("status", "accepted");
+      var campaignIds2 = Array.from(new Set((apps2 || []).map(function (a) { return a.campaign_id; })));
+      var { data: campaignList } = await supabase.from("campaigns").select("id, title, brand_id").in("id", campaignIds2);
+      var campaignById2 = {}; (campaignList || []).forEach(function (c) { campaignById2[c.id] = c; });
 
-  function renderLinks(dataObj, keys) {
-    var row = document.getElementById("linkRow");
-    var html = "";
-    keys.forEach(function (key) {
-      var url = dataObj && dataObj[key];
-      if (url) {
-        var countField = COUNT_FIELDS[key];
-        var count = countField && dataObj[countField] ? formatCount(dataObj[countField]) : "";
-        var label = LINK_ICONS[key] + (count ? " · " + count : "");
-        html += '<a href="' + escapeHTML(url) + '" target="_blank" rel="noopener">' + label + '</a>';
-      }
+      applications = (apps2 || []).map(function (a) {
+        var c = campaignById2[a.campaign_id];
+        return Object.assign({}, a, { campaignTitle: c ? c.title : "", otherPartyId: c ? c.brand_id : null });
+      });
+    }
+
+    if (!applications.length) {
+      content.innerHTML = '<div class="empty-state">No active collaborations yet. These appear once an application is accepted.</div>';
+      return;
+    }
+
+    var otherIds = Array.from(new Set(applications.map(function (a) { return a.otherPartyId; }).filter(Boolean)));
+    var { data: profiles } = await supabase.from("profiles").select("id, full_name").in("id", otherIds);
+    var nameById = {}; (profiles || []).forEach(function (p) { nameById[p.id] = p.full_name; });
+
+    var { data: allMilestones } = await supabase.from("milestones").select("*").in("application_id", applications.map(function (a) { return a.id; })).order("created_at", { ascending: true });
+
+    var milestonesByApp = {};
+    (allMilestones || []).forEach(function (m) {
+      if (!milestonesByApp[m.application_id]) milestonesByApp[m.application_id] = [];
+      milestonesByApp[m.application_id].push(m);
     });
-    row.innerHTML = html;
+
+    content.innerHTML = applications.map(function (a) {
+      var milestones = milestonesByApp[a.id] || [];
+      var approvedCount = milestones.filter(function (m) { return m.status === "approved"; }).length;
+      var pct = milestones.length ? Math.round((approvedCount / milestones.length) * 100) : 0;
+
+      return '<div class="card collab-card" id="collab-' + a.id + '">' +
+        '<div class="collab-header">' +
+          '<div>' +
+            '<h3>' + escapeHTML(a.campaignTitle) + '</h3>' +
+            '<div class="party">' + (role === "brand" ? "Creator: " : "Brand: ") + escapeHTML(nameById[a.otherPartyId] || "Unknown") + '</div>' +
+          '</div>' +
+          '<div class="muted" style="font-size:12.5px;">' + approvedCount + ' / ' + milestones.length + ' approved</div>' +
+        '</div>' +
+        '<div class="progress-bar"><div class="progress-fill" style="width:' + pct + '%;"></div></div>' +
+        '<div id="milestones-' + a.id + '">' +
+          (milestones.length ? milestones.map(function (m) { return renderMilestone(m); }).join("") : '<p class="muted" style="font-size:13px;">No milestones yet.</p>') +
+        '</div>' +
+        (role === "brand" ? renderAddMilestoneRow(a.id) : "") +
+        '<div id="review-' + a.id + '" style="margin-top:16px; padding-top:16px; border-top:1px solid var(--line);"></div>' +
+      '</div>';
+    }).join("");
+
+    applications.forEach(function (a) { loadReviewSection(a.id, a.otherPartyId); });
   }
 
-  async function renderCreatorView(profile, creator) {
-    document.getElementById("handleLine").textContent = creator && creator.handle ? "@" + creator.handle.replace(/^@/, "") : "";
-    document.getElementById("bioText").textContent = (profile && profile.bio) || "No bio yet.";
-    renderLinks(creator, ["youtube_url","instagram_url","x_url","portfolio_url","tiktok_url","facebook_url","snapchat_url","linkedin_url","threads_url"]);
+  async function loadReviewSection(applicationId, otherPartyId) {
+    var box = document.getElementById("review-" + applicationId);
+    if (!box) return;
 
-    var { count: appCount } = await cube3supabase.from("campaign_applications").select("*", { count: "exact", head: true }).eq("creator_id", user.id);
-    var { count: favCount } = await cube3supabase.from("favorites").select("*", { count: "exact", head: true }).eq("user_id", user.id);
+    var { data: existing } = await supabase.from("reviews").select("*").eq("application_id", applicationId).eq("reviewer_id", currentUser.id).maybeSingle();
 
-    document.getElementById("statsRow").innerHTML =
-      '<div class="stat-item"><b>' + (appCount ?? 0) + '</b><span>Applied</span></div>' +
-      '<div class="stat-item"><b>' + (favCount ?? 0) + '</b><span>Favorites</span></div>' +
-      '<div class="stat-item"><b>' + (creator && creator.category ? escapeHTML(creator.category) : "—") + '</b><span>Category</span></div>' +
-      (creator && creator.engagement_rate ? '<div class="stat-item"><b>' + creator.engagement_rate + '%</b><span>Engagement</span></div>' : "") +
-      (creator && creator.avg_views ? '<div class="stat-item"><b>' + formatCount(creator.avg_views) + '</b><span>Avg views</span></div>' : "");
-
-    renderAudienceAndPortfolio(creator);
-
-    document.getElementById("creatorFields").classList.remove("hidden");
-    document.getElementById("brandFields").classList.add("hidden");
-
-    document.getElementById("creatorName").value = (profile && profile.full_name) || "";
-    document.getElementById("creatorBio").value = (profile && profile.bio) || "";
-    if (creator) {
-      document.getElementById("handle").value = creator.handle || "";
-      document.getElementById("location").value = creator.location || "";
-      document.getElementById("rateMin").value = creator.rate_min || "";
-      document.getElementById("rateMax").value = creator.rate_max || "";
-      document.getElementById("category").value = creator.category || "";
-      document.getElementById("youtube").value = creator.youtube_url || "";
-      document.getElementById("youtubeCount").value = creator.youtube_subscribers || "";
-      document.getElementById("instagram").value = creator.instagram_url || "";
-      document.getElementById("instagramCount").value = creator.instagram_followers || "";
-      document.getElementById("x").value = creator.x_url || "";
-      document.getElementById("xCount").value = creator.x_followers || "";
-      document.getElementById("portfolio").value = creator.portfolio_url || "";
-      document.getElementById("tiktok").value = creator.tiktok_url || "";
-      document.getElementById("tiktokCount").value = creator.tiktok_followers || "";
-      document.getElementById("facebook").value = creator.facebook_url || "";
-      document.getElementById("facebookCount").value = creator.facebook_followers || "";
-      document.getElementById("snapchat").value = creator.snapchat_url || "";
-      document.getElementById("snapchatCount").value = creator.snapchat_followers || "";
-      document.getElementById("linkedin").value = creator.linkedin_url || "";
-      document.getElementById("linkedinCount").value = creator.linkedin_followers || "";
-      document.getElementById("threads").value = creator.threads_url || "";
-      document.getElementById("threadsCount").value = creator.threads_followers || "";
-      document.getElementById("engagementRate").value = creator.engagement_rate || "";
-      document.getElementById("avgViews").value = creator.avg_views || "";
-      document.getElementById("audienceAgeRange").value = creator.audience_age_range || "";
-      document.getElementById("audienceGenderSplit").value = creator.audience_gender_split || "";
-      document.getElementById("audienceTopCountry").value = creator.audience_top_country || "";
-      document.getElementById("pastCollabs").value = creator.past_collabs || "";
-      document.getElementById("bestContent").value = creator.best_content || "";
+    if (existing) {
+      box.innerHTML =
+        '<div class="muted" style="font-size:12.5px;">You rated this collaboration ' + "★".repeat(existing.rating) + "☆".repeat(5 - existing.rating) + '</div>' +
+        (existing.comment ? '<p style="font-size:13px; margin-top:4px;">' + escapeHTML(existing.comment) + '</p>' : "");
+      return;
     }
+
+    box.innerHTML =
+      '<div class="muted" style="font-size:12px; margin-bottom:8px; text-transform:uppercase; letter-spacing:.04em; font-weight:600;">Leave a review</div>' +
+      '<div id="starPicker-' + applicationId + '" style="font-size:22px; letter-spacing:4px; margin-bottom:8px; cursor:pointer;">☆☆☆☆☆</div>' +
+      '<textarea id="reviewComment-' + applicationId + '" placeholder="Optional feedback..." style="min-height:60px; margin-bottom:8px;"></textarea>' +
+      '<button class="btn btn-primary btn-sm" onclick="submitReview(\'' + applicationId + '\', \'' + otherPartyId + '\')">Submit review</button>';
+
+    var stars = document.getElementById("starPicker-" + applicationId);
+    var selectedRating = 0;
+    stars.addEventListener("click", function (event) {
+      var rect = stars.getBoundingClientRect();
+      var relativeX = event.clientX - rect.left;
+      selectedRating = Math.max(1, Math.min(5, Math.ceil((relativeX / rect.width) * 5)));
+      stars.textContent = "★".repeat(selectedRating) + "☆".repeat(5 - selectedRating);
+      stars.dataset.rating = selectedRating;
+    });
   }
 
-  async function renderBrandView(profile, brand) {
-    document.getElementById("handleLine").textContent = brand && brand.industry ? brand.industry : "";
-    document.getElementById("bioText").textContent = (brand && brand.description) || "No company bio yet.";
-    renderLinks(brand, ["website_url", "instagram_url", "facebook_url", "linkedin_url", "x_url"]);
+  window.submitReview = async function (applicationId, otherPartyId) {
+    var stars = document.getElementById("starPicker-" + applicationId);
+    var rating = Number(stars.dataset.rating || 0);
+    if (!rating) { alert("Tap the stars to choose a rating first."); return; }
 
-    var verifiedBadge = document.getElementById("verifiedBadge");
-    if (verifiedBadge) {
-      verifiedBadge.style.display = (brand && brand.verified) ? "inline-block" : "none";
-    }
-
-    var { count: campaignCount } = await cube3supabase.from("campaigns").select("*", { count: "exact", head: true }).eq("brand_id", user.id);
-    var { count: appReceived } = await (async () => {
-      var { data: myCampaigns } = await cube3supabase.from("campaigns").select("id").eq("brand_id", user.id);
-      var ids = (myCampaigns || []).map(function (c) { return c.id; });
-      if (!ids.length) return { count: 0 };
-      return cube3supabase.from("campaign_applications").select("*", { count: "exact", head: true }).in("campaign_id", ids);
-    })();
-
-    document.getElementById("statsRow").innerHTML =
-      '<div class="stat-item"><b>' + (campaignCount ?? 0) + '</b><span>Campaigns</span></div>' +
-      '<div class="stat-item"><b>' + (appReceived ?? 0) + '</b><span>Applications</span></div>';
-
-    renderBrandExtras(brand);
-
-    document.getElementById("brandFields").classList.remove("hidden");
-    document.getElementById("creatorFields").classList.add("hidden");
-
-    document.getElementById("companyName").value = (brand && brand.company_name) || (profile && profile.full_name) || "";
-    if (brand) {
-      document.getElementById("industry").value = brand.industry || "";
-      document.getElementById("companyBio").value = brand.description || "";
-      document.getElementById("targetAudience").value = brand.target_audience || "";
-      document.getElementById("website").value = brand.website_url || "";
-      document.getElementById("pastCampaignsResults").value = brand.past_campaigns_results || "";
-      document.getElementById("brandInstagram").value = brand.instagram_url || "";
-      document.getElementById("brandFacebook").value = brand.facebook_url || "";
-      document.getElementById("brandLinkedin").value = brand.linkedin_url || "";
-      document.getElementById("brandX").value = brand.x_url || "";
-      if (brand.logo_url) document.getElementById("avatar").src = brand.logo_url;
-    }
-  }
-
-  function renderBrandExtras(brand) {
-    var container = document.getElementById("extraInfo");
-    if (!brand) { container.innerHTML = ""; return; }
-
-    var html = "";
-
-    if (brand.target_audience) {
-      html += '<div style="margin-top:16px;"><div style="font-size:12px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.04em; margin-bottom:6px;">Target audience</div>';
-      html += '<div style="font-size:13.5px; color:var(--ink); white-space:pre-wrap;">' + escapeHTML(brand.target_audience) + '</div></div>';
-    }
-
-    if (brand.past_campaigns_results) {
-      html += '<div style="margin-top:16px;"><div style="font-size:12px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.04em; margin-bottom:6px;">Past campaign results</div>';
-      html += '<div style="font-size:13.5px; color:var(--ink); white-space:pre-wrap;">' + escapeHTML(brand.past_campaigns_results) + '</div></div>';
-    }
-
-    container.innerHTML = html;
-  }
-
-  function renderAudienceAndPortfolio(creator) {
-    var container = document.getElementById("extraInfo");
-    if (!creator) { container.innerHTML = ""; return; }
-
-    var hasAudience = creator.audience_age_range || creator.audience_gender_split || creator.audience_top_country;
-    var hasPortfolio = creator.past_collabs || creator.best_content;
-
-    var html = "";
-
-    if (hasAudience) {
-      html += '<div style="margin-top:16px;"><div style="font-size:12px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.04em; margin-bottom:6px;">Audience</div>';
-      var bits = [];
-      if (creator.audience_age_range) bits.push(escapeHTML(creator.audience_age_range));
-      if (creator.audience_gender_split) bits.push(escapeHTML(creator.audience_gender_split));
-      if (creator.audience_top_country) bits.push(escapeHTML(creator.audience_top_country));
-      html += '<div style="font-size:13.5px; color:var(--ink);">' + bits.join(" · ") + '</div></div>';
-    }
-
-    if (creator.past_collabs) {
-      html += '<div style="margin-top:16px;"><div style="font-size:12px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.04em; margin-bottom:6px;">Past collaborations</div>';
-      html += '<div style="font-size:13.5px; color:var(--ink); white-space:pre-wrap;">' + escapeHTML(creator.past_collabs) + '</div></div>';
-    }
-
-    if (creator.best_content) {
-      html += '<div style="margin-top:16px;"><div style="font-size:12px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.04em; margin-bottom:6px;">Best content</div>';
-      var links = creator.best_content.split("\n").filter(Boolean);
-      html += '<div style="display:flex; flex-direction:column; gap:4px;">' +
-        links.map(function (l) {
-          var trimmed = l.trim();
-          return '<a href="' + escapeHTML(trimmed) + '" target="_blank" rel="noopener" style="color:var(--violet-deep); font-size:13px; font-weight:600;">' + escapeHTML(trimmed) + '</a>';
-        }).join("") + '</div></div>';
-    }
-
-    container.innerHTML = html;
-  }
-
-  window.enterEditMode = function () {
-    document.getElementById("viewMode").classList.add("hidden");
-    document.getElementById("editMode").classList.remove("hidden");
-  };
-
-  window.exitEditMode = function () {
-    document.getElementById("editMode").classList.add("hidden");
-    document.getElementById("viewMode").classList.remove("hidden");
-  };
-
-  document.getElementById("profileForm").addEventListener("submit", async function (event) {
-    event.preventDefault();
-    var button = document.getElementById("saveButton");
-    button.disabled = true;
-    button.textContent = "Saving...";
+    var comment = document.getElementById("reviewComment-" + applicationId).value.trim();
 
     try {
-      if (role === "creator") { await saveCreator(); } else { await saveBrand(); }
-      showMessage("Profile saved successfully.", "success");
-      await loadProfile();
-      window.exitEditMode();
+      var { error } = await supabase.from("reviews").insert({
+        application_id: applicationId,
+        reviewer_id: currentUser.id,
+        reviewee_id: otherPartyId,
+        rating: rating,
+        comment: comment || null
+      });
+      if (error) throw error;
+
+      await loadReviewSection(applicationId, otherPartyId);
+
     } catch (error) {
       console.error(error);
-      showMessage(error.message || "Could not save profile.", "error");
-    } finally {
-      button.disabled = false;
-      button.textContent = "Save profile";
+      alert(error.message || "Could not submit review.");
     }
-  });
-
-  async function saveCreator() {
-    var fullName = document.getElementById("creatorName").value.trim();
-
-    var { error: profileError } = await cube3supabase.from("profiles").upsert({
-      id: user.id, full_name: fullName,
-      bio: document.getElementById("creatorBio").value.trim(),
-      role: "creator", updated_at: new Date().toISOString()
-    });
-    if (profileError) throw profileError;
-
-    var { error } = await cube3supabase.from("creator_profiles").upsert({
-      id: user.id,
-      handle: document.getElementById("handle").value.trim(),
-      location: document.getElementById("location").value.trim(),
-      rate_min: Number(document.getElementById("rateMin").value) || null,
-      rate_max: Number(document.getElementById("rateMax").value) || null,
-      category: document.getElementById("category").value,
-      youtube_url: document.getElementById("youtube").value.trim(),
-      youtube_subscribers: Number(document.getElementById("youtubeCount").value) || null,
-      instagram_url: document.getElementById("instagram").value.trim(),
-      instagram_followers: Number(document.getElementById("instagramCount").value) || null,
-      x_url: document.getElementById("x").value.trim(),
-      x_followers: Number(document.getElementById("xCount").value) || null,
-      portfolio_url: document.getElementById("portfolio").value.trim(),
-      tiktok_url: document.getElementById("tiktok").value.trim(),
-      tiktok_followers: Number(document.getElementById("tiktokCount").value) || null,
-      facebook_url: document.getElementById("facebook").value.trim(),
-      facebook_followers: Number(document.getElementById("facebookCount").value) || null,
-      snapchat_url: document.getElementById("snapchat").value.trim(),
-      snapchat_followers: Number(document.getElementById("snapchatCount").value) || null,
-      linkedin_url: document.getElementById("linkedin").value.trim(),
-      linkedin_followers: Number(document.getElementById("linkedinCount").value) || null,
-      threads_url: document.getElementById("threads").value.trim(),
-      threads_followers: Number(document.getElementById("threadsCount").value) || null,
-      engagement_rate: Number(document.getElementById("engagementRate").value) || null,
-      avg_views: Number(document.getElementById("avgViews").value) || null,
-      audience_age_range: document.getElementById("audienceAgeRange").value,
-      audience_gender_split: document.getElementById("audienceGenderSplit").value.trim(),
-      audience_top_country: document.getElementById("audienceTopCountry").value.trim(),
-      past_collabs: document.getElementById("pastCollabs").value.trim(),
-      best_content: document.getElementById("bestContent").value.trim()
-    }, { onConflict: "id" });
-    if (error) throw error;
-  }
-
-  async function saveBrand() {
-    var companyName = document.getElementById("companyName").value.trim();
-
-    var { error: profileError } = await cube3supabase.from("profiles").upsert({
-      id: user.id, full_name: companyName, role: "brand", updated_at: new Date().toISOString()
-    });
-    if (profileError) throw profileError;
-
-    var { error } = await cube3supabase.from("brand_profiles").upsert({
-      id: user.id, company_name: companyName,
-      website_url: document.getElementById("website").value.trim(),
-      industry: document.getElementById("industry").value,
-      description: document.getElementById("companyBio").value.trim(),
-      target_audience: document.getElementById("targetAudience").value.trim(),
-      past_campaigns_results: document.getElementById("pastCampaignsResults").value.trim(),
-      instagram_url: document.getElementById("brandInstagram").value.trim(),
-      facebook_url: document.getElementById("brandFacebook").value.trim(),
-      linkedin_url: document.getElementById("brandLinkedin").value.trim(),
-      x_url: document.getElementById("brandX").value.trim()
-    }, { onConflict: "id" });
-    if (error) throw error;
-  }
-
-  document.getElementById("avatarInput").addEventListener("change", uploadAvatar);
-
-  async function uploadAvatar(event) {
-    var file = event.target.files[0];
-    if (!file) return;
-    if (!file.type.startsWith("image/")) { showMessage("Please select an image.", "error"); return; }
-    if (file.size > 5 * 1024 * 1024) { showMessage("Image must be smaller than 5 MB.", "error"); return; }
-
-    try {
-      var extension = file.name.split(".").pop();
-      var path = user.id + "/" + Date.now() + "." + extension;
-
-      var { error: uploadError } = await cube3supabase.storage.from("avatars").upload(path, file, { upsert: true });
-      if (uploadError) throw uploadError;
-
-      var { data } = cube3supabase.storage.from("avatars").getPublicUrl(path);
-      var imageUrl = data.publicUrl;
-
-      document.getElementById("avatar").src = imageUrl;
-      var avatarSaveResult = await cube3supabase.from("profiles").upsert({ id: user.id, avatar_url: imageUrl, role: role, updated_at: new Date().toISOString() });
-      if (avatarSaveResult.error) throw avatarSaveResult.error;
-
-      if (role === "brand") {
-        await cube3supabase.from("brand_profiles").update({ logo_url: imageUrl }).eq("id", user.id);
-      }
-
-      showMessage("Image uploaded successfully.", "success");
-    } catch (error) {
-      console.error(error);
-      showMessage("Image upload failed: " + error.message, "error");
-    }
-  }
-
-  window.handleLogout = async function () {
-    try { await Cube3Auth.signOut(); } catch (error) { console.error(error); }
   };
 
-  document.getElementById("logout").addEventListener("click", async function (event) {
-    event.preventDefault();
-    await window.handleLogout();
-  });
+  function renderMilestone(m) {
+    var dueText = m.due_date ? new Date(m.due_date).toLocaleDateString() : "No due date";
+
+    var actions = "";
+    if (role === "creator" && (m.status === "pending" || m.status === "rejected")) {
+      actions =
+        '<input type="text" id="submitUrl-' + m.id + '" placeholder="Paste content link..." style="width:200px;">' +
+        '<button class="btn btn-primary btn-sm" onclick="submitMilestone(\'' + m.id + '\')">Submit</button>';
+    } else if (role === "brand" && m.status === "submitted") {
+      actions =
+        '<button class="btn btn-primary btn-sm" onclick="reviewMilestone(\'' + m.id + '\', \'approved\')">Approve</button>' +
+        '<button class="btn btn-danger btn-sm" onclick="reviewMilestone(\'' + m.id + '\', \'rejected\')">Reject</button>';
+    }
+
+    return '<div class="milestone">' +
+      '<div class="milestone-info">' +
+        '<b>' + escapeHTML(m.title) + '</b>' +
+        '<span class="status-badge ' + (m.status === "submitted" ? "pending" : m.status) + '">' + escapeHTML(m.status) + '</span>' +
+        ' <span class="due">Due: ' + dueText + '</span>' +
+        (m.description ? '<div class="muted" style="font-size:12.5px; margin-top:4px;">' + escapeHTML(m.description) + '</div>' : "") +
+        (m.submission_url ? '<div class="submission">Submitted: <a href="' + escapeHTML(m.submission_url) + '" target="_blank" rel="noopener">' + escapeHTML(m.submission_url) + '</a></div>' : "") +
+      '</div>' +
+      '<div class="milestone-actions">' + actions + '</div>' +
+    '</div>';
+  }
+
+  function renderAddMilestoneRow(applicationId) {
+    return '<div class="add-milestone-row">' +
+      '<input type="text" id="newMilestoneTitle-' + applicationId + '" placeholder="New milestone, e.g. \'1 Instagram Reel\'">' +
+      '<input type="date" id="newMilestoneDue-' + applicationId + '" style="width:150px;">' +
+      '<button class="btn btn-ghost btn-sm" onclick="addMilestone(\'' + applicationId + '\')">+ Add milestone</button>' +
+    '</div>';
+  }
+
+  window.addMilestone = async function (applicationId) {
+    var titleInput = document.getElementById("newMilestoneTitle-" + applicationId);
+    var dueInput = document.getElementById("newMilestoneDue-" + applicationId);
+    var title = titleInput.value.trim();
+    if (!title) return;
+
+    try {
+      var { error } = await supabase.from("milestones").insert({
+        application_id: applicationId,
+        title: title,
+        due_date: dueInput.value || null,
+        status: "pending"
+      });
+      if (error) throw error;
+
+      titleInput.value = "";
+      dueInput.value = "";
+      await loadCollaborations();
+
+    } catch (error) {
+      console.error(error);
+      alert(error.message || "Could not add milestone.");
+    }
+  };
+
+  window.submitMilestone = async function (milestoneId) {
+    var input = document.getElementById("submitUrl-" + milestoneId);
+    var url = input.value.trim();
+    if (!url) { alert("Paste a link to your content first."); return; }
+
+    try {
+      var { error } = await supabase.from("milestones").update({
+        submission_url: url,
+        status: "submitted",
+        updated_at: new Date().toISOString()
+      }).eq("id", milestoneId);
+      if (error) throw error;
+
+      await loadCollaborations();
+
+    } catch (error) {
+      console.error(error);
+      alert(error.message || "Could not submit content.");
+    }
+  };
+
+  window.reviewMilestone = async function (milestoneId, decision) {
+    try {
+      var { error } = await supabase.from("milestones").update({
+        status: decision,
+        updated_at: new Date().toISOString()
+      }).eq("id", milestoneId);
+      if (error) throw error;
+
+      await loadCollaborations();
+
+    } catch (error) {
+      console.error(error);
+      alert(error.message || "Could not update milestone.");
+    }
+  };
 
   init();
-
 })();
 </script>
 
