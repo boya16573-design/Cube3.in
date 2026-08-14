@@ -155,9 +155,67 @@
           (milestones.length ? milestones.map(function (m) { return renderMilestone(m); }).join("") : '<p class="muted" style="font-size:13px;">No milestones yet.</p>') +
         '</div>' +
         (role === "brand" ? renderAddMilestoneRow(a.id) : "") +
+        '<div id="review-' + a.id + '" style="margin-top:16px; padding-top:16px; border-top:1px solid var(--line);"></div>' +
       '</div>';
     }).join("");
+
+    applications.forEach(function (a) { loadReviewSection(a.id, a.otherPartyId); });
   }
+
+  async function loadReviewSection(applicationId, otherPartyId) {
+    var box = document.getElementById("review-" + applicationId);
+    if (!box) return;
+
+    var { data: existing } = await supabase.from("reviews").select("*").eq("application_id", applicationId).eq("reviewer_id", currentUser.id).maybeSingle();
+
+    if (existing) {
+      box.innerHTML =
+        '<div class="muted" style="font-size:12.5px;">You rated this collaboration ' + "★".repeat(existing.rating) + "☆".repeat(5 - existing.rating) + '</div>' +
+        (existing.comment ? '<p style="font-size:13px; margin-top:4px;">' + escapeHTML(existing.comment) + '</p>' : "");
+      return;
+    }
+
+    box.innerHTML =
+      '<div class="muted" style="font-size:12px; margin-bottom:8px; text-transform:uppercase; letter-spacing:.04em; font-weight:600;">Leave a review</div>' +
+      '<div id="starPicker-' + applicationId + '" style="font-size:22px; letter-spacing:4px; margin-bottom:8px; cursor:pointer;">☆☆☆☆☆</div>' +
+      '<textarea id="reviewComment-' + applicationId + '" placeholder="Optional feedback..." style="min-height:60px; margin-bottom:8px;"></textarea>' +
+      '<button class="btn btn-primary btn-sm" onclick="submitReview(\'' + applicationId + '\', \'' + otherPartyId + '\')">Submit review</button>';
+
+    var stars = document.getElementById("starPicker-" + applicationId);
+    var selectedRating = 0;
+    stars.addEventListener("click", function (event) {
+      var rect = stars.getBoundingClientRect();
+      var relativeX = event.clientX - rect.left;
+      selectedRating = Math.max(1, Math.min(5, Math.ceil((relativeX / rect.width) * 5)));
+      stars.textContent = "★".repeat(selectedRating) + "☆".repeat(5 - selectedRating);
+      stars.dataset.rating = selectedRating;
+    });
+  }
+
+  window.submitReview = async function (applicationId, otherPartyId) {
+    var stars = document.getElementById("starPicker-" + applicationId);
+    var rating = Number(stars.dataset.rating || 0);
+    if (!rating) { alert("Tap the stars to choose a rating first."); return; }
+
+    var comment = document.getElementById("reviewComment-" + applicationId).value.trim();
+
+    try {
+      var { error } = await supabase.from("reviews").insert({
+        application_id: applicationId,
+        reviewer_id: currentUser.id,
+        reviewee_id: otherPartyId,
+        rating: rating,
+        comment: comment || null
+      });
+      if (error) throw error;
+
+      await loadReviewSection(applicationId, otherPartyId);
+
+    } catch (error) {
+      console.error(error);
+      alert(error.message || "Could not submit review.");
+    }
+  };
 
   function renderMilestone(m) {
     var dueText = m.due_date ? new Date(m.due_date).toLocaleDateString() : "No due date";
