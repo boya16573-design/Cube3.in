@@ -61,13 +61,15 @@
       .replace(/"/g, "&quot;").replace(/'/g, "&#039;");
   }
 
+  var STATUS_LABELS = { pending: "Submitted", shortlisted: "Shortlisted", accepted: "Selected", rejected: "Rejected" };
+
   async function init() {
     var content = document.getElementById("content");
     try {
       currentUser = await Cube3Auth.requireUser();
       if (!currentUser) return;
 
-      var { data: applications, error } = await supabase.from("campaign_applications").select("id, campaign_id, pitch, status, created_at").eq("creator_id", currentUser.id).order("created_at", { ascending: false });
+      var { data: applications, error } = await supabase.from("campaign_applications").select("id, campaign_id, pitch, status, created_at, proposed_rate, portfolio_url").eq("creator_id", currentUser.id).order("created_at", { ascending: false });
       if (error) throw error;
 
       if (!applications.length) {
@@ -89,11 +91,13 @@
         var brand = campaign ? brandById[campaign.brand_id] : null;
 
         return '<div class="card application-card">' +
-          '<span class="status-badge ' + app.status + '">' + escapeHTML(app.status) + '</span>' +
+          '<span class="status-badge ' + app.status + '">' + escapeHTML(STATUS_LABELS[app.status] || app.status) + '</span>' +
           '<h3 style="font-size:17px; margin:8px 0 2px;">' + escapeHTML(campaign ? campaign.title : "Campaign no longer available") + '</h3>' +
           '<div class="brand-name">' + escapeHTML(brand ? brand.company_name : "") + '</div>' +
           '<div class="pitch-label">Your pitch</div>' +
           '<p class="pitch">' + escapeHTML(app.pitch) + '</p>' +
+          (app.proposed_rate ? '<p style="font-size:12.5px; color:var(--ink-muted); margin:6px 0 0;"><strong>Your rate:</strong> ₹' + Number(app.proposed_rate).toLocaleString("en-IN") + '</p>' : "") +
+          (app.portfolio_url ? '<p style="font-size:12.5px; margin:4px 0 0;"><a href="' + escapeHTML(app.portfolio_url) + '" target="_blank" rel="noopener" style="color:var(--violet-deep); font-weight:600;">Your portfolio link</a></p>' : "") +
         '</div>';
       }).join("");
 
@@ -109,4 +113,3 @@
 
 </body>
 </html>
-  
