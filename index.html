@@ -3,230 +3,693 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cube3 — Creator and brand collaborations, India</title>
-<meta name="description" content="Live campaigns with real budgets. Creators pitch directly, brands pick from verified profiles. No agency in between.">
+<title>Cube3 — creator & brand collaborations</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..900&family=Instrument+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="/style.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
 <style>
-  .hero{padding:56px 0 0;}
-  .hero h1{font-size:clamp(40px,8vw,80px);line-height:.98;}
-  .hero h1 em{font-style:normal;color:var(--accent);transition:color .35s;}
-  .hero .sub{max-width:46ch;margin-top:20px;font-size:18px;color:var(--ink-muted);}
-
-  .fork{display:grid;grid-template-columns:1fr 1fr;margin-top:38px;border:1.5px solid var(--ink);border-radius:var(--radius-md);overflow:hidden;}
-  .fork button{all:unset;cursor:pointer;padding:18px 20px;display:block;transition:background .22s,color .22s;}
-  .fork button+button{border-left:1.5px solid var(--ink);}
-  .fork button .k{display:block;font-family:"DM Mono",monospace;font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:7px;}
-  .fork button .t{font-family:"Archivo",sans-serif;font-weight:800;font-variation-settings:"wdth" 115;font-size:20px;letter-spacing:-.01em;}
-  .fork button[aria-selected="true"]{background:var(--accent);color:#fff;}
-  .fork button[aria-selected="true"] .k{color:rgba(255,255,255,.75);}
-  .fork button:focus-visible{outline:3px solid var(--ink);outline-offset:-6px;}
-  @media (max-width:560px){.fork{grid-template-columns:1fr;}.fork button+button{border-left:0;border-top:1.5px solid var(--ink);}}
-
-  .statbar{display:grid;grid-template-columns:repeat(4,1fr);border:1.5px solid var(--ink);border-top:0;border-radius:0 0 var(--radius-md) var(--radius-md);background:var(--panel);}
-  .statbar .stat{border:0;border-radius:0;}
-  .statbar .stat+.stat{border-left:1px solid var(--line);}
-  @media (max-width:640px){
-    .statbar{grid-template-columns:1fr 1fr;}
-    .statbar .stat:nth-child(3),.statbar .stat:nth-child(4){border-top:1px solid var(--line);}
-    .statbar .stat:nth-child(3){border-left:0;}
-  }
-
-  .section{padding:64px 0;}
-  .sechead{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:22px;}
-  .sechead .note{color:var(--ink-muted);font-size:14.5px;max-width:40ch;margin-top:7px;}
-  .live{display:inline-flex;align-items:center;gap:7px;color:var(--accent);}
-  .live .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:blink 2s infinite;}
-  @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
-
-  .feedcard{display:flex;flex-direction:column;gap:11px;}
-  .feedcard .who{display:flex;gap:11px;align-items:center;}
-  .feedcard .money{font-family:"DM Mono",monospace;font-size:15px;}
-  .feedcard .meta{margin-top:auto;}
-  .feedcard .foot{display:flex;justify-content:space-between;align-items:center;gap:10px;padding-top:11px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-muted);}
-  .feedcard .foot a{font-weight:600;color:var(--ink);border-bottom:2px solid var(--accent);}
-
-  .trust{background:var(--ink);color:var(--paper);}
-  .trust .wrap{padding-top:64px;padding-bottom:64px;}
-  .trust h2{color:#fff;max-width:20ch;}
-  .trust .items{display:grid;grid-template-columns:repeat(auto-fit,minmax(225px,1fr));gap:1px;background:#302C3D;margin-top:30px;}
-  .trust .it{background:var(--ink);padding:22px 20px;}
-  .trust .it .n{font-family:"DM Mono",monospace;font-size:11px;color:var(--accent);letter-spacing:.1em;}
-  .trust .it h4{color:#fff;margin:9px 0 6px;font-size:16px;}
-  .trust .it p{color:#A9A4B8;font-size:14.5px;}
-
-  .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));border-top:1.5px solid var(--ink);}
-  .steps .st{padding:20px 18px 0;border-right:1px solid var(--line);}
-  .steps .st:last-child{border-right:0;}
-  .steps .st .n{font-family:"DM Mono",monospace;font-size:11.5px;color:var(--accent);}
-  .steps .st h4{margin:9px 0 5px;font-size:16.5px;}
-  .steps .st p{color:var(--ink-muted);font-size:14.5px;}
-  @media (max-width:700px){.steps .st{border-right:0;border-bottom:1px solid var(--line);padding-bottom:18px;}}
-
-  .close{text-align:center;padding:84px 0;}
-  .close h2{font-size:clamp(30px,5.6vw,54px);max-width:17ch;margin:0 auto 22px;}
+:root{--bg:#F6F8FC;--card:#fff;--ink:#0F172A;--muted:#64748B;--faint:#94A3B8;--line:#E7EBF3;
+--blue:#2563EB;--blued:#1D4ED8;--blues:#EFF4FF;--green:#10B981;--greens:#ECFDF5;
+--amber:#F59E0B;--ambers:#FFFBEB;--purple:#7C3AED;--purples:#F5F3FF;--red:#EF4444;--reds:#FEF2F2;
+--r:12px;--sh:0 1px 2px rgba(15,23,42,.04),0 4px 16px rgba(15,23,42,.05)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+h1{font-size:26px;font-weight:700;letter-spacing:-.02em}h2{font-size:18px;font-weight:700}h3{font-size:15px;font-weight:600}
+.muted{color:var(--muted)}.small{font-size:13px}.trunc{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.grow{flex:1;min-width:0}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;background:var(--blue);color:#fff;
+border:0;border-radius:9px;padding:11px 18px;font-weight:600;font-size:14px;cursor:pointer;font-family:inherit}
+.btn:hover{background:var(--blued)}.btn:disabled{opacity:.5}
+.btn.g{background:var(--card);color:var(--ink);border:1px solid var(--line)}.btn.g:hover{background:var(--bg)}
+.btn.sm{padding:7px 13px;font-size:13px;border-radius:8px}.btn.blk{width:100%}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh)}
+.pad{padding:18px}
+label{display:block;font-size:13px;font-weight:600;margin:14px 0 6px}
+input,select,textarea{width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:9px;
+font-size:16px;font-family:inherit;background:var(--card);color:var(--ink)}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--blues)}
+textarea{min-height:100px;resize:vertical}
+.chip{display:inline-block;background:var(--blues);color:var(--blue);font-size:12px;font-weight:600;padding:4px 10px;border-radius:7px;margin:2px 4px 2px 0}
+.chip.g{background:var(--greens);color:var(--green)}.chip.a{background:var(--ambers);color:var(--amber)}
+.chip.r{background:var(--reds);color:var(--red)}.chip.p{background:var(--purples);color:var(--purple)}
+.av{width:38px;height:38px;border-radius:50%;object-fit:cover;background:var(--blue);color:#fff;
+display:grid;place-items:center;font-weight:700;font-size:14px;flex:0 0 auto}
+.state{padding:34px 20px;text-align:center;color:var(--muted)}
+.state b{display:block;color:var(--ink);font-size:16px;margin-bottom:5px}
+.bad{background:var(--reds);border:1px solid #FECACA;border-radius:var(--r);padding:16px;text-align:left}
+.bad b{color:var(--red);display:block;margin-bottom:5px}
+.bad code{display:block;font-family:ui-monospace,monospace;font-size:12.5px;word-break:break-word}
+.ok{background:var(--greens);border:1px solid #A7F3D0;border-radius:9px;padding:11px 14px;font-size:14px;color:#065F46;margin-top:14px}
+.sk{height:64px;background:linear-gradient(90deg,#EEF2F8,#F7F9FC,#EEF2F8);background-size:200% 100%;
+animation:sh 1.3s infinite;border-radius:10px;margin-bottom:12px}
+@keyframes sh{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.auth{min-height:100vh;display:grid;place-items:center;padding:22px}
+.auth .box{width:100%;max-width:410px}
+.logo{display:flex;align-items:center;justify-content:center;gap:10px;font-weight:800;font-size:24px;letter-spacing:-.02em}
+.logo .m{width:34px;height:34px;border-radius:9px;background:var(--blue);color:#fff;display:grid;place-items:center;font-size:15px}
+.logo b{color:var(--blue)}
+.pick{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+.pick button{all:unset;cursor:pointer;border:1.5px solid var(--line);border-radius:10px;padding:14px;text-align:center;font-weight:600;font-size:14px}
+.pick button[aria-pressed="true"]{border-color:var(--blue);background:var(--blues);color:var(--blue)}
+.shell{display:flex;min-height:100vh}
+aside{width:248px;flex:0 0 248px;background:var(--card);border-right:1px solid var(--line);padding:20px 14px;
+position:fixed;top:0;bottom:0;left:0;overflow-y:auto;z-index:60;transition:transform .22s}
+aside .logo{justify-content:flex-start;font-size:20px;padding:0 8px 20px}
+.side a{display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:9px;color:var(--muted);font-weight:500;font-size:14.5px;margin-bottom:2px}
+.side a:hover{background:var(--bg);color:var(--ink)}
+.side a.on{background:var(--blue);color:#fff;font-weight:600}
+.side a .ic{width:19px;text-align:center}
+main{flex:1;margin-left:248px;min-width:0}
+.top{background:var(--card);border-bottom:1px solid var(--line);padding:12px 22px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:50}
+.burger{display:none;background:none;border:1px solid var(--line);border-radius:8px;width:38px;height:38px;font-size:17px;cursor:pointer}
+.who{margin-left:auto;display:flex;align-items:center;gap:10px}
+.content{padding:22px;max-width:1150px}
+.scrim{display:none;position:fixed;inset:0;background:rgba(15,23,42,.4);z-index:55}
+@media(max-width:900px){aside{transform:translateX(-100%)}body.nav aside{transform:none}
+body.nav .scrim{display:block}main{margin-left:0}.burger{display:block}.content{padding:16px}}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:20px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:17px;box-shadow:var(--sh);display:flex;justify-content:space-between;gap:10px}
+.stat .lb{font-size:13.5px;color:var(--muted);font-weight:500}
+.stat .vl{font-size:28px;font-weight:700;letter-spacing:-.02em;margin-top:5px}
+.stat .ic{width:42px;height:42px;border-radius:11px;display:grid;place-items:center;font-size:18px}
+.cols{display:grid;grid-template-columns:1.7fr 1fr;gap:16px;align-items:start}
+@media(max-width:980px){.cols{grid-template-columns:1fr}}
+.hd{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;border-bottom:1px solid var(--line)}
+.hd a{color:var(--blue);font-size:13.5px;font-weight:600}
+.row{display:flex;gap:13px;padding:14px 18px;border-bottom:1px solid var(--line);align-items:center}
+.row:last-child{border-bottom:0}.row:hover{background:var(--bg)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(265px,1fr));gap:14px}
+.chat{display:grid;grid-template-columns:285px 1fr;gap:16px;height:calc(100vh - 132px)}
+.pane{display:flex;flex-direction:column;overflow:hidden;min-height:0}
+#thr{overflow-y:auto;flex:1}
+#msgs{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:9px;background:var(--bg)}
+.bub{max-width:76%;padding:10px 14px;border-radius:14px;font-size:14.5px;word-break:break-word;box-shadow:var(--sh)}
+.bub.me{align-self:flex-end;background:var(--blue);color:#fff;border-bottom-right-radius:4px}
+.bub.th{align-self:flex-start;background:var(--card);border-bottom-left-radius:4px}
+.bub .ts{display:block;font-size:11px;opacity:.65;margin-top:4px}
+.comp{display:flex;gap:9px;padding:13px;border-top:1px solid var(--line);align-items:center;background:var(--card)}
+.thr{padding:13px 16px;border-bottom:1px solid var(--line);cursor:pointer;display:flex;gap:11px;align-items:center}
+.thr.on{background:var(--blues)}
+.back{display:none}
+@media(max-width:820px){.chat{grid-template-columns:1fr;height:auto}.pane.cv{display:none}
+body.open .pane.cv{display:flex;height:calc(100vh - 150px)}body.open .pane.ls{display:none}.back{display:inline-flex}}
 </style>
 </head>
-<body data-side="creator" data-nav="public">
+<body>
+<div class="scrim" onclick="document.body.classList.remove('nav')"></div>
+<div id="root"><div class="auth"><div class="box"><div class="sk"></div></div></div></div>
 
-<a class="skip-link" href="#main">Skip to content</a>
-
-<main id="main">
-
-  <section class="hero">
-    <div class="wrap">
-      <p class="mono muted">Creator × brand collaboration · India</p>
-      <h1 style="margin-top:18px">Pitch today.<br>Shoot <em>this month</em>.</h1>
-      <p class="sub" id="sub">Live campaigns from brands with real budgets. Apply with one pitch, no agency in between.</p>
-
-      <div class="fork" role="tablist" aria-label="Choose your side">
-        <button role="tab" aria-selected="true" data-side="creator">
-          <span class="k">I make content</span>
-          <span class="t">Find paid campaigns →</span>
-        </button>
-        <button role="tab" aria-selected="false" data-side="brand">
-          <span class="k">I run a brand</span>
-          <span class="t">Find creators who fit →</span>
-        </button>
-      </div>
-
-      <div class="statbar grid-stats" id="statbar" style="display:grid"></div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="wrap">
-      <div class="sechead">
-        <div>
-          <p class="mono live"><span class="dot"></span><span id="liveLabel">Open now</span></p>
-          <h2 id="feedTitle" style="margin-top:8px">Campaigns taking pitches</h2>
-          <p class="note" id="feedNote">Budgets are set by the brand before posting. No unpaid exposure briefs.</p>
-        </div>
-        <a class="btn btn-ghost" id="feedCta" href="/pages/campaigns.html">See all campaigns</a>
-      </div>
-      <div class="grid-cards" id="feed"></div>
-    </div>
-  </section>
-
-  <section class="trust">
-    <div class="wrap">
-      <h2>Money and messages, handled.</h2>
-      <div class="items">
-        <div class="it"><span class="n">01</span><h4>Payment held until delivery</h4><p>The brand funds the campaign up front. It releases when deliverables are approved.</p></div>
-        <div class="it"><span class="n">02</span><h4>Chat opens on selection</h4><p>No cold DMs either way. Messaging unlocks once a pitch is accepted.</p></div>
-        <div class="it"><span class="n">03</span><h4>Profiles are verified</h4><p>Accounts link their real Instagram or YouTube, so the numbers aren't self-reported.</p></div>
-        <div class="it"><span class="n">04</span><h4>Both sides review</h4><p>Ratings after every collaboration, visible before anyone commits to the next one.</p></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" id="how">
-    <div class="wrap">
-      <h2 style="margin-bottom:20px">Four steps, start to paid</h2>
-      <div class="steps">
-        <div class="st"><span class="n">Step 01</span><h4 id="s1h"></h4><p id="s1p"></p></div>
-        <div class="st"><span class="n">Step 02</span><h4 id="s2h"></h4><p id="s2p"></p></div>
-        <div class="st"><span class="n">Step 03</span><h4 id="s3h"></h4><p id="s3p"></p></div>
-        <div class="st"><span class="n">Step 04</span><h4 id="s4h"></h4><p id="s4p"></p></div>
-      </div>
-    </div>
-  </section>
-
-  <div class="close">
-    <div class="wrap">
-      <h2 id="closeH">Your next collaboration is already posted.</h2>
-      <a class="btn btn-primary" id="closeCta" href="/pages/signup.html">Create a creator profile</a>
-    </div>
-  </div>
-
-</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script>
 
 <script>
-var DATA = {
-  creator: {
-    sub:"Live campaigns from brands with real budgets. Apply with one pitch, no agency in between.",
-    stats:[["312","open campaigns"],["₹4k–90k","typical budget"],["2 days","median reply"],["19","categories"]],
-    liveLabel:"Open now", feedTitle:"Campaigns taking pitches",
-    feedNote:"Budgets are set by the brand before posting. No unpaid exposure briefs.",
-    feedCta:"See all campaigns", feedHref:"/pages/campaigns.html",
-    closeH:"Your next collaboration is already posted.",
-    closeCta:"Create a creator profile",
-    steps:[["Connect your accounts","Link Instagram or YouTube and set your rates. About five minutes."],
-           ["Browse and pitch","Filter by category and budget. One pitch per campaign — say why you fit."],
-           ["Get selected","The brand reviews pitches and picks. Chat opens, deliverables get locked in."],
-           ["Deliver and get paid","Upload drafts in chat, get approval, payment releases to you."]],
-    cards:[
-      {i:"LS",tag:"Lumen Skin · Beauty",h:"Monsoon range — 3 Reels",money:"₹18,000 – 35,000",chips:["Instagram Reels","Pan-India","Product included"],foot:"14 pitches · closes in 5 days",cta:"View brief"},
-      {i:"TF",tag:"Terrafirma · Fitness",h:"Field test our trail runners",money:"₹25,000 + shoes",chips:["YouTube","Long-form","Bengaluru / Pune"],foot:"6 pitches · closes in 9 days",cta:"View brief"},
-      {i:"GM",tag:"Ghar Masala · Food",h:"Regional recipe series, 6 videos",money:"₹40,000",chips:["Instagram","YouTube","Regional language"],foot:"31 pitches · closes in 2 days",cta:"View brief"}
-    ]
-  },
-  brand: {
-    sub:"Search verified creators by audience, platform and rate — then post a brief and let the right ones come to you.",
-    stats:[["8,400+","verified creators"],["6.1%","median engagement"],["48 hrs","to first pitch"],["19","categories"]],
-    liveLabel:"Available this month", feedTitle:"Creators open to work",
-    feedNote:"Follower and engagement figures come from connected accounts, not a form field.",
-    feedCta:"Search all creators", feedHref:"/pages/creators.html",
-    closeH:"Post a brief. Read pitches by Monday.",
-    closeCta:"Create a brand profile",
-    steps:[["Set up your brand","Add your company, category and budget range. About five minutes."],
-           ["Post a brief","Four-step builder: goal, deliverables, budget, timeline. Templates included."],
-           ["Read pitches and pick","Compare rates, portfolios and past reviews side by side."],
-           ["Approve and release","Review drafts in chat. Payment releases only when you approve."]],
-    cards:[
-      {i:"AE",tag:"@arushi.eats · Food",h:"Home cooking, Mumbai",money:"from ₹12,000",chips:["84K Instagram","6.2% eng.","Hindi / English"],foot:"11 collaborations · 4.9★",cta:"View profile"},
-      {i:"CL",tag:"@thecommutelog · Tech",h:"Gadget reviews, Bengaluru",money:"from ₹45,000",chips:["210K YouTube","Long-form","English"],foot:"27 collaborations · 4.8★",cta:"View profile"},
-      {i:"MF",tag:"@meherfits · Fitness",h:"Strength training, Delhi",money:"from ₹9,500",chips:["51K Instagram","8.4% eng.","Reels"],foot:"8 collaborations · 5.0★",cta:"View profile"}
-    ]
-  }
-};
-
-function esc(v){return String(v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m];});}
-function $(s){return document.querySelector(s);}
-
-function render(side){
-  var d = DATA[side];
-  document.body.setAttribute("data-side", side);
-  var tabs = document.querySelectorAll(".fork button");
-  for (var i=0;i<tabs.length;i++) tabs[i].setAttribute("aria-selected", String(tabs[i].dataset.side === side));
-
-  $("#sub").textContent = d.sub;
-  $("#liveLabel").textContent = d.liveLabel;
-  $("#feedTitle").textContent = d.feedTitle;
-  $("#feedNote").textContent = d.feedNote;
-  $("#feedCta").textContent = d.feedCta;
-  $("#feedCta").href = d.feedHref;
-  $("#closeH").textContent = d.closeH;
-  $("#closeCta").textContent = d.closeCta;
-  d.steps.forEach(function(s,i){ $("#s"+(i+1)+"h").textContent=s[0]; $("#s"+(i+1)+"p").textContent=s[1]; });
-
-  $("#statbar").innerHTML = d.stats.map(function(s){
-    return '<div class="stat"><b>'+esc(s[0])+'</b><span>'+esc(s[1])+'</span></div>';
-  }).join("");
-
-  $("#feed").innerHTML = d.cards.map(function(c){
-    return '<article class="card feedcard">'+
-      '<div class="who"><div class="avatar">'+esc(c.i)+'</div><div class="mono muted">'+esc(c.tag)+'</div></div>'+
-      '<h3>'+esc(c.h)+'</h3>'+
-      '<div class="money">'+esc(c.money)+'</div>'+
-      '<div class="meta">'+c.chips.map(function(x){return '<span class="tag">'+esc(x)+'</span>';}).join("")+'</div>'+
-      '<div class="foot"><span>'+esc(c.foot)+'</span><a href="'+esc(d.feedHref)+'">'+esc(c.cta)+'</a></div>'+
-    '</article>';
-  }).join("");
-}
-
-document.querySelectorAll(".fork button").forEach(function(b){
-  b.addEventListener("click", function(){
-    if (document.body.getAttribute("data-side") === b.dataset.side) return;
-    render(b.dataset.side);
-  });
-});
-
-render("creator");
+/* ===========================================================
+   STEP 1 — paste your two Supabase values below.
+   Find them in your old config.js file, or in Supabase under
+   Project Settings → API.  Both are safe to publish; your RLS
+   policies are what protect the data.
+   =========================================================== */
+var SUPABASE_URL = "https://zjgtceurzsvjkspkvroz.supabase.co";
+var SUPABASE_KEY = "sb_publishable_q9x-cmieOqpj3_rw3AGcEA_K-uynMSm";
 </script>
 
-<script src="/layout.js"></script>
+<script>
+(function(){
+"use strict";
+var R=document.getElementById("root");
+
+if(/PASTE_YOUR/.test(SUPABASE_URL)||/PASTE_YOUR/.test(SUPABASE_KEY)){
+  R.innerHTML='<div class="auth"><div class="box"><div class="bad"><b>Setup needed</b><code>'+
+    'Open index.html, scroll to the bottom, and replace SUPABASE_URL and SUPABASE_KEY '+
+    'with the two values from your old config.js.</code></div></div></div>';
+  return;
+}
+
+var sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+var me=null,BUCKET="message-attachments",chan=null,active=null,pend=null;
+
+function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){
+return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m];});}
+function ini(n){return String(n||"?").trim().split(/\s+/).slice(0,2).map(function(w){return w[0];}).join("").toUpperCase()||"?";}
+function ago(t){if(!t)return"";var m=Math.round((Date.now()-new Date(t))/60000);
+if(m<1)return"just now";if(m<60)return m+"m ago";if(m<1440)return Math.round(m/60)+"h ago";return Math.round(m/1440)+"d ago";}
+function inr(n){return n==null||n===""?"—":"₹"+Number(n).toLocaleString("en-IN");}
+function fsz(b){if(b==null)return"";if(b<1024)return b+" B";if(b<1048576)return Math.round(b/1024)+" KB";return (b/1048576).toFixed(1)+" MB";}
+function el(i){return document.getElementById(i);}
+function go(h){location.hash=h;}
+var LOGO='<div class="logo"><span class="m">C3</span>Cube<b>3</b></div>';
+
+async function Q(label,builder){
+  var r=await Promise.race([builder,new Promise(function(_,j){
+    setTimeout(function(){j(new Error(label+": server didn't respond in 15s"));},15000);})]);
+  if(r&&r.error){var e=r.error,m=label+": "+(e.message||"failed");
+    if(e.code)m+=" ["+e.code+"]";
+    if(e.code==="42P01")m+=" — that table doesn't exist";
+    if(e.code==="42501")m+=" — blocked by a security policy";
+    throw new Error(m);}
+  return r?r.data:null;
+}
+function boom(e,t){console.error(e);
+  (t||el("view")||R).innerHTML='<div class="bad"><b>Something went wrong</b><code>'+esc(e.message)+
+  '</code><button class="btn sm" style="margin-top:12px" onclick="location.reload()">Reload</button></div>';}
+function none(b,d,h,l){return '<div class="state"><b>'+esc(b)+'</b>'+esc(d||"")+
+(h?'<div style="margin-top:14px"><a class="btn sm" href="'+esc(h)+'">'+esc(l)+'</a></div>':"")+'</div>';}
+
+/* ================= AUTH ================= */
+function authShell(inner){R.innerHTML='<div class="auth"><div class="box">'+LOGO+
+  '<div class="card pad" style="margin-top:16px">'+inner+'</div></div></div>';}
+
+function login(){
+  authShell('<h1 style="font-size:21px">Sign in</h1><p class="muted small" style="margin-top:4px">Welcome back.</p>'+
+    '<label>Email</label><input id="e" type="email" autocomplete="email">'+
+    '<label>Password</label><input id="p" type="password" autocomplete="current-password">'+
+    '<button class="btn blk" id="b" style="margin-top:18px">Sign in</button><div id="m"></div>'+
+    '<p class="small muted" style="margin-top:16px;text-align:center"><a href="#forgot" style="color:var(--blue);font-weight:600">Forgot password?</a></p>'+
+    '<p class="small muted" style="margin-top:8px;text-align:center">No account? <a href="#signup" style="color:var(--blue);font-weight:600">Sign up</a></p>');
+  el("b").onclick=async function(){
+    var b=el("b");b.disabled=true;b.textContent="Signing in…";
+    var r=await sb.auth.signInWithPassword({email:el("e").value.trim(),password:el("p").value});
+    if(r.error){el("m").innerHTML='<div class="bad" style="margin-top:14px"><code>'+esc(r.error.message)+'</code></div>';
+      b.disabled=false;b.textContent="Sign in";return;}
+    me=null;go("#dashboard");route();
+  };
+  el("p").onkeydown=function(ev){if(ev.key==="Enter")el("b").click();};
+}
+
+function signup(){
+  var role="creator";
+  authShell('<h1 style="font-size:21px">Create your account</h1>'+
+    '<label>I am a…</label><div class="pick"><button id="rc" aria-pressed="true">Creator</button>'+
+    '<button id="rb" aria-pressed="false">Brand</button></div>'+
+    '<label>Full name</label><input id="n" autocomplete="name">'+
+    '<label>Email</label><input id="e" type="email" autocomplete="email">'+
+    '<label>Password</label><input id="p" type="password" autocomplete="new-password">'+
+    '<p class="small muted" style="margin-top:6px">At least 6 characters.</p>'+
+    '<button class="btn blk" id="b" style="margin-top:18px">Create account</button><div id="m"></div>'+
+    '<p class="small muted" style="margin-top:16px;text-align:center">Already have one? <a href="#login" style="color:var(--blue);font-weight:600">Sign in</a></p>');
+  el("rc").onclick=function(){role="creator";el("rc").setAttribute("aria-pressed","true");el("rb").setAttribute("aria-pressed","false");};
+  el("rb").onclick=function(){role="brand";el("rb").setAttribute("aria-pressed","true");el("rc").setAttribute("aria-pressed","false");};
+  el("b").onclick=async function(){
+    var b=el("b"),name=el("n").value.trim();
+    if(!name)return void(el("m").innerHTML='<div class="bad" style="margin-top:14px"><code>Please enter your name.</code></div>');
+    b.disabled=true;b.textContent="Creating…";
+    var r=await sb.auth.signUp({email:el("e").value.trim(),password:el("p").value,
+      options:{data:{full_name:name,role:role}}});
+    if(r.error){el("m").innerHTML='<div class="bad" style="margin-top:14px"><code>'+esc(r.error.message)+'</code></div>';
+      b.disabled=false;b.textContent="Create account";return;}
+    if(r.data.session&&r.data.user){
+      await sb.from("profiles").upsert({id:r.data.user.id,full_name:name,role:role});
+      if(role==="creator")await sb.from("creator_profiles").upsert({id:r.data.user.id});
+      me=null;go("#dashboard");route();
+    }else{
+      el("m").innerHTML='<div class="ok">Check your email to confirm your account, then sign in.</div>';
+    }
+  };
+}
+
+function forgot(){
+  authShell('<h1 style="font-size:21px">Reset password</h1>'+
+    '<p class="muted small" style="margin-top:4px">We\'ll email you a link.</p>'+
+    '<label>Email</label><input id="e" type="email">'+
+    '<button class="btn blk" id="b" style="margin-top:18px">Send reset link</button><div id="m"></div>'+
+    '<p class="small muted" style="margin-top:16px;text-align:center"><a href="#login" style="color:var(--blue);font-weight:600">Back to sign in</a></p>');
+  el("b").onclick=async function(){
+    var b=el("b");b.disabled=true;b.textContent="Sending…";
+    var r=await sb.auth.resetPasswordForEmail(el("e").value.trim(),{redirectTo:location.origin+"/#reset"});
+    el("m").innerHTML=r.error?'<div class="bad" style="margin-top:14px"><code>'+esc(r.error.message)+'</code></div>'
+      :'<div class="ok">Sent. Check your inbox.</div>';
+    b.disabled=false;b.textContent="Send reset link";
+  };
+}
+
+function reset(){
+  authShell('<h1 style="font-size:21px">New password</h1>'+
+    '<label>Password</label><input id="p" type="password" autocomplete="new-password">'+
+    '<button class="btn blk" id="b" style="margin-top:18px">Update password</button><div id="m"></div>');
+  el("b").onclick=async function(){
+    var b=el("b");b.disabled=true;b.textContent="Updating…";
+    var r=await sb.auth.updateUser({password:el("p").value});
+    if(r.error){el("m").innerHTML='<div class="bad" style="margin-top:14px"><code>'+esc(r.error.message)+'</code></div>';
+      b.disabled=false;b.textContent="Update password";return;}
+    el("m").innerHTML='<div class="ok">Done. Taking you in…</div>';
+    setTimeout(function(){me=null;go("#dashboard");route();},900);
+  };
+}
+
+/* ================= SHELL ================= */
+var NAV=[["dashboard","◧","Dashboard"],["campaigns","◈","Campaigns"],["applications","✎","Applications"],
+["creators","◕","Creators"],["messages","✉","Messages"],["profile","◑","Profile"]];
+var TITLES={dashboard:"Dashboard",campaigns:"Campaigns",applications:"Applications",creators:"Creators",
+messages:"Messages",profile:"Profile",creator:"Creators","new-campaign":"New campaign"};
+
+function shell(on){
+  R.innerHTML='<div class="shell"><aside>'+LOGO+'<nav class="side">'+
+    NAV.map(function(n){return '<a href="#'+n[0]+'" class="'+(n[0]===on?"on":"")+'"><span class="ic">'+
+      n[1]+'</span>'+n[2]+'</a>';}).join("")+
+    '<a href="#" id="out" style="margin-top:14px"><span class="ic">⏻</span>Sign out</a></nav></aside>'+
+    '<main><div class="top"><button class="burger" id="bg">☰</button><strong id="ttl">Dashboard</strong>'+
+    '<div class="who"><div style="text-align:right"><div style="font-weight:600;font-size:14px;line-height:1.2">'+
+    esc(me.name)+'</div><div style="font-size:12px;color:var(--faint)">'+(me.role==="brand"?"Brand":"Creator")+
+    '</div></div>'+(me.av?'<img class="av" src="'+esc(me.av)+'" alt="">':'<div class="av">'+esc(ini(me.name))+'</div>')+
+    '</div></div><div class="content" id="view"><div class="sk"></div><div class="sk"></div></div></main></div>';
+  el("bg").onclick=function(){document.body.classList.toggle("nav");};
+  el("out").onclick=async function(e){e.preventDefault();await sb.auth.signOut();me=null;go("#login");route();};
+}
+
+async function boot(){
+  var a=await sb.auth.getUser();
+  if(!a.data||!a.data.user)return false;
+  var u=a.data.user;
+  var p=await Q("Loading your profile",
+    sb.from("profiles").select("id,role,full_name,avatar_url,bio").eq("id",u.id).maybeSingle());
+  if(!p){
+    var md=u.user_metadata||{};
+    await Q("Creating your profile",sb.from("profiles").insert({
+      id:u.id,full_name:md.full_name||u.email.split("@")[0],role:md.role||"creator"}));
+    p=await Q("Loading your profile",
+      sb.from("profiles").select("id,role,full_name,avatar_url,bio").eq("id",u.id).maybeSingle());
+  }
+  me={id:p.id,role:p.role,name:p.full_name||"Cube3 user",av:p.avatar_url,bio:p.bio};
+  return true;
+}
+
+/* ================= VIEWS ================= */
+async function dashboard(){
+  var V=el("view"),brand=me.role==="brand";
+  V.innerHTML='<h1>Welcome back, '+esc(me.name.split(" ")[0])+'</h1><p class="muted" style="margin:4px 0 20px">'+
+    (brand?"Find creators and track your campaigns.":"Discover campaigns and grow your work.")+
+    '</p><div class="stats" id="st"></div><div class="cols"><div class="card" id="l"></div><div class="card" id="r"></div></div>';
+  var tone={blue:["var(--blues)","var(--blue)"],purple:["var(--purples)","var(--purple)"],
+    amber:["var(--ambers)","var(--amber)"],green:["var(--greens)","var(--green)"]};
+  function stats(rows){el("st").innerHTML=rows.map(function(x){var c=tone[x[3]];
+    return '<div class="stat"><div><div class="lb">'+esc(x[0])+'</div><div class="vl">'+esc(x[1])+
+    '</div></div><div class="ic" style="background:'+c[0]+';color:'+c[1]+'">'+x[2]+'</div></div>';}).join("");}
+  function list(id,t,h,rows,eb,ed){el(id).innerHTML='<div class="hd"><h2>'+esc(t)+'</h2><a href="'+h+'">View all</a></div>'+
+    (rows.length?rows.map(function(r){return '<div class="row"><div class="av">'+esc(ini(r.t))+'</div>'+
+    '<div class="grow"><h3 class="trunc">'+esc(r.t)+'</h3><div class="small muted trunc">'+esc(r.s)+'</div></div>'+
+    (r.c?'<span class="chip '+(r.c==="accepted"||r.c==="open"?"g":r.c==="pending"?"a":"")+'">'+esc(r.c)+'</span>':"")+
+    '</div>';}).join(""):none(eb,ed));}
+
+  if(brand){
+    var cs=await Q("Loading your campaigns",sb.from("campaigns")
+      .select("id,title,budget,status,created_at").eq("brand_id",me.id))||[];
+    var ids=cs.map(function(c){return c.id;});
+    var ap=ids.length?(await Q("Counting pitches",sb.from("campaign_applications")
+      .select("id,status").in("campaign_id",ids))||[]):[];
+    stats([["Your campaigns",cs.length,"◈","blue"],["Pitches received",ap.length,"✎","purple"],
+      ["Awaiting review",ap.filter(function(a){return a.status==="pending";}).length,"◷","amber"],
+      ["Selected",ap.filter(function(a){return a.status==="accepted";}).length,"✓","green"]]);
+    list("l","Your campaigns","#campaigns",cs.slice(0,5).map(function(c){
+      return {t:c.title,s:inr(c.budget)+" · "+ago(c.created_at),c:c.status};}),
+      "No campaigns yet","Post one to start receiving pitches.");
+  }else{
+    var open=await Q("Counting open campaigns",
+      sb.from("campaigns").select("id",{count:"exact",head:true}).eq("status","open"));
+    var mine=await Q("Loading your applications",sb.from("campaign_applications")
+      .select("id,status").eq("creator_id",me.id))||[];
+    stats([["Open campaigns",open==null?"—":open,"◈","blue"],["My applications",mine.length,"✎","purple"],
+      ["Awaiting reply",mine.filter(function(a){return a.status==="pending";}).length,"◷","amber"],
+      ["Selected",mine.filter(function(a){return a.status==="accepted";}).length,"✓","green"]]);
+    var rec=await Q("Loading campaigns",sb.from("campaigns")
+      .select("id,title,budget,category,created_at").eq("status","open")
+      .order("created_at",{ascending:false}).limit(5))||[];
+    list("l","Recommended for you","#campaigns",rec.map(function(c){
+      return {t:c.title,s:inr(c.budget)+(c.category?" · "+c.category:""),c:"open"};}),
+      "No open campaigns","Check back soon.");
+  }
+  var col=brand?"brand_id":"creator_id",oth=brand?"creator_id":"brand_id";
+  var iq=await Q("Loading conversations",sb.from("creator_inquiries")
+    .select("id,brand_id,creator_id,created_at").eq(col,me.id).limit(5))||[];
+  var nm={};
+  if(iq.length){(await Q("Loading names",sb.from("profiles").select("id,full_name")
+    .in("id",iq.map(function(i){return i[oth];})))||[]).forEach(function(p){nm[p.id]=p.full_name;});}
+  list("r","Recent messages","#messages",iq.map(function(i){
+    return {t:nm[i[oth]]||"Cube3 user",s:"Started "+ago(i.created_at)};}),
+    "No messages yet",brand?"Message a creator to begin.":"Brands will reach out here.");
+}
+
+async function campaignsView(){
+  var V=el("view"),brand=me.role==="brand";
+  V.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">'+
+    '<div><h1>Campaigns</h1><p class="muted" style="margin-top:4px">'+
+    (brand?"Campaigns you've posted.":"Open campaigns taking pitches.")+'</p></div>'+
+    (brand?'<a class="btn" href="#new-campaign">+ New campaign</a>':"")+'</div><div id="l" style="margin-top:18px"></div>';
+  var rows=brand
+    ? await Q("Loading your campaigns",sb.from("campaigns")
+        .select("id,title,description,budget,category,status,created_at")
+        .eq("brand_id",me.id).order("created_at",{ascending:false}))
+    : await Q("Loading campaigns",sb.from("campaigns")
+        .select("id,title,description,budget,category,status,created_at")
+        .eq("status","open").order("created_at",{ascending:false}));
+  rows=rows||[];
+  if(!rows.length)return void(el("l").innerHTML='<div class="card">'+
+    none(brand?"No campaigns yet":"No open campaigns",brand?"Post your first one.":"Check back soon.")+'</div>');
+  var did={};
+  if(!brand){(await Q("Checking your applications",sb.from("campaign_applications")
+    .select("campaign_id").eq("creator_id",me.id))||[]).forEach(function(a){did[a.campaign_id]=true;});}
+  el("l").innerHTML=rows.map(function(c){
+    return '<div class="card pad" style="margin-bottom:12px">'+
+    '<div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">'+
+    '<div><h2>'+esc(c.title)+'</h2><div class="small muted">'+esc(c.category||"")+'</div></div>'+
+    '<span class="chip '+(c.status==="open"?"g":"")+'">'+esc(c.status||"")+'</span></div>'+
+    (c.description?'<p class="muted small" style="margin-top:9px;white-space:pre-wrap">'+esc(String(c.description).slice(0,300))+'</p>':"")+
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:13px;padding-top:12px;border-top:1px solid var(--line)">'+
+    '<strong>'+esc(inr(c.budget))+'</strong>'+
+    (brand?'<a class="btn sm g" href="#applications">See pitches</a>'
+      :(did[c.id]?'<span class="chip g">Applied</span>'
+        :'<button class="btn sm" data-apply="'+esc(c.id)+'" data-title="'+esc(c.title)+'">Apply</button>'))+
+    '</div></div>';}).join("");
+}
+
+function newCampaign(){
+  el("view").innerHTML='<h1>New campaign</h1><div class="card pad" style="margin-top:16px;max-width:620px">'+
+    '<label>Title</label><input id="t" placeholder="Monsoon skincare launch">'+
+    '<label>Description</label><textarea id="d" placeholder="What you need, deliverables, timeline"></textarea>'+
+    '<label>Budget (₹)</label><input id="b" type="number" min="0" placeholder="25000">'+
+    '<label>Category</label><input id="c" placeholder="Beauty, Food, Tech…">'+
+    '<button class="btn" id="s" style="margin-top:18px">Post campaign</button><div id="m"></div></div>';
+  el("s").onclick=async function(){
+    if(!el("t").value.trim())return void(el("m").innerHTML='<div class="bad" style="margin-top:14px"><code>Give it a title.</code></div>');
+    var b=el("s");b.disabled=true;b.textContent="Posting…";
+    try{
+      await Q("Posting campaign",sb.from("campaigns").insert({brand_id:me.id,
+        title:el("t").value.trim(),description:el("d").value.trim()||null,
+        budget:el("b").value?Number(el("b").value):null,
+        category:el("c").value.trim()||null,status:"open"}));
+      go("#campaigns");
+    }catch(e){el("m").innerHTML='<div class="bad" style="margin-top:14px"><code>'+esc(e.message)+'</code></div>';
+      b.disabled=false;b.textContent="Post campaign";}
+  };
+}
+
+async function applications(){
+  var V=el("view"),brand=me.role==="brand";
+  V.innerHTML='<h1>'+(brand?"Pitches received":"My applications")+'</h1><div id="l" style="margin-top:18px"></div>';
+  var L={pending:"a",shortlisted:"p",accepted:"g",rejected:"r",withdrawn:"r"};
+  function item(title,sub,a,act){
+    return '<div class="card pad" style="margin-bottom:12px">'+
+    '<div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">'+
+    '<div><h2 style="font-size:16px">'+esc(title)+'</h2>'+(sub?'<div class="small muted">'+esc(sub)+'</div>':"")+'</div>'+
+    '<span class="chip '+(L[a.status]||"")+'">'+esc(a.status)+'</span></div>'+
+    (a.pitch?'<p class="small muted" style="margin-top:10px;padding-left:11px;border-left:3px solid var(--line);white-space:pre-wrap">'+esc(a.pitch)+'</p>':"")+
+    '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:13px;padding-top:12px;border-top:1px solid var(--line)">'+
+    '<span class="small muted">'+esc(ago(a.created_at))+'</span><span>'+act+'</span></div></div>';
+  }
+  if(brand){
+    var cs=await Q("Loading your campaigns",sb.from("campaigns").select("id,title").eq("brand_id",me.id))||[];
+    if(!cs.length)return void(el("l").innerHTML='<div class="card">'+none("No campaigns yet","Post one and pitches land here.")+'</div>');
+    var t={};cs.forEach(function(c){t[c.id]=c.title;});
+    var ap=await Q("Loading pitches",sb.from("campaign_applications")
+      .select("id,campaign_id,creator_id,pitch,status,created_at")
+      .in("campaign_id",cs.map(function(c){return c.id;})).order("created_at",{ascending:false}))||[];
+    if(!ap.length)return void(el("l").innerHTML='<div class="card">'+none("No pitches yet","Creators haven't applied yet.")+'</div>');
+    var nm={};(await Q("Loading creators",sb.from("profiles").select("id,full_name")
+      .in("id",Array.from(new Set(ap.map(function(a){return a.creator_id;})))))||[])
+      .forEach(function(p){nm[p.id]=p.full_name;});
+    el("l").innerHTML=ap.map(function(a){return item(nm[a.creator_id]||"Creator",t[a.campaign_id],a,
+      '<a class="btn sm g" href="#creator/'+esc(a.creator_id)+'">Profile</a> '+
+      (a.status==="pending"?'<button class="btn sm" data-accept="'+esc(a.id)+'">Select</button>':""));}).join("");
+  }else{
+    var mine=await Q("Loading your applications",sb.from("campaign_applications")
+      .select("id,campaign_id,pitch,status,created_at").eq("creator_id",me.id)
+      .order("created_at",{ascending:false}))||[];
+    if(!mine.length)return void(el("l").innerHTML='<div class="card">'+
+      none("No applications yet","Pitch for a campaign and it shows up here.","#campaigns","Browse campaigns")+'</div>');
+    var ti={};(await Q("Loading campaigns",sb.from("campaigns").select("id,title")
+      .in("id",Array.from(new Set(mine.map(function(a){return a.campaign_id;})))))||[])
+      .forEach(function(c){ti[c.id]=c.title;});
+    el("l").innerHTML=mine.map(function(a){return item(ti[a.campaign_id]||"Campaign unavailable","",a,
+      a.status==="accepted"?'<a class="btn sm" href="#messages">Open chat</a>':"");}).join("");
+  }
+}
+
+async function creators(){
+  var V=el("view");
+  V.innerHTML='<h1>Creators</h1><p class="muted" style="margin:4px 0 16px">Search the directory.</p>'+
+    '<input id="s" placeholder="Search name, handle or bio" style="max-width:420px">'+
+    '<div class="small muted" id="ct" style="margin:14px 0 10px"></div><div id="g"></div>';
+  var rows=await Q("Loading creators",sb.from("creator_profiles").select("id,handle,category,location"))||[];
+  if(!rows.length)return void(el("g").innerHTML='<div class="card">'+none("No creators yet","Profiles appear once people sign up.")+'</div>');
+  var by={};(await Q("Loading names",sb.from("profiles").select("id,full_name,bio,avatar_url")
+    .in("id",rows.map(function(r){return r.id;})))||[]).forEach(function(p){by[p.id]=p;});
+  var all=rows.map(function(r){var p=by[r.id]||{};
+    return Object.assign({},r,{name:p.full_name||"Unnamed creator",bio:p.bio||"",av:p.avatar_url||""});});
+  function draw(){
+    var t=(el("s").value||"").toLowerCase().trim();
+    var L=all.filter(function(c){return !t||(c.name+" "+(c.handle||"")+" "+c.bio).toLowerCase().indexOf(t)>-1;});
+    el("ct").textContent=L.length+(L.length===1?" creator":" creators");
+    el("g").innerHTML=L.length?'<div class="grid">'+L.map(function(c){
+      return '<div class="card pad"><div style="display:flex;gap:11px;align-items:center;margin-bottom:10px">'+
+      (c.av?'<img class="av" src="'+esc(c.av)+'" alt="">':'<div class="av">'+esc(ini(c.name))+'</div>')+
+      '<div style="min-width:0"><h3 class="trunc">'+esc(c.name)+'</h3><div class="small muted trunc">'+
+      (c.handle?"@"+esc(String(c.handle).replace(/^@/,"")):"")+(c.location?" · "+esc(c.location):"")+'</div></div></div>'+
+      (c.bio?'<p class="small muted" style="margin-bottom:9px">'+esc(String(c.bio).slice(0,110))+'</p>':"")+
+      (c.category?'<span class="chip">'+esc(c.category)+'</span>':"")+
+      '<div style="display:flex;gap:8px;margin-top:13px">'+
+      '<a class="btn sm g" style="flex:1" href="#creator/'+esc(c.id)+'">Profile</a>'+
+      (me.role==="brand"?'<button class="btn sm" style="flex:1" data-msg="'+esc(c.id)+'">Message</button>':"")+
+      '</div></div>';}).join("")+'</div>':'<div class="card">'+none("No matches","Try a different search.")+'</div>';
+  }
+  el("s").addEventListener("input",draw);draw();
+}
+
+async function creatorPage(id){
+  var V=el("view");V.innerHTML='<div class="sk"></div>';
+  var p=await Q("Loading profile",sb.from("profiles").select("id,full_name,bio,avatar_url,role").eq("id",id).maybeSingle());
+  if(!p)return void(V.innerHTML='<a class="small muted" href="#creators">← All creators</a>'+
+    '<div class="card" style="margin-top:14px">'+none("Profile not found","This account may have been deleted.")+'</div>');
+  var c=await Q("Loading creator details",sb.from("creator_profiles").select("*").eq("id",id).maybeSingle())||{};
+  var links=[["instagram_url","Instagram"],["youtube_url","YouTube"],["x_url","X"],["tiktok_url","TikTok"],
+    ["facebook_url","Facebook"],["linkedin_url","LinkedIn"],["threads_url","Threads"],
+    ["snapchat_url","Snapchat"],["portfolio_url","Portfolio"]]
+    .filter(function(l){return c[l[0]];})
+    .map(function(l){return '<a class="chip" href="'+esc(c[l[0]])+'" target="_blank" rel="noopener nofollow">'+l[1]+'</a>';}).join("");
+  var can=me.role==="brand"&&p.role==="creator"&&me.id!==id;
+  V.innerHTML='<a class="small muted" href="#creators">← All creators</a>'+
+    '<div class="card pad" style="margin-top:14px"><div style="display:flex;gap:15px;align-items:center;flex-wrap:wrap">'+
+    (p.avatar_url?'<img class="av" style="width:74px;height:74px" src="'+esc(p.avatar_url)+'" alt="">'
+      :'<div class="av" style="width:74px;height:74px;font-size:23px">'+esc(ini(p.full_name))+'</div>')+
+    '<div style="flex:1;min-width:170px"><h1 style="font-size:23px">'+esc(p.full_name||"Unnamed creator")+'</h1>'+
+    '<div class="muted small">'+(c.handle?"@"+esc(String(c.handle).replace(/^@/,"")):"")+
+    (c.location?" · "+esc(c.location):"")+'</div></div>'+
+    (can?'<button class="btn" data-msg="'+esc(id)+'">Message</button>':"")+'</div>'+
+    (p.bio?'<p style="margin-top:15px;white-space:pre-wrap">'+esc(p.bio)+'</p>':"")+
+    (c.category?'<div style="margin-top:12px"><span class="chip">'+esc(c.category)+'</span></div>':"")+
+    (links?'<div style="margin-top:12px">'+links+'</div>':"")+
+    (!can&&me.role==="creator"&&me.id!==id?'<p class="small muted" style="margin-top:14px">Only brand accounts can start a conversation.</p>':"")+
+    '</div>';
+}
+
+async function profileView(){
+  var V=el("view"),isC=me.role==="creator";
+  var c=isC?(await Q("Loading your creator profile",
+    sb.from("creator_profiles").select("*").eq("id",me.id).maybeSingle())||{}):{};
+  V.innerHTML='<h1>Your profile</h1><div class="card pad" style="margin-top:16px;max-width:620px">'+
+    '<label>Full name</label><input id="n" value="'+esc(me.name)+'">'+
+    '<label>Bio</label><textarea id="b">'+esc(me.bio||"")+'</textarea>'+
+    '<label>Avatar image URL</label><input id="a" value="'+esc(me.av||"")+'" placeholder="https://…">'+
+    (isC?'<label>Handle</label><input id="h" value="'+esc(c.handle||"")+'" placeholder="yourname">'+
+      '<label>Category</label><input id="cat" value="'+esc(c.category||"")+'" placeholder="Beauty, Food, Tech…">'+
+      '<label>Location</label><input id="loc" value="'+esc(c.location||"")+'" placeholder="Mumbai">'+
+      '<label>Instagram URL</label><input id="ig" value="'+esc(c.instagram_url||"")+'">'+
+      '<label>YouTube URL</label><input id="yt" value="'+esc(c.youtube_url||"")+'">'+
+      '<label>Portfolio URL</label><input id="pf" value="'+esc(c.portfolio_url||"")+'">':"")+
+    '<button class="btn" id="s" style="margin-top:18px">Save profile</button><div id="m"></div></div>';
+  el("s").onclick=async function(){
+    var b=el("s");b.disabled=true;b.textContent="Saving…";
+    try{
+      await Q("Saving profile",sb.from("profiles").update({full_name:el("n").value.trim(),
+        bio:el("b").value.trim()||null,avatar_url:el("a").value.trim()||null}).eq("id",me.id));
+      if(isC)await Q("Saving creator details",sb.from("creator_profiles").upsert({id:me.id,
+        handle:el("h").value.trim()||null,category:el("cat").value.trim()||null,
+        location:el("loc").value.trim()||null,instagram_url:el("ig").value.trim()||null,
+        youtube_url:el("yt").value.trim()||null,portfolio_url:el("pf").value.trim()||null}));
+      el("m").innerHTML='<div class="ok">Saved.</div>';
+      me=null;setTimeout(route,700);
+    }catch(e){el("m").innerHTML='<div class="bad" style="margin-top:14px"><code>'+esc(e.message)+'</code></div>';
+      b.disabled=false;b.textContent="Save profile";}
+  };
+}
+
+async function messages(){
+  el("view").innerHTML='<h1 style="margin-bottom:14px">Messages</h1><div class="chat">'+
+    '<div class="card pane ls"><div class="hd"><h2>Conversations</h2></div><div id="thr"><div class="sk" style="margin:12px"></div></div></div>'+
+    '<div class="card pane cv"><div class="hd"><button class="btn sm g back" id="bk">← Back</button>'+
+    '<h2 id="who">Select a conversation</h2></div><div id="msgs"><div class="state">Pick a conversation.</div></div>'+
+    '<div id="pb"></div><div class="comp" id="cp" style="display:none"><input type="file" id="f" hidden>'+
+    '<button class="btn sm g" id="clip">📎</button><input type="text" id="tx" placeholder="Type a message" maxlength="2000">'+
+    '<button class="btn sm" id="sd">Send</button></div></div></div>';
+  el("bk").onclick=function(){document.body.classList.remove("open");};
+  el("clip").onclick=function(){el("f").click();};
+  el("f").onchange=pickFile;el("sd").onclick=send;
+  el("tx").onkeydown=function(e){if(e.key==="Enter")send();};
+
+  var th=[],brand=me.role==="brand",col=brand?"brand_id":"creator_id",oth=brand?"creator_id":"brand_id";
+  (await Q("Loading conversations",sb.from("creator_inquiries")
+    .select("id,brand_id,creator_id").eq(col,me.id))||[]).forEach(function(i){th.push({k:"inquiry",id:i.id,o:i[oth]});});
+  if(brand){
+    var cs=await Q("Loading campaigns",sb.from("campaigns").select("id,title").eq("brand_id",me.id))||[];
+    if(cs.length){var t={};cs.forEach(function(c){t[c.id]=c.title;});
+      (await Q("Loading accepted pitches",sb.from("campaign_applications")
+        .select("id,campaign_id,creator_id").in("campaign_id",cs.map(function(c){return c.id;}))
+        .eq("status","accepted"))||[]).forEach(function(a){th.push({k:"campaign",id:a.id,o:a.creator_id,n:t[a.campaign_id]});});}
+  }else{
+    var ap=await Q("Loading accepted pitches",sb.from("campaign_applications")
+      .select("id,campaign_id").eq("creator_id",me.id).eq("status","accepted"))||[];
+    if(ap.length){var ci={};
+      (await Q("Loading campaigns",sb.from("campaigns").select("id,title,brand_id")
+        .in("id",ap.map(function(a){return a.campaign_id;})))||[]).forEach(function(c){ci[c.id]=c;});
+      ap.forEach(function(a){var c=ci[a.campaign_id];if(c)th.push({k:"campaign",id:a.id,o:c.brand_id,n:c.title});});}
+  }
+  if(!th.length)return void(el("thr").innerHTML=none("No conversations yet",
+    brand?"Message a creator to start one.":"A chat opens when a brand accepts your pitch."));
+  var nm={};(await Q("Loading names",sb.from("profiles").select("id,full_name")
+    .in("id",Array.from(new Set(th.map(function(t){return t.o;}).filter(Boolean)))))||[])
+    .forEach(function(p){nm[p.id]=p.full_name;});
+  el("thr").innerHTML=th.map(function(t,i){var n=nm[t.o]||"Cube3 user";
+    return '<div class="thr" data-i="'+i+'"><div class="av">'+esc(ini(n))+'</div><div class="grow">'+
+    '<h3 class="trunc">'+esc(n)+'</h3><div class="small muted trunc">'+esc(t.n||"Direct message")+'</div></div></div>';}).join("");
+  el("thr").querySelectorAll(".thr").forEach(function(x){x.onclick=function(){
+    el("thr").querySelectorAll(".thr").forEach(function(y){y.classList.remove("on");});
+    x.classList.add("on");openThread(th[+x.dataset.i],nm[th[+x.dataset.i].o]||"Cube3 user");};});
+}
+function tbl(k){return k==="inquiry"?"inquiry_messages":"messages";}
+function fkey(k){return k==="inquiry"?"inquiry_id":"application_id";}
+async function openThread(t,name){
+  active=t;document.body.classList.add("open");
+  el("who").textContent=name;el("cp").style.display="flex";
+  try{await paint();
+    if(chan)sb.removeChannel(chan);
+    chan=sb.channel("t-"+t.id).on("postgres_changes",
+      {event:"INSERT",schema:"public",table:tbl(t.k),filter:fkey(t.k)+"=eq."+t.id},paint).subscribe();
+  }catch(e){boom(e,el("msgs"));}
+}
+async function paint(){
+  var box=el("msgs");
+  var rows=await Q("Loading messages",sb.from(tbl(active.k))
+    .select("id,sender_id,body,attachment_path,attachment_url,attachment_type,attachment_name,attachment_size,created_at")
+    .eq(fkey(active.k),active.id).order("created_at",{ascending:true}))||[];
+  if(!rows.length)return void(box.innerHTML='<div class="state">No messages yet. Say hello.</div>');
+  box.innerHTML=rows.map(function(m){
+    var mine=m.sender_id===me.id,aid="at"+m.id;
+    var att=(m.attachment_path||m.attachment_url)?'<div id="'+aid+'" class="small" style="margin-bottom:6px">Loading…</div>':"";
+    if(att)setTimeout(function(){fillAtt(aid,m);},0);
+    return '<div class="bub '+(mine?"me":"th")+'">'+att+(m.body?esc(m.body):"")+
+    '<span class="ts">'+esc(ago(m.created_at))+'</span></div>';}).join("");
+  box.scrollTop=box.scrollHeight;
+}
+async function fillAtt(id,m){
+  var e=el(id);if(!e)return;
+  var url=m.attachment_url;
+  if(!url&&m.attachment_path){var r=await sb.storage.from(BUCKET).createSignedUrl(m.attachment_path,3600);
+    url=r.data?r.data.signedUrl:null;}
+  if(!url)return void(e.textContent="Attachment unavailable");
+  var t=m.attachment_type;
+  if(t==="image")e.innerHTML='<a href="'+esc(url)+'" target="_blank" rel="noopener"><img src="'+esc(url)+'" alt="" style="max-width:210px;border-radius:9px;display:block"></a>';
+  else if(t==="video")e.innerHTML='<video src="'+esc(url)+'" controls preload="metadata" style="max-width:210px;border-radius:9px;display:block"></video>';
+  else if(t==="audio")e.innerHTML='<audio src="'+esc(url)+'" controls style="max-width:210px"></audio>';
+  else e.innerHTML='<a href="'+esc(url)+'" target="_blank" rel="noopener" download="'+esc(m.attachment_name||"file")+
+    '" style="text-decoration:underline">↓ '+esc(m.attachment_name||"Download")+'</a> <span style="opacity:.7">'+esc(fsz(m.attachment_size))+'</span>';
+}
+function pickFile(e){
+  pend=e.target.files[0]||null;
+  el("pb").innerHTML=pend?'<div style="padding:9px 13px;font-size:13px;background:var(--bg);border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px"><span>'+
+    esc(pend.name)+' ('+esc(fsz(pend.size))+')</span><button class="btn sm g" id="rm">Remove</button></div>':"";
+  var r=el("rm");if(r)r.onclick=function(){pend=null;el("f").value="";el("pb").innerHTML="";};
+}
+var BLOCKED=["exe","msi","bat","cmd","com","scr","jar","js","html","htm","svg","php","sh","ps1","vbs","apk"];
+async function send(){
+  if(!active)return;
+  var tx=el("tx"),body=tx.value.trim();
+  if(!body&&!pend)return;
+  var b=el("sd");b.disabled=true;b.textContent="…";
+  try{
+    var row={sender_id:me.id,body:body||null};row[fkey(active.k)]=active.id;
+    if(pend){
+      var ext=(pend.name.split(".").pop()||"").toLowerCase();
+      if(BLOCKED.indexOf(ext)>-1)throw new Error("."+ext+" files can't be shared here. Zip it first.");
+      if(pend.size>50*1024*1024)throw new Error("That file is "+fsz(pend.size)+". Limit is 50 MB.");
+      var kind=pend.type.indexOf("image/")===0?"image":pend.type.indexOf("video/")===0?"video"
+        :pend.type.indexOf("audio/")===0?"audio":"file";
+      var path=active.id+"/"+(crypto.randomUUID?crypto.randomUUID():Date.now()+"-"+Math.random().toString(36).slice(2))+(ext?"."+ext:"");
+      var up=await sb.storage.from(BUCKET).upload(path,pend,{contentType:pend.type||"application/octet-stream"});
+      if(up.error){
+        if(/bucket/i.test(up.error.message))throw new Error('Storage bucket "'+BUCKET+
+          '" does not exist. Create it in Supabase → Storage and keep it private.');
+        throw new Error("Upload failed: "+up.error.message);}
+      row.attachment_path=path;row.attachment_type=kind;
+      row.attachment_name=pend.name.slice(0,200);row.attachment_size=pend.size;
+    }
+    await Q("Sending",sb.from(tbl(active.k)).insert(row));
+    tx.value="";pend=null;el("f").value="";el("pb").innerHTML="";
+    await paint();
+  }catch(e){alert(e.message);}
+  finally{b.disabled=false;b.textContent="Send";}
+}
+
+document.addEventListener("click",async function(e){
+  var m=e.target.closest("[data-msg]");
+  if(m){
+    var lbl=m.textContent;m.disabled=true;m.textContent="Opening…";
+    try{
+      var f=await Q("Checking for an existing conversation",sb.from("creator_inquiries")
+        .select("id").eq("brand_id",me.id).eq("creator_id",m.dataset.msg).maybeSingle());
+      if(!f)await Q("Starting the conversation",sb.from("creator_inquiries")
+        .insert({brand_id:me.id,creator_id:m.dataset.msg}).select("id").single());
+      go("#messages");
+    }catch(x){alert(x.message);m.disabled=false;m.textContent=lbl;}
+    return;
+  }
+  var ap=e.target.closest("[data-apply]");
+  if(ap){
+    var pitch=prompt('Your pitch for "'+ap.dataset.title+'" — why are you a fit?');
+    if(pitch==null)return;
+    ap.disabled=true;ap.textContent="Sending…";
+    try{
+      await Q("Sending your pitch",sb.from("campaign_applications").insert({
+        campaign_id:ap.dataset.apply,creator_id:me.id,pitch:pitch.trim()||null,status:"pending"}));
+      route();
+    }catch(x){alert(x.message);ap.disabled=false;ap.textContent="Apply";}
+    return;
+  }
+  var acc=e.target.closest("[data-accept]");
+  if(acc){
+    acc.disabled=true;acc.textContent="…";
+    try{await Q("Selecting creator",sb.from("campaign_applications")
+      .update({status:"accepted"}).eq("id",acc.dataset.accept));route();}
+    catch(x){alert(x.message);acc.disabled=false;acc.textContent="Select";}
+  }
+});
+
+async function route(){
+  var h=(location.hash||"").slice(1),base=h.split("/")[0];
+  document.body.classList.remove("nav","open");
+  if(chan){sb.removeChannel(chan);chan=null;}
+  var AUTH={login:login,signup:signup,forgot:forgot,reset:reset};
+  try{
+    if(!me){
+      var ok=await boot();
+      if(!ok){(AUTH[base]||login)();return;}
+    }
+    if(base==="reset"){reset();return;}
+    if(AUTH[base]){base="dashboard";location.hash="#dashboard";}
+    if(!base)base="dashboard";
+    shell(base==="creator"?"creators":(base==="new-campaign"?"campaigns":base));
+    el("ttl").textContent=TITLES[base]||"Dashboard";
+    if(base==="creator")await creatorPage(h.slice(8));
+    else if(base==="campaigns")await campaignsView();
+    else if(base==="new-campaign")newCampaign();
+    else if(base==="applications")await applications();
+    else if(base==="creators")await creators();
+    else if(base==="messages")await messages();
+    else if(base==="profile")await profileView();
+    else await dashboard();
+  }catch(e){boom(e);}
+}
+window.addEventListener("hashchange",route);
+sb.auth.onAuthStateChange(function(ev){if(ev==="SIGNED_OUT")me=null;});
+route();
+})();
+</script>
 </body>
 </html>
