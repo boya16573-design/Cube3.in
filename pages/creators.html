@@ -11,13 +11,27 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="/style.css">
 <style>
-  .filters{display:grid; grid-template-columns:2fr 1fr; gap:12px; margin:24px 0 30px;}
-  @media (max-width:600px){ .filters{grid-template-columns:1fr;} }
+  .search-layout{display:grid; grid-template-columns:250px 1fr; gap:24px; margin-top:24px;}
+  @media (max-width:800px){ .search-layout{grid-template-columns:1fr;} }
+  .filter-panel{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius-md); padding:20px; align-self:start; box-shadow:var(--shadow-xs);}
+  .filter-panel h4{font-size:12px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-faint); margin:0 0 4px;}
+  .filter-panel .filter-group{margin-top:16px;}
+  .filter-panel .filter-group:first-of-type{margin-top:10px;}
+  .filter-panel label{margin:0 0 5px; font-size:12.5px;}
+  .range-row{display:flex; gap:8px; align-items:center;}
+  .range-row input{width:100%;}
+  .clear-filters{margin-top:16px; width:100%;}
+
   .card h3{font-size:16px; margin:0 0 3px;}
   .card .handle{color:var(--ink-muted); font-size:12.5px; margin-bottom:10px;}
   .card .bio{color:var(--ink); font-size:13.5px; line-height:1.5; margin-bottom:10px; min-height:38px;}
   .links{margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;}
   .links a{color:var(--violet-deep); font-size:12px; font-weight:600;}
+  .match-score{display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:700; padding:5px 10px; border-radius:20px; margin-bottom:8px;}
+  .match-score.high{background:#e8f7ee; color:#1f8a4c;}
+  .match-score.medium{background:#fdf3dd; color:#a06a05;}
+  .match-score.low{background:var(--line); color:var(--ink-muted);}
+  .result-count{color:var(--ink-muted); font-size:13px; margin-bottom:14px;}
 </style>
 </head>
 <body>
@@ -42,44 +56,76 @@
   <h1 style="font-size:30px;">Creators</h1>
   <p class="muted">Browse and search the Cube3 creator directory.</p>
 
-  <div class="filters">
-    <input id="search" type="search" placeholder="Search by name, handle, or bio...">
-    <select id="categoryFilter">
-      <option value="">All categories</option>
-      <option>Technology</option><option>Gaming</option><option>Education</option>
-      <option>Entertainment</option><option>Business</option><option>Fashion</option>
-      <option>Fitness</option><option>Travel</option><option>Food</option>
-      <option>Content Creator</option><option>Influencer</option><option>Other</option>
-    </select>
-  </div>
+  <div class="search-layout">
+    <aside class="filter-panel">
+      <h4>Search</h4>
+      <div class="filter-group">
+        <input id="search" type="search" placeholder="Name, handle, or bio...">
+      </div>
 
-  <div id="grid" class="grid-cards">
-    <div class="loading-state">Loading creators...</div>
+      <h4 style="margin-top:20px;">Filters</h4>
+
+      <div class="filter-group">
+        <label for="categoryFilter">Niche / Category</label>
+        <select id="categoryFilter">
+          <option value="">All categories</option>
+          <option>Technology</option><option>Gaming</option><option>Education</option>
+          <option>Entertainment</option><option>Business</option><option>Fashion</option>
+          <option>Fitness</option><option>Travel</option><option>Food</option>
+          <option>Content Creator</option><option>Influencer</option><option>Other</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="platformFilter">Platform</label>
+        <select id="platformFilter">
+          <option value="">All platforms</option>
+          <option value="youtube_url">YouTube</option>
+          <option value="instagram_url">Instagram</option>
+          <option value="x_url">X</option>
+          <option value="tiktok_url">TikTok</option>
+          <option value="facebook_url">Facebook</option>
+          <option value="linkedin_url">LinkedIn</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="locationFilter">Location</label>
+        <input id="locationFilter" type="text" placeholder="e.g. Mumbai">
+      </div>
+
+      <div class="filter-group">
+        <label>Followers (on selected platform, or total)</label>
+        <div class="range-row">
+          <input id="followersMin" type="number" min="0" placeholder="Min">
+          <input id="followersMax" type="number" min="0" placeholder="Max">
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <label for="engagementMin">Min engagement rate (%)</label>
+        <input id="engagementMin" type="number" min="0" step="0.1" placeholder="e.g. 3">
+      </div>
+
+      <div class="filter-group">
+        <label>Rate per post (₹)</label>
+        <div class="range-row">
+          <input id="rateMin" type="number" min="0" placeholder="Min">
+          <input id="rateMax" type="number" min="0" placeholder="Max">
+        </div>
+      </div>
+
+      <button class="btn btn-ghost clear-filters" onclick="window.clearFilters()">Clear filters</button>
+    </aside>
+
+    <div>
+      <div class="result-count" id="resultCount"></div>
+      <div id="grid" class="grid-cards">
+        <div class="loading-state">Loading creators...</div>
+      </div>
+    </div>
   </div>
 </div>
-
-<!-- CHAT MODAL -->
-<div id="chatModal" class="modal-overlay" style="position:fixed; inset:0; background:rgba(15,23,42,0.45); display:none; align-items:center; justify-content:center; padding:20px; z-index:1000;">
-  <div style="width:100%; max-width:420px; background:var(--panel); border:1px solid var(--line); border-radius:var(--radius-md); overflow:hidden; display:flex; flex-direction:column; max-height:80vh;">
-    <div style="padding:14px 18px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center;">
-      <strong id="chatWithName" style="font-size:14px;"></strong>
-      <button onclick="closeChat()" style="border:0; background:transparent; font-size:20px; cursor:pointer; color:var(--ink-faint);">×</button>
-    </div>
-    <div id="chatMessages" style="flex:1; overflow-y:auto; padding:14px; display:flex; flex-direction:column; gap:8px; min-height:200px;"></div>
-    <div style="display:flex; gap:8px; padding:12px; border-top:1px solid var(--line);">
-      <input type="file" id="chatAttachInput" accept="image/*,video/*" hidden onchange="handleChatAttachSelect()">
-      <button class="btn btn-ghost" onclick="document.getElementById('chatAttachInput').click()" title="Attach photo/video">📎</button>
-      <input id="chatInput" type="text" placeholder="Say hello..." style="flex:1;">
-      <button class="btn btn-primary" onclick="sendChatMessage()">Send</button>
-    </div>
-  </div>
-</div>
-
-<style>
-  .chat-bubble{max-width:75%; padding:8px 12px; border-radius:12px; font-size:13px; line-height:1.4;}
-  .chat-bubble.mine{align-self:flex-end; background:var(--violet); color:#fff; border-bottom-right-radius:4px;}
-  .chat-bubble.theirs{align-self:flex-start; background:var(--paper); color:var(--ink); border-bottom-left-radius:4px;}
-</style>
 
 <script src="/config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script>
@@ -90,32 +136,11 @@
 (function () {
   var supabase = window.cube3Supabase;
   var creators = [];
-  var currentUser = null;
-  var currentRole = null;
-  var activeInquiryId = null;
-  var activeChannel = null;
 
   function escapeHTML(value) {
     return String(value || "")
       .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-  }
-
-  async function uploadAttachment(file) {
-    if (!file) return null;
-    var isImage = file.type.startsWith("image/");
-    var isVideo = file.type.startsWith("video/");
-    if (!isImage && !isVideo) { alert("Only photos and videos can be shared."); return null; }
-    if (file.size > 25 * 1024 * 1024) { alert("File must be smaller than 25 MB."); return null; }
-
-    var extension = file.name.split(".").pop();
-    var path = currentUser.id + "/" + Date.now() + "." + extension;
-
-    var { error } = await supabase.storage.from("message-attachments").upload(path, file);
-    if (error) { alert("Upload failed: " + error.message); return null; }
-
-    var { data } = supabase.storage.from("message-attachments").getPublicUrl(path);
-    return { url: data.publicUrl, type: isImage ? "image" : "video" };
   }
 
   function formatCount(n) {
@@ -138,14 +163,20 @@
     return '<a href="' + escapeHTML(c[urlField]) + '" target="_blank" rel="noopener">' + label + (count ? " · " + count : "") + '</a>';
   }
 
+  function totalReach(c) {
+    return (c.youtube_subscribers || 0) + (c.instagram_followers || 0) + (c.x_followers || 0) +
+      (c.tiktok_followers || 0) + (c.facebook_followers || 0) + (c.snapchat_followers || 0) +
+      (c.linkedin_followers || 0) + (c.threads_followers || 0);
+  }
+
+  function effectiveFollowers(c, platform) {
+    if (platform && COUNT_FIELDS[platform]) return c[COUNT_FIELDS[platform]] || 0;
+    return totalReach(c);
+  }
+
   async function init() {
     try {
-      currentUser = await Cube3Auth.requireUser();
-      if (!currentUser) return;
-
-      var { data: profile } = await supabase.from("profiles").select("role").eq("id", currentUser.id).single();
-      currentRole = profile ? profile.role : "creator";
-
+      await Cube3Auth.requireUser();
       await loadCreators();
     } catch (error) {
       console.error(error);
@@ -166,55 +197,83 @@
       return Object.assign({}, c, { fullName: p ? p.full_name : "Unnamed creator", bio: p ? p.bio : "", avatarUrl: p ? p.avatar_url : "" });
     });
 
-    var ids2 = creators.map(function (c) { return c.id; });
-    var { data: allReviews } = await supabase.from("reviews").select("reviewee_id, rating").in("reviewee_id", ids2);
-
-    var ratingsById = {};
-    (allReviews || []).forEach(function (r) {
-      if (!ratingsById[r.reviewee_id]) ratingsById[r.reviewee_id] = [];
-      ratingsById[r.reviewee_id].push(r.rating);
-    });
-
-    creators.forEach(function (c) {
-      var ratings = ratingsById[c.id];
-      c.avgRating = ratings && ratings.length ? (ratings.reduce(function (a, b) { return a + b; }, 0) / ratings.length).toFixed(1) : null;
-      c.reviewCount = ratings ? ratings.length : 0;
-    });
-
     render();
+  }
+
+  // Match score: a plain, rule-based percentage of how many ACTIVE filters
+  // a creator satisfies. Not AI -- just transparent math. If no filters
+  // are active, no score is shown at all (nothing to "match" against yet).
+  function computeMatch(c, activeFilters, platform) {
+    if (!activeFilters.length) return null;
+
+    var met = 0;
+    activeFilters.forEach(function (test) { if (test(c)) met++; });
+    return Math.round((met / activeFilters.length) * 100);
   }
 
   function render() {
     var grid = document.getElementById("grid");
+    var resultCount = document.getElementById("resultCount");
+
     var search = document.getElementById("search").value.toLowerCase().trim();
     var category = document.getElementById("categoryFilter").value;
+    var platform = document.getElementById("platformFilter").value;
+    var location = document.getElementById("locationFilter").value.toLowerCase().trim();
+    var followersMin = Number(document.getElementById("followersMin").value) || null;
+    var followersMax = Number(document.getElementById("followersMax").value) || null;
+    var engagementMin = Number(document.getElementById("engagementMin").value) || null;
+    var rateMin = Number(document.getElementById("rateMin").value) || null;
+    var rateMax = Number(document.getElementById("rateMax").value) || null;
+
+    var activeFilters = [];
+    if (category) activeFilters.push(function (c) { return c.category === category; });
+    if (platform) activeFilters.push(function (c) { return !!c[platform]; });
+    if (location) activeFilters.push(function (c) { return (c.location || "").toLowerCase().includes(location); });
+    if (followersMin != null) activeFilters.push(function (c) { return effectiveFollowers(c, platform) >= followersMin; });
+    if (followersMax != null) activeFilters.push(function (c) { return effectiveFollowers(c, platform) <= followersMax; });
+    if (engagementMin != null) activeFilters.push(function (c) { return (c.engagement_rate || 0) >= engagementMin; });
+    if (rateMin != null) activeFilters.push(function (c) { return (c.rate_max || c.rate_min || 0) >= rateMin; });
+    if (rateMax != null) activeFilters.push(function (c) { return (c.rate_min || c.rate_max || Infinity) <= rateMax; });
 
     var filtered = creators.filter(function (c) {
       var matchesSearch = !search ||
         (c.fullName || "").toLowerCase().includes(search) ||
         (c.handle || "").toLowerCase().includes(search) ||
         (c.bio || "").toLowerCase().includes(search);
-      var matchesCategory = !category || c.category === category;
-      return matchesSearch && matchesCategory;
+      return matchesSearch;
+    }).map(function (c) {
+      return Object.assign({}, c, { matchScore: computeMatch(c, activeFilters, platform) });
     });
 
+    if (activeFilters.length) {
+      filtered = filtered.filter(function (c) { return c.matchScore > 0; });
+      filtered.sort(function (a, b) { return b.matchScore - a.matchScore; });
+    }
+
+    resultCount.textContent = filtered.length + (filtered.length === 1 ? " creator found" : " creators found");
+
     if (!filtered.length) {
-      grid.innerHTML = '<div class="empty-state">No creators found.</div>';
+      grid.innerHTML = '<div class="empty-state">No creators match your filters. Try loosening them.</div>';
       return;
     }
 
     grid.innerHTML = filtered.map(function (c) {
       var avatarSrc = c.avatarUrl || "https://placehold.co/48x48/e7e6f0/6c5ce7?text=%20";
+      var scoreClass = c.matchScore >= 70 ? "high" : c.matchScore >= 40 ? "medium" : "low";
+
       return '<div class="card">' +
+        (c.matchScore != null ? '<div class="match-score ' + scoreClass + '">' + c.matchScore + '% match</div>' : "") +
         '<div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">' +
           '<img src="' + escapeHTML(avatarSrc) + '" alt="" style="width:48px; height:48px; border-radius:50%; object-fit:cover; background:var(--violet-dim); border:1px solid var(--line);">' +
           '<div>' +
-            '<h3 style="margin:0;">' + escapeHTML(c.fullName) + (c.avgRating ? ' <span style="color:#0369a1; font-size:12.5px; font-weight:700;">★' + c.avgRating + '</span>' : '') + '</h3>' +
-            '<div class="handle" style="margin:0;">' + (c.handle ? "@" + escapeHTML(c.handle.replace(/^@/, "")) : "") + '</div>' +
+            '<h3 style="margin:0;">' + escapeHTML(c.fullName) + '</h3>' +
+            '<div class="handle" style="margin:0;">' + (c.handle ? "@" + escapeHTML(c.handle.replace(/^@/, "")) : "") + (c.location ? " · " + escapeHTML(c.location) : "") + '</div>' +
           '</div>' +
         '</div>' +
         '<p class="bio">' + escapeHTML(c.bio || "No bio yet.") + '</p>' +
         (c.category ? '<span class="tag">' + escapeHTML(c.category) + '</span>' : "") +
+        (c.engagement_rate ? '<span class="tag">' + c.engagement_rate + '% engagement</span>' : "") +
+        (c.rate_min || c.rate_max ? '<span class="tag">₹' + (c.rate_min ? Number(c.rate_min).toLocaleString("en-IN") : "?") + (c.rate_max ? "–₹" + Number(c.rate_max).toLocaleString("en-IN") : "") + '</span>' : "") +
         '<div class="links">' +
           linkWithCount(c, "youtube_url", "YouTube") +
           linkWithCount(c, "instagram_url", "Instagram") +
@@ -226,125 +285,28 @@
           linkWithCount(c, "threads_url", "Threads") +
           (c.portfolio_url ? '<a href="' + escapeHTML(c.portfolio_url) + '" target="_blank" rel="noopener">Portfolio</a>' : "") +
         '</div>' +
-        (currentRole === "brand" ? '<button class="btn btn-primary btn-sm" style="margin-top:12px;" onclick="openChat(\'' + c.id + '\', \'' + escapeHTML(c.fullName).replace(/'/g, "\\'") + '\')">Message</button>' : "") +
       '</div>';
     }).join("");
   }
 
-  document.getElementById("search").addEventListener("input", render);
-  document.getElementById("categoryFilter").addEventListener("change", render);
-
-  window.openChat = async function (creatorId, creatorName) {
-    document.getElementById("chatWithName").textContent = creatorName;
-    document.getElementById("chatMessages").innerHTML = '<div class="muted" style="font-size:12.5px;">Loading...</div>';
-    document.getElementById("chatModal").style.display = "flex";
-
-    try {
-      var { data: existing } = await supabase.from("creator_inquiries").select("id").eq("brand_id", currentUser.id).eq("creator_id", creatorId).maybeSingle();
-
-      if (existing) {
-        activeInquiryId = existing.id;
-      } else {
-        var { data: created, error } = await supabase.from("creator_inquiries").insert({ brand_id: currentUser.id, creator_id: creatorId }).select("id").single();
-        if (error) throw error;
-        activeInquiryId = created.id;
-      }
-
-      await loadChatMessages();
-      subscribeToChat();
-
-    } catch (error) {
-      console.error(error);
-      document.getElementById("chatMessages").innerHTML = '<div class="empty-state">Could not open chat. ' + escapeHTML(error.message) + '</div>';
-    }
+  window.clearFilters = function () {
+    document.getElementById("search").value = "";
+    document.getElementById("categoryFilter").value = "";
+    document.getElementById("platformFilter").value = "";
+    document.getElementById("locationFilter").value = "";
+    document.getElementById("followersMin").value = "";
+    document.getElementById("followersMax").value = "";
+    document.getElementById("engagementMin").value = "";
+    document.getElementById("rateMin").value = "";
+    document.getElementById("rateMax").value = "";
+    render();
   };
 
-  window.closeChat = function () {
-    document.getElementById("chatModal").style.display = "none";
-    if (activeChannel) { supabase.removeChannel(activeChannel); activeChannel = null; }
-    activeInquiryId = null;
-  };
-
-  async function loadChatMessages() {
-    var box = document.getElementById("chatMessages");
-    var { data, error } = await supabase.from("inquiry_messages").select("id, sender_id, body, attachment_url, attachment_type").eq("inquiry_id", activeInquiryId).order("created_at", { ascending: true });
-
-    if (error) { box.innerHTML = '<div class="empty-state">Could not load messages.</div>'; return; }
-
-    if (!data.length) {
-      box.innerHTML = '<div class="muted" style="font-size:12.5px; text-align:center;">Say hello to start the conversation.</div>';
-      return;
-    }
-
-    box.innerHTML = data.map(function (m) {
-      var mine = m.sender_id === currentUser.id;
-      var media = "";
-      if (m.attachment_url) {
-        media = m.attachment_type === "video"
-          ? '<video src="' + escapeHTML(m.attachment_url) + '" controls style="max-width:200px; border-radius:10px; display:block; margin-bottom:' + (m.body ? '6px' : '0') + ';"></video>'
-          : '<img src="' + escapeHTML(m.attachment_url) + '" alt="" style="max-width:200px; border-radius:10px; display:block; margin-bottom:' + (m.body ? '6px' : '0') + '; cursor:pointer;" onclick="window.open(this.src, \'_blank\')">';
-      }
-      return '<div class="chat-bubble ' + (mine ? "mine" : "theirs") + '">' + media + (m.body ? escapeHTML(m.body) : "") + '</div>';
-    }).join("");
-    box.scrollTop = box.scrollHeight;
-  }
-
-  function subscribeToChat() {
-    if (activeChannel) { supabase.removeChannel(activeChannel); activeChannel = null; }
-    activeChannel = supabase
-      .channel("inquiry-" + activeInquiryId)
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "inquiry_messages", filter: "inquiry_id=eq." + activeInquiryId }, function () {
-        loadChatMessages();
-      })
-      .subscribe();
-  }
-
-  var pendingChatAttachment = null;
-
-  window.handleChatAttachSelect = async function () {
-    var fileInput = document.getElementById("chatAttachInput");
-    var file = fileInput.files[0];
-    fileInput.value = "";
-    if (!file) return;
-
-    var chatInput = document.getElementById("chatInput");
-    chatInput.placeholder = "Uploading...";
-    var result = await uploadAttachment(file);
-    chatInput.placeholder = "Say hello...";
-    if (!result) return;
-
-    pendingChatAttachment = result;
-    chatInput.placeholder = "Attachment ready — add a caption or just Send";
-  };
-
-  window.sendChatMessage = async function () {
-    var input = document.getElementById("chatInput");
-    var body = input.value.trim();
-    if (!body && !pendingChatAttachment) return;
-    if (!activeInquiryId) return;
-
-    input.value = "";
-    input.placeholder = "Say hello...";
-
-    try {
-      var payload = { inquiry_id: activeInquiryId, sender_id: currentUser.id, body: body };
-      if (pendingChatAttachment) {
-        payload.attachment_url = pendingChatAttachment.url;
-        payload.attachment_type = pendingChatAttachment.type;
-      }
-      var { error } = await supabase.from("inquiry_messages").insert(payload);
-      if (error) throw error;
-      pendingChatAttachment = null;
-      await loadChatMessages();
-    } catch (error) {
-      console.error(error);
-      alert(error.message || "Could not send message.");
-    }
-  };
-
-  document.getElementById("chatInput") && document.getElementById("chatInput").addEventListener("keydown", function (e) {
-    if (e.key === "Enter") window.sendChatMessage();
-  });
+  ["search", "categoryFilter", "platformFilter", "locationFilter", "followersMin", "followersMax", "engagementMin", "rateMin", "rateMax"]
+    .forEach(function (id) {
+      var el = document.getElementById(id);
+      el.addEventListener(el.tagName === "SELECT" ? "change" : "input", render);
+    });
 
   init();
 })();
