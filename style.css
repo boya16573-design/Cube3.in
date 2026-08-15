@@ -22,6 +22,13 @@
   --radius-sm: 10px;
   --radius-md: 16px;
   --radius-lg: 24px;
+
+  /* Backward-compatible aliases so pages not yet rebuilt in this pass
+     don't break (they still reference the old variable names). */
+  --violet: var(--indigo);
+  --violet-deep: var(--indigo-deep);
+  --violet-dim: var(--indigo-dim);
+  --coral: var(--amber);
 }
 
 *{box-sizing:border-box;}
