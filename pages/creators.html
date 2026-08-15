@@ -1,129 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<link rel="preconnect" href="https://zjgtceurzsvjkspkvroz.supabase.co">
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Creators - Cube3</title>
+<title>Creator — Cube3</title>
+<link rel="preconnect" href="https://zjgtceurzsvjkspkvroz.supabase.co">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..900&family=Instrument+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="/style.css">
 <style>
-  .search-layout{display:grid; grid-template-columns:250px 1fr; gap:24px; margin-top:24px;}
-  @media (max-width:800px){ .search-layout{grid-template-columns:1fr;} }
-  .filter-panel{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius-md); padding:20px; align-self:start; box-shadow:var(--shadow-xs);}
-  .filter-panel h4{font-size:12px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-faint); margin:0 0 4px;}
-  .filter-panel .filter-group{margin-top:16px;}
-  .filter-panel .filter-group:first-of-type{margin-top:10px;}
-  .filter-panel label{margin:0 0 5px; font-size:12.5px;}
-  .range-row{display:flex; gap:8px; align-items:center;}
-  .range-row input{width:100%;}
-  .clear-filters{margin-top:16px; width:100%;}
-
-  .card h3{font-size:16px; margin:0 0 3px;}
-  .card .handle{color:var(--ink-muted); font-size:12.5px; margin-bottom:10px;}
-  .card .bio{color:var(--ink); font-size:13.5px; line-height:1.5; margin-bottom:10px; min-height:38px;}
-  .links{margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;}
-  .links a{color:var(--violet-deep); font-size:12px; font-weight:600;}
-  .match-score{display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:700; padding:5px 10px; border-radius:20px; margin-bottom:8px;}
-  .match-score.high{background:#e8f7ee; color:#1f8a4c;}
-  .match-score.medium{background:#fdf3dd; color:#a06a05;}
-  .match-score.low{background:var(--line); color:var(--ink-muted);}
-  .result-count{color:var(--ink-muted); font-size:13px; margin-bottom:14px;}
+  .profile-head{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;}
+  .profile-head img.pic{width:96px;height:96px;border-radius:4px;object-fit:cover;border:1.5px solid var(--ink);background:var(--panel-2);}
+  .profile-head .who{flex:1;min-width:220px;}
+  .profile-head h1{font-size:clamp(24px,5vw,32px);margin-bottom:4px;}
+  .handle{color:var(--ink-muted);font-family:"DM Mono",monospace;font-size:13px;}
+  .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;}
+  .bio{margin-top:16px;font-size:16px;max-width:60ch;}
+  .links{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;}
+  .links a{font-size:13px;font-weight:600;border-bottom:2px solid var(--accent);}
+  .facts{margin-top:26px;}
+  .backlink{display:inline-block;margin-bottom:18px;font-size:14px;color:var(--ink-muted);}
+  .backlink:hover{color:var(--ink);}
 </style>
 </head>
-<body>
-
-<header class="site-header">
-  <nav class="wrap">
-    <a class="brand" href="/index.html">
-      <svg class="mark" viewBox="0 0 24 24" fill="none"><path d="M12 2L21 7V17L12 22L3 17V7L12 2Z" fill="#0284c7"/></svg>
-      Cube3
-    </a>
-    <div class="nav-links">
-      <a href="dashboard.html">Dashboard</a>
-      <a href="campaigns.html">Campaigns</a>
-      <a href="creators.html" class="active">Creators</a>
-      <a href="inbox.html">Messages</a>
-      <a href="profile.html">Profile</a>
-    </div>
-  </nav>
-</header>
+<body data-nav="app">
 
 <div class="container">
-  <h1 style="font-size:30px;">Creators</h1>
-  <p class="muted">Browse and search the Cube3 creator directory.</p>
-
-  <div class="search-layout">
-    <aside class="filter-panel">
-      <h4>Search</h4>
-      <div class="filter-group">
-        <input id="search" type="search" placeholder="Name, handle, or bio...">
-      </div>
-
-      <h4 style="margin-top:20px;">Filters</h4>
-
-      <div class="filter-group">
-        <label for="categoryFilter">Niche / Category</label>
-        <select id="categoryFilter">
-          <option value="">All categories</option>
-          <option>Technology</option><option>Gaming</option><option>Education</option>
-          <option>Entertainment</option><option>Business</option><option>Fashion</option>
-          <option>Fitness</option><option>Travel</option><option>Food</option>
-          <option>Content Creator</option><option>Influencer</option><option>Other</option>
-        </select>
-      </div>
-
-      <div class="filter-group">
-        <label for="platformFilter">Platform</label>
-        <select id="platformFilter">
-          <option value="">All platforms</option>
-          <option value="youtube_url">YouTube</option>
-          <option value="instagram_url">Instagram</option>
-          <option value="x_url">X</option>
-          <option value="tiktok_url">TikTok</option>
-          <option value="facebook_url">Facebook</option>
-          <option value="linkedin_url">LinkedIn</option>
-        </select>
-      </div>
-
-      <div class="filter-group">
-        <label for="locationFilter">Location</label>
-        <input id="locationFilter" type="text" placeholder="e.g. Mumbai">
-      </div>
-
-      <div class="filter-group">
-        <label>Followers (on selected platform, or total)</label>
-        <div class="range-row">
-          <input id="followersMin" type="number" min="0" placeholder="Min">
-          <input id="followersMax" type="number" min="0" placeholder="Max">
-        </div>
-      </div>
-
-      <div class="filter-group">
-        <label for="engagementMin">Min engagement rate (%)</label>
-        <input id="engagementMin" type="number" min="0" step="0.1" placeholder="e.g. 3">
-      </div>
-
-      <div class="filter-group">
-        <label>Rate per post (₹)</label>
-        <div class="range-row">
-          <input id="rateMin" type="number" min="0" placeholder="Min">
-          <input id="rateMax" type="number" min="0" placeholder="Max">
-        </div>
-      </div>
-
-      <button class="btn btn-ghost clear-filters" onclick="window.clearFilters()">Clear filters</button>
-    </aside>
-
-    <div>
-      <div class="result-count" id="resultCount"></div>
-      <div id="grid" class="grid-cards">
-        <div class="loading-state">Loading creators...</div>
-      </div>
-    </div>
+  <a class="backlink" href="/pages/creators.html">← All creators</a>
+  <div id="content">
+    <div class="skeleton"><div class="bar mid"></div><div class="bar"></div><div class="bar short"></div></div>
   </div>
 </div>
 
@@ -131,186 +38,109 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script>
 <script src="/supabase-client.js"></script>
 <script src="/auth.js"></script>
-
+<script src="/messaging.js"></script>
 <script>
 (function () {
-  var supabase = window.cube3Supabase;
-  var creators = [];
+  "use strict";
+  var sb = window.cube3Supabase;
+  var content = document.getElementById("content");
 
-  function escapeHTML(value) {
-    return String(value || "")
+  function esc(v) {
+    return String(v == null ? "" : v)
       .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;").replace(/'/g, "&#039;");
   }
 
-  function formatCount(n) {
-    if (!n || n <= 0) return "";
-    if (n >= 1000000) return (n / 1000000).toFixed(1).replace(/\.0$/, "") + "M";
-    if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, "") + "K";
-    return String(n);
+  function link(url, label) {
+    if (!url) return "";
+    return '<a href="' + esc(url) + '" target="_blank" rel="noopener">' + label + "</a>";
   }
 
-  var COUNT_FIELDS = {
-    youtube_url: "youtube_subscribers", instagram_url: "instagram_followers", x_url: "x_followers",
-    tiktok_url: "tiktok_followers", facebook_url: "facebook_followers", snapchat_url: "snapchat_followers",
-    linkedin_url: "linkedin_followers", threads_url: "threads_followers"
-  };
-
-  function linkWithCount(c, urlField, label) {
-    if (!c[urlField]) return "";
-    var countField = COUNT_FIELDS[urlField];
-    var count = countField && c[countField] ? formatCount(c[countField]) : "";
-    return '<a href="' + escapeHTML(c[urlField]) + '" target="_blank" rel="noopener">' + label + (count ? " · " + count : "") + '</a>';
-  }
-
-  function totalReach(c) {
-    return (c.youtube_subscribers || 0) + (c.instagram_followers || 0) + (c.x_followers || 0) +
-      (c.tiktok_followers || 0) + (c.facebook_followers || 0) + (c.snapchat_followers || 0) +
-      (c.linkedin_followers || 0) + (c.threads_followers || 0);
-  }
-
-  function effectiveFollowers(c, platform) {
-    if (platform && COUNT_FIELDS[platform]) return c[COUNT_FIELDS[platform]] || 0;
-    return totalReach(c);
+  function fail(msg) {
+    content.innerHTML = '<div class="empty-state"><strong>' + esc(msg) + "</strong>" +
+      '<div style="margin-top:14px"><a class="btn btn-ghost btn-sm" href="/pages/creators.html">Back to creators</a></div></div>';
   }
 
   async function init() {
+    var id = new URLSearchParams(location.search).get("id");
+    if (!id) return fail("No creator specified.");
+
+    var me = await window.Cube3Auth.requireUser();
+    if (!me) return;
+
+    var myProfile = await sb.from("profiles").select("role").eq("id", me.id).single();
+    var iAmBrand = myProfile.data && myProfile.data.role === "brand";
+    var isMe = me.id === id;
+
+    var res = await sb.from("profiles")
+      .select("id, full_name, bio, avatar_url, role")
+      .eq("id", id)
+      .maybeSingle();
+
+    if (res.error) return fail("Could not load this profile.");
+    if (!res.data) return fail("That creator profile doesn't exist.");
+    var p = res.data;
+
+    var cp = await sb.from("creator_profiles").select("*").eq("id", id).maybeSingle();
+    var c = cp.data || {};
+
+    var tags = [];
+    if (c.category) tags.push(c.category);
+    if (c.location) tags.push(c.location);
+    if (c.engagement_rate) tags.push(c.engagement_rate + "% engagement");
+    if (c.rate_min || c.rate_max) {
+      tags.push("₹" + (c.rate_min ? Number(c.rate_min).toLocaleString("en-IN") : "?") +
+                (c.rate_max ? "–₹" + Number(c.rate_max).toLocaleString("en-IN") : ""));
+    }
+
+    var action = "";
+    if (isMe) {
+      action = '<a class="btn btn-ghost" href="/pages/profile.html">Edit your profile</a>';
+    } else if (iAmBrand) {
+      action = '<button class="btn btn-primary" id="messageBtn" data-message="' + esc(p.id) + '">Message</button>';
+    } else {
+      action = '<span class="muted" style="font-size:14px">Sign in with a brand account to message creators.</span>';
+    }
+
+    content.innerHTML =
+      '<div class="profile-head">' +
+        '<img class="pic" src="' + esc(p.avatar_url || "https://placehold.co/96x96/f1f0f4/918ca0?text=%20") + '" alt="">' +
+        '<div class="who">' +
+          "<h1>" + esc(p.full_name || "Unnamed creator") + "</h1>" +
+          '<div class="handle">' + (c.handle ? "@" + esc(String(c.handle).replace(/^@/, "")) : "&nbsp;") + "</div>" +
+          '<div class="actions">' + action + "</div>" +
+        "</div>" +
+      "</div>" +
+      '<p class="bio">' + esc(p.bio || "This creator hasn't written a bio yet.") + "</p>" +
+      '<div class="facts">' + tags.map(function (t) { return '<span class="tag">' + esc(t) + "</span>"; }).join("") + "</div>" +
+      '<div class="links">' +
+        link(c.instagram_url, "Instagram") + link(c.youtube_url, "YouTube") +
+        link(c.x_url, "X") + link(c.tiktok_url, "TikTok") +
+        link(c.portfolio_url, "Portfolio") +
+      "</div>";
+  }
+
+  // One handler for the Message button here and on creators.html.
+  document.addEventListener("click", async function (e) {
+    var btn = e.target.closest("[data-message]");
+    if (!btn) return;
+    var original = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = "Opening…";
     try {
-      await Cube3Auth.requireUser();
-      await loadCreators();
-    } catch (error) {
-      console.error(error);
-      document.getElementById("grid").innerHTML = '<div class="empty-state">Could not load creators. ' + escapeHTML(error.message) + '</div>';
+      var thread = await window.Cube3Chat.startInquiry(btn.dataset.message);
+      location.href = "/pages/inbox.html?inquiry=" + thread.id;
+    } catch (err) {
+      alert(err.message || "Could not start the conversation.");
+      btn.disabled = false;
+      btn.textContent = original;
     }
-  }
+  });
 
-  async function loadCreators() {
-    var { data: creatorProfiles, error } = await supabase.from("creator_profiles").select("*");
-    if (error) throw error;
-
-    var ids = (creatorProfiles || []).map(function (c) { return c.id; });
-    var { data: profiles } = await supabase.from("profiles").select("id, full_name, bio, avatar_url").in("id", ids);
-    var profileById = {}; (profiles || []).forEach(function (p) { profileById[p.id] = p; });
-
-    creators = (creatorProfiles || []).map(function (c) {
-      var p = profileById[c.id];
-      return Object.assign({}, c, { fullName: p ? p.full_name : "Unnamed creator", bio: p ? p.bio : "", avatarUrl: p ? p.avatar_url : "" });
-    });
-
-    render();
-  }
-
-  // Match score: a plain, rule-based percentage of how many ACTIVE filters
-  // a creator satisfies. Not AI -- just transparent math. If no filters
-  // are active, no score is shown at all (nothing to "match" against yet).
-  function computeMatch(c, activeFilters, platform) {
-    if (!activeFilters.length) return null;
-
-    var met = 0;
-    activeFilters.forEach(function (test) { if (test(c)) met++; });
-    return Math.round((met / activeFilters.length) * 100);
-  }
-
-  function render() {
-    var grid = document.getElementById("grid");
-    var resultCount = document.getElementById("resultCount");
-
-    var search = document.getElementById("search").value.toLowerCase().trim();
-    var category = document.getElementById("categoryFilter").value;
-    var platform = document.getElementById("platformFilter").value;
-    var location = document.getElementById("locationFilter").value.toLowerCase().trim();
-    var followersMin = Number(document.getElementById("followersMin").value) || null;
-    var followersMax = Number(document.getElementById("followersMax").value) || null;
-    var engagementMin = Number(document.getElementById("engagementMin").value) || null;
-    var rateMin = Number(document.getElementById("rateMin").value) || null;
-    var rateMax = Number(document.getElementById("rateMax").value) || null;
-
-    var activeFilters = [];
-    if (category) activeFilters.push(function (c) { return c.category === category; });
-    if (platform) activeFilters.push(function (c) { return !!c[platform]; });
-    if (location) activeFilters.push(function (c) { return (c.location || "").toLowerCase().includes(location); });
-    if (followersMin != null) activeFilters.push(function (c) { return effectiveFollowers(c, platform) >= followersMin; });
-    if (followersMax != null) activeFilters.push(function (c) { return effectiveFollowers(c, platform) <= followersMax; });
-    if (engagementMin != null) activeFilters.push(function (c) { return (c.engagement_rate || 0) >= engagementMin; });
-    if (rateMin != null) activeFilters.push(function (c) { return (c.rate_max || c.rate_min || 0) >= rateMin; });
-    if (rateMax != null) activeFilters.push(function (c) { return (c.rate_min || c.rate_max || Infinity) <= rateMax; });
-
-    var filtered = creators.filter(function (c) {
-      var matchesSearch = !search ||
-        (c.fullName || "").toLowerCase().includes(search) ||
-        (c.handle || "").toLowerCase().includes(search) ||
-        (c.bio || "").toLowerCase().includes(search);
-      return matchesSearch;
-    }).map(function (c) {
-      return Object.assign({}, c, { matchScore: computeMatch(c, activeFilters, platform) });
-    });
-
-    if (activeFilters.length) {
-      filtered = filtered.filter(function (c) { return c.matchScore > 0; });
-      filtered.sort(function (a, b) { return b.matchScore - a.matchScore; });
-    }
-
-    resultCount.textContent = filtered.length + (filtered.length === 1 ? " creator found" : " creators found");
-
-    if (!filtered.length) {
-      grid.innerHTML = '<div class="empty-state">No creators match your filters. Try loosening them.</div>';
-      return;
-    }
-
-    grid.innerHTML = filtered.map(function (c) {
-      var avatarSrc = c.avatarUrl || "https://placehold.co/48x48/e7e6f0/6c5ce7?text=%20";
-      var scoreClass = c.matchScore >= 70 ? "high" : c.matchScore >= 40 ? "medium" : "low";
-
-      return '<div class="card">' +
-        (c.matchScore != null ? '<div class="match-score ' + scoreClass + '">' + c.matchScore + '% match</div>' : "") +
-        '<div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">' +
-          '<img src="' + escapeHTML(avatarSrc) + '" alt="" style="width:48px; height:48px; border-radius:50%; object-fit:cover; background:var(--violet-dim); border:1px solid var(--line);">' +
-          '<div>' +
-            '<h3 style="margin:0;">' + escapeHTML(c.fullName) + '</h3>' +
-            '<div class="handle" style="margin:0;">' + (c.handle ? "@" + escapeHTML(c.handle.replace(/^@/, "")) : "") + (c.location ? " · " + escapeHTML(c.location) : "") + '</div>' +
-          '</div>' +
-        '</div>' +
-        '<p class="bio">' + escapeHTML(c.bio || "No bio yet.") + '</p>' +
-        (c.category ? '<span class="tag">' + escapeHTML(c.category) + '</span>' : "") +
-        (c.engagement_rate ? '<span class="tag">' + c.engagement_rate + '% engagement</span>' : "") +
-        (c.rate_min || c.rate_max ? '<span class="tag">₹' + (c.rate_min ? Number(c.rate_min).toLocaleString("en-IN") : "?") + (c.rate_max ? "–₹" + Number(c.rate_max).toLocaleString("en-IN") : "") + '</span>' : "") +
-        '<div class="links">' +
-          linkWithCount(c, "youtube_url", "YouTube") +
-          linkWithCount(c, "instagram_url", "Instagram") +
-          linkWithCount(c, "x_url", "X") +
-          linkWithCount(c, "tiktok_url", "TikTok") +
-          linkWithCount(c, "facebook_url", "Facebook") +
-          linkWithCount(c, "snapchat_url", "Snapchat") +
-          linkWithCount(c, "linkedin_url", "LinkedIn") +
-          linkWithCount(c, "threads_url", "Threads") +
-          (c.portfolio_url ? '<a href="' + escapeHTML(c.portfolio_url) + '" target="_blank" rel="noopener">Portfolio</a>' : "") +
-        '</div>' +
-      '</div>';
-    }).join("");
-  }
-
-  window.clearFilters = function () {
-    document.getElementById("search").value = "";
-    document.getElementById("categoryFilter").value = "";
-    document.getElementById("platformFilter").value = "";
-    document.getElementById("locationFilter").value = "";
-    document.getElementById("followersMin").value = "";
-    document.getElementById("followersMax").value = "";
-    document.getElementById("engagementMin").value = "";
-    document.getElementById("rateMin").value = "";
-    document.getElementById("rateMax").value = "";
-    render();
-  };
-
-  ["search", "categoryFilter", "platformFilter", "locationFilter", "followersMin", "followersMax", "engagementMin", "rateMin", "rateMax"]
-    .forEach(function (id) {
-      var el = document.getElementById(id);
-      el.addEventListener(el.tagName === "SELECT" ? "change" : "input", render);
-    });
-
-  init();
+  init().catch(function (e) { console.error(e); fail("Something went wrong loading this profile."); });
 })();
 </script>
 
+<script src="/layout.js"></script>
 </body>
 </html>
