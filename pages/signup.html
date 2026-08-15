@@ -1,40 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<link rel="preconnect" href="https://zjgtceurzsvjkspkvroz.supabase.co">
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Join Cube3</title>
+<link rel="preconnect" href="https://zjgtceurzsvjkspkvroz.supabase.co">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="/style.css">
+<style>.hidden{display:none;}</style>
 </head>
 <body>
 
 <header class="site-header">
   <nav class="wrap">
     <a class="brand" href="/index.html">
-      <svg class="mark" viewBox="0 0 24 24" fill="none"><path d="M12 2L21 7V17L12 22L3 17V7L12 2Z" fill="#0284c7"/></svg>
+      <svg class="mark" viewBox="0 0 24 24" fill="none"><path d="M12 2L21 7V17L12 22L3 17V7L12 2Z" fill="#3730a3"/></svg>
       Cube3
     </a>
-    <div class="nav-links">
-      <a href="/index.html">Home</a>
-    </div>
+    <div class="nav-links"><a href="/index.html">Home</a></div>
   </nav>
 </header>
 
 <div class="auth-page">
   <div class="auth-card">
-    <h1>Join Cube3</h1>
-    <div class="subtitle">Create your account and start building connections.</div>
+    <h1>What are you joining Cube3 as?</h1>
+    <div class="subtitle">Create your account to get started.</div>
 
     <form id="signupForm">
       <label for="role">I am joining as</label>
       <select id="role" required>
-        <option value="creator">Creator</option>
-        <option value="brand">Brand</option>
+        <option value="creator">I'm a Creator</option>
+        <option value="brand">I'm a Brand</option>
       </select>
 
       <label for="fullName">Full name</label>
@@ -61,7 +60,6 @@
     </form>
 
     <div id="message" class="message"></div>
-
     <div class="auth-link">Already have an account? <a href="login.html">Log in</a></div>
   </div>
 </div>
@@ -94,14 +92,8 @@
     const password = document.getElementById("password").value;
     const confirmPassword = document.getElementById("confirmPassword").value;
 
-    if (password !== confirmPassword) {
-      showMessage("Passwords do not match.", "error");
-      return;
-    }
-    if (password.length < 6) {
-      showMessage("Password must contain at least 6 characters.", "error");
-      return;
-    }
+    if (password !== confirmPassword) { showMessage("Passwords do not match.", "error"); return; }
+    if (password.length < 6) { showMessage("Password must contain at least 6 characters.", "error"); return; }
 
     button.disabled = true;
     button.textContent = "Creating account...";
@@ -109,7 +101,6 @@
     try {
       await Cube3Auth.signUp(email, password, role, fullName);
       pendingEmail = email;
-
       showMessage("Account created! Check your email for a 6-digit code.", "success");
       form.classList.add("hidden");
       otpForm.classList.remove("hidden");
@@ -124,18 +115,12 @@
 
   otpForm.addEventListener("submit", async function(event) {
     event.preventDefault();
-
     const code = document.getElementById("otpCode").value.trim();
     otpButton.disabled = true;
     otpButton.textContent = "Verifying...";
 
     try {
-      const { error } = await window.cube3Supabase.auth.verifyOtp({
-        email: pendingEmail,
-        token: code,
-        type: "signup"
-      });
-
+      const { error } = await window.cube3Supabase.auth.verifyOtp({ email: pendingEmail, token: code, type: "signup" });
       if (error) throw error;
 
       showMessage("Email confirmed! Redirecting...", "success");
@@ -152,15 +137,10 @@
   resendButton.addEventListener("click", async function() {
     resendButton.disabled = true;
     resendButton.textContent = "Sending...";
-
     try {
-      const { error } = await window.cube3Supabase.auth.resend({
-        type: "signup",
-        email: pendingEmail
-      });
+      const { error } = await window.cube3Supabase.auth.resend({ type: "signup", email: pendingEmail });
       if (error) throw error;
       showMessage("New code sent to your email.", "success");
-
     } catch (error) {
       console.error(error);
       showMessage(error.message || "Could not resend code.", "error");
