@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cube3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..900&family=Instrument+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --paper:#F1F0F4;--panel:#fff;--panel2:#F8F8FA;--ink:#16141D;--muted:#5D5869;
+  --faint:#918CA0;--line:#DEDCE4;--accent:#FF4A17;--brand:#2B2AFF;
+  --ok-bg:#E4F5EA;--ok-fg:#127A42;--err-bg:#FCE9E7;--err-fg:#BE3423;
+  --warn-bg:#FBF0D8;--warn-fg:#8A5D05;--info-bg:#E2ECFD;--info-fg:#1D4FA8;
+}
+body[data-role=brand]{--accent:var(--brand)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font:16px/1.55 "Instrument Sans",-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:Archivo,sans-serif;font-variation-settings:"wdth" 115;font-weight:800;letter-spacing:-.02em;line-height:1.05}
+h1{font-size:30px}h2{font-size:22px}h3{font-size:17px}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1080px;margin:0 auto;padding:20px 16px 70px}
+.muted{color:var(--muted)}
+.mono{font-family:"DM Mono",monospace;font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--faint)}
+
+header{position:sticky;top:0;z-index:50;background:rgba(241,240,244,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+header .bar{max-width:1080px;margin:0 auto;display:flex;align-items:center;gap:14px;height:56px;padding:0 16px}
+.brand{font-family:Archivo;font-weight:800;font-variation-settings:"wdth" 125;font-size:18px;flex:1}
+.tabs{display:flex;gap:2px;max-width:1080px;margin:0 auto;padding:0 10px;overflow-x:auto}
+.tabs a{padding:11px 12px;font-size:14.5px;font-weight:500;color:var(--muted);white-space:nowrap;border-bottom:2px solid transparent}
+.tabs a.on{color:var(--ink);font-weight:600;border-bottom-color:var(--accent)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;font:600 14.5px "Instrument Sans",sans-serif;padding:10px 16px;border:1.5px solid var(--ink);border-radius:3px;background:var(--ink);color:#fff;cursor:pointer}
+.btn:active{transform:translateY(1px)}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.sm{padding:7px 12px;font-size:13.5px}
+.btn:disabled{opacity:.45}
+
+.card{background:var(--panel);border:1.5px solid var(--ink);border-radius:4px;padding:18px;margin-bottom:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.tag{display:inline-block;background:var(--panel2);border:1px solid var(--line);border-radius:3px;padding:4px 8px;font-family:"DM Mono",monospace;font-size:11px;margin:2px 2px 0 0}
+.badge{display:inline-block;padding:4px 8px;border-radius:3px;font-family:"DM Mono",monospace;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em}
+.badge.pending{background:var(--warn-bg);color:var(--warn-fg)}
+.badge.shortlisted{background:var(--info-bg);color:var(--info-fg)}
+.badge.accepted{background:var(--ok-bg);color:var(--ok-fg)}
+.badge.rejected,.badge.withdrawn{background:var(--err-bg);color:var(--err-fg)}
+.avatar{width:42px;height:42px;flex:0 0 auto;border:1.5px solid var(--ink);border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-family:Archivo;font-weight:800;font-size:14px;object-fit:cover}
+input,select,textarea{width:100%;padding:11px 13px;border:1.5px solid var(--line);border-radius:3px;background:var(--panel);font:16px "Instrument Sans",sans-serif;color:var(--ink)}
+input:focus,select:focus{outline:none;border-color:var(--ink)}
+.row{display:flex;gap:10px;align-items:center}
+.state{padding:34px 20px;background:var(--panel);border:1.5px dashed var(--line);border-radius:4px;text-align:center;color:var(--muted)}
+.state strong{display:block;font-family:Archivo;font-size:17px;color:var(--ink);margin-bottom:5px}
+.state.bad{border-style:solid;border-color:var(--err-fg);text-align:left}
+.state.bad code{display:block;font-family:"DM Mono",monospace;font-size:12.5px;margin-top:6px;word-break:break-word}
+
+.thread{display:flex;gap:11px;align-items:center;padding:13px;border:1.5px solid var(--ink);border-radius:4px;background:var(--panel);margin-bottom:8px;cursor:pointer}
+.msgs{display:flex;flex-direction:column;gap:9px;padding:14px 0;min-height:45vh}
+.bub{max-width:78%;padding:10px 13px;border:1.5px solid var(--ink);border-radius:5px;font-size:15px;word-break:break-word}
+.bub.me{align-self:flex-end;background:var(--ink);color:#fff}
+.bub.you{align-self:flex-start;background:var(--panel)}
+.bub .t{display:block;font-family:"DM Mono",monospace;font-size:10px;opacity:.6;margin-top:4px}
+.composer{position:sticky;bottom:0;background:var(--paper);padding:10px 0;display:flex;gap:8px;border-top:1.5px solid var(--ink)}
+.composer input[type=text]{flex:1}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="bar"><span class="brand">Cube3</span><span id="who" class="mono"></span></div>
+  <nav class="tabs" id="tabs"></nav>
+</header>
+
+<main class="wrap" id="view"><div class="state">Loading…</div></main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script>
+<script>
+/* ------------------------------------------------------------------
+   Cube3 single-file app.
+   Config is inlined so this file has no dependencies — upload it
+   anywhere and it works. The publishable key is safe in the browser
+   because every table has row level security enabled.
+------------------------------------------------------------------- */
+var SUPABASE_URL = "https://zjgtceurzsvjkspkvroz.supabase.co";
+var SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpqZ3RjZXVyenN2amtzcGt2cm96Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYxMjg3MjgsImV4cCI6MjEwMTcwNDcyOH0.OFFOaDuSVxdcOvUxWPiH_jw5PIvnNQaLfK-FRRvLTvE";
+var BUCKET = "message-attachments";
+
+var sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+var view = document.getElementById("view");
+var me = null, channel = null, pendingFile = null;
+
+/* ---------- helpers ---------- */
+function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){
+  return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m];});}
+function ini(n){return String(n||"?").trim().split(/\s+/).slice(0,2).map(function(w){return w[0];}).join("").toUpperCase()||"?";}
+function money(n){return n==null||n===""?"":"₹"+Number(n).toLocaleString("en-IN");}
+function ago(ts){if(!ts)return"";var m=Math.round((Date.now()-new Date(ts))/6e4);
+  if(m<1)return"just now";if(m<60)return m+"m ago";if(m<1440)return Math.round(m/60)+"h ago";
+  if(m<10080)return Math.round(m/1440)+"d ago";
+  return new Date(ts).toLocaleDateString("en-IN",{day:"numeric",month:"short"});}
+function human(b){if(b==null)return"";if(b<1024)return b+" B";
+  if(b<1048576)return Math.round(b/1024)+" KB";return (b/1048576).toFixed(1)+" MB";}
+
+// Every query goes through here so failures are visible, not silent.
+async function q(label, builder){
+  var t = new Promise(function(_,rej){setTimeout(function(){
+    rej(new Error(label+": server didn't respond in 15s"));},15000);});
+  var r = await Promise.race([builder,t]);
+  if(r && r.error){
+    var e=r.error, m=label+": "+(e.message||"failed");
+    if(e.code) m+=" ["+e.code+"]";
+    if(e.code==="42P01") m+=" — table missing";
+    if(e.code==="42501") m+=" — blocked by security policy";
+    throw new Error(m);
+  }
+  return r?r.data:null;
+}
+function bad(err){
+  console.error(err);
+  view.innerHTML='<div class="state bad"><strong>Something went wrong</strong><code>'+
+    esc(err.message)+'</code><button class="btn ghost sm" style="margin-top:12px" onclick="location.reload()">Reload</button></div>';
+}
+function state(title,detail,href,label){
+  return '<div class="state"><strong>'+esc(title)+'</strong>'+(detail?esc(detail):"")+
+    (href?'<div style="margin-top:12px"><a class="btn sm" href="'+href+'">'+esc(label)+'</a></div>':"")+'</div>';
+}
+
+/* ---------- auth ---------- */
+async function boot(){
+  var s = await sb.auth.getSession();
+  if(!s.data.session){
+    view.innerHTML = state("You're signed out","Sign in to use Cube3.","/pages/login.html","Go to login");
+    document.getElementById("tabs").innerHTML="";
+    return;
+  }
+  var user = s.data.session.user;
+  var p = await q("Loading your profile",
+    sb.from("profiles").select("id,role,full_name,avatar_url,bio").eq("id",user.id).maybeSingle());
+  if(!p){ view.innerHTML = state("No profile yet","Open Profile and save it once to finish setting up your account.","/pages/profile.html","Open profile"); return; }
+
+  me = {id:user.id, role:p.role, name:p.full_name};
+  document.body.dataset.role = p.role;
+  document.getElementById("who").textContent = p.role;
+  tabs();
+  route();
+}
+
+function tabs(){
+  var items = [["#/creators","Creators"],["#/applications", me.role==="brand"?"Pitches":"Applications"],["#/messages","Messages"],
+               ["/pages/campaigns.html","Campaigns"],["/pages/profile.html","Profile"]];
+  var h = location.hash || "#/creators";
+  document.getElementById("tabs").innerHTML = items.map(function(i){
+    var on = i[0].charAt(0)==="#" && h.indexOf(i[0])===0 ? " class='on'" : "";
+    return '<a href="'+i[0]+'"'+on+'>'+i[1]+'</a>';
+  }).join("");
+}
+
+/* ---------- router ---------- */
+window.addEventListener("hashchange", function(){ tabs(); route(); });
+
+function route(){
+  if(channel){ sb.removeChannel(channel); channel=null; }
+  var h = (location.hash||"#/creators").split("/");
+  var page = h[1] || "creators";
+  view.innerHTML = '<div class="state">Loading…</div>';
+
+  var run =
+    page==="creators"     ? (h[2] ? profile(h[2]) : creators()) :
+    page==="applications" ? applications() :
+    page==="messages"     ? (h[2] ? thread(h[2],h[3]) : threads()) :
+    creators();
+
+  run.catch(bad);
+}
+
+/* ---------- creators ---------- */
+async function creators(){
+  var rows = await q("Loading creators",
+    sb.from("creator_profiles").select("id,handle,category,location")) || [];
+  if(!rows.length) return void (view.innerHTML = state("No creators yet","Creator profiles appear here as people sign up."));
+
+  var people = await q("Loading names",
+    sb.from("profiles").select("id,full_name,bio,avatar_url").in("id",rows.map(function(r){return r.id;}))) || [];
+  var by={}; people.forEach(function(p){by[p.id]=p;});
+
+  view.innerHTML = '<h1>Creators</h1><p class="muted" style="margin-bottom:16px">'+
+    rows.length+(rows.length===1?" creator":" creators")+' on Cube3.</p><div class="grid">'+
+    rows.map(function(c){
+      var p=by[c.id]||{};
+      var pic = p.avatar_url ? '<img class="avatar" src="'+esc(p.avatar_url)+'" alt="">'
+                             : '<div class="avatar">'+esc(ini(p.full_name))+'</div>';
+      return '<div class="card"><div class="row">'+pic+'<div style="min-width:0">'+
+        '<h3>'+esc(p.full_name||"Unnamed creator")+'</h3><div class="muted" style="font-size:13px">'+
+        (c.handle?"@"+esc(String(c.handle).replace(/^@/,"")):"")+(c.location?" · "+esc(c.location):"")+
+        '</div></div></div>'+
+        (p.bio?'<p class="muted" style="font-size:14px;margin-top:9px">'+esc(p.bio)+'</p>':"")+
+        (c.category?'<div style="margin-top:8px"><span class="tag">'+esc(c.category)+'</span></div>':"")+
+        '<div class="row" style="margin-top:13px;padding-top:12px;border-top:1px solid var(--line)">'+
+          '<a class="btn ghost sm" style="flex:1" href="#/creators/'+esc(c.id)+'">View profile</a>'+
+          (me.role==="brand" && c.id!==me.id ?'<button class="btn sm" style="flex:1" onclick="startChat(\''+esc(c.id)+'\',this)">Message</button>':"")+
+        '</div></div>';
+    }).join("")+'</div>';
+}
+
+/* ---------- one creator ---------- */
+async function profile(id){
+  var p = await q("Loading profile",
+    sb.from("profiles").select("id,full_name,bio,avatar_url,role").eq("id",id).maybeSingle());
+  if(!p) return void (view.innerHTML = state("Profile not found","This account may have been deleted.","#/creators","Back to creators"));
+
+  var c = await q("Loading creator details",
+    sb.from("creator_profiles").select("*").eq("id",id).maybeSingle()) || {};
+
+  var links = [["instagram_url","Instagram"],["youtube_url","YouTube"],["x_url","X"],
+               ["tiktok_url","TikTok"],["linkedin_url","LinkedIn"],["portfolio_url","Portfolio"]]
+    .filter(function(l){return c[l[0]];})
+    .map(function(l){return '<a class="btn ghost sm" target="_blank" rel="noopener nofollow" href="'+esc(c[l[0]])+'">'+l[1]+'</a>';}).join(" ");
+
+  var pic = p.avatar_url
+    ? '<img src="'+esc(p.avatar_url)+'" alt="" style="width:84px;height:84px;border-radius:50%;border:1.5px solid var(--ink);object-fit:cover">'
+    : '<div class="avatar" style="width:84px;height:84px;font-size:26px">'+esc(ini(p.full_name))+'</div>';
+
+  view.innerHTML = '<p style="margin-bottom:16px"><a class="muted" href="#/creators">← All creators</a></p>'+
+    '<div class="row" style="align-items:flex-start;gap:16px">'+pic+
+      '<div style="min-width:0"><h1>'+esc(p.full_name||"Unnamed")+'</h1>'+
+      '<div class="muted">'+(c.handle?"@"+esc(String(c.handle).replace(/^@/,"")):"")+'</div>'+
+      (me.role==="brand"&&id!==me.id
+        ? '<button class="btn" style="margin-top:12px" onclick="startChat(\''+esc(id)+'\',this)">Message</button>'
+        : id===me.id ? '<a class="btn ghost sm" style="margin-top:12px" href="/pages/profile.html">Edit profile</a>'
+        : '<div class="muted" style="font-size:13.5px;margin-top:10px">Only brand accounts can start a conversation.</div>')+
+      '</div></div>'+
+    (p.bio?'<p style="margin-top:18px;white-space:pre-wrap">'+esc(p.bio)+'</p>':"")+
+    '<div style="margin-top:14px">'+
+      (c.category?'<span class="tag">'+esc(c.category)+'</span>':"")+
+      (c.location?'<span class="tag">'+esc(c.location)+'</span>':"")+
+      (c.engagement_rate?'<span class="tag">'+esc(c.engagement_rate)+'% engagement</span>':"")+
+      (c.rate_min||c.rate_max?'<span class="tag">'+esc(money(c.rate_min||c.rate_max))+'</span>':"")+
+    '</div>'+(links?'<div style="margin-top:16px">'+links+'</div>':"");
+}
+
+/* ---------- applications ---------- */
+async function applications(){
+  var LBL={pending:"Submitted",shortlisted:"Shortlisted",accepted:"Selected",rejected:"Not selected",withdrawn:"Withdrawn"};
+
+  if(me.role==="brand"){
+    var mine = await q("Loading your campaigns", sb.from("campaigns").select("id,title").eq("brand_id",me.id))||[];
+    if(!mine.length) return void (view.innerHTML='<h1>Pitches</h1>'+state("No campaigns yet","Post a campaign and pitches land here.","/pages/campaigns.html","Post a campaign"));
+    var byC={}; mine.forEach(function(c){byC[c.id]=c.title;});
+    var apps = await q("Loading pitches", sb.from("campaign_applications")
+      .select("id,campaign_id,creator_id,pitch,status,created_at")
+      .in("campaign_id",mine.map(function(c){return c.id;}))
+      .order("created_at",{ascending:false}))||[];
+    if(!apps.length) return void (view.innerHTML='<h1>Pitches</h1>'+state("No pitches yet","Creators haven't applied to your campaigns."));
+
+    var ids=Array.from(new Set(apps.map(function(a){return a.creator_id;})));
+    var ppl = await q("Loading creators", sb.from("profiles").select("id,full_name").in("id",ids))||[];
+    var nm={}; ppl.forEach(function(p){nm[p.id]=p.full_name;});
+
+    view.innerHTML='<h1>Pitches</h1><p class="muted" style="margin-bottom:16px">Creators who applied to your campaigns.</p>'+
+      apps.map(function(a){return card(nm[a.creator_id]||"Creator", byC[a.campaign_id], a, LBL,
+        '<a class="btn ghost sm" href="#/creators/'+esc(a.creator_id)+'">View profile</a>');}).join("");
+    return;
+  }
+
+  var apps2 = await q("Loading your applications", sb.from("campaign_applications")
+    .select("id,campaign_id,pitch,status,created_at").eq("creator_id",me.id)
+    .order("created_at",{ascending:false}))||[];
+  if(!apps2.length) return void (view.innerHTML='<h1>Applications</h1>'+state("No applications yet","Pitch for a campaign and it shows up here.","/pages/campaigns.html","Browse campaigns"));
+
+  var cids=Array.from(new Set(apps2.map(function(a){return a.campaign_id;})));
+  var cs = await q("Loading campaigns", sb.from("campaigns").select("id,title,budget").in("id",cids))||[];
+  var cb={}; cs.forEach(function(c){cb[c.id]=c;});
+
+  view.innerHTML='<h1>Applications</h1><p class="muted" style="margin-bottom:16px">Campaigns you\'ve pitched for.</p>'+
+    apps2.map(function(a){var c=cb[a.campaign_id];
+      return card(c?c.title:"Campaign removed", c&&c.budget?money(c.budget):"", a, LBL,
+        a.status==="accepted"?'<a class="btn sm" href="#/messages">Open chat</a>':"");}).join("");
+}
+function card(title,sub,a,LBL,action){
+  return '<div class="card"><div class="row" style="align-items:flex-start;justify-content:space-between">'+
+    '<div><h3>'+esc(title)+'</h3>'+(sub?'<div class="muted" style="font-size:13.5px">'+esc(sub)+'</div>':"")+'</div>'+
+    '<span class="badge '+esc(a.status)+'">'+esc(LBL[a.status]||a.status)+'</span></div>'+
+    (a.pitch?'<p class="muted" style="font-size:14.5px;margin-top:10px;border-left:2px solid var(--line);padding-left:11px;white-space:pre-wrap">'+esc(a.pitch)+'</p>':"")+
+    '<div class="row" style="justify-content:space-between;margin-top:12px;padding-top:11px;border-top:1px solid var(--line)">'+
+    '<span class="mono">'+esc(ago(a.created_at))+'</span>'+(action||"")+'</div></div>';
+}
+
+/* ---------- conversations ---------- */
+async function threads(){
+  var list=[];
+  var mineCol = me.role==="brand"?"brand_id":"creator_id";
+  var otherCol= me.role==="brand"?"creator_id":"brand_id";
+
+  var inq = await q("Loading conversations",
+    sb.from("creator_inquiries").select("id,brand_id,creator_id").eq(mineCol,me.id))||[];
+  inq.forEach(function(i){list.push({k:"inquiry",id:i.id,other:i[otherCol],note:"Direct message"});});
+
+  if(me.role==="brand"){
+    var cs = await q("Loading campaigns", sb.from("campaigns").select("id,title").eq("brand_id",me.id))||[];
+    if(cs.length){
+      var t={}; cs.forEach(function(c){t[c.id]=c.title;});
+      var ap = await q("Loading accepted pitches", sb.from("campaign_applications")
+        .select("id,campaign_id,creator_id").in("campaign_id",cs.map(function(c){return c.id;}))
+        .eq("status","accepted"))||[];
+      ap.forEach(function(a){list.push({k:"campaign",id:a.id,other:a.creator_id,note:t[a.campaign_id]});});
+    }
+  }else{
+    var ap2 = await q("Loading your accepted pitches", sb.from("campaign_applications")
+      .select("id,campaign_id").eq("creator_id",me.id).eq("status","accepted"))||[];
+    if(ap2.length){
+      var cs2 = await q("Loading campaigns", sb.from("campaigns")
+        .select("id,title,brand_id").in("id",ap2.map(function(a){return a.campaign_id;})))||[];
+      var m2={}; cs2.forEach(function(c){m2[c.id]=c;});
+      ap2.forEach(function(a){var c=m2[a.campaign_id];
+        if(c) list.push({k:"campaign",id:a.id,other:c.brand_id,note:c.title});});
+    }
+  }
+
+  if(!list.length) return void (view.innerHTML='<h1>Messages</h1>'+
+    state("No conversations yet", me.role==="brand"
+      ? "Message a creator to start one."
+      : "A chat opens when a brand accepts your pitch or messages you.",
+      "#/creators", me.role==="brand"?"Browse creators":"Browse creators"));
+
+  var ids=Array.from(new Set(list.map(function(t){return t.other;}).filter(Boolean)));
+  var ppl = ids.length? await q("Loading names", sb.from("profiles").select("id,full_name").in("id",ids))||[] : [];
+  var nm={}; ppl.forEach(function(p){nm[p.id]=p.full_name;});
+
+  view.innerHTML='<h1>Messages</h1><div style="margin-top:16px">'+list.map(function(t){
+    var n=nm[t.other]||"Cube3 user";
+    return '<a class="thread" href="#/messages/'+t.k+'/'+esc(t.id)+'">'+
+      '<div class="avatar">'+esc(ini(n))+'</div><div style="min-width:0;flex:1">'+
+      '<div style="font-weight:600">'+esc(n)+'</div>'+
+      '<div class="muted" style="font-size:12.5px">'+esc(t.note||"")+'</div></div>'+
+      '<span class="muted">›</span></a>';
+  }).join("")+'</div>';
+}
+
+function tbl(k){return k==="inquiry"?"inquiry_messages":"messages";}
+function fk(k){return k==="inquiry"?"inquiry_id":"application_id";}
+
+async function thread(kind,id){
+  view.innerHTML='<p style="margin-bottom:12px"><a class="muted" href="#/messages">← Conversations</a></p>'+
+    '<div class="msgs" id="msgs"><div class="state" style="border:0">Loading…</div></div>'+
+    '<div id="pend"></div>'+
+    '<div class="composer"><input type="file" id="f" hidden>'+
+    '<button class="btn ghost sm" onclick="document.getElementById(\'f\').click()">📎</button>'+
+    '<input type="text" id="b" placeholder="Type a message" maxlength="2000">'+
+    '<button class="btn sm" id="s">Send</button></div>';
+
+  document.getElementById("f").addEventListener("change",function(e){
+    pendingFile=e.target.files[0]||null;
+    document.getElementById("pend").innerHTML = pendingFile
+      ? '<div class="row" style="justify-content:space-between;background:var(--panel2);padding:8px 11px;border:1px solid var(--line);border-radius:3px;font-size:13px"><span>'+
+        esc(pendingFile.name)+' ('+human(pendingFile.size)+')</span>'+
+        '<button class="btn ghost sm" onclick="clearFile()">Remove</button></div>' : "";
+  });
+  document.getElementById("s").addEventListener("click",function(){send(kind,id);});
+  document.getElementById("b").addEventListener("keydown",function(e){if(e.key==="Enter")send(kind,id);});
+
+  await drawMsgs(kind,id);
+  channel = sb.channel("t-"+id).on("postgres_changes",
+    {event:"INSERT",schema:"public",table:tbl(kind),filter:fk(kind)+"=eq."+id},
+    function(){drawMsgs(kind,id);}).subscribe();
+}
+
+window.clearFile=function(){pendingFile=null;
+  var f=document.getElementById("f"); if(f)f.value="";
+  var p=document.getElementById("pend"); if(p)p.innerHTML="";};
+
+async function drawMsgs(kind,id){
+  var box=document.getElementById("msgs"); if(!box)return;
+  var rows = await q("Loading messages", sb.from(tbl(kind))
+    .select("id,sender_id,body,attachment_path,attachment_url,attachment_type,attachment_name,attachment_size,created_at")
+    .eq(fk(kind),id).order("created_at",{ascending:true}))||[];
+
+  if(!rows.length){ box.innerHTML='<div class="state" style="border:0">No messages yet. Say hello.</div>'; return; }
+
+  box.innerHTML = rows.map(function(m){
+    var mine = m.sender_id===me.id;
+    var att = m.attachment_path||m.attachment_url
+      ? '<div id="a-'+esc(m.id)+'" style="margin-bottom:6px" class="mono">Loading…</div>' : "";
+    return '<div class="bub '+(mine?"me":"you")+'">'+att+(m.body?esc(m.body):"")+
+      '<span class="t">'+esc(ago(m.created_at))+'</span></div>';
+  }).join("");
+  box.scrollTop = box.scrollHeight;
+
+  rows.forEach(function(m){ if(m.attachment_path||m.attachment_url) showAttachment(m); });
+}
+
+async function showAttachment(m){
+  var el=document.getElementById("a-"+m.id); if(!el)return;
+  var url = m.attachment_url || null;
+  if(!url && m.attachment_path){
+    var r = await sb.storage.from(BUCKET).createSignedUrl(m.attachment_path,3600);
+    url = r.data ? r.data.signedUrl : null;
+  }
+  if(!url){ el.textContent="Attachment unavailable"; return; }
+
+  if(m.attachment_type==="image"){
+    el.innerHTML='<a href="'+esc(url)+'" target="_blank" rel="noopener"><img src="'+esc(url)+
+      '" alt="" style="max-width:210px;border-radius:4px;display:block"></a>';
+  }else if(m.attachment_type==="video"){
+    el.innerHTML='<video src="'+esc(url)+'" controls preload="metadata" style="max-width:210px;border-radius:4px;display:block"></video>';
+  }else{
+    el.innerHTML='<a class="btn ghost sm" href="'+esc(url)+'" target="_blank" rel="noopener" download="'+
+      esc(m.attachment_name||"file")+'">↓ '+esc(m.attachment_name||"Download")+'</a>';
+  }
+}
+
+var BLOCKED=["exe","msi","bat","cmd","com","scr","jar","js","html","htm","svg","php","sh","ps1","vbs","apk"];
+async function send(kind,id){
+  var input=document.getElementById("b"), btn=document.getElementById("s");
+  var text=input.value.trim();
+  if(!text && !pendingFile) return;
+  btn.disabled=true; btn.textContent="Sending…";
+  try{
+    var row={sender_id:me.id, body:text||null};
+    row[fk(kind)]=id;
+
+    if(pendingFile){
+      var ext=(pendingFile.name.split(".").pop()||"").toLowerCase();
+      if(BLOCKED.indexOf(ext)!==-1) throw new Error("."+ext+" files can't be shared. Zip it first.");
+      if(pendingFile.size>50*1024*1024) throw new Error("That file is over the 50 MB limit.");
+
+      var type = pendingFile.type.indexOf("image/")===0 ? "image"
+               : pendingFile.type.indexOf("video/")===0 ? "video"
+               : pendingFile.type.indexOf("audio/")===0 ? "audio" : "file";
+      var name = (crypto.randomUUID?crypto.randomUUID():Date.now()+""+Math.random().toString(36).slice(2))+(ext?"."+ext:"");
+      var path = id+"/"+name;
+
+      var up = await sb.storage.from(BUCKET).upload(path,pendingFile,{contentType:pendingFile.type||"application/octet-stream"});
+      if(up.error){
+        if(/bucket/i.test(up.error.message))
+          throw new Error("Storage bucket '"+BUCKET+"' doesn't exist. Create it in Supabase → Storage.");
+        throw new Error("Upload failed: "+up.error.message);
+      }
+      row.attachment_path=path; row.attachment_type=type;
+      row.attachment_name=pendingFile.name.slice(0,200); row.attachment_size=pendingFile.size;
+    }
+
+    await q("Sending message", sb.from(tbl(kind)).insert(row));
+    input.value=""; clearFile();
+    await drawMsgs(kind,id);
+  }catch(e){ alert(e.message); }
+  finally{ btn.disabled=false; btn.textContent="Send"; }
+}
+
+/* ---------- start a chat ---------- */
+window.startChat = async function(creatorId,btn){
+  var label=btn.textContent; btn.disabled=true; btn.textContent="Opening…";
+  try{
+    var found = await q("Checking for an existing chat",
+      sb.from("creator_inquiries").select("id").eq("brand_id",me.id).eq("creator_id",creatorId).maybeSingle());
+    var id = found ? found.id : null;
+    if(!id){
+      var made = await q("Starting the conversation",
+        sb.from("creator_inquiries").insert({brand_id:me.id,creator_id:creatorId}).select("id").single());
+      id = made.id;
+    }
+    location.hash = "#/messages/inquiry/"+id;
+  }catch(e){ alert(e.message); btn.disabled=false; btn.textContent=label; }
+};
+
+boot().catch(bad);
+</script>
+</body>
+</html>
