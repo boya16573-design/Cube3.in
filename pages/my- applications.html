@@ -1,115 +1,154 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<link rel="preconnect" href="https://zjgtceurzsvjkspkvroz.supabase.co">
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Applications - Cube3</title>
+<title>Applications — Cube3</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..900&family=Instrument+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="/style.css">
 <style>
-  .application-card{margin-top:16px;}
-  .application-card .brand-name{color:var(--ink-muted); font-size:12.5px; margin-bottom:10px;}
-  .pitch-label{color:var(--ink-faint); font-size:11.5px; text-transform:uppercase; letter-spacing:.04em;}
-  .pitch{color:var(--ink); font-size:13.5px; line-height:1.5; margin-top:6px;}
+  .app-card{display:flex;flex-direction:column;gap:8px;}
+  .app-card .head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
+  .app-card .pitch{font-size:14.5px;color:var(--ink-muted);white-space:pre-wrap;
+    border-left:2px solid var(--line);padding-left:12px;margin-top:4px;}
+  .app-card .foot{display:flex;justify-content:space-between;align-items:center;gap:10px;
+    padding-top:10px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-faint);flex-wrap:wrap;}
 </style>
 </head>
-<body>
-
-<header class="site-header">
-  <nav class="wrap">
-    <a class="brand" href="/index.html">
-      <svg class="mark" viewBox="0 0 24 24" fill="none"><path d="M12 2L21 7V17L12 22L3 17V7L12 2Z" fill="#3730a3"/></svg>
-      Cube3
-    </a>
-    <div class="nav-links">
-      <a href="dashboard.html">Dashboard</a>
-      <a href="campaigns.html">Campaigns</a>
-      <a href="creators.html">Creators</a>
-      <a href="my-applications.html" class="active">My Applications</a>
-      <a href="inbox.html">Messages</a>
-      <a href="profile.html">Profile</a>
-    </div>
-  </nav>
-</header>
+<body data-nav="app">
 
 <div class="container">
-  <h1 style="font-size:30px;">My Applications</h1>
-  <p class="muted">Track the campaigns you've applied to.</p>
-
-  <div id="content">
-    <div class="loading-state">Loading your applications...</div>
-  </div>
+  <h1 id="title">Applications</h1>
+  <p class="muted" id="lede">Loading…</p>
+  <div id="list" style="margin-top:22px"></div>
 </div>
 
 <script src="/config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script>
 <script src="/supabase-client.js"></script>
 <script src="/auth.js"></script>
+<script src="/cube3.js"></script>
 
 <script>
-(function () {
-  var supabase = window.cube3Supabase;
-  var currentUser = null;
+(async function () {
+  var LABEL = { pending: "Submitted", shortlisted: "Shortlisted", accepted: "Selected", rejected: "Not selected", withdrawn: "Withdrawn" };
+  var list = document.getElementById("list");
 
-  function escapeHTML(value) {
-    return String(value || "")
-      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-  }
+  C3.skeleton(list, 3);
 
-  var STATUS_LABELS = { pending: "Submitted", shortlisted: "Shortlisted", accepted: "Selected", rejected: "Rejected" };
+  try {
+    var self = await C3.me();
 
-  async function init() {
-    var content = document.getElementById("content");
-    try {
-      currentUser = await Cube3Auth.requireUser();
-      if (!currentUser) return;
-
-      var { data: applications, error } = await supabase.from("campaign_applications").select("id, campaign_id, pitch, status, created_at, proposed_rate, portfolio_url").eq("creator_id", currentUser.id).order("created_at", { ascending: false });
-      if (error) throw error;
-
-      if (!applications.length) {
-        content.innerHTML = '<div class="empty-state">You haven\'t applied to any campaigns yet. <a href="campaigns.html" style="color:var(--violet);">Browse open campaigns</a>.</div>';
-        return;
-      }
-
-      var campaignIds = Array.from(new Set(applications.map(function (a) { return a.campaign_id; })));
-      var { data: campaignList } = await supabase.from("campaigns").select("id, title, brand_id").in("id", campaignIds);
-
-      var campaignById = {}; (campaignList || []).forEach(function (c) { campaignById[c.id] = c; });
-      var brandIds = Array.from(new Set((campaignList || []).map(function (c) { return c.brand_id; })));
-
-      var { data: brandProfiles } = await supabase.from("brand_profiles").select("id, company_name").in("id", brandIds);
-      var brandById = {}; (brandProfiles || []).forEach(function (b) { brandById[b.id] = b; });
-
-      content.innerHTML = applications.map(function (app) {
-        var campaign = campaignById[app.campaign_id];
-        var brand = campaign ? brandById[campaign.brand_id] : null;
-
-        return '<div class="card application-card">' +
-          '<span class="status-badge ' + app.status + '">' + escapeHTML(STATUS_LABELS[app.status] || app.status) + '</span>' +
-          '<h3 style="font-size:17px; margin:8px 0 2px;">' + escapeHTML(campaign ? campaign.title : "Campaign no longer available") + '</h3>' +
-          '<div class="brand-name">' + escapeHTML(brand ? brand.company_name : "") + '</div>' +
-          '<div class="pitch-label">Your pitch</div>' +
-          '<p class="pitch">' + escapeHTML(app.pitch) + '</p>' +
-          (app.proposed_rate ? '<p style="font-size:12.5px; color:var(--ink-muted); margin:6px 0 0;"><strong>Your rate:</strong> ₹' + Number(app.proposed_rate).toLocaleString("en-IN") + '</p>' : "") +
-          (app.portfolio_url ? '<p style="font-size:12.5px; margin:4px 0 0;"><a href="' + escapeHTML(app.portfolio_url) + '" target="_blank" rel="noopener" style="color:var(--violet-deep); font-weight:600;">Your portfolio link</a></p>' : "") +
-        '</div>';
-      }).join("");
-
-    } catch (error) {
-      console.error(error);
-      content.innerHTML = '<div class="empty-state">Could not load your applications. ' + escapeHTML(error.message) + '</div>';
+    if (self.role === "brand") {
+      document.getElementById("title").textContent = "Pitches received";
+      document.getElementById("lede").textContent = "Creators who applied to your campaigns.";
+      await brandView(self);
+    } else {
+      document.getElementById("title").textContent = "My applications";
+      document.getElementById("lede").textContent = "Campaigns you've pitched for.";
+      await creatorView(self);
     }
+  } catch (err) {
+    C3.fail(list, err);
   }
 
-  init();
+  async function creatorView(self) {
+    var apps = await C3.q("Loading your applications",
+      C3.sb.from("campaign_applications")
+        .select("id, campaign_id, pitch, status, created_at")
+        .eq("creator_id", self.id)
+        .order("created_at", { ascending: false })) || [];
+
+    if (!apps.length) {
+      return C3.empty(list, "No applications yet",
+        "Pitch for an open campaign and it'll show up here.",
+        "/pages/campaigns.html", "Browse campaigns");
+    }
+
+    var ids = unique(apps.map(function (a) { return a.campaign_id; }));
+    var campaigns = ids.length ? await C3.q("Loading campaigns",
+      C3.sb.from("campaigns").select("id, title, budget, brand_id").in("id", ids)) || [] : [];
+    var byId = index(campaigns);
+
+    list.innerHTML = apps.map(function (a) {
+      var c = byId[a.campaign_id];
+      return card({
+        status: a.status,
+        title: c ? c.title : "Campaign no longer available",
+        sub: c && c.budget ? C3.money(c.budget) : "",
+        pitch: a.pitch,
+        foot: "Applied " + C3.when(a.created_at),
+        action: a.status === "accepted"
+          ? '<a class="btn btn-primary btn-sm" href="/pages/inbox.html">Open chat</a>' : ""
+      });
+    }).join("");
+  }
+
+  async function brandView(self) {
+    var campaigns = await C3.q("Loading your campaigns",
+      C3.sb.from("campaigns").select("id, title").eq("brand_id", self.id)) || [];
+
+    if (!campaigns.length) {
+      return C3.empty(list, "No campaigns yet",
+        "Post a campaign and creator pitches will land here.",
+        "/pages/campaigns.html", "Post a campaign");
+    }
+
+    var byId = index(campaigns);
+    var apps = await C3.q("Loading pitches",
+      C3.sb.from("campaign_applications")
+        .select("id, campaign_id, creator_id, pitch, status, created_at")
+        .in("campaign_id", campaigns.map(function (c) { return c.id; }))
+        .order("created_at", { ascending: false })) || [];
+
+    if (!apps.length) {
+      return C3.empty(list, "No pitches yet",
+        "Creators haven't applied to your campaigns yet.");
+    }
+
+    var creatorIds = unique(apps.map(function (a) { return a.creator_id; }));
+    var people = creatorIds.length ? await C3.q("Loading creators",
+      C3.sb.from("profiles").select("id, full_name").in("id", creatorIds)) || [] : [];
+    var nameById = {};
+    people.forEach(function (p) { nameById[p.id] = p.full_name; });
+
+    list.innerHTML = apps.map(function (a) {
+      var c = byId[a.campaign_id];
+      return card({
+        status: a.status,
+        title: nameById[a.creator_id] || "Creator",
+        sub: c ? c.title : "",
+        pitch: a.pitch,
+        foot: "Received " + C3.when(a.created_at),
+        action: '<a class="btn btn-ghost btn-sm" href="/pages/creator.html?id=' +
+                encodeURIComponent(a.creator_id) + '">View profile</a>'
+      });
+    }).join("");
+  }
+
+  function card(o) {
+    return '<div class="card app-card" style="margin-bottom:14px">' +
+      '<div class="head">' +
+        '<div><h3>' + C3.esc(o.title) + "</h3>" +
+        (o.sub ? '<div class="muted" style="font-size:13.5px">' + C3.esc(o.sub) + "</div>" : "") +
+        "</div>" +
+        '<span class="status-badge ' + C3.esc(o.status) + '">' +
+          C3.esc(LABEL[o.status] || o.status) + "</span>" +
+      "</div>" +
+      (o.pitch ? '<p class="pitch">' + C3.esc(o.pitch) + "</p>" : "") +
+      '<div class="foot"><span>' + C3.esc(o.foot) + "</span>" + (o.action || "") + "</div>" +
+    "</div>";
+  }
+
+  function unique(a) { return Array.from(new Set(a.filter(Boolean))); }
+  function index(rows) {
+    var m = {}; (rows || []).forEach(function (r) { m[r.id] = r; }); return m;
+  }
 })();
 </script>
 
+<script src="/layout.js"></script>
 </body>
 </html>
