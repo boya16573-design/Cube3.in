@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="preconnect" href="https://zjgtceurzsvjkspkvroz.supabase.co">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Collaborations - Cube3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/style.css">
+<style>
+  .collab-card{margin-top:18px;}
+  .collab-header{display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap; margin-bottom:14px;}
+  .collab-header h3{font-size:17px; margin:0 0 3px;}
+  .collab-header .party{color:var(--ink-muted); font-size:12.5px;}
+  .progress-bar{height:6px; background:var(--line); border-radius:3px; overflow:hidden; margin-bottom:16px;}
+  .progress-fill{height:100%; background:var(--violet); transition:width .3s ease;}
+  .milestone{border-top:1px solid var(--line); padding:14px 0; display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:flex-start;}
+  .milestone:first-of-type{border-top:0; padding-top:0;}
+  .milestone-info b{font-size:14px; display:block; margin-bottom:2px;}
+  .milestone-info .due{color:var(--ink-faint); font-size:12px;}
+  .milestone-info .submission{margin-top:6px; font-size:12.5px;}
+  .milestone-info .submission a{color:var(--violet-deep); font-weight:600;}
+  .milestone-actions{display:flex; gap:6px; flex-wrap:wrap;}
+  .milestone-actions button, .milestone-actions input{font-size:12.5px;}
+  .btn-sm{padding:7px 12px; font-size:12.5px;}
+  .add-milestone-row{display:flex; gap:8px; margin-top:16px; flex-wrap:wrap;}
+  .add-milestone-row input[type="text"]{flex:1; min-width:160px;}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="wrap">
+    <a class="brand" href="/index.html">
+      <svg class="mark" viewBox="0 0 24 24" fill="none"><path d="M12 2L21 7V17L12 22L3 17V7L12 2Z" fill="#3730a3"/></svg>
+      Cube3
+    </a>
+    <div class="nav-links">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="campaigns.html">Campaigns</a>
+      <a href="creators.html">Creators</a>
+      <a href="collaborations.html" class="active">Collaborations</a>
+      <a href="inbox.html">Messages</a>
+      <a href="profile.html">Profile</a>
+    </div>
+  </nav>
+</header>
+
+<div class="container">
+  <h1 style="font-size:30px;">Collaborations</h1>
+  <p class="muted">Track deliverables on your active partnerships.</p>
+
+  <div id="content">
+    <div class="loading-state">Loading collaborations...</div>
+  </div>
+</div>
+
+<script src="/config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script>
+<script src="/supabase-client.js"></script>
+<script src="/auth.js"></script>
+
+<script>
+(function () {
+  var supabase = window.cube3Supabase;
+  var currentUser = null;
+  var role = null;
+
+  function escapeHTML(value) {
+    return String(value || "")
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+  }
+
+  async function init() {
+    var content = document.getElementById("content");
+    try {
+      currentUser = await Cube3Auth.requireUser();
+      if (!currentUser) return;
+
+      var { data: profile, error } = await supabase.from("profiles").select("role").eq("id", currentUser.id).single();
+      if (error && error.code !== "PGRST116") throw error;
+      role = profile ? profile.role : "creator";
+
+      await loadCollaborations();
+
+    } catch (error) {
+      console.error(error);
+      content.innerHTML = '<div class="empty-state">Could not load collaborations. ' + escapeHTML(error.message) + '</div>';
+    }
+  }
+
+  async function loadCollaborations() {
+    var content = document.getElementById("content");
+    var applications = [];
+
+    if (role === "brand") {
+      var { data: myCampaigns } = await supabase.from("campaigns").select("id, title").eq("brand_id", currentUser.id);
+      var campaignIds = (myCampaigns || []).map(function (c) { return c.id; });
+      var campaignById = {}; (myCampaigns || []).forEach(function (c) { campaignById[c.id] = c; });
+
+      if (campaignIds.length) {
+        var { data: apps } = await supabase.from("campaign_applications").select("id, campaign_id, creator_id").in("campaign_id", campaignIds).eq("status", "accepted");
+        applications = (apps || []).map(function (a) {
+          return Object.assign({}, a, { campaignTitle: campaignById[a.campaign_id] ? campaignById[a.campaign_id].title : "", otherPartyId: a.creator_id });
+        });
+      }
+    } else {
+      var { data: apps2 } = await supabase.from("campaign_applications").select("id, campaign_id, creator_id").eq("creator_id", currentUser.id).eq("status", "accepted");
+      var campaignIds2 = Array.from(new Set((apps2 || []).map(function (a) { return a.campaign_id; })));
+      var { data: campaignList } = await supabase.from("campaigns").select("id, title, brand_id").in("id", campaignIds2);
+      var campaignById2 = {}; (campaignList || []).forEach(function (c) { campaignById2[c.id] = c; });
+
+      applications = (apps2 || []).map(function (a) {
+        var c = campaignById2[a.campaign_id];
+        return Object.assign({}, a, { campaignTitle: c ? c.title : "", otherPartyId: c ? c.brand_id : null });
+      });
+    }
+
+    if (!applications.length) {
+      content.innerHTML = '<div class="empty-state">No active collaborations yet. These appear once an application is accepted.</div>';
+      return;
+    }
+
+    var otherIds = Array.from(new Set(applications.map(function (a) { return a.otherPartyId; }).filter(Boolean)));
+    var { data: profiles } = await supabase.from("profiles").select("id, full_name").in("id", otherIds);
+    var nameById = {}; (profiles || []).forEach(function (p) { nameById[p.id] = p.full_name; });
+
+    var { data: allMilestones } = await supabase.from("milestones").select("*").in("application_id", applications.map(function (a) { return a.id; })).order("created_at", { ascending: true });
+
+    var milestonesByApp = {};
+    (allMilestones || []).forEach(function (m) {
+      if (!milestonesByApp[m.application_id]) milestonesByApp[m.application_id] = [];
+      milestonesByApp[m.application_id].push(m);
+    });
+
+    content.innerHTML = applications.map(function (a) {
+      var milestones = milestonesByApp[a.id] || [];
+      var approvedCount = milestones.filter(function (m) { return m.status === "approved"; }).length;
+      var pct = milestones.length ? Math.round((approvedCount / milestones.length) * 100) : 0;
+
+      return '<div class="card collab-card" id="collab-' + a.id + '">' +
+        '<div class="collab-header">' +
+          '<div>' +
+            '<h3>' + escapeHTML(a.campaignTitle) + '</h3>' +
+            '<div class="party">' + (role === "brand" ? "Creator: " : "Brand: ") + escapeHTML(nameById[a.otherPartyId] || "Unknown") + '</div>' +
+          '</div>' +
+          '<div class="muted" style="font-size:12.5px;">' + approvedCount + ' / ' + milestones.length + ' approved</div>' +
+        '</div>' +
+        '<div class="progress-bar"><div class="progress-fill" style="width:' + pct + '%;"></div></div>' +
+        '<div id="milestones-' + a.id + '">' +
+          (milestones.length ? milestones.map(function (m) { return renderMilestone(m); }).join("") : '<p class="muted" style="font-size:13px;">No milestones yet.</p>') +
+        '</div>' +
+        (role === "brand" ? renderAddMilestoneRow(a.id) : "") +
+        '<div id="review-' + a.id + '" style="margin-top:16px; padding-top:16px; border-top:1px solid var(--line);"></div>' +
+      '</div>';
+    }).join("");
+
+    applications.forEach(function (a) { loadReviewSection(a.id, a.otherPartyId); });
+  }
+
+  async function loadReviewSection(applicationId, otherPartyId) {
+    var box = document.getElementById("review-" + applicationId);
+    if (!box) return;
+
+    var { data: existing } = await supabase.from("reviews").select("*").eq("application_id", applicationId).eq("reviewer_id", currentUser.id).maybeSingle();
+
+    if (existing) {
+      box.innerHTML =
+        '<div class="muted" style="font-size:12.5px;">You rated this collaboration ' + "★".repeat(existing.rating) + "☆".repeat(5 - existing.rating) + '</div>' +
+        (existing.comment ? '<p style="font-size:13px; margin-top:4px;">' + escapeHTML(existing.comment) + '</p>' : "");
+      return;
+    }
+
+    box.innerHTML =
+      '<div class="muted" style="font-size:12px; margin-bottom:8px; text-transform:uppercase; letter-spacing:.04em; font-weight:600;">Leave a review</div>' +
+      '<div id="starPicker-' + applicationId + '" style="font-size:22px; letter-spacing:4px; margin-bottom:8px; cursor:pointer;">☆☆☆☆☆</div>' +
+      '<textarea id="reviewComment-' + applicationId + '" placeholder="Optional feedback..." style="min-height:60px; margin-bottom:8px;"></textarea>' +
+      '<button class="btn btn-primary btn-sm" onclick="submitReview(\'' + applicationId + '\', \'' + otherPartyId + '\')">Submit review</button>';
+
+    var stars = document.getElementById("starPicker-" + applicationId);
+    var selectedRating = 0;
+    stars.addEventListener("click", function (event) {
+      var rect = stars.getBoundingClientRect();
+      var relativeX = event.clientX - rect.left;
+      selectedRating = Math.max(1, Math.min(5, Math.ceil((relativeX / rect.width) * 5)));
+      stars.textContent = "★".repeat(selectedRating) + "☆".repeat(5 - selectedRating);
+      stars.dataset.rating = selectedRating;
+    });
+  }
+
+  window.submitReview = async function (applicationId, otherPartyId) {
+    var stars = document.getElementById("starPicker-" + applicationId);
+    var rating = Number(stars.dataset.rating || 0);
+    if (!rating) { alert("Tap the stars to choose a rating first."); return; }
+
+    var comment = document.getElementById("reviewComment-" + applicationId).value.trim();
+
+    try {
+      var { error } = await supabase.from("reviews").insert({
+        application_id: applicationId,
+        reviewer_id: currentUser.id,
+        reviewee_id: otherPartyId,
+        rating: rating,
+        comment: comment || null
+      });
+      if (error) throw error;
+
+      await loadReviewSection(applicationId, otherPartyId);
+
+    } catch (error) {
+      console.error(error);
+      alert(error.message || "Could not submit review.");
+    }
+  };
+
+  function renderMilestone(m) {
+    var dueText = m.due_date ? new Date(m.due_date).toLocaleDateString() : "No due date";
+
+    var actions = "";
+    if (role === "creator" && (m.status === "pending" || m.status === "rejected")) {
+      actions =
+        '<input type="text" id="submitUrl-' + m.id + '" placeholder="Paste content link..." style="width:200px;">' +
+        '<button class="btn btn-primary btn-sm" onclick="submitMilestone(\'' + m.id + '\')">Submit</button>';
+    } else if (role === "brand" && m.status === "submitted") {
+      actions =
+        '<button class="btn btn-primary btn-sm" onclick="reviewMilestone(\'' + m.id + '\', \'approved\')">Approve</button>' +
+        '<button class="btn btn-danger btn-sm" onclick="reviewMilestone(\'' + m.id + '\', \'rejected\')">Reject</button>';
+    }
+
+    return '<div class="milestone">' +
+      '<div class="milestone-info">' +
+        '<b>' + escapeHTML(m.title) + '</b>' +
+        '<span class="status-badge ' + (m.status === "submitted" ? "pending" : m.status) + '">' + escapeHTML(m.status) + '</span>' +
+        ' <span class="due">Due: ' + dueText + '</span>' +
+        (m.description ? '<div class="muted" style="font-size:12.5px; margin-top:4px;">' + escapeHTML(m.description) + '</div>' : "") +
+        (m.submission_url ? '<div class="submission">Submitted: <a href="' + escapeHTML(m.submission_url) + '" target="_blank" rel="noopener">' + escapeHTML(m.submission_url) + '</a></div>' : "") +
+      '</div>' +
+      '<div class="milestone-actions">' + actions + '</div>' +
+    '</div>';
+  }
+
+  function renderAddMilestoneRow(applicationId) {
+    return '<div class="add-milestone-row">' +
+      '<input type="text" id="newMilestoneTitle-' + applicationId + '" placeholder="New milestone, e.g. \'1 Instagram Reel\'">' +
+      '<input type="date" id="newMilestoneDue-' + applicationId + '" style="width:150px;">' +
+      '<button class="btn btn-ghost btn-sm" onclick="addMilestone(\'' + applicationId + '\')">+ Add milestone</button>' +
+    '</div>';
+  }
+
+  window.addMilestone = async function (applicationId) {
+    var titleInput = document.getElementById("newMilestoneTitle-" + applicationId);
+    var dueInput = document.getElementById("newMilestoneDue-" + applicationId);
+    var title = titleInput.value.trim();
+    if (!title) return;
+
+    try {
+      var { error } = await supabase.from("milestones").insert({
+        application_id: applicationId,
+        title: title,
+        due_date: dueInput.value || null,
+        status: "pending"
+      });
+      if (error) throw error;
+
+      titleInput.value = "";
+      dueInput.value = "";
+      await loadCollaborations();
+
+    } catch (error) {
+      console.error(error);
+      alert(error.message || "Could not add milestone.");
+    }
+  };
+
+  window.submitMilestone = async function (milestoneId) {
+    var input = document.getElementById("submitUrl-" + milestoneId);
+    var url = input.value.trim();
+    if (!url) { alert("Paste a link to your content first."); return; }
+
+    try {
+      var { error } = await supabase.from("milestones").update({
+        submission_url: url,
+        status: "submitted",
+        updated_at: new Date().toISOString()
+      }).eq("id", milestoneId);
+      if (error) throw error;
+
+      await loadCollaborations();
+
+    } catch (error) {
+      console.error(error);
+      alert(error.message || "Could not submit content.");
+    }
+  };
+
+  window.reviewMilestone = async function (milestoneId, decision) {
+    try {
+      var { error } = await supabase.from("milestones").update({
+        status: decision,
+        updated_at: new Date().toISOString()
+      }).eq("id", milestoneId);
+      if (error) throw error;
+
+      await loadCollaborations();
+
+    } catch (error) {
+      console.error(error);
+      alert(error.message || "Could not update milestone.");
+    }
+  };
+
+  init();
+})();
+</script>
+
+</body>
+</html>
