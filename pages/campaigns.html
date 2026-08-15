@@ -8,7 +8,7 @@
 <title>Campaigns - Cube3</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="/style.css">
 <style>
   .filters{display:grid; grid-template-columns:2fr 1fr 1fr; gap:12px; margin:24px 0 30px;}
@@ -30,7 +30,7 @@
 <header class="site-header">
   <nav class="wrap">
     <a class="brand" href="/index.html">
-      <svg class="mark" viewBox="0 0 24 24" fill="none"><path d="M12 2L21 7V17L12 22L3 17V7L12 2Z" fill="#0284c7"/></svg>
+      <svg class="mark" viewBox="0 0 24 24" fill="none"><path d="M12 2L21 7V17L12 22L3 17V7L12 2Z" fill="#3730a3"/></svg>
       Cube3
     </a>
     <div class="nav-links">
@@ -85,6 +85,13 @@
       <input type="hidden" id="applicationCampaignId">
       <label for="pitch">Your pitch</label>
       <textarea id="pitch" placeholder="Tell the brand why you're a good fit..." required></textarea>
+
+      <label for="proposedRate">Your rate (₹, optional)</label>
+      <input id="proposedRate" type="number" min="0" step="0.01" placeholder="e.g. 15000">
+
+      <label for="portfolioUrl">Portfolio / samples link (optional)</label>
+      <input id="portfolioUrl" type="url" placeholder="Link to past work, reel, or portfolio">
+
       <button class="btn btn-primary btn-block" type="submit" style="margin-top:18px;">Submit application</button>
       <div id="applicationMessage" class="message"></div>
     </form>
@@ -334,6 +341,8 @@
   window.openApplyModal = function (campaignId) {
     document.getElementById("applicationCampaignId").value = campaignId;
     document.getElementById("pitch").value = "";
+    document.getElementById("proposedRate").value = "";
+    document.getElementById("portfolioUrl").value = "";
     document.getElementById("applicationMessage").className = "message";
     document.getElementById("applyModal").classList.add("show");
   };
@@ -350,7 +359,12 @@
 
     try {
       var { error } = await supabase.from("campaign_applications").insert({
-        campaign_id: campaignId, creator_id: currentUser.id, pitch: pitch, status: "pending"
+        campaign_id: campaignId,
+        creator_id: currentUser.id,
+        pitch: pitch,
+        proposed_rate: Number(document.getElementById("proposedRate").value) || null,
+        portfolio_url: document.getElementById("portfolioUrl").value.trim() || null,
+        status: "pending"
       });
       if (error) throw error;
 
