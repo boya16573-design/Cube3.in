@@ -1,65 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<link rel="preconnect" href="https://zjgtceurzsvjkspkvroz.supabase.co">
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Messages - Cube3</title>
+<title>Messages — Cube3</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..900&family=Instrument+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="/style.css">
 <style>
-  .layout{display:grid; grid-template-columns:300px 1fr; max-width:1000px; margin:30px auto; min-height:65vh; border:1px solid var(--line); border-radius:16px; overflow:hidden; background:var(--panel);}
-  .conversations{border-right:1px solid var(--line); overflow-y:auto;}
-  .conversations h2{font-size:15px; padding:16px; margin:0; border-bottom:1px solid var(--line);}
-  .conversation{padding:13px 16px; border-bottom:1px solid var(--line); cursor:pointer;}
-  .conversation:hover{background:var(--paper);}
-  .conversation.active{background:var(--violet-dim);}
-  .conversation .name{font-weight:700; font-size:13.5px;}
-  .conversation .campaign{color:var(--ink-muted); font-size:11.5px; margin-top:2px;}
-  .conversation .preview{color:var(--ink-faint); font-size:11.5px; margin-top:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .chat{display:grid;grid-template-columns:290px 1fr;gap:14px;
+    height:calc(100vh - 58px - 40px);max-width:1180px;margin:20px auto;padding:0 20px;}
+  .pane{background:var(--panel);border:1.5px solid var(--ink);border-radius:var(--radius-md);
+    display:flex;flex-direction:column;overflow:hidden;min-height:0;}
+  .pane h2{font-size:14px;padding:14px 16px;border-bottom:1px solid var(--line);
+    font-family:"DM Mono",monospace;font-weight:400;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-faint);}
+  #threads{overflow-y:auto;flex:1;}
+  .thread{padding:13px 16px;border-bottom:1px solid var(--line);cursor:pointer;
+    display:flex;gap:11px;align-items:center;transition:background .12s;}
+  .thread:hover{background:var(--panel-2);}
+  .thread[aria-current="true"]{background:var(--panel-2);border-left:3px solid var(--accent);padding-left:13px;}
+  .thread .n{font-weight:600;font-size:14.5px;}
+  .thread .p{font-size:12.5px;color:var(--ink-faint);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .thread .meta{flex:1;min-width:0;}
 
-  .thread{display:flex; flex-direction:column;}
-  .thread-header{padding:16px; border-bottom:1px solid var(--line); font-weight:700; font-size:14px;}
-  .thread-messages{flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:9px;}
-  .bubble{max-width:70%; padding:9px 13px; border-radius:14px; font-size:13.5px; line-height:1.4;}
-  .bubble.mine{align-self:flex-end; background:var(--violet); color:#fff; border-bottom-right-radius:4px;}
-  .bubble.theirs{align-self:flex-start; background:var(--paper); color:var(--ink); border-bottom-left-radius:4px;}
-  .thread-input{display:flex; gap:10px; padding:14px; border-top:1px solid var(--line);}
-  .thread-input input{flex:1;}
+  #messages{flex:1;overflow-y:auto;padding:18px 16px;display:flex;flex-direction:column;gap:10px;}
+  .bubble{max-width:75%;padding:10px 13px;border-radius:var(--radius-md);
+    border:1.5px solid var(--ink);font-size:15px;line-height:1.45;word-break:break-word;}
+  .bubble.mine{align-self:flex-end;background:var(--ink);color:#fff;}
+  .bubble.theirs{align-self:flex-start;background:var(--panel-2);}
+  .bubble .t{display:block;font-family:"DM Mono",monospace;font-size:10.5px;
+    opacity:.6;margin-top:5px;}
 
-  @media (max-width:750px){ .layout{grid-template-columns:1fr;} .conversations{max-height:220px;} }
+  .composer{display:flex;gap:8px;padding:12px;border-top:1.5px solid var(--ink);align-items:center;}
+  .composer input[type=text]{flex:1;}
+  .pending{padding:8px 12px;font-size:13px;background:var(--panel-2);
+    border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px;}
+
+  .back{display:none;}
+  @media (max-width:780px){
+    .chat{grid-template-columns:1fr;height:auto;padding:0 12px;}
+    .pane.convo{display:none;}
+    body.viewing .pane.convo{display:flex;height:calc(100vh - 130px);}
+    body.viewing .pane.list{display:none;}
+    .back{display:inline-flex;}
+  }
 </style>
 </head>
-<body>
+<body data-nav="app">
 
-<header class="site-header">
-  <nav class="wrap">
-    <a class="brand" href="/index.html">
-      <svg class="mark" viewBox="0 0 24 24" fill="none"><path d="M12 2L21 7V17L12 22L3 17V7L12 2Z" fill="#3730a3"/></svg>
-      Cube3
-    </a>
-    <div class="nav-links">
-      <a href="dashboard.html">Dashboard</a>
-      <a href="campaigns.html">Campaigns</a>
-      <a href="creators.html">Creators</a>
-      <a href="inbox.html" class="active">Messages</a>
-      <a href="profile.html">Profile</a>
-    </div>
-  </nav>
-</header>
-
-<div class="layout">
-  <div class="conversations">
+<div class="chat">
+  <div class="pane list">
     <h2>Conversations</h2>
-    <div id="conversationList"><div class="loading-state">Loading...</div></div>
-    <h2 style="font-size:13px; padding:14px 16px 6px; margin:0; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-faint); border-top:1px solid var(--line);">Direct messages</h2>
-    <div id="inquiryList" style="padding-bottom:10px;"><div class="loading-state" style="margin:10px;">Loading...</div></div>
+    <div id="threads"></div>
   </div>
-  <div class="thread" id="threadPanel">
-    <div class="loading-state" style="margin:auto;">Select a conversation to start chatting.</div>
+
+  <div class="pane convo">
+    <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line)">
+      <button class="btn btn-ghost btn-sm back" onclick="document.body.classList.remove('viewing')">← Back</button>
+      <strong id="convoTitle" style="font-family:Archivo,sans-serif">Select a conversation</strong>
+    </div>
+    <div id="messages"><div class="empty-state" style="border:0">Pick a conversation on the left.</div></div>
+    <div id="pendingBar"></div>
+    <div class="composer" id="composer" style="display:none">
+      <input type="file" id="file" hidden>
+      <button class="btn btn-ghost btn-sm" onclick="document.getElementById('file').click()" title="Attach a file">📎</button>
+      <input type="text" id="body" placeholder="Type a message" maxlength="2000">
+      <button class="btn btn-primary btn-sm" id="send">Send</button>
+    </div>
   </div>
 </div>
 
@@ -67,376 +75,214 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script>
 <script src="/supabase-client.js"></script>
 <script src="/auth.js"></script>
+<script src="/cube3.js"></script>
+<script src="/messaging.js"></script>
 
 <script>
-(function () {
-  var supabase = window.cube3Supabase;
-  var currentUser = null;
-  var role = null;
-  var conversations = [];
-  var activeApplicationId = null;
+(async function () {
+  var threadsEl = document.getElementById("threads");
+  var msgsEl = document.getElementById("messages");
+  var self, active = null, channel = null, pendingFile = null;
 
-  function escapeHTML(value) {
-    return String(value || "")
-      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+  C3.skeleton(threadsEl, 3);
+
+  try {
+    self = await C3.me();
+    await loadThreads();
+  } catch (err) {
+    C3.fail(threadsEl, err);
+    return;
   }
 
-  async function uploadAttachment(file) {
-    if (!file) return null;
+  async function loadThreads() {
+    var threads = [];
 
-    var isImage = file.type.startsWith("image/");
-    var isVideo = file.type.startsWith("video/");
-    if (!isImage && !isVideo) { alert("Only photos and videos can be shared."); return null; }
-    if (file.size > 25 * 1024 * 1024) { alert("File must be smaller than 25 MB."); return null; }
+    // Direct inquiries — the column depends on which side you're on.
+    var col = self.role === "brand" ? "brand_id" : "creator_id";
+    var other = self.role === "brand" ? "creator_id" : "brand_id";
 
-    var extension = file.name.split(".").pop();
-    var path = currentUser.id + "/" + Date.now() + "." + extension;
+    var inquiries = await C3.q("Loading conversations",
+      C3.sb.from("creator_inquiries").select("id, brand_id, creator_id").eq(col, self.id)) || [];
 
-    var { error } = await supabase.storage.from("message-attachments").upload(path, file);
-    if (error) { alert("Upload failed: " + error.message); return null; }
+    inquiries.forEach(function (i) {
+      threads.push({ kind: "inquiry", id: i.id, otherId: i[other] });
+    });
 
-    var { data } = supabase.storage.from("message-attachments").getPublicUrl(path);
-    return { url: data.publicUrl, type: isImage ? "image" : "video" };
-  }
-
-  function renderBubble(m) {
-    var mine = m.sender_id === currentUser.id;
-    var media = "";
-    if (m.attachment_url) {
-      media = m.attachment_type === "video"
-        ? '<video src="' + escapeHTML(m.attachment_url) + '" controls style="max-width:220px; border-radius:10px; display:block; margin-bottom:' + (m.body ? '6px' : '0') + ';"></video>'
-        : '<img src="' + escapeHTML(m.attachment_url) + '" alt="" style="max-width:220px; border-radius:10px; display:block; margin-bottom:' + (m.body ? '6px' : '0') + '; cursor:pointer;" onclick="window.open(this.src, \'_blank\')">';
-    }
-    return '<div class="bubble ' + (mine ? "mine" : "theirs") + '">' + media + (m.body ? escapeHTML(m.body) : "") + '</div>';
-  }
-
-  async function init() {
-    try {
-      currentUser = await Cube3Auth.requireUser();
-      if (!currentUser) return;
-
-      var { data: profile, error } = await supabase.from("profiles").select("role").eq("id", currentUser.id).single();
-      if (error && error.code !== "PGRST116") throw error;
-      role = profile ? profile.role : "creator";
-
-      await Promise.all([loadConversations(), loadInquiries()]);
-
-    } catch (error) {
-      console.error(error);
-      document.getElementById("conversationList").innerHTML = '<div class="empty-state">Could not load messages. ' + escapeHTML(error.message) + '</div>';
-    }
-  }
-
-  async function loadConversations() {
-    var list = document.getElementById("conversationList");
-    var applications = [];
-
-    if (role === "brand") {
-      var { data: myCampaigns } = await supabase.from("campaigns").select("id, title").eq("brand_id", currentUser.id);
-      var campaignIds = (myCampaigns || []).map(function (c) { return c.id; });
-      var campaignById = {}; (myCampaigns || []).forEach(function (c) { campaignById[c.id] = c; });
-
-      if (campaignIds.length) {
-        var { data: apps } = await supabase.from("campaign_applications").select("id, campaign_id, creator_id").in("campaign_id", campaignIds).eq("status", "accepted");
-        applications = (apps || []).map(function (a) {
-          return Object.assign({}, a, { campaignTitle: campaignById[a.campaign_id] ? campaignById[a.campaign_id].title : "", otherPartyId: a.creator_id });
+    // Accepted campaign applications
+    if (self.role === "brand") {
+      var mine = await C3.q("Loading your campaigns",
+        C3.sb.from("campaigns").select("id, title").eq("brand_id", self.id)) || [];
+      if (mine.length) {
+        var byId = {}; mine.forEach(function (c) { byId[c.id] = c.title; });
+        var apps = await C3.q("Loading accepted pitches",
+          C3.sb.from("campaign_applications").select("id, campaign_id, creator_id")
+            .in("campaign_id", mine.map(function (c) { return c.id; }))
+            .eq("status", "accepted")) || [];
+        apps.forEach(function (a) {
+          threads.push({ kind: "campaign", id: a.id, otherId: a.creator_id, note: byId[a.campaign_id] });
         });
       }
     } else {
-      var { data: apps2 } = await supabase.from("campaign_applications").select("id, campaign_id, creator_id").eq("creator_id", currentUser.id).eq("status", "accepted");
-      var campaignIds2 = Array.from(new Set((apps2 || []).map(function (a) { return a.campaign_id; })));
-      var { data: campaignList } = await supabase.from("campaigns").select("id, title, brand_id").in("id", campaignIds2);
-      var campaignById2 = {}; (campaignList || []).forEach(function (c) { campaignById2[c.id] = c; });
+      var apps2 = await C3.q("Loading your accepted pitches",
+        C3.sb.from("campaign_applications").select("id, campaign_id")
+          .eq("creator_id", self.id).eq("status", "accepted")) || [];
+      if (apps2.length) {
+        var cs = await C3.q("Loading campaigns",
+          C3.sb.from("campaigns").select("id, title, brand_id")
+            .in("id", apps2.map(function (a) { return a.campaign_id; }))) || [];
+        var cById = {}; cs.forEach(function (c) { cById[c.id] = c; });
+        apps2.forEach(function (a) {
+          var c = cById[a.campaign_id];
+          if (c) threads.push({ kind: "campaign", id: a.id, otherId: c.brand_id, note: c.title });
+        });
+      }
+    }
 
-      applications = (apps2 || []).map(function (a) {
-        var c = campaignById2[a.campaign_id];
-        return Object.assign({}, a, { campaignTitle: c ? c.title : "", otherPartyId: c ? c.brand_id : null });
+    if (!threads.length) {
+      return C3.empty(threadsEl, "No conversations yet",
+        self.role === "brand"
+          ? "Message a creator from the directory to start one."
+          : "A chat opens when a brand accepts your pitch, or messages you directly.",
+        self.role === "brand" ? "/pages/creators.html" : "/pages/campaigns.html",
+        self.role === "brand" ? "Browse creators" : "Browse campaigns");
+    }
+
+    var ids = Array.from(new Set(threads.map(function (t) { return t.otherId; }).filter(Boolean)));
+    var people = ids.length ? await C3.q("Loading names",
+      C3.sb.from("profiles").select("id, full_name").in("id", ids)) || [] : [];
+    var nameById = {}; people.forEach(function (p) { nameById[p.id] = p.full_name; });
+
+    threadsEl.innerHTML = threads.map(function (t) {
+      var name = nameById[t.otherId] || "Cube3 user";
+      return '<div class="thread" data-kind="' + t.kind + '" data-id="' + C3.esc(t.id) + '" data-name="' + C3.esc(name) + '">' +
+        '<div class="avatar">' + C3.esc(C3.initials(name)) + "</div>" +
+        '<div class="meta"><div class="n">' + C3.esc(name) + "</div>" +
+        '<div class="p">' + C3.esc(t.note || "Direct message") + "</div></div>" +
+      "</div>";
+    }).join("");
+
+    threadsEl.querySelectorAll(".thread").forEach(function (el) {
+      el.addEventListener("click", function () {
+        open(el.dataset.kind, el.dataset.id, el.dataset.name, el);
       });
-    }
-
-    if (!applications.length) {
-      list.innerHTML = '<div class="empty-state">No conversations yet. Messaging unlocks once an application is accepted.</div>';
-      return;
-    }
-
-    var otherIds = Array.from(new Set(applications.map(function (a) { return a.otherPartyId; }).filter(Boolean)));
-    var { data: profiles } = await supabase.from("profiles").select("id, full_name").in("id", otherIds);
-    var nameById = {}; (profiles || []).forEach(function (p) { nameById[p.id] = p.full_name; });
-
-    var { data: lastMessages } = await supabase.from("messages").select("application_id, body, created_at").in("application_id", applications.map(function (a) { return a.id; })).order("created_at", { ascending: false });
-
-    var previewByApp = {};
-    (lastMessages || []).forEach(function (m) { if (!previewByApp[m.application_id]) previewByApp[m.application_id] = m.body; });
-
-    conversations = applications.map(function (a) {
-      return Object.assign({}, a, { otherName: nameById[a.otherPartyId] || "Unknown", preview: previewByApp[a.id] || "No messages yet" });
     });
 
-    list.innerHTML = conversations.map(function (c) {
-      return '<div class="conversation" id="conv-' + c.id + '" onclick="openConversation(\'' + c.id + '\')">' +
-        '<div class="name">' + escapeHTML(c.otherName) + '</div>' +
-        '<div class="campaign">' + escapeHTML(c.campaignTitle) + '</div>' +
-        '<div class="preview">' + escapeHTML(c.preview) + '</div>' +
-      '</div>';
-    }).join("");
-  }
-
-  window.openConversation = async function (applicationId) {
-    activeApplicationId = applicationId;
-    document.querySelectorAll(".conversation").forEach(function (el) { el.classList.remove("active"); });
-    var el = document.getElementById("conv-" + applicationId);
-    if (el) el.classList.add("active");
-
-    var conv = conversations.filter(function (c) { return c.id === applicationId; })[0];
-    var panel = document.getElementById("threadPanel");
-
-    panel.innerHTML =
-      '<div class="thread-header">' + escapeHTML(conv ? conv.otherName : "") + ' · ' + escapeHTML(conv ? conv.campaignTitle : "") + '</div>' +
-      '<div class="thread-messages" id="threadMessages"><div class="loading-state">Loading messages...</div></div>' +
-      '<div style="display:flex; gap:6px; padding:0 14px 8px; flex-wrap:wrap;">' +
-        '<button class="btn btn-ghost btn-sm" onclick="quickReply(\'Sounds good, thank you!\')">👍 Sounds good</button>' +
-        '<button class="btn btn-ghost btn-sm" onclick="quickReply(\'Can you share more details?\')">Ask for details</button>' +
-        '<button class="btn btn-ghost btn-sm" onclick="quickReply(\'I\\'ll get back to you shortly.\')">Will reply soon</button>' +
-      '</div>' +
-      '<div class="thread-input"><input type="file" id="attachInput" accept="image/*,video/*" hidden onchange="handleAttachSelect()"><button class="btn btn-ghost" onclick="document.getElementById(\'attachInput\').click()" title="Attach photo/video">📎</button><input id="messageInput" type="text" placeholder="Type a message..." maxlength="2000"><button id="sendButton" class="btn btn-primary" onclick="sendMessage()">Send</button></div>';
-
-    document.getElementById("messageInput").addEventListener("keydown", function (e) { if (e.key === "Enter") window.sendMessage(); });
-
-    subscribeToMessages(applicationId);
-    await loadMessages(applicationId);
-  };
-
-  window.quickReply = function (text) {
-    var input = document.getElementById("messageInput");
-    if (input) { input.value = text; window.sendMessage(); }
-  };
-
-  var activeChannel = null;
-
-  function subscribeToMessages(applicationId) {
-    if (activeChannel) {
-      supabase.removeChannel(activeChannel);
-      activeChannel = null;
+    // Arrive from a Message button with the thread already chosen.
+    var wanted = new URLSearchParams(location.search).get("inquiry");
+    if (wanted) {
+      var match = threadsEl.querySelector('.thread[data-id="' + wanted + '"]');
+      if (match) match.click();
     }
-    activeChannel = supabase
-      .channel("messages-" + applicationId)
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages", filter: "application_id=eq." + applicationId }, function () {
-        loadMessages(applicationId);
-        loadConversations();
-      })
-      .subscribe();
   }
 
-  async function loadMessages(applicationId) {
-    var container = document.getElementById("threadMessages");
-    if (!container) return;
+  function table(kind) { return kind === "inquiry" ? "inquiry_messages" : "messages"; }
+  function key(kind) { return kind === "inquiry" ? "inquiry_id" : "application_id"; }
+
+  async function open(kind, id, name, el) {
+    active = { kind: kind, id: id };
+    document.body.classList.add("viewing");
+    document.getElementById("convoTitle").textContent = name;
+    document.getElementById("composer").style.display = "flex";
+
+    threadsEl.querySelectorAll(".thread").forEach(function (t) { t.removeAttribute("aria-current"); });
+    if (el) el.setAttribute("aria-current", "true");
+
+    msgsEl.innerHTML = '<div class="loading-state" style="border:0">Loading messages…</div>';
 
     try {
-      var { data, error } = await supabase.from("messages").select("id, sender_id, body, created_at").eq("application_id", applicationId).order("created_at", { ascending: true });
-      if (error) throw error;
-
-      if (!data.length) {
-        container.innerHTML = '<div class="empty-state">No messages yet. Say hello!</div>';
-        return;
-      }
-
-      container.innerHTML = data.map(function (m) { return renderBubble(m); }).join("");
-
-      container.scrollTop = container.scrollHeight;
-
-    } catch (error) {
-      console.error(error);
-      container.innerHTML = '<div class="empty-state">Could not load messages.</div>';
+      await draw();
+      if (channel) C3.sb.removeChannel(channel);
+      channel = C3.sb.channel("thread-" + id)
+        .on("postgres_changes",
+          { event: "INSERT", schema: "public", table: table(kind), filter: key(kind) + "=eq." + id },
+          draw)
+        .subscribe();
+    } catch (err) {
+      C3.fail(msgsEl, err);
     }
   }
 
-  var pendingAttachment = null;
+  async function draw() {
+    var rows = await C3.q("Loading messages",
+      C3.sb.from(table(active.kind))
+        .select("id, sender_id, body, attachment_path, attachment_type, attachment_name, attachment_size, created_at")
+        .eq(key(active.kind), active.id)
+        .order("created_at", { ascending: true })) || [];
 
-  window.handleAttachSelect = async function () {
-    var fileInput = document.getElementById("attachInput");
-    var file = fileInput.files[0];
-    fileInput.value = "";
-    if (!file) return;
-
-    var messageInput = document.getElementById("messageInput");
-    messageInput.placeholder = "Uploading...";
-    var result = await uploadAttachment(file);
-    messageInput.placeholder = "Type a message...";
-    if (!result) return;
-
-    pendingAttachment = result;
-    messageInput.placeholder = "Attachment ready — add a caption or just Send";
-  };
-
-  window.sendMessage = async function () {
-    var input = document.getElementById("messageInput");
-    var button = document.getElementById("sendButton");
-    var body = input.value.trim();
-    if (!body && !pendingAttachment) return;
-    if (!activeApplicationId) return;
-
-    button.disabled = true;
-    try {
-      var payload = { application_id: activeApplicationId, sender_id: currentUser.id, body: body };
-      if (pendingAttachment) {
-        payload.attachment_url = pendingAttachment.url;
-        payload.attachment_type = pendingAttachment.type;
-      }
-      var { error } = await supabase.from("messages").insert(payload);
-      if (error) throw error;
-      input.value = "";
-      input.placeholder = "Type a message...";
-      pendingAttachment = null;
-      await loadMessages(activeApplicationId);
-    } catch (error) {
-      console.error(error);
-      alert(error.message || "Could not send message.");
-    } finally {
-      button.disabled = false;
-    }
-  };
-
-  var activeInquiryId = null;
-  var inquiryChannel = null;
-  var inquiries = [];
-
-  async function loadInquiries() {
-    var list = document.getElementById("inquiryList");
-
-    var query = role === "brand"
-      ? supabase.from("creator_inquiries").select("id, creator_id").eq("brand_id", currentUser.id)
-      : supabase.from("creator_inquiries").select("id, brand_id").eq("creator_id", currentUser.id);
-
-    var { data, error } = await query;
-    if (error) { list.innerHTML = '<div class="empty-state" style="margin:10px;">Could not load direct messages.</div>'; return; }
-
-    inquiries = data || [];
-
-    if (!inquiries.length) {
-      list.innerHTML = '<div class="empty-state" style="margin:10px; font-size:12px;">' + (role === "brand" ? "Message a creator from the Creators page to start." : "No direct messages yet.") + '</div>';
+    if (!rows.length) {
+      msgsEl.innerHTML = '<div class="empty-state" style="border:0">No messages yet. Say hello.</div>';
       return;
     }
 
-    var otherIds = inquiries.map(function (i) { return role === "brand" ? i.creator_id : i.brand_id; });
-    var { data: profiles } = await supabase.from("profiles").select("id, full_name").in("id", otherIds);
-    var nameById = {}; (profiles || []).forEach(function (p) { nameById[p.id] = p.full_name; });
-
-    list.innerHTML = inquiries.map(function (i) {
-      var otherId = role === "brand" ? i.creator_id : i.brand_id;
-      return '<div class="conversation" id="inq-' + i.id + '" onclick="openInquiryThread(\'' + i.id + '\')">' +
-        '<div class="name">' + escapeHTML(nameById[otherId] || "Unknown") + '</div>' +
-        '<div class="campaign">Direct message</div>' +
-      '</div>';
+    msgsEl.innerHTML = rows.map(function (m) {
+      var mine = m.sender_id === self.id;
+      var media = (window.Cube3Chat && m.attachment_path) ? window.Cube3Chat.renderAttachment(m) : "";
+      return '<div class="bubble ' + (mine ? "mine" : "theirs") + '">' +
+        media + (m.body ? C3.esc(m.body) : "") +
+        '<span class="t">' + C3.esc(C3.when(m.created_at)) + "</span></div>";
     }).join("");
+    msgsEl.scrollTop = msgsEl.scrollHeight;
   }
 
-  window.openInquiryThread = async function (inquiryId) {
-    activeInquiryId = inquiryId;
-    document.querySelectorAll(".conversation").forEach(function (el) { el.classList.remove("active"); });
-    var el = document.getElementById("inq-" + inquiryId);
-    if (el) el.classList.add("active");
+  document.getElementById("file").addEventListener("change", function (e) {
+    pendingFile = e.target.files[0] || null;
+    document.getElementById("pendingBar").innerHTML = pendingFile
+      ? '<div class="pending"><span>' + C3.esc(pendingFile.name) + " (" +
+        C3.esc(window.Cube3Chat.humanSize(pendingFile.size)) + ')</span>' +
+        '<button class="btn btn-ghost btn-sm" id="drop">Remove</button></div>'
+      : "";
+    var drop = document.getElementById("drop");
+    if (drop) drop.addEventListener("click", clearFile);
+  });
 
-    var panel = document.getElementById("threadPanel");
-    panel.innerHTML =
-      '<div class="thread-header">Direct message</div>' +
-      '<div class="thread-messages" id="threadMessages"><div class="loading-state">Loading messages...</div></div>' +
-      '<div class="thread-input"><input type="file" id="inqAttachInput" accept="image/*,video/*" hidden onchange="handleInqAttachSelect()"><button class="btn btn-ghost" onclick="document.getElementById(\'inqAttachInput\').click()" title="Attach photo/video">📎</button><input id="messageInput" type="text" placeholder="Type a message..." maxlength="2000"><button id="sendButton" class="btn btn-primary" onclick="sendInquiryMessage()">Send</button></div>';
-
-    document.getElementById("messageInput").addEventListener("keydown", function (e) { if (e.key === "Enter") window.sendInquiryMessage(); });
-
-    if (inquiryChannel) { supabase.removeChannel(inquiryChannel); inquiryChannel = null; }
-    inquiryChannel = supabase
-      .channel("inquiry-thread-" + inquiryId)
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "inquiry_messages", filter: "inquiry_id=eq." + inquiryId }, function () { loadInquiryMessages(inquiryId); })
-      .subscribe();
-
-    await loadInquiryMessages(inquiryId);
-  };
-
-  async function loadInquiryMessages(inquiryId) {
-    var container = document.getElementById("threadMessages");
-    if (!container) return;
-    var { data, error } = await supabase.from("inquiry_messages").select("id, sender_id, body, attachment_url, attachment_type").eq("inquiry_id", inquiryId).order("created_at", { ascending: true });
-    if (error) { container.innerHTML = '<div class="empty-state">Could not load messages.</div>'; return; }
-
-    if (!data.length) { container.innerHTML = '<div class="empty-state">No messages yet.</div>'; return; }
-
-    container.innerHTML = data.map(function (m) { return renderBubble(m); }).join("");
-    container.scrollTop = container.scrollHeight;
+  function clearFile() {
+    pendingFile = null;
+    document.getElementById("file").value = "";
+    document.getElementById("pendingBar").innerHTML = "";
   }
 
-  var pendingInqAttachment = null;
+  async function send() {
+    if (!active) return;
+    var input = document.getElementById("body");
+    var text = input.value.trim();
+    if (!text && !pendingFile) return;
 
-  window.handleInqAttachSelect = async function () {
-    var fileInput = document.getElementById("inqAttachInput");
-    var file = fileInput.files[0];
-    fileInput.value = "";
-    if (!file) return;
-
-    var messageInput = document.getElementById("messageInput");
-    messageInput.placeholder = "Uploading...";
-    var result = await uploadAttachment(file);
-    messageInput.placeholder = "Type a message...";
-    if (!result) return;
-
-    pendingInqAttachment = result;
-    messageInput.placeholder = "Attachment ready — add a caption or just Send";
-  };
-
-  window.sendInquiryMessage = async function () {
-    var input = document.getElementById("messageInput");
-    var body = input.value.trim();
-    if (!body && !pendingInqAttachment) return;
-    if (!activeInquiryId) return;
-    input.value = "";
-    input.placeholder = "Type a message...";
+    var btn = document.getElementById("send");
+    btn.disabled = true;
+    btn.textContent = "Sending…";
 
     try {
-      var payload = { inquiry_id: activeInquiryId, sender_id: currentUser.id, body: body };
-      if (pendingInqAttachment) {
-        payload.attachment_url = pendingInqAttachment.url;
-        payload.attachment_type = pendingInqAttachment.type;
-      }
-      var { error } = await supabase.from("inquiry_messages").insert(payload);
-      if (error) throw error;
-      pendingInqAttachment = null;
-      await loadInquiryMessages(activeInquiryId);
-    } catch (error) {
-      console.error(error);
-      alert(error.message || "Could not send message.");
-    }
-  };
+      var row = { sender_id: self.id, body: text || null };
+      row[key(active.kind)] = active.id;
 
-  init();
+      if (pendingFile) {
+        var up = await window.Cube3Chat.uploadAttachment(active.id, pendingFile);
+        row.attachment_path = up.path;
+        row.attachment_type = up.type;
+        row.attachment_name = up.name;
+        row.attachment_size = up.size;
+      }
+
+      await C3.q("Sending message", C3.sb.from(table(active.kind)).insert(row));
+
+      input.value = "";
+      clearFile();
+      await draw();
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Send";
+    }
+  }
+
+  document.getElementById("send").addEventListener("click", send);
+  document.getElementById("body").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") send();
+  });
 })();
 </script>
 
+<script src="/layout.js"></script>
 </body>
-  <script>
-window.addEventListener("error", function (e) {
-  var d = document.createElement("div");
-  d.className = "message error";
-  d.style.display = "block";
-  d.style.position = "fixed";
-  d.style.bottom = "0";
-  d.style.left = "0";
-  d.style.right = "0";
-  d.style.zIndex = "999";
-  d.textContent = "JS error: " + e.message;
-  document.body.appendChild(d);
-});
-window.addEventListener("unhandledrejection", function (e) {
-  var d = document.createElement("div");
-  d.className = "message error";
-  d.style.display = "block";
-  d.style.position = "fixed";
-  d.style.bottom = "0";
-  d.style.left = "0";
-  d.style.right = "0";
-  d.style.zIndex = "999";
-  d.textContent = "Failed: " + (e.reason && e.reason.message ? e.reason.message : e.reason);
-  document.body.appendChild(d);
-});
-</script>
 </html>
