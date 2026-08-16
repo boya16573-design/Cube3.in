@@ -10,6 +10,7 @@
     --ink:#0b1220; --muted:#6b7280; --line:#e5e7eb; --field:#eef2ff;
     --err-bg:#fef2f2; --err-line:#fecaca; --err-ink:#b91c1c;
     --ok-bg:#f0fdf4; --ok-line:#bbf7d0; --ok-ink:#15803d;
+    --warn-bg:#fffbeb; --warn-line:#fde68a; --warn-ink:#b45309;
     --side:232px; --top:56px;
   }
   *{box-sizing:border-box}
@@ -17,15 +18,16 @@
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
   .hide{display:none !important}
 
-  /* ══════════ shared controls ══════════ */
+  /* ─── controls ─── */
   label{display:block;font-weight:700;font-size:14px;margin-bottom:7px}
   .field{position:relative;margin-bottom:16px}
-  input{width:100%;padding:14px 15px;font-size:16px;border:1px solid transparent;
+  input,textarea,select{width:100%;padding:14px 15px;font-size:16px;border:1px solid transparent;
     background:var(--field);border-radius:11px;outline:none;color:var(--ink);
-    transition:border-color .15s,background .15s}
-  input::placeholder{color:#9aa3b2}
-  input:focus{border-color:var(--blue);background:#fff}
-  input:focus-visible{box-shadow:0 0 0 3px rgba(29,78,216,.18)}
+    font-family:inherit;transition:border-color .15s,background .15s}
+  textarea{min-height:96px;resize:vertical;line-height:1.5}
+  input::placeholder,textarea::placeholder{color:#9aa3b2}
+  input:focus,textarea:focus,select:focus{border-color:var(--blue);background:#fff}
+  input:focus-visible,textarea:focus-visible{box-shadow:0 0 0 3px rgba(29,78,216,.18)}
   .pw input{padding-right:52px}
   .peek{position:absolute;right:6px;top:50%;transform:translateY(-50%);
     width:40px;height:40px;border:0;background:transparent;cursor:pointer;
@@ -40,12 +42,22 @@
   button.primary:hover{background:var(--blue-dark)}
   button.primary:active{transform:translateY(1px)}
   button.primary:disabled{opacity:.6;cursor:not-allowed}
+  .btn{padding:11px 16px;font-size:14.5px;font-weight:700;border:0;border-radius:10px;
+    background:var(--blue);color:#fff;cursor:pointer;text-decoration:none;
+    display:inline-block;font-family:inherit}
+  .btn:hover{background:var(--blue-dark)}
+  .btn:disabled{opacity:.6;cursor:not-allowed}
+  .btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
+  .btn.ghost:hover{background:#f1f4f9}
+  .btn.danger{background:#fff;color:var(--err-ink);border:1px solid var(--err-line)}
+  .btn.danger:hover{background:var(--err-bg)}
+  .btn.sm{padding:8px 12px;font-size:13.5px;border-radius:9px}
   .msg{margin-top:16px;padding:14px 15px;border-radius:11px;font-size:14.5px;
     font-family:ui-monospace,SFMono-Regular,Menlo,monospace;display:none}
   .msg.err{display:block;background:var(--err-bg);border:1px solid var(--err-line);color:var(--err-ink)}
   .msg.ok{display:block;background:var(--ok-bg);border:1px solid var(--ok-line);color:var(--ok-ink)}
 
-  /* ══════════ auth screen ══════════ */
+  /* ─── auth ─── */
   #auth{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
   #auth .wrap{width:100%;max-width:420px}
   .brand{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:28px}
@@ -60,9 +72,8 @@
   .roles{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
   .role{padding:14px;text-align:center;font-size:15px;font-weight:700;cursor:pointer;
     border:1.5px solid #d9dee8;background:#fff;border-radius:11px;color:var(--ink);
-    transition:border-color .15s,background .15s,color .15s}
+    font-family:inherit;transition:border-color .15s,background .15s,color .15s}
   .role[aria-pressed="true"]{border-color:var(--blue);background:#eff4ff;color:var(--blue)}
-  .role:focus-visible{outline:2px solid var(--blue);outline-offset:1px}
   .hint{font-size:13px;color:var(--muted);margin:-8px 0 16px}
   .links{margin-top:20px;text-align:center;font-size:15px}
   .links a{color:var(--blue);text-decoration:none;font-weight:700;cursor:pointer}
@@ -72,11 +83,10 @@
   .legal a{color:var(--blue);text-decoration:none}
   .foot{margin-top:22px;text-align:center;font-size:14px;color:var(--muted)}
   .foot a{color:var(--muted);text-decoration:none;margin:0 6px}
-  .foot a:hover{color:var(--ink)}
   .pane{display:none}
   .pane.on{display:block}
 
-  /* ══════════ app shell ══════════ */
+  /* ─── shell ─── */
   .topbar{position:fixed;top:0;left:0;right:0;height:var(--top);background:#fff;
     border-bottom:1px solid var(--line);display:flex;align-items:center;
     justify-content:space-between;padding:0 16px;z-index:30}
@@ -88,7 +98,8 @@
   .who .name b{display:block;font-size:13.5px}
   .who .name small{color:var(--muted);font-size:12px}
   .avatar{width:32px;height:32px;border-radius:50%;background:var(--blue);color:#fff;
-    display:grid;place-items:center;font-weight:700;font-size:14px}
+    display:grid;place-items:center;font-weight:700;font-size:14px;overflow:hidden;flex:none}
+  .avatar img{width:100%;height:100%;object-fit:cover}
   .side{position:fixed;top:0;bottom:0;left:0;width:var(--side);background:#fff;
     border-right:1px solid var(--line);padding:14px 12px;z-index:40;overflow-y:auto}
   .side .logo{display:flex;align-items:center;gap:9px;padding:6px 8px 18px;font-weight:800;font-size:19px}
@@ -103,6 +114,9 @@
   .nav .sep{height:1px;background:var(--line);margin:10px 4px}
   .nav svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;
     stroke-linecap:round;stroke-linejoin:round;flex:none}
+  .pip{margin-left:auto;background:#ef4444;color:#fff;font-size:11px;font-weight:800;
+    min-width:19px;height:19px;border-radius:999px;display:grid;place-items:center;padding:0 5px}
+  .nav a.on .pip{background:#fff;color:var(--blue)}
   main{margin-left:var(--side);padding:calc(var(--top) + 22px) 22px 60px}
   .scrim{display:none;position:fixed;inset:0;background:rgba(11,18,32,.42);z-index:35}
   @media(max-width:860px){
@@ -113,28 +127,37 @@
     main{margin-left:0;padding:calc(var(--top) + 18px) 16px 60px}
   }
 
-  /* ══════════ app content ══════════ */
+  /* ─── content ─── */
   main h2{margin:0 0 3px;font-size:23px;font-weight:800;letter-spacing:-.3px}
   .lede{margin:0 0 20px;color:var(--muted);font-size:14.5px}
   .bar{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap}
-  .bar input{flex:1;min-width:180px;padding:11px 13px;font-size:15px}
-  .btn{padding:11px 16px;font-size:14.5px;font-weight:700;border:0;border-radius:10px;
-    background:var(--blue);color:#fff;cursor:pointer;text-decoration:none;display:inline-block}
-  .btn:hover{background:var(--blue-dark)}
-  .btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
-  .btn.ghost:hover{background:#f1f4f9}
+  .bar input,.bar select{flex:1;min-width:150px;padding:11px 13px;font-size:15px}
+  .bar select{max-width:170px}
   .grid{display:grid;gap:13px}
+  .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:13px;margin-bottom:24px}
   .item{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 17px}
   .item h3{margin:0 0 5px;font-size:16.5px;font-weight:700}
   .item p{margin:0 0 12px;color:var(--muted);font-size:14px;line-height:1.5}
   .item p.req{background:#f7f9fc;border-radius:9px;padding:9px 11px;font-size:13.5px}
   .item p.req b{color:var(--ink);display:block;margin-bottom:2px;font-size:12.5px;
     text-transform:uppercase;letter-spacing:.4px}
+  .item p:last-child{margin-bottom:0}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:17px}
+  .stat b{display:block;font-size:29px;font-weight:800;letter-spacing:-1px;line-height:1.1}
+  .stat span{color:var(--muted);font-size:13.5px;font-weight:600}
   .meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
   .tag{font-size:12.5px;font-weight:700;padding:4px 9px;border-radius:999px;
     background:#eff4ff;color:var(--blue)}
   .tag.grey{background:#f1f3f7;color:var(--muted)}
+  .tag.ok{background:var(--ok-bg);color:var(--ok-ink)}
+  .tag.warn{background:var(--warn-bg);color:var(--warn-ink)}
+  .tag.no{background:var(--err-bg);color:var(--err-ink)}
   .pay{margin-left:auto;font-weight:800;font-size:15px}
+  .row{display:flex;gap:12px;align-items:flex-start}
+  .row .avatar{width:42px;height:42px;font-size:16px}
+  .head{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+  .head h3{margin:0}
+  .head .sub2{color:var(--muted);font-size:13.5px}
   .note{padding:15px 16px;border-radius:12px;font-size:14.5px;margin-bottom:16px;display:none}
   .note.err{display:block;background:var(--err-bg);border:1px solid var(--err-line);color:var(--err-ink)}
   .note.ok{display:block;background:var(--ok-bg);border:1px solid var(--ok-line);color:var(--ok-ink)}
@@ -150,6 +173,26 @@
   .skel div:nth-child(1){width:42%}
   .skel div:nth-child(2){width:88%}
   .skel div:nth-child(3){width:64%;margin-bottom:0}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:20px 19px;margin-bottom:16px;max-width:620px}
+  .panel h3{margin:0 0 3px;font-size:17px}
+  .panel .sub2{margin:0 0 18px;color:var(--muted);font-size:14px}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:560px){.two{grid-template-columns:1fr}}
+
+  /* thread */
+  .thread{background:var(--card);border:1px solid var(--line);border-radius:14px;
+    display:flex;flex-direction:column;height:min(66vh,540px);max-width:720px}
+  .thread .top{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;
+    align-items:center;gap:11px}
+  .thread .body{flex:1;overflow-y:auto;padding:16px;display:flex;
+    flex-direction:column;gap:9px}
+  .bub{max-width:76%;padding:10px 13px;border-radius:14px;font-size:14.5px;line-height:1.45;
+    background:#f1f3f7;align-self:flex-start;white-space:pre-wrap;word-break:break-word}
+  .bub.me{background:var(--blue);color:#fff;align-self:flex-end}
+  .bub small{display:block;font-size:11px;opacity:.65;margin-top:4px}
+  .thread .send{padding:12px;border-top:1px solid var(--line);display:flex;gap:9px}
+  .thread .send input{flex:1;padding:12px 14px}
   @media (prefers-reduced-motion:no-preference){
     .skel div{animation:pulse 1.4s ease-in-out infinite}
     @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
@@ -159,7 +202,7 @@
 </head>
 <body>
 
-<!-- ════════════════ AUTH ════════════════ -->
+<!-- ═══════════ AUTH ═══════════ -->
 <div id="auth" class="hide">
   <div class="wrap">
     <div class="brand">
@@ -167,31 +210,22 @@
         <path d="M12 2.6 20.4 7v10L12 21.4 3.6 17V7z"/><path d="M3.6 7 12 11.6 20.4 7M12 11.6v9.8"/></svg></div>
       <h1>Cube <span>3</span></h1>
     </div>
-
     <div class="card">
-      <!-- sign in -->
       <div class="pane on" id="p-signin">
-        <h2>Sign in</h2>
-        <p class="sub">Welcome back.</p>
+        <h2>Sign in</h2><p class="sub">Welcome back.</p>
         <label for="si-email">Email</label>
         <div class="field"><input id="si-email" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com"></div>
         <label for="si-pw">Password</label>
-        <div class="field pw">
-          <input id="si-pw" type="password" autocomplete="current-password" placeholder="Your password">
-          <button class="peek" type="button" data-peek="si-pw" aria-label="Show password" aria-pressed="false"></button>
-        </div>
+        <div class="field pw"><input id="si-pw" type="password" autocomplete="current-password" placeholder="Your password">
+          <button class="peek" type="button" data-peek="si-pw" aria-label="Show password" aria-pressed="false"></button></div>
         <button class="primary" id="si-go">Sign in</button>
         <div class="msg" id="si-msg"></div>
-        <div class="links">
-          <a data-go="forgot">Forgot password?</a>
-          <div class="row">No account? <a data-go="signup">Sign up</a></div>
-        </div>
+        <div class="links"><a data-go="forgot">Forgot password?</a>
+          <div class="row">No account? <a data-go="signup">Sign up</a></div></div>
       </div>
 
-      <!-- sign up -->
       <div class="pane" id="p-signup">
-        <h2>Create your account</h2>
-        <p class="sub">I am a…</p>
+        <h2>Create your account</h2><p class="sub">I am a…</p>
         <div class="roles">
           <button class="role" type="button" data-role="creator" aria-pressed="true">Creator</button>
           <button class="role" type="button" data-role="brand" aria-pressed="false">Brand</button>
@@ -201,10 +235,8 @@
         <label for="su-email">Email</label>
         <div class="field"><input id="su-email" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com"></div>
         <label for="su-pw">Password</label>
-        <div class="field pw">
-          <input id="su-pw" type="password" autocomplete="new-password" placeholder="Choose a password">
-          <button class="peek" type="button" data-peek="su-pw" aria-label="Show password" aria-pressed="false"></button>
-        </div>
+        <div class="field pw"><input id="su-pw" type="password" autocomplete="new-password" placeholder="Choose a password">
+          <button class="peek" type="button" data-peek="su-pw" aria-label="Show password" aria-pressed="false"></button></div>
         <p class="hint">At least 6 characters.</p>
         <button class="primary" id="su-go">Create account</button>
         <div class="msg" id="su-msg"></div>
@@ -212,10 +244,8 @@
         <div class="links"><div class="row">Already have one? <a data-go="signin">Sign in</a></div></div>
       </div>
 
-      <!-- forgot -->
       <div class="pane" id="p-forgot">
-        <h2>Reset password</h2>
-        <p class="sub">We'll email you a link.</p>
+        <h2>Reset password</h2><p class="sub">We'll email you a link.</p>
         <label for="fp-email">Email</label>
         <div class="field"><input id="fp-email" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com"></div>
         <button class="primary" id="fp-go">Send reset link</button>
@@ -223,37 +253,32 @@
         <div class="links"><a data-go="signin">Back to sign in</a></div>
       </div>
 
-      <!-- set new password (arrives from the reset email) -->
       <div class="pane" id="p-reset">
-        <h2>Choose a new password</h2>
-        <p class="sub">Almost done.</p>
+        <h2>Choose a new password</h2><p class="sub">Almost done.</p>
         <label for="np-pw">New password</label>
-        <div class="field pw">
-          <input id="np-pw" type="password" autocomplete="new-password" placeholder="New password">
-          <button class="peek" type="button" data-peek="np-pw" aria-label="Show password" aria-pressed="false"></button>
-        </div>
+        <div class="field pw"><input id="np-pw" type="password" autocomplete="new-password" placeholder="New password">
+          <button class="peek" type="button" data-peek="np-pw" aria-label="Show password" aria-pressed="false"></button></div>
         <p class="hint">At least 6 characters.</p>
         <button class="primary" id="np-go">Update password</button>
         <div class="msg" id="np-msg"></div>
       </div>
     </div>
-
     <div class="foot"><a href="/terms">Terms</a>·<a href="/privacy">Privacy</a></div>
   </div>
 </div>
 
-<!-- ════════════════ APP ════════════════ -->
+<!-- ═══════════ APP ═══════════ -->
 <div id="app" class="hide">
   <div class="scrim" data-close-menu></div>
 
   <header class="topbar">
     <div style="display:flex;align-items:center;gap:6px">
       <button class="burger" data-toggle-menu aria-label="Menu">☰</button>
-      <span class="title" id="page-title">Campaigns</span>
+      <span class="title" id="page-title">Dashboard</span>
     </div>
     <div class="who">
       <div class="name"><b id="who-name">—</b><small id="who-role"></small></div>
-      <div class="avatar" id="who-initial">·</div>
+      <div class="avatar" id="who-avatar">·</div>
     </div>
   </header>
 
@@ -268,7 +293,7 @@
       <a href="#campaigns"><svg viewBox="0 0 24 24"><path d="m3 11 18-8-8 18-2-8z"/></svg>Campaigns</a>
       <a href="#applications"><svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 14h6M9 17h4"/></svg>Applications</a>
       <a href="#creators"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M17 11.5a3 3 0 1 0-1.6-5.5M18 20a5.6 5.6 0 0 0-2.2-4.4"/></svg>Creators</a>
-      <a href="#messages"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L3 21l1.9-6.4A8 8 0 1 1 21 12z"/></svg>Messages</a>
+      <a href="#messages"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L3 21l1.9-6.4A8 8 0 1 1 21 12z"/></svg>Messages<span class="pip hide" id="pip-msg">0</span></a>
       <a href="#profile"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg>Profile</a>
       <div class="sep"></div>
       <a href="#settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2.6v2.6M12 18.8v2.6M21.4 12h-2.6M5.2 12H2.6M18.6 5.4l-1.8 1.8M7.2 16.8l-1.8 1.8M18.6 18.6l-1.8-1.8M7.2 7.2 5.4 5.4"/></svg>Settings</a>
@@ -288,30 +313,52 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 /* ═══════════ helpers ═══════════
-   Nothing binds a listener to an element that may not exist:
-   all clicks run through one delegated listener on document.
-   That is what prevents "Cannot read properties of null".
+   No listener is ever attached to an element that might not exist —
+   every click runs through one delegated handler on document.
 ================================== */
-const $     = id => document.getElementById(id);
-const esc   = s => String(s ?? "").replace(/[&<>"']/g, c =>
-                ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const $   = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c =>
+              ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const money = n => n == null ? "—" : "₹" + Number(n).toLocaleString("en-IN");
-const when  = d => d ? new Date(d).toLocaleDateString("en-IN",
-                {day:"numeric", month:"short", year:"numeric"}) : "—";
+const when  = d => d ? new Date(d).toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"}) : "—";
+const clock = d => d ? new Date(d).toLocaleString("en-IN",{day:"numeric",month:"short",hour:"numeric",minute:"2-digit"}) : "";
+const num   = n => n == null ? "—" : Number(n) >= 1000
+              ? (Number(n)/1000).toFixed(Number(n) >= 10000 ? 0 : 1).replace(/\.0$/,"") + "k"
+              : String(n);
+const initial = s => ((String(s ?? "").trim()[0]) || "?").toUpperCase();
+
+/* User-supplied links (portfolio_url, instagram_url, avatar_url …) go into
+   href/src attributes. esc() stops attribute break-out but NOT a hostile
+   scheme — href="javascript:…" still executes on click. Allow http/https only. */
+const safeUrl = u => {
+  const raw = String(u ?? "").trim();
+  if(!raw) return "";
+  try{
+    const parsed = new URL(raw, location.origin);
+    return ["http:","https:"].includes(parsed.protocol) ? parsed.href : "";
+  }catch{ return ""; }
+};
+const by = (arr, key) => Object.fromEntries((arr||[]).map(o => [o[key], o]));
 
 const AUTH_PANES = { signin:"p-signin", signup:"p-signup", forgot:"p-forgot", reset:"p-reset" };
-const APP_PAGES  = {
+const PAGES = {
   dashboard:"Dashboard", campaigns:"Campaigns", applications:"Applications",
   creators:"Creators", messages:"Messages", profile:"Profile", settings:"Settings"
 };
+const STATUS_TAG = { accepted:"ok", approved:"ok", pending:"warn", rejected:"no", declined:"no", withdrawn:"grey" };
 
-let me = null;
-let allCampaigns = [];
-let recovering = false;   // true while handling a password-reset link
+let me = null;          // auth user
+let profile = null;     // row from profiles
+let role = "creator";   // signup role picker
+let cache = {};         // per-page scratch
 
 function show(el, text, kind){ if(el){ el.textContent = text; el.className = "msg " + kind; } }
 function busy(btn, on, label){ if(btn){ btn.disabled = on; btn.textContent = on ? label : btn.dataset.label; } }
-
+function avatarHTML(url, name, cls){
+  const safe = safeUrl(url);
+  return `<div class="avatar ${cls||""}">` +
+    (safe ? `<img src="${esc(safe)}" alt="">` : esc(initial(name))) + `</div>`;
+}
 function friendly(error){
   const m = (error.message || "").toLowerCase();
   if(m.includes("confirm")) return "Confirm your email first — check your inbox.";
@@ -322,77 +369,135 @@ function friendly(error){
   if(m.includes("password")) return "Password must be at least 6 characters.";
   return error.message;
 }
+function fail(err, what){
+  return `<div class="note err"><b>Couldn't load ${esc(what)}</b>
+    <code>${esc(err.message)}</code></div>
+    <button class="btn" data-act="reload">Reload</button>`;
+}
+const isBrand = () => (profile?.role || "").toLowerCase() === "brand";
 
-/* ═══════════ password show/hide ═══════════ */
+/* ═══════════ password eye ═══════════ */
 const EYE_OPEN = '<svg viewBox="0 0 24 24"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
 const EYE_SHUT = '<svg viewBox="0 0 24 24"><path d="M10.6 6.1A9.7 9.7 0 0 1 12 5.5c6.4 0 10 6.5 10 6.5a17 17 0 0 1-3.4 4.1M6.2 7.9A16.9 16.9 0 0 0 2 12s3.6 6.5 10 6.5c1.6 0 3-.4 4.3-1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2M3 3l18 18"/></svg>';
 document.querySelectorAll(".peek").forEach(b => b.innerHTML = EYE_OPEN);
 
 /* ═══════════ boot ═══════════ */
+let recovering = false;
+
 async function boot(){
-  // A reset link lands here with a recovery token in the URL hash
   if(location.hash.includes("type=recovery")){
     recovering = true;
-    history.replaceState(null, "", location.pathname + "#reset");
+    history.replaceState(null,"",location.pathname + "#reset");
   }
-
   const { data:{ session } } = await sb.auth.getSession();
-
   if(recovering){ showAuth("reset"); return; }
-  if(session){ me = session.user; enterApp(); }
-  else       { showAuth(); }
+  if(session){ me = session.user; await enterApp(); }
+  else showAuth();
 }
 
-/* ═══════════ auth view ═══════════ */
 function showAuth(force){
   $("app").classList.add("hide");
   $("auth").classList.remove("hide");
   document.body.classList.remove("menu");
-
   const key = force || location.hash.replace("#","") || "signin";
   const id  = AUTH_PANES[key] || AUTH_PANES.signin;
   document.querySelectorAll(".pane").forEach(p => p.classList.toggle("on", p.id === id));
   document.querySelectorAll(".msg").forEach(m => m.className = "msg");
 }
 
-/* ═══════════ app view ═══════════ */
-function enterApp(){
+async function enterApp(){
   $("auth").classList.add("hide");
   $("app").classList.remove("hide");
 
-  const m    = me.user_metadata || {};
-  const name = m.full_name || me.email || "Account";
-  const role = m.role ? m.role[0].toUpperCase() + m.role.slice(1) : "";
-  $("who-name").textContent    = name;
-  $("who-role").textContent    = role;
-  $("who-initial").textContent = name.trim()[0].toUpperCase();
+  const { data } = await sb.from("profiles").select("*").eq("id", me.id).maybeSingle();
 
-  if(!APP_PAGES[location.hash.replace("#","")]) location.hash = "campaigns";
+  if(data){
+    profile = data;
+  } else {
+    // No row yet — happens when signup required email confirmation,
+    // so the insert at signup time never ran. Create it now.
+    const seed = {
+      id: me.id,
+      full_name: me.user_metadata?.full_name || me.email,
+      role: me.user_metadata?.role || "creator",
+      email: me.email
+    };
+    const { data:made } = await sb.from("profiles").upsert(seed).select().maybeSingle();
+    profile = made || seed;
+  }
+
+  paintWho();
+  countUnread();
+
+  if(!PAGES[location.hash.replace("#","")]) location.hash = "dashboard";
   else routeApp();
 }
 
+function paintWho(){
+  const name = profile.full_name || me.email || "Account";
+  $("who-name").textContent = name;
+  $("who-role").textContent = profile.role
+    ? profile.role[0].toUpperCase() + profile.role.slice(1) : "";
+  const safeAvatar = safeUrl(profile.avatar_url);
+  $("who-avatar").innerHTML = safeAvatar
+    ? `<img src="${esc(safeAvatar)}" alt="">` : esc(initial(name));
+}
+
+async function countUnread(){
+  // Scope to applications I'm actually part of — never count the whole table.
+  let appIds = [];
+  if(isBrand()){
+    const { data:camps } = await sb.from("campaigns").select("id").eq("brand_id", me.id);
+    const ids = (camps||[]).map(c => c.id);
+    if(ids.length){
+      const { data:as } = await sb.from("campaign_applications").select("id").in("campaign_id", ids);
+      appIds = (as||[]).map(a => a.id);
+    }
+  } else {
+    const { data:as } = await sb.from("campaign_applications").select("id").eq("creator_id", me.id);
+    appIds = (as||[]).map(a => a.id);
+  }
+
+  const pip = $("pip-msg");
+  if(!pip) return;
+
+  if(!appIds.length){ pip.classList.add("hide"); return; }
+
+  const { data } = await sb.from("messages").select("id")
+    .in("application_id", appIds).is("read_at", null).neq("sender_id", me.id);
+  const n = (data || []).length;
+  pip.textContent = n > 99 ? "99+" : n;
+  pip.classList.toggle("hide", n === 0);
+}
+
+/* ═══════════ routing ═══════════ */
 async function routeApp(){
-  const key = location.hash.replace("#","") || "campaigns";
+  const key = location.hash.replace("#","") || "dashboard";
 
   if(key === "signout"){
     await sb.auth.signOut();
-    me = null;
+    me = null; profile = null;
     location.hash = "signin";
     showAuth("signin");
     return;
   }
 
-  const title = APP_PAGES[key] || "Campaigns";
-  $("page-title").textContent = title;
+  $("page-title").textContent = PAGES[key] || "Dashboard";
   document.querySelectorAll("#nav a").forEach(a =>
     a.classList.toggle("on", a.getAttribute("href") === "#" + key));
   document.body.classList.remove("menu");
 
   const view = $("view");
-  view.innerHTML = "";
+  view.innerHTML = `<div class="skel"><div></div><div></div><div></div></div>
+                    <div class="skel"><div></div><div></div><div></div></div>`;
   try{
-    if(key === "campaigns") await campaigns();
-    else soon(title);
+    if(key === "campaigns")         await pageCampaigns();
+    else if(key === "applications") await pageApplications();
+    else if(key === "creators")     await pageCreators();
+    else if(key === "messages")     await pageMessages();
+    else if(key === "profile")      await pageProfile();
+    else if(key === "settings")     await pageSettings();
+    else                            await pageDashboard();
   }catch(err){
     view.innerHTML = `<div class="note err"><b>Something went wrong</b>
       <code>${esc(err.message)}</code></div>
@@ -401,71 +506,142 @@ async function routeApp(){
   }
 }
 
-function soon(title){
-  $("view").innerHTML = `<h2>${esc(title)}</h2>
-    <p class="lede">Not built yet.</p>
-    <div class="empty"><h3>Nothing here yet</h3>
-      <p>This section is still being built.</p>
-      <a class="btn" href="#campaigns">Go to Campaigns</a></div>`;
+/* ═══════════ 1 · DASHBOARD ═══════════ */
+async function pageDashboard(){
+  const brand = isBrand();
+  const name  = (profile.full_name || "").split(" ")[0] || "there";
+
+  // Campaigns first — the brand's application query depends on their ids.
+  const { data:campData } = brand
+    ? await sb.from("campaigns").select("id,title,status,created_at").eq("brand_id", me.id)
+    : await sb.from("campaigns").select("id,title,budget,category,deadline").eq("status","open")
+        .order("created_at",{ascending:false}).limit(3);
+  const myCamps = campData || [];
+
+  let appsQ;
+  if(brand){
+    const ids = myCamps.map(c => c.id);
+    appsQ = ids.length
+      ? sb.from("campaign_applications").select("id,status,campaign_id,created_at").in("campaign_id", ids)
+      : null;
+  } else {
+    appsQ = sb.from("campaign_applications")
+      .select("id,status,campaign_id,created_at").eq("creator_id", me.id);
+  }
+
+  const [apps, notes] = await Promise.all([
+    appsQ || Promise.resolve({ data: [] }),
+    sb.from("notifications").select("id,title,message,read,created_at")
+      .eq("user_id", me.id).order("created_at",{ascending:false}).limit(5)
+  ]);
+
+  const myApps  = apps.data || [];
+  const myNotes = notes.data || [];
+  const pending = myApps.filter(a => (a.status||"").toLowerCase() === "pending").length;
+  const nUnread = Number($("pip-msg")?.textContent || 0);
+
+  const stats = brand
+    ? [[myCamps.length,"Campaigns posted"],
+       [myCamps.filter(c => (c.status||"")==="open").length,"Currently open"],
+       [myApps.length,"Applications received"],
+       [pending,"Awaiting your review"]]
+    : [[myApps.length,"Applications sent"],
+       [pending,"Awaiting a reply"],
+       [myApps.filter(a => ["accepted","approved"].includes((a.status||"").toLowerCase())).length,"Accepted"],
+       [nUnread,"Unread messages"]];
+
+  $("view").innerHTML = `
+    <h2>Hi ${esc(name)}</h2>
+    <p class="lede">${brand ? "How your campaigns are doing." : "Where things stand today."}</p>
+
+    <div class="cols">
+      ${stats.map(([n,l]) => `<div class="stat"><b>${n}</b><span>${l}</span></div>`).join("")}
+    </div>
+
+    ${brand ? brandBlock(myCamps) : creatorBlock(myCamps)}
+
+    <h3 style="margin:26px 0 12px;font-size:17px">Recent notifications</h3>
+    ${myNotes.length ? `<div class="grid">` + myNotes.map(n => `
+      <div class="item">
+        <h3>${esc(n.title || "Notification")}</h3>
+        <p>${esc(n.message || "")}</p>
+        <div class="meta">
+          <span class="tag grey">${clock(n.created_at)}</span>
+          ${n.read ? "" : `<span class="tag">New</span>`}
+        </div>
+      </div>`).join("") + `</div>`
+      : `<div class="empty"><h3>Nothing new</h3><p>Notifications will appear here.</p></div>`}`;
 }
 
-/* ═══════════ campaigns ═══════════ */
-async function campaigns(){
+function brandBlock(camps){
+  if(!camps.length) return `<div class="empty"><h3>No campaigns yet</h3>
+    <p>Post a brief and creators can start applying.</p></div>`;
+  return `<h3 style="margin:0 0 12px;font-size:17px">Your campaigns</h3>
+    <div class="grid">` + camps.slice(0,4).map(c => `
+      <div class="item"><h3>${esc(c.title)}</h3>
+        <div class="meta"><span class="tag ${STATUS_TAG[(c.status||"").toLowerCase()]||"grey"}">${esc(c.status||"—")}</span>
+        <span class="tag grey">Posted ${when(c.created_at)}</span></div>
+      </div>`).join("") + `</div>`;
+}
+
+function creatorBlock(camps){
+  if(!camps.length) return "";
+  return `<h3 style="margin:0 0 12px;font-size:17px">Newest briefs</h3>
+    <div class="grid">` + camps.map(c => `
+      <div class="item"><h3>${esc(c.title)}</h3>
+        <div class="meta">
+          ${c.category ? `<span class="tag">${esc(c.category)}</span>` : ""}
+          <span class="tag grey">Closes ${when(c.deadline)}</span>
+          <span class="pay">${money(c.budget)}</span>
+        </div>
+      </div>`).join("") + `</div>
+    <a class="btn ghost" href="#campaigns" style="margin-top:12px">See all campaigns</a>`;
+}
+
+/* ═══════════ 2 · CAMPAIGNS ═══════════ */
+async function pageCampaigns(){
+  const brand = isBrand();
+  const q = brand
+    ? sb.from("campaigns").select("*").eq("brand_id", me.id).order("created_at",{ascending:false})
+    : sb.from("campaigns").select("*").eq("status","open").order("created_at",{ascending:false}).limit(60);
+
+  const { data, error } = await q;
+  if(error){ $("view").innerHTML = fail(error, "campaigns"); return; }
+
+  cache.campaigns = data || [];
+  cache.applied = new Set();
+
+  if(!brand){
+    const { data:mine } = await sb.from("campaign_applications")
+      .select("campaign_id").eq("creator_id", me.id);
+    cache.applied = new Set((mine||[]).map(a => a.campaign_id));
+  }
+
   $("view").innerHTML = `
     <h2>Campaigns</h2>
-    <p class="lede">Browse open briefs and apply.</p>
+    <p class="lede">${brand ? "Briefs you've posted." : "Browse open briefs and apply."}</p>
     <div class="bar">
       <input id="q" type="search" placeholder="Search campaigns…" autocomplete="off">
-      <button class="btn ghost" data-act="refresh">Refresh</button>
+      <button class="btn ghost" data-act="refresh-campaigns">Refresh</button>
     </div>
-    <div class="note" id="note"></div>
-    <div id="list">
-      <div class="skel"><div></div><div></div><div></div></div>
-      <div class="skel"><div></div><div></div><div></div></div>
-    </div>`;
-  await load();
+    <div id="list"></div>`;
+  paintCampaigns(cache.campaigns);
 }
 
-async function load(){
-  if(!$("list")) return;
-
-  const { data, error } = await sb
-    .from("campaigns")
-    .select("id,title,description,budget,category,platform,location,requirements,deadline,status")
-    .eq("status","open")
-    .order("created_at",{ ascending:false })
-    .limit(50);
-
-  const list = $("list");
-  if(!list) return;                       // user navigated away mid-request
-
-  if(error){
-    const note = $("note");
-    if(note){
-      note.innerHTML = `<b>Couldn't load campaigns</b><code>${esc(error.message)}</code>`;
-      note.className = "note err";
-    }
-    list.innerHTML = "";
-    return;
-  }
-
-  allCampaigns = data || [];
-  paint(allCampaigns);
-}
-
-function paint(rows){
+function paintCampaigns(rows){
   const list = $("list");
   if(!list) return;
+  const brand = isBrand();
 
   if(!rows.length){
-    list.innerHTML = `<div class="empty">
-      <h3>No open campaigns</h3>
-      <p>Nothing matches right now. Check back soon.</p></div>`;
+    list.innerHTML = `<div class="empty"><h3>${brand ? "No campaigns yet" : "No open campaigns"}</h3>
+      <p>${brand ? "Post a brief and creators can apply." : "Nothing matches right now. Check back soon."}</p></div>`;
     return;
   }
 
-  list.innerHTML = `<div class="grid">` + rows.map(c => `
-    <article class="item">
+  list.innerHTML = `<div class="grid">` + rows.map(c => {
+    const done = cache.applied?.has(c.id);
+    return `<article class="item">
       <h3>${esc(c.title)}</h3>
       <p>${esc(c.description)}</p>
       ${c.requirements ? `<p class="req"><b>Requirements</b>${esc(c.requirements)}</p>` : ""}
@@ -476,12 +652,588 @@ function paint(rows){
         <span class="tag grey">Closes ${when(c.deadline)}</span>
         <span class="pay">${money(c.budget)}</span>
       </div>
-    </article>`).join("") + `</div>`;
+      ${brand ? "" : `<div style="margin-top:13px">${
+        done ? `<span class="tag ok">Applied</span>`
+             : `<button class="btn sm" data-apply="${esc(c.id)}">Apply</button>`}</div>`}
+    </article>`;
+  }).join("") + `</div>`;
+}
+
+function openApply(id){
+  const c = (cache.campaigns||[]).find(x => String(x.id) === String(id));
+  if(!c) return;
+  $("view").innerHTML = `
+    <a class="btn ghost sm" href="#campaigns" style="margin-bottom:16px">← Back</a>
+    <h2>Apply</h2>
+    <p class="lede">${esc(c.title)} · ${money(c.budget)}</p>
+    <div class="panel">
+      <label for="ap-pitch">Your pitch</label>
+      <div class="field"><textarea id="ap-pitch" placeholder="Why you're a good fit, and what you'd deliver."></textarea></div>
+      <div class="two">
+        <div><label for="ap-rate">Your rate (₹)</label>
+          <div class="field"><input id="ap-rate" type="number" inputmode="numeric" placeholder="${esc(c.budget ?? "")}"></div></div>
+        <div><label for="ap-port">Portfolio link</label>
+          <div class="field"><input id="ap-port" type="url" placeholder="https://"></div></div>
+      </div>
+      <button class="primary" id="ap-go" data-campaign="${esc(c.id)}">Send application</button>
+      <div class="msg" id="ap-msg"></div>
+    </div>`;
+  $("ap-go").dataset.label = "Send application";
+}
+
+async function sendApplication(campaignId){
+  const pitch = $("ap-pitch").value.trim();
+  if(pitch.length < 20) return show($("ap-msg"), "Write at least a couple of sentences.", "err");
+
+  busy($("ap-go"), true, "Sending…");
+  const row = {
+    campaign_id: campaignId,
+    creator_id: me.id,
+    pitch,
+    status: "pending",
+    proposed_rate: $("ap-rate").value ? Number($("ap-rate").value) : null,
+    portfolio_url: $("ap-port").value.trim() || null
+  };
+  const { error } = await sb.from("campaign_applications").insert(row);
+  busy($("ap-go"), false);
+
+  if(error) return show($("ap-msg"), error.message, "err");
+  show($("ap-msg"), "Application sent.", "ok");
+  cache.applied?.add(campaignId);
+  setTimeout(() => { location.hash = "applications"; }, 900);
+}
+
+/* ═══════════ 3 · APPLICATIONS ═══════════ */
+async function pageApplications(){
+  const brand = isBrand();
+
+  let apps = [], campsById = {}, peopleById = {};
+
+  if(brand){
+    const { data:camps, error:e1 } = await sb.from("campaigns")
+      .select("id,title,budget").eq("brand_id", me.id);
+    if(e1){ $("view").innerHTML = fail(e1, "applications"); return; }
+    campsById = by(camps, "id");
+    const ids = (camps||[]).map(c => c.id);
+
+    if(ids.length){
+      const { data, error } = await sb.from("campaign_applications")
+        .select("*").in("campaign_id", ids).order("created_at",{ascending:false});
+      if(error){ $("view").innerHTML = fail(error, "applications"); return; }
+      apps = data || [];
+      const who = [...new Set(apps.map(a => a.creator_id))];
+      if(who.length){
+        const { data:ps } = await sb.from("profiles")
+          .select("id,full_name,avatar_url").in("id", who);
+        peopleById = by(ps, "id");
+      }
+    }
+  } else {
+    const { data, error } = await sb.from("campaign_applications")
+      .select("*").eq("creator_id", me.id).order("created_at",{ascending:false});
+    if(error){ $("view").innerHTML = fail(error, "applications"); return; }
+    apps = data || [];
+    const ids = [...new Set(apps.map(a => a.campaign_id))];
+    if(ids.length){
+      const { data:cs } = await sb.from("campaigns").select("id,title,budget,category").in("id", ids);
+      campsById = by(cs, "id");
+    }
+  }
+
+  cache.apps = apps;
+
+  $("view").innerHTML = `
+    <h2>Applications</h2>
+    <p class="lede">${brand ? "Creators who applied to your campaigns." : "Briefs you've applied to."}</p>
+    <div class="bar">
+      <input id="q" type="search" placeholder="Search…" autocomplete="off">
+      <select id="fstatus">
+        <option value="">All statuses</option>
+        <option value="pending">Pending</option>
+        <option value="accepted">Accepted</option>
+        <option value="rejected">Rejected</option>
+      </select>
+    </div>
+    <div id="list"></div>`;
+
+  cache.campsById = campsById;
+  cache.peopleById = peopleById;
+  paintApplications(apps);
+}
+
+function paintApplications(rows){
+  const list = $("list");
+  if(!list) return;
+  const brand = isBrand();
+
+  if(!rows.length){
+    list.innerHTML = `<div class="empty">
+      <h3>${brand ? "No applications yet" : "You haven't applied to anything"}</h3>
+      <p>${brand ? "They'll show up here as creators apply." : "Browse open briefs and send your first pitch."}</p>
+      ${brand ? "" : `<a class="btn" href="#campaigns">Browse campaigns</a>`}</div>`;
+    return;
+  }
+
+  list.innerHTML = `<div class="grid">` + rows.map(a => {
+    const c = cache.campsById[a.campaign_id] || {};
+    const p = cache.peopleById[a.creator_id] || {};
+    const st = (a.status || "pending").toLowerCase();
+    return `<article class="item">
+      ${brand ? `<div class="head">
+          ${avatarHTML(p.avatar_url, p.full_name)}
+          <div><h3>${esc(p.full_name || "Creator")}</h3>
+          <div class="sub2">applied to ${esc(c.title || "a campaign")}</div></div>
+        </div>`
+      : `<h3>${esc(c.title || "Campaign")}</h3>`}
+      <p>${esc(a.pitch || "")}</p>
+      <div class="meta">
+        <span class="tag ${STATUS_TAG[st]||"grey"}">${esc(a.status || "pending")}</span>
+        <span class="tag grey">${when(a.created_at)}</span>
+        ${safeUrl(a.portfolio_url) ? `<a class="tag" href="${esc(safeUrl(a.portfolio_url))}" target="_blank" rel="noopener noreferrer">Portfolio ↗</a>` : ""}
+        <span class="pay">${money(a.proposed_rate ?? c.budget)}</span>
+      </div>
+      <div style="margin-top:13px;display:flex;gap:8px;flex-wrap:wrap">
+        ${brand && st === "pending" ? `
+          <button class="btn sm" data-decide="accepted" data-id="${esc(a.id)}">Accept</button>
+          <button class="btn sm danger" data-decide="rejected" data-id="${esc(a.id)}">Decline</button>` : ""}
+        ${["accepted","approved"].includes(st)
+          ? `<a class="btn sm ghost" href="#messages">Open messages</a>` : ""}
+      </div>
+    </article>`;
+  }).join("") + `</div>`;
+}
+
+async function decide(id, status){
+  const { error } = await sb.from("campaign_applications")
+    .update({ status, updated_at: new Date().toISOString() }).eq("id", id);
+
+  if(error){
+    const list = $("list");
+    if(list) list.insertAdjacentHTML("beforebegin",
+      `<div class="note err"><b>Couldn't update that application</b>
+       <code>${esc(error.message)}</code></div>`);
+    return;
+  }
+  const row = (cache.apps||[]).find(a => String(a.id) === String(id));
+  if(row) row.status = status;
+  paintApplications(cache.apps);
+}
+
+/* ═══════════ 4 · CREATORS ═══════════ */
+async function pageCreators(){
+  const { data, error } = await sb.from("creator_profiles").select("*").limit(60);
+  if(error){ $("view").innerHTML = fail(error, "creators"); return; }
+
+  const rows = data || [];
+  const ids  = rows.map(r => r.id);
+  let people = {};
+  if(ids.length){
+    const { data:ps } = await sb.from("profiles")
+      .select("id,full_name,avatar_url,bio").in("id", ids);
+    people = by(ps, "id");
+  }
+
+  cache.creators = rows.map(r => ({ ...r, _p: people[r.id] || {} }));
+
+  $("view").innerHTML = `
+    <h2>Creators</h2>
+    <p class="lede">Browse creators on Cube3.</p>
+    <div class="bar"><input id="q" type="search" placeholder="Search by name, handle or category…" autocomplete="off"></div>
+    <div id="list"></div>`;
+  paintCreators(cache.creators);
+}
+
+function paintCreators(rows){
+  const list = $("list");
+  if(!list) return;
+
+  if(!rows.length){
+    list.innerHTML = `<div class="empty"><h3>No creators yet</h3>
+      <p>Creator profiles will appear here as people join.</p></div>`;
+    return;
+  }
+
+  list.innerHTML = `<div class="grid">` + rows.map(c => {
+    const name = c._p.full_name || c.handle || "Creator";
+    const reach = [
+      c.instagram_followers && `IG ${num(c.instagram_followers)}`,
+      c.youtube_subscribers && `YT ${num(c.youtube_subscribers)}`,
+      c.tiktok_followers    && `TikTok ${num(c.tiktok_followers)}`,
+      c.x_followers         && `X ${num(c.x_followers)}`
+    ].filter(Boolean);
+
+    const links = [
+      ["Instagram", c.instagram_url], ["YouTube", c.youtube_url],
+      ["TikTok", c.tiktok_url], ["Portfolio", c.portfolio_url]
+    ].map(([t,u]) => [t, safeUrl(u)]).filter(([,u]) => u);
+
+    return `<article class="item">
+      <div class="head">
+        ${avatarHTML(c._p.avatar_url, name)}
+        <div><h3>${esc(name)}</h3>
+        <div class="sub2">${esc(c.handle ? "@" + c.handle : "")}${c.location ? " · " + esc(c.location) : ""}</div></div>
+      </div>
+      ${(c.bio || c._p.bio) ? `<p>${esc(c.bio || c._p.bio)}</p>` : ""}
+      <div class="meta">
+        ${c.category ? `<span class="tag">${esc(c.category)}</span>` : ""}
+        ${reach.map(r => `<span class="tag grey">${esc(r)}</span>`).join("")}
+        ${c.engagement_rate ? `<span class="tag grey">${esc(c.engagement_rate)}% eng.</span>` : ""}
+        ${(c.rate_min || c.rate_max)
+          ? `<span class="pay">${money(c.rate_min)}${c.rate_max ? "–" + money(c.rate_max).replace("₹","") : ""}</span>` : ""}
+      </div>
+      ${links.length ? `<div class="meta" style="margin-top:11px">` + links.map(([t,u]) =>
+        `<a class="tag" href="${esc(u)}" target="_blank" rel="noopener noreferrer">${t} ↗</a>`).join("") + `</div>` : ""}
+    </article>`;
+  }).join("") + `</div>`;
+}
+
+/* ═══════════ 5 · MESSAGES ═══════════ */
+async function pageMessages(){
+  const brand = isBrand();
+
+  // Which applications am I part of?
+  let apps = [];
+  if(brand){
+    const { data:camps } = await sb.from("campaigns").select("id,title").eq("brand_id", me.id);
+    const ids = (camps||[]).map(c => c.id);
+    cache.campsById = by(camps, "id");
+    if(ids.length){
+      const { data } = await sb.from("campaign_applications")
+        .select("id,campaign_id,creator_id,status").in("campaign_id", ids);
+      apps = data || [];
+    }
+  } else {
+    const { data } = await sb.from("campaign_applications")
+      .select("id,campaign_id,creator_id,status").eq("creator_id", me.id);
+    apps = data || [];
+    const ids = [...new Set(apps.map(a => a.campaign_id))];
+    if(ids.length){
+      const { data:cs } = await sb.from("campaigns").select("id,title").in("id", ids);
+      cache.campsById = by(cs, "id");
+    }
+  }
+
+  if(!apps.length){
+    $("view").innerHTML = `<h2>Messages</h2>
+      <p class="lede">Conversations open once an application is in play.</p>
+      <div class="empty"><h3>No conversations yet</h3>
+        <p>${brand ? "Message a creator once they apply." : "Apply to a campaign to start talking."}</p>
+        <a class="btn" href="#campaigns">Browse campaigns</a></div>`;
+    return;
+  }
+
+  const appIds = apps.map(a => a.id);
+  const { data:msgs } = await sb.from("messages")
+    .select("id,application_id,sender_id,body,created_at,read_at")
+    .in("application_id", appIds).order("created_at",{ascending:false});
+
+  const last = {};
+  (msgs||[]).forEach(m => { if(!last[m.application_id]) last[m.application_id] = m; });
+
+  const who = [...new Set(apps.map(a => a.creator_id))];
+  const { data:ps } = await sb.from("profiles").select("id,full_name,avatar_url").in("id", who);
+  const people = by(ps, "id");
+
+  cache.threads = apps.map(a => ({
+    ...a,
+    campaign: cache.campsById[a.campaign_id] || {},
+    person: people[a.creator_id] || {},
+    last: last[a.id],
+    unread: (msgs||[]).filter(m => m.application_id === a.id && !m.read_at && m.sender_id !== me.id).length
+  })).sort((x,y) => new Date(y.last?.created_at||0) - new Date(x.last?.created_at||0));
+
+  $("view").innerHTML = `
+    <h2>Messages</h2>
+    <p class="lede">One thread per application.</p>
+    <div class="grid">` + cache.threads.map(t => {
+      const title = brand ? (t.person.full_name || "Creator") : (t.campaign.title || "Campaign");
+      const sub   = brand ? (t.campaign.title || "") : "";
+      return `<article class="item" data-thread="${esc(t.id)}" role="button" tabindex="0"
+        aria-label="Open conversation with ${esc(title)}" style="cursor:pointer">
+        <div class="head">
+          ${avatarHTML(t.person.avatar_url, title)}
+          <div style="flex:1"><h3>${esc(title)}</h3>
+          ${sub ? `<div class="sub2">${esc(sub)}</div>` : ""}</div>
+          ${t.unread ? `<span class="pip">${t.unread}</span>` : ""}
+        </div>
+        <p style="margin:0">${t.last ? esc(t.last.body).slice(0,120) : "<i>No messages yet — say hello.</i>"}</p>
+        <div class="meta" style="margin-top:10px">
+          <span class="tag ${STATUS_TAG[(t.status||"").toLowerCase()]||"grey"}">${esc(t.status||"—")}</span>
+          ${t.last ? `<span class="tag grey">${clock(t.last.created_at)}</span>` : ""}
+        </div>
+      </article>`;
+    }).join("") + `</div>`;
+}
+
+async function openThread(appId){
+  const t = (cache.threads||[]).find(x => String(x.id) === String(appId));
+  if(!t) return;
+  cache.thread = t;
+
+  const brand = isBrand();
+  const title = brand ? (t.person.full_name || "Creator") : (t.campaign.title || "Campaign");
+
+  $("view").innerHTML = `
+    <a class="btn ghost sm" href="#messages" style="margin-bottom:16px">← All messages</a>
+    <div class="thread">
+      <div class="top">${avatarHTML(t.person.avatar_url, title)}
+        <div><b>${esc(title)}</b>
+        <div class="sub2">${esc(t.campaign.title || "")}</div></div></div>
+      <div class="body" id="thread-body"><div class="skel"><div></div><div></div><div></div></div></div>
+      <div class="send">
+        <input id="m-text" placeholder="Write a message…" autocomplete="off">
+        <button class="btn" id="m-go" data-app="${esc(t.id)}">Send</button>
+      </div>
+    </div>`;
+  $("m-go").dataset.label = "Send";
+  await loadThread(appId);
+}
+
+async function loadThread(appId){
+  const { data, error } = await sb.from("messages")
+    .select("id,sender_id,body,created_at").eq("application_id", appId)
+    .order("created_at",{ascending:true});
+
+  const body = $("thread-body");
+  if(!body) return;
+
+  if(error){ body.innerHTML = `<div class="note err"><code>${esc(error.message)}</code></div>`; return; }
+
+  const rows = data || [];
+  body.innerHTML = rows.length
+    ? rows.map(m => `<div class="bub ${m.sender_id === me.id ? "me" : ""}">${esc(m.body)}
+        <small>${clock(m.created_at)}</small></div>`).join("")
+    : `<div class="empty" style="border:0;background:transparent"><p>No messages yet. Start the conversation.</p></div>`;
+  body.scrollTop = body.scrollHeight;
+
+  // mark the other side's messages read
+  await sb.from("messages").update({ read_at:new Date().toISOString() })
+    .eq("application_id", appId).is("read_at", null).neq("sender_id", me.id);
+  countUnread();
+}
+
+async function sendMessage(appId){
+  const input = $("m-text");
+  const body  = input.value.trim();
+  if(!body) return;
+
+  input.value = "";
+  busy($("m-go"), true, "…");
+  const { error } = await sb.from("messages")
+    .insert({ application_id: appId, sender_id: me.id, body });
+  busy($("m-go"), false);
+
+  if(error){
+    input.value = body;   // don't lose what they typed
+    const b = $("thread-body");
+    if(b) b.insertAdjacentHTML("beforeend",
+      `<div class="note err" style="display:block"><b>Not sent</b>
+       <code>${esc(error.message)}</code></div>`);
+    return;
+  }
+  await loadThread(appId);
+}
+
+/* ═══════════ 6 · PROFILE ═══════════ */
+async function pageProfile(){
+  const brand = isBrand();
+  const table = brand ? "brand_profiles" : "creator_profiles";
+  const { data:extra } = await sb.from(table).select("*").eq("id", me.id).maybeSingle();
+  cache.extra = extra || {};
+
+  const e = cache.extra;
+  $("view").innerHTML = `
+    <h2>Profile</h2>
+    <p class="lede">How you appear to ${brand ? "creators" : "brands"} on Cube3.</p>
+
+    <div class="panel">
+      <h3>Basics</h3><p class="sub2">Shown across the app.</p>
+      <label for="pf-name">Full name</label>
+      <div class="field"><input id="pf-name" value="${esc(profile.full_name || "")}" placeholder="Your name"></div>
+      <label for="pf-bio">Bio</label>
+      <div class="field"><textarea id="pf-bio" placeholder="A short introduction.">${esc(profile.bio || "")}</textarea></div>
+      <label for="pf-avatar">Avatar image URL</label>
+      <div class="field"><input id="pf-avatar" type="url" value="${esc(profile.avatar_url || "")}" placeholder="https://"></div>
+      <button class="primary" id="pf-go">Save basics</button>
+      <div class="msg" id="pf-msg"></div>
+    </div>
+
+    ${brand ? `
+    <div class="panel">
+      <h3>Brand details</h3><p class="sub2">Helps creators understand who you are.</p>
+      <label for="bp-company">Company name</label>
+      <div class="field"><input id="bp-company" value="${esc(e.company_name || "")}" placeholder="Company"></div>
+      <div class="two">
+        <div><label for="bp-industry">Industry</label>
+          <div class="field"><input id="bp-industry" value="${esc(e.industry || "")}" placeholder="e.g. Beauty"></div></div>
+        <div><label for="bp-website">Website</label>
+          <div class="field"><input id="bp-website" type="url" value="${esc(e.website_url || "")}" placeholder="https://"></div></div>
+      </div>
+      <label for="bp-desc">About the brand</label>
+      <div class="field"><textarea id="bp-desc" placeholder="What you make and who it's for.">${esc(e.description || "")}</textarea></div>
+      <div class="two">
+        <div><label for="bp-ig">Instagram</label>
+          <div class="field"><input id="bp-ig" type="url" value="${esc(e.instagram_url || "")}" placeholder="https://"></div></div>
+        <div><label for="bp-li">LinkedIn</label>
+          <div class="field"><input id="bp-li" type="url" value="${esc(e.linkedin_url || "")}" placeholder="https://"></div></div>
+      </div>
+      <button class="primary" id="bp-go">Save brand details</button>
+      <div class="msg" id="bp-msg"></div>
+    </div>` : `
+    <div class="panel">
+      <h3>Creator details</h3><p class="sub2">What brands look at first.</p>
+      <div class="two">
+        <div><label for="cp-handle">Handle</label>
+          <div class="field"><input id="cp-handle" value="${esc(e.handle || "")}" placeholder="yourhandle"></div></div>
+        <div><label for="cp-category">Category</label>
+          <div class="field"><input id="cp-category" value="${esc(e.category || "")}" placeholder="e.g. Fashion"></div></div>
+      </div>
+      <label for="cp-bio">Creator bio</label>
+      <div class="field"><textarea id="cp-bio" placeholder="Your niche, style and audience.">${esc(e.bio || "")}</textarea></div>
+      <label for="cp-location">Location</label>
+      <div class="field"><input id="cp-location" value="${esc(e.location || "")}" placeholder="City"></div>
+      <div class="two">
+        <div><label for="cp-ig">Instagram URL</label>
+          <div class="field"><input id="cp-ig" type="url" value="${esc(e.instagram_url || "")}" placeholder="https://"></div></div>
+        <div><label for="cp-igf">Instagram followers</label>
+          <div class="field"><input id="cp-igf" type="number" inputmode="numeric" value="${esc(e.instagram_followers ?? "")}" placeholder="0"></div></div>
+      </div>
+      <div class="two">
+        <div><label for="cp-yt">YouTube URL</label>
+          <div class="field"><input id="cp-yt" type="url" value="${esc(e.youtube_url || "")}" placeholder="https://"></div></div>
+        <div><label for="cp-ytf">YouTube subscribers</label>
+          <div class="field"><input id="cp-ytf" type="number" inputmode="numeric" value="${esc(e.youtube_subscribers ?? "")}" placeholder="0"></div></div>
+      </div>
+      <label for="cp-port">Portfolio URL</label>
+      <div class="field"><input id="cp-port" type="url" value="${esc(e.portfolio_url || "")}" placeholder="https://"></div>
+      <div class="two">
+        <div><label for="cp-min">Rate from (₹)</label>
+          <div class="field"><input id="cp-min" type="number" inputmode="numeric" value="${esc(e.rate_min ?? "")}" placeholder="0"></div></div>
+        <div><label for="cp-max">Rate to (₹)</label>
+          <div class="field"><input id="cp-max" type="number" inputmode="numeric" value="${esc(e.rate_max ?? "")}" placeholder="0"></div></div>
+      </div>
+      <button class="primary" id="cp-go">Save creator details</button>
+      <div class="msg" id="cp-msg"></div>
+    </div>`}`;
+
+  document.querySelectorAll("#view button.primary").forEach(b => b.dataset.label = b.textContent);
+}
+
+async function saveBasics(){
+  busy($("pf-go"), true, "Saving…");
+  const patch = {
+    id: me.id,
+    full_name: $("pf-name").value.trim(),
+    bio: $("pf-bio").value.trim() || null,
+    avatar_url: $("pf-avatar").value.trim() || null,
+    updated_at: new Date().toISOString()
+  };
+  const { error } = await sb.from("profiles").upsert(patch);
+  busy($("pf-go"), false);
+  if(error) return show($("pf-msg"), error.message, "err");
+
+  Object.assign(profile, patch);
+  paintWho();
+  show($("pf-msg"), "Saved.", "ok");
+}
+
+async function saveBrand(){
+  busy($("bp-go"), true, "Saving…");
+  const { error } = await sb.from("brand_profiles").upsert({
+    id: me.id,
+    company_name: $("bp-company").value.trim() || null,
+    industry: $("bp-industry").value.trim() || null,
+    website_url: $("bp-website").value.trim() || null,
+    description: $("bp-desc").value.trim() || null,
+    instagram_url: $("bp-ig").value.trim() || null,
+    linkedin_url: $("bp-li").value.trim() || null
+  });
+  busy($("bp-go"), false);
+  show($("bp-msg"), error ? error.message : "Saved.", error ? "err" : "ok");
+}
+
+async function saveCreator(){
+  const n = id => $(id).value ? Number($(id).value) : null;
+  busy($("cp-go"), true, "Saving…");
+  const { error } = await sb.from("creator_profiles").upsert({
+    id: me.id,
+    handle: $("cp-handle").value.trim() || null,
+    category: $("cp-category").value.trim() || null,
+    bio: $("cp-bio").value.trim() || null,
+    location: $("cp-location").value.trim() || null,
+    instagram_url: $("cp-ig").value.trim() || null,
+    instagram_followers: n("cp-igf"),
+    youtube_url: $("cp-yt").value.trim() || null,
+    youtube_subscribers: n("cp-ytf"),
+    portfolio_url: $("cp-port").value.trim() || null,
+    rate_min: n("cp-min"),
+    rate_max: n("cp-max")
+  });
+  busy($("cp-go"), false);
+  show($("cp-msg"), error ? error.message : "Saved.", error ? "err" : "ok");
+}
+
+/* ═══════════ 7 · SETTINGS ═══════════ */
+async function pageSettings(){
+  const { data:notes } = await sb.from("notifications")
+    .select("id,read").eq("user_id", me.id).eq("read", false);
+  const unread = (notes||[]).length;
+
+  $("view").innerHTML = `
+    <h2>Settings</h2>
+    <p class="lede">Account and security.</p>
+
+    <div class="panel">
+      <h3>Account</h3><p class="sub2">Signed in as ${esc(me.email)}.</p>
+      <div class="meta">
+        <span class="tag">${esc(profile.role || "creator")}</span>
+        ${profile.is_admin ? `<span class="tag ok">Admin</span>` : ""}
+        <span class="tag grey">Joined ${when(profile.created_at || me.created_at)}</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Change password</h3><p class="sub2">You'll stay signed in.</p>
+      <label for="st-pw">New password</label>
+      <div class="field pw"><input id="st-pw" type="password" autocomplete="new-password" placeholder="New password">
+        <button class="peek" type="button" data-peek="st-pw" aria-label="Show password" aria-pressed="false"></button></div>
+      <p class="hint">At least 6 characters.</p>
+      <button class="primary" id="st-go">Update password</button>
+      <div class="msg" id="st-msg"></div>
+    </div>
+
+    <div class="panel">
+      <h3>Notifications</h3>
+      <p class="sub2">${unread ? unread + " unread" : "All caught up."}</p>
+      ${unread ? `<button class="btn ghost" data-act="read-all">Mark all as read</button>` : ""}
+    </div>
+
+    <div class="panel">
+      <h3>Sign out</h3><p class="sub2">Ends this session on this device.</p>
+      <a class="btn danger" href="#signout">Sign out</a>
+    </div>`;
+
+  $("st-go").dataset.label = "Update password";
+  document.querySelectorAll("#view .peek").forEach(b => b.innerHTML = EYE_OPEN);
+}
+
+async function changePassword(){
+  const password = $("st-pw").value;
+  if(password.length < 6) return show($("st-msg"), "Password must be at least 6 characters.", "err");
+  busy($("st-go"), true, "Updating…");
+  const { error } = await sb.auth.updateUser({ password });
+  busy($("st-go"), false);
+  if(error) return show($("st-msg"), friendly(error), "err");
+  $("st-pw").value = "";
+  show($("st-msg"), "Password updated.", "ok");
+}
+
+async function markAllRead(){
+  await sb.from("notifications").update({ read:true }).eq("user_id", me.id).eq("read", false);
+  routeApp();
 }
 
 /* ═══════════ auth actions ═══════════ */
-let role = "creator";
-
 async function signIn(){
   const email = $("si-email").value.trim(), password = $("si-pw").value;
   if(!email || !password) return show($("si-msg"), "Enter your email and password.", "err");
@@ -490,8 +1242,8 @@ async function signIn(){
   busy($("si-go"), false);
   if(error) return show($("si-msg"), friendly(error), "err");
   me = data.user;
-  location.hash = "campaigns";
-  enterApp();
+  location.hash = "dashboard";
+  await enterApp();
 }
 
 async function signUp(){
@@ -510,11 +1262,17 @@ async function signUp(){
   busy($("su-go"), false);
   if(error) return show($("su-msg"), friendly(error), "err");
 
-  if(data.session){ me = data.user; location.hash = "campaigns"; enterApp(); return; }
+  if(data.session){
+    me = data.user;
+    await sb.from("profiles").upsert({ id:me.id, full_name, role, email });
+    location.hash = "dashboard";
+    await enterApp();
+    return;
+  }
   show($("su-msg"), "Account created. Check your inbox to confirm.", "ok");
 }
 
-async function reset(){
+async function resetPw(){
   const email = $("fp-email").value.trim();
   if(!email) return show($("fp-msg"), "Enter your email.", "err");
   busy($("fp-go"), true, "Sending…");
@@ -531,11 +1289,9 @@ async function newPassword(){
   const { error } = await sb.auth.updateUser({ password });
   busy($("np-go"), false);
   if(error) return show($("np-msg"), friendly(error), "err");
-
   recovering = false;
-  show($("np-msg"), "Password updated. Signing you in…", "ok");
   const { data:{ session } } = await sb.auth.getSession();
-  if(session){ me = session.user; location.hash = "campaigns"; enterApp(); }
+  if(session){ me = session.user; location.hash = "dashboard"; await enterApp(); }
   else showAuth("signin");
 }
 
@@ -543,7 +1299,6 @@ async function newPassword(){
 document.querySelectorAll("button.primary").forEach(b => b.dataset.label = b.textContent);
 
 document.addEventListener("click", e => {
-  // password eye
   const peek = e.target.closest(".peek");
   if(peek){
     const input = $(peek.dataset.peek);
@@ -558,7 +1313,6 @@ document.addEventListener("click", e => {
     return;
   }
 
-  // role picker
   const roleBtn = e.target.closest(".role");
   if(roleBtn){
     role = roleBtn.dataset.role;
@@ -567,56 +1321,94 @@ document.addEventListener("click", e => {
     return;
   }
 
-  // auth pane links
   const go = e.target.closest("[data-go]");
   if(go){ location.hash = go.dataset.go; return; }
 
-  // menu
   if(e.target.closest("[data-toggle-menu]")){ document.body.classList.toggle("menu"); return; }
   if(e.target.closest("[data-close-menu]")){  document.body.classList.remove("menu"); return; }
 
-  // buttons
-  const id = e.target.closest("button")?.id;
-  if(id === "si-go") signIn();
-  if(id === "su-go") signUp();
-  if(id === "fp-go") reset();
-  if(id === "np-go") newPassword();
+  const apply = e.target.closest("[data-apply]");
+  if(apply){ openApply(apply.dataset.apply); return; }
+
+  const decideBtn = e.target.closest("[data-decide]");
+  if(decideBtn){ decide(decideBtn.dataset.id, decideBtn.dataset.decide); return; }
+
+  const thread = e.target.closest("[data-thread]");
+  if(thread){ openThread(thread.dataset.thread); return; }
 
   const act = e.target.closest("[data-act]")?.dataset.act;
-  if(act === "reload")  location.reload();
-  if(act === "refresh") load();
+  if(act === "reload")           return location.reload();
+  if(act === "refresh-campaigns")return pageCampaigns();
+  if(act === "read-all")         return markAllRead();
+
+  const btn = e.target.closest("button");
+  if(!btn) return;
+  if(btn.id === "si-go") signIn();
+  if(btn.id === "su-go") signUp();
+  if(btn.id === "fp-go") resetPw();
+  if(btn.id === "np-go") newPassword();
+  if(btn.id === "ap-go") sendApplication(btn.dataset.campaign);
+  if(btn.id === "m-go")  sendMessage(btn.dataset.app);
+  if(btn.id === "pf-go") saveBasics();
+  if(btn.id === "bp-go") saveBrand();
+  if(btn.id === "cp-go") saveCreator();
+  if(btn.id === "st-go") changePassword();
 });
 
 document.addEventListener("input", e => {
-  if(e.target.id !== "q") return;
-  const q = e.target.value.trim().toLowerCase();
-  paint(!q ? allCampaigns : allCampaigns.filter(c =>
-    [c.title, c.description, c.category, c.platform, c.location, c.requirements]
-      .filter(Boolean).join(" ").toLowerCase().includes(q)));
+  if(e.target.id !== "q" && e.target.id !== "fstatus") return;
+  const q  = ($("q")?.value || "").trim().toLowerCase();
+  const st = ($("fstatus")?.value || "").toLowerCase();
+  const page = location.hash.replace("#","");
+
+  const hit = (...parts) => parts.filter(Boolean).join(" ").toLowerCase().includes(q);
+
+  if(page === "campaigns"){
+    paintCampaigns((cache.campaigns||[]).filter(c =>
+      !q || hit(c.title,c.description,c.category,c.platform,c.location,c.requirements)));
+  } else if(page === "applications"){
+    paintApplications((cache.apps||[]).filter(a => {
+      const c = cache.campsById[a.campaign_id] || {};
+      const p = cache.peopleById[a.creator_id] || {};
+      const okQ = !q || hit(a.pitch, c.title, p.full_name);
+      const okS = !st || (a.status||"").toLowerCase() === st;
+      return okQ && okS;
+    }));
+  } else if(page === "creators"){
+    paintCreators((cache.creators||[]).filter(c =>
+      !q || hit(c._p.full_name, c.handle, c.category, c.bio, c.location)));
+  }
 });
 
 document.addEventListener("keydown", e => {
+  // Thread cards are role=button, so they must respond to Enter and Space.
+  const card = e.target.closest?.("[data-thread]");
+  if(card && (e.key === "Enter" || e.key === " ")){
+    e.preventDefault();
+    openThread(card.dataset.thread);
+    return;
+  }
+
   if(e.key !== "Enter") return;
+  if(e.target.id === "m-text"){ sendMessage($("m-go")?.dataset.app); return; }
   const pane = e.target.closest?.(".pane")?.id;
   if(pane === "p-signin") signIn();
   else if(pane === "p-signup") signUp();
-  else if(pane === "p-forgot") reset();
+  else if(pane === "p-forgot") resetPw();
   else if(pane === "p-reset")  newPassword();
 });
 
 window.addEventListener("hashchange", () => {
   if(recovering) return;
-  if(me) {
-    if(APP_PAGES[location.hash.replace("#","")] || location.hash === "#signout") routeApp();
-    else location.hash = "campaigns";
-  } else {
-    showAuth();
-  }
+  if(me){
+    if(PAGES[location.hash.replace("#","")] || location.hash === "#signout") routeApp();
+    else location.hash = "dashboard";
+  } else showAuth();
 });
 
-sb.auth.onAuthStateChange((evt, session) => {
+sb.auth.onAuthStateChange((evt) => {
   if(evt === "PASSWORD_RECOVERY"){ recovering = true; showAuth("reset"); return; }
-  if(evt === "SIGNED_OUT"){ me = null; showAuth("signin"); }
+  if(evt === "SIGNED_OUT"){ me = null; profile = null; showAuth("signin"); }
 });
 
 boot();
