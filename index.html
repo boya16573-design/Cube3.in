@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cube3 — creator & brand collaborations</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%232563EB'/%3E%3Cpolygon points='50,22 76,37 50,52 24,37' fill='%23fff'/%3E%3Cpolygon points='76,37 76,64 50,79 50,52' fill='%23BFDBFE'/%3E%3Cpolygon points='24,37 24,64 50,79 50,52' fill='%23DBEAFE'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
@@ -49,7 +50,7 @@ animation:sh 1.3s infinite;border-radius:10px;margin-bottom:12px}
 .auth{min-height:100vh;display:grid;place-items:center;padding:22px}
 .auth .box{width:100%;max-width:410px}
 .logo{display:flex;align-items:center;justify-content:center;gap:10px;font-weight:800;font-size:24px;letter-spacing:-.02em}
-.logo .m{width:34px;height:34px;border-radius:9px;background:var(--blue);color:#fff;display:grid;place-items:center;font-size:15px}
+.logo .m{width:34px;height:34px;flex:0 0 auto}
 .logo b{color:var(--blue)}
 .pick{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
 .pick button{all:unset;cursor:pointer;border:1.5px solid var(--line);border-radius:10px;padding:14px;text-align:center;font-weight:600;font-size:14px}
@@ -58,6 +59,7 @@ animation:sh 1.3s infinite;border-radius:10px;margin-bottom:12px}
 aside{width:248px;flex:0 0 248px;background:var(--card);border-right:1px solid var(--line);padding:20px 14px;
 position:fixed;top:0;bottom:0;left:0;overflow-y:auto;z-index:60;transition:transform .22s}
 aside .logo{justify-content:flex-start;font-size:20px;padding:0 8px 20px}
+aside .logo .m{width:30px;height:30px}
 .side a{display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:9px;color:var(--muted);font-weight:500;font-size:14.5px;margin-bottom:2px}
 .side a:hover{background:var(--bg);color:var(--ink)}
 .side a.on{background:var(--blue);color:#fff;font-weight:600}
@@ -115,11 +117,8 @@ border-radius:10px;box-shadow:0 10px 30px rgba(15,23,42,.15);min-width:170px;z-i
 .tabs button{all:unset;cursor:pointer;padding:8px 14px;border-radius:8px;font-size:13.5px;font-weight:600;
 color:var(--muted);border:1px solid var(--line);background:var(--card)}
 .tabs button[aria-pressed="true"]{background:var(--blue);color:#fff;border-color:var(--blue)}
-.doc{max-width:760px}
-.doc h2{margin:26px 0 8px}
-.doc p{margin-bottom:12px;color:#334155}
-.doc ul{margin:0 0 14px 20px;color:#334155}
-.doc li{margin-bottom:6px}
+.doc{max-width:760px}.doc h2{margin:26px 0 8px}.doc p{margin-bottom:12px;color:#334155}
+.doc ul{margin:0 0 14px 20px;color:#334155}.doc li{margin-bottom:6px}
 .doc .upd{font-size:13px;color:var(--faint);font-family:ui-monospace,monospace}
 </style>
 </head>
@@ -136,12 +135,8 @@ color:var(--muted);border:1px solid var(--line);background:var(--card)}
 var SUPABASE_URL = "https://zjgtceurzsvjkspkvroz.supabase.co";
 var SUPABASE_KEY = "sb_publishable_q9x-cmieOqpj3_rw3AGcEA_K-uynMSm";
 
-/* Business details shown in Terms & Privacy. Fill these in. */
-var LEGAL = {
-  entity:  "Cube3",                      // registered name, if you have one
-  contact: "boya16573@gmail.com",        // where users reach you
-  country: "India"
-};
+/* Shown in Terms & Privacy. */
+var LEGAL = { entity:"Cube3", contact:"boya16573@gmail.com", country:"India" };
 </script>
 
 <script>
@@ -158,8 +153,6 @@ var sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 var me=null,ATT="message-attachments",AVA="avatars",CIMG="campaign-images";
 var chan=null,active=null,pend=null,blocked={},blockedBy={},unread=0;
 
-/* One fixed list, used by profiles, campaigns and both filters.
-   Free text was the bug: "Beauty", "beauty" and "Content Creator" never match. */
 var CATEGORIES=["Beauty & Skincare","Fashion & Styling","Food & Cooking","Fitness & Health",
 "Tech & Gadgets","Gaming","Travel","Lifestyle & Vlogs","Comedy & Entertainment","Education & Learning",
 "Finance & Business","Parenting & Family","Home & Interiors","Automotive","Music & Dance",
@@ -168,8 +161,7 @@ var CATEGORIES=["Beauty & Skincare","Fashion & Styling","Food & Cooking","Fitnes
 function catSelect(id,value,blankLabel){
   return '<select id="'+id+'"><option value="">'+(blankLabel||"Select a category")+'</option>'+
     CATEGORIES.map(function(c){return '<option value="'+esc(c)+'"'+
-      (c===value?" selected":"")+'>'+esc(c)+'</option>';}).join("")+'</select>';
-}
+      (c===value?" selected":"")+'>'+esc(c)+'</option>';}).join("")+'</select>';}
 
 function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){
 return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m];});}
@@ -180,7 +172,11 @@ function inr(n){return n==null||n===""?"—":"₹"+Number(n).toLocaleString("en-
 function fsz(b){if(b==null)return"";if(b<1024)return b+" B";if(b<1048576)return Math.round(b/1024)+" KB";return (b/1048576).toFixed(1)+" MB";}
 function el(i){return document.getElementById(i);}
 function go(h){location.hash=h;}
-var LOGO='<div class="logo"><span class="m">C3</span>Cube<b>3</b></div>';
+var MARK='<svg class="m" viewBox="0 0 100 100"><rect width="100" height="100" rx="24" fill="#2563EB"/>'+
+'<polygon points="50,22 76,37 50,52 24,37" fill="#fff"/>'+
+'<polygon points="76,37 76,64 50,79 50,52" fill="#BFDBFE"/>'+
+'<polygon points="24,37 24,64 50,79 50,52" fill="#DBEAFE"/></svg>';
+var LOGO='<div class="logo">'+MARK+'Cube<b>3</b></div>';
 function avatarOf(url,name,size){var s=size||38;
   return url?'<img class="av" style="width:'+s+'px;height:'+s+'px" src="'+esc(url)+'" alt="">'
     :'<div class="av" style="width:'+s+'px;height:'+s+'px;font-size:'+Math.round(s/2.7)+'px">'+esc(ini(name))+'</div>';}
@@ -255,19 +251,35 @@ function signup(){
     '<p class="small muted" style="margin-top:10px;text-align:center">Already have one? <a href="#login" style="color:var(--blue);font-weight:600">Sign in</a></p>');
   el("rc").onclick=function(){role="creator";el("rc").setAttribute("aria-pressed","true");el("rb").setAttribute("aria-pressed","false");};
   el("rb").onclick=function(){role="brand";el("rb").setAttribute("aria-pressed","true");el("rc").setAttribute("aria-pressed","false");};
+
   el("b").onclick=async function(){
-    var b=el("b"),name=el("n").value.trim();
+    var b=el("b"),name=el("n").value.trim(),email=el("e").value.trim(),pw=el("p").value;
     if(!name)return void(el("m").innerHTML='<div class="bad" style="margin-top:14px"><code>Please enter your name.</code></div>');
     b.disabled=true;b.textContent="Creating…";
-    var r=await sb.auth.signUp({email:el("e").value.trim(),password:el("p").value,
-      options:{data:{full_name:name,role:role}}});
-    if(r.error){el("m").innerHTML='<div class="bad" style="margin-top:14px"><code>'+esc(r.error.message)+'</code></div>';
+
+    async function finish(user){
+      await sb.from("profiles").upsert({id:user.id,full_name:name,role:role});
+      if(role==="creator")await sb.from("creator_profiles").upsert({id:user.id});
+      me=null;go("#dashboard");route();}
+
+    var r=await sb.auth.signUp({email:email,password:pw,options:{data:{full_name:name,role:role}}});
+
+    if(r.error){
+      // Supabase often creates the account even when the confirmation email
+      // fails to send. Don't strand the user — sign them straight in.
+      var s=await sb.auth.signInWithPassword({email:email,password:pw});
+      if(!s.error&&s.data&&s.data.session){ await finish(s.data.user); return; }
+      el("m").innerHTML='<div class="bad" style="margin-top:14px"><code>'+esc(r.error.message)+'</code></div>';
       b.disabled=false;b.textContent="Create account";return;}
-    if(r.data.session&&r.data.user){
-      await sb.from("profiles").upsert({id:r.data.user.id,full_name:name,role:role});
-      if(role==="creator")await sb.from("creator_profiles").upsert({id:r.data.user.id});
-      me=null;go("#dashboard");route();
-    }else el("m").innerHTML='<div class="ok">Check your email to confirm your account, then sign in.</div>';};}
+
+    if(r.data.session&&r.data.user){ await finish(r.data.user); return; }
+
+    // No session: email confirmation is switched on. Try signing in anyway,
+    // in case confirmation isn't actually required.
+    var s2=await sb.auth.signInWithPassword({email:email,password:pw});
+    if(!s2.error&&s2.data&&s2.data.session){ await finish(s2.data.user); return; }
+    el("m").innerHTML='<div class="ok">Account created. Check your email to confirm, then sign in.</div>';
+    b.disabled=false;b.textContent="Create account";};}
 
 function forgot(){
   authShell('<h1 style="font-size:21px">Reset password</h1>'+
@@ -278,8 +290,11 @@ function forgot(){
   el("b").onclick=async function(){
     var b=el("b");b.disabled=true;b.textContent="Sending…";
     var r=await sb.auth.resetPasswordForEmail(el("e").value.trim(),{redirectTo:location.origin+"/#reset"});
-    el("m").innerHTML=r.error?'<div class="bad" style="margin-top:14px"><code>'+esc(r.error.message)+'</code></div>'
-      :'<div class="ok">Sent. Check your inbox.</div>';
+    el("m").innerHTML=r.error
+      ?'<div class="bad" style="margin-top:14px"><code>'+esc(r.error.message)+
+       '</code><span style="display:block;margin-top:6px;font-family:Inter,sans-serif">'+
+       'Email is temporarily unavailable. Contact '+esc(LEGAL.contact)+' and we\'ll reset it for you.</span></div>'
+      :'<div class="ok">Sent. Check your inbox and spam folder.</div>';
     b.disabled=false;b.textContent="Send reset link";};}
 
 function reset(){
@@ -353,7 +368,8 @@ function markRead(k,id){try{localStorage.setItem(readKey(k,id),new Date().toISOS
 /* ================= DASHBOARD ================= */
 async function dashboard(){
   var V=el("view"),brand=me.role==="brand";
-  V.innerHTML=(me.suspended?V.querySelector(".warn")?V.querySelector(".warn").outerHTML:"":"")+
+  var banner=V.querySelector(".warn");
+  V.innerHTML=(banner?banner.outerHTML:"")+
     '<h1>Welcome back, '+esc(me.name.split(" ")[0])+'</h1><p class="muted" style="margin:4px 0 20px">'+
     (brand?"Find creators and track your campaigns.":"Discover campaigns and grow your work.")+
     '</p><div class="stats" id="st"></div><div class="cols"><div class="card" id="l"></div><div class="card" id="r"></div></div>';
@@ -794,82 +810,67 @@ async function settings(){
 /* ================= LEGAL ================= */
 var UPDATED="16 August 2026";
 function terms(){
-  el("view").innerHTML='<div class="doc"><h1>Terms of Use</h1>'+
-  '<p class="upd">Last updated '+UPDATED+'</p>'+
-  '<h2>1. What Cube3 is</h2>'+
-  '<p>Cube3 is an introduction service. Brands post campaigns and creators apply to them. '+
-  'We are not a party to any agreement you reach with another user, and we do not employ, '+
-  'represent, or act as an agent for anyone on the platform.</p>'+
+  el("view").innerHTML='<div class="doc"><h1>Terms of Use</h1><p class="upd">Last updated '+UPDATED+'</p>'+
+  '<h2>1. What Cube3 is</h2><p>Cube3 is an introduction service. Brands post campaigns and creators '+
+  'apply to them. We are not a party to any agreement you reach with another user, and we do not '+
+  'employ, represent, or act as an agent for anyone on the platform.</p>'+
   '<h2>2. Payments happen between you</h2>'+
   '<p><strong>Cube3 does not currently process, hold, or guarantee any payment.</strong> Money moves '+
   'directly between the brand and the creator, on terms you agree between yourselves. We cannot '+
   'refund you, release funds, or enforce payment. Agree your terms in writing before starting work, '+
   'and treat any request to pay a fee in order to receive work as a scam.</p>'+
-  '<h2>3. Who may use it</h2>'+
-  '<p>You must be 18 or older and provide accurate information. One account per person or business. '+
-  'Impersonating someone else, or inflating your audience figures, is grounds for removal.</p>'+
-  '<h2>4. Your content</h2>'+
-  '<p>You keep ownership of everything you upload. You grant us permission to display it on the '+
-  'platform so the service can function. Do not upload anything you lack the rights to, or anything '+
-  'unlawful, hateful, sexual, or misleading.</p>'+
-  '<h2>5. Conduct</h2>'+
-  '<ul><li>No spam, scraping, or automated bulk messaging</li>'+
+  '<h2>3. Who may use it</h2><p>You must be 18 or older and provide accurate information. One account '+
+  'per person or business. Impersonating someone else, or inflating your audience figures, is grounds '+
+  'for removal.</p>'+
+  '<h2>4. Your content</h2><p>You keep ownership of everything you upload. You grant us permission to '+
+  'display it on the platform so the service can function. Do not upload anything you lack the rights '+
+  'to, or anything unlawful, hateful, sexual, or misleading.</p>'+
+  '<h2>5. Conduct</h2><ul><li>No spam, scraping, or automated bulk messaging</li>'+
   '<li>No harassment, threats, or abuse</li>'+
   '<li>No attempt to bypass security, rate limits, or access other users\' data</li>'+
   '<li>No fake campaigns or fake profiles</li></ul>'+
-  '<h2>6. Suspension</h2>'+
-  '<p>We may suspend or remove an account that breaks these terms, with or without notice. '+
-  'A suspended account can still read but cannot post, apply, or start conversations. '+
+  '<h2>6. Suspension</h2><p>We may suspend or remove an account that breaks these terms, with or '+
+  'without notice. A suspended account can still read but cannot post, apply, or start conversations. '+
   'To appeal, write to '+esc(LEGAL.contact)+'.</p>'+
-  '<h2>7. No warranty</h2>'+
-  '<p>The service is provided as-is. We do not verify the identity, claims, follower counts, or '+
-  'reliability of any user. You are responsible for your own due diligence before working with '+
-  'someone or sending them money.</p>'+
-  '<h2>8. Limitation of liability</h2>'+
-  '<p>To the fullest extent the law allows, '+esc(LEGAL.entity)+' is not liable for lost income, '+
-  'unpaid fees, disputes between users, or any indirect loss arising from your use of the platform.</p>'+
-  '<h2>9. Changes</h2>'+
-  '<p>We may update these terms. Continuing to use Cube3 after a change means you accept it.</p>'+
-  '<h2>10. Governing law</h2>'+
-  '<p>These terms are governed by the laws of '+esc(LEGAL.country)+'.</p>'+
+  '<h2>7. No warranty</h2><p>The service is provided as-is. We do not verify the identity, claims, '+
+  'follower counts, or reliability of any user. You are responsible for your own due diligence before '+
+  'working with someone or sending them money.</p>'+
+  '<h2>8. Limitation of liability</h2><p>To the fullest extent the law allows, '+esc(LEGAL.entity)+
+  ' is not liable for lost income, unpaid fees, disputes between users, or any indirect loss arising '+
+  'from your use of the platform.</p>'+
+  '<h2>9. Changes</h2><p>We may update these terms. Continuing to use Cube3 after a change means you '+
+  'accept it.</p>'+
+  '<h2>10. Governing law</h2><p>These terms are governed by the laws of '+esc(LEGAL.country)+'.</p>'+
   '<h2>11. Contact</h2><p>'+esc(LEGAL.contact)+'</p>'+
   '<p class="small muted" style="margin-top:26px">This is a plain-language starting point, not legal '+
   'advice. Have a lawyer review it before you handle real money or scale up.</p></div>';}
 
 function privacy(){
-  el("view").innerHTML='<div class="doc"><h1>Privacy Policy</h1>'+
-  '<p class="upd">Last updated '+UPDATED+'</p>'+
-  '<h2>What we collect</h2>'+
-  '<ul><li><strong>Account:</strong> email address, password (stored hashed, never in plain text), '+
-  'account type</li>'+
-  '<li><strong>Profile:</strong> name, bio, photo, category, location, and the social media links '+
-  'you choose to add</li>'+
+  el("view").innerHTML='<div class="doc"><h1>Privacy Policy</h1><p class="upd">Last updated '+UPDATED+'</p>'+
+  '<h2>What we collect</h2><ul>'+
+  '<li><strong>Account:</strong> email address, password (stored hashed, never in plain text), account type</li>'+
+  '<li><strong>Profile:</strong> name, bio, photo, category, location, and the social media links you add</li>'+
   '<li><strong>Activity:</strong> campaigns, applications and pitches you write</li>'+
   '<li><strong>Messages:</strong> the content of your conversations and any files you attach</li>'+
   '<li><strong>Reports and blocks</strong> you submit</li></ul>'+
-  '<h2>Why we collect it</h2>'+
-  '<p>To run the service — to show your profile to brands, deliver your messages, and keep the '+
-  'platform usable and safe. We do not sell your data and we do not run advertising.</p>'+
-  '<h2>Who can see what</h2>'+
-  '<ul><li>Your name, photo, bio, category and social links are visible to other signed-in users</li>'+
+  '<h2>Why we collect it</h2><p>To run the service — to show your profile to brands, deliver your '+
+  'messages, and keep the platform usable and safe. We do not sell your data and we do not run '+
+  'advertising.</p>'+
+  '<h2>Who can see what</h2><ul>'+
+  '<li>Your name, photo, bio, category and social links are visible to other signed-in users</li>'+
   '<li>Your email address is not shown to other users</li>'+
   '<li>Private messages are visible only to you and the person you are talking to</li>'+
   '<li>Administrators can read reports, and can see profile information</li></ul>'+
-  '<h2>Where it is stored</h2>'+
-  '<p>On Supabase, which hosts our database and file storage. Data is protected by row-level '+
-  'security rules so users can only read what they are entitled to.</p>'+
-  '<h2>How long we keep it</h2>'+
-  '<p>Until you ask us to delete your account. Reports may be kept longer, since deleting them on '+
-  'request would let a reported person erase the record against them.</p>'+
-  '<h2>Your rights</h2>'+
-  '<p>You may ask us to show you what we hold about you, correct it, or delete your account and its '+
-  'data. Write to '+esc(LEGAL.contact)+' and we will respond within 30 days.</p>'+
-  '<h2>Cookies</h2>'+
-  '<p>We use browser storage only to keep you signed in and to remember which conversations you have '+
-  'read. No advertising or tracking cookies.</p>'+
-  '<h2>Children</h2>'+
-  '<p>Cube3 is not for anyone under 18. If we learn that a minor has registered, we will remove the '+
-  'account.</p>'+
+  '<h2>Where it is stored</h2><p>On Supabase, which hosts our database and file storage. Data is '+
+  'protected by row-level security rules so users can only read what they are entitled to.</p>'+
+  '<h2>How long we keep it</h2><p>Until you ask us to delete your account. Reports may be kept longer, '+
+  'since deleting them on request would let a reported person erase the record against them.</p>'+
+  '<h2>Your rights</h2><p>You may ask us to show you what we hold about you, correct it, or delete '+
+  'your account and its data. Write to '+esc(LEGAL.contact)+' and we will respond within 30 days.</p>'+
+  '<h2>Cookies</h2><p>We use browser storage only to keep you signed in and to remember which '+
+  'conversations you have read. No advertising or tracking cookies.</p>'+
+  '<h2>Children</h2><p>Cube3 is not for anyone under 18. If we learn that a minor has registered, we '+
+  'will remove the account.</p>'+
   '<h2>Contact</h2><p>'+esc(LEGAL.contact)+'</p>'+
   '<p class="small muted" style="margin-top:26px">A plain-language starting point, not legal advice. '+
   'India\'s DPDP Act and the GDPR may impose additional duties depending on who signs up.</p></div>';}
@@ -1162,7 +1163,6 @@ async function route(){
     if(!me){
       var ok=await boot();
       if(!ok){
-        // Terms and Privacy must be readable before signing up.
         if(base==="terms"||base==="privacy"){
           R.innerHTML='<div class="content" style="margin:0 auto"><p style="margin-bottom:16px">'+
             '<a class="small muted" href="#login">← Back to sign in</a></p><div id="view"></div></div>';
