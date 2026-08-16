@@ -115,6 +115,12 @@ border-radius:10px;box-shadow:0 10px 30px rgba(15,23,42,.15);min-width:170px;z-i
 .tabs button{all:unset;cursor:pointer;padding:8px 14px;border-radius:8px;font-size:13.5px;font-weight:600;
 color:var(--muted);border:1px solid var(--line);background:var(--card)}
 .tabs button[aria-pressed="true"]{background:var(--blue);color:#fff;border-color:var(--blue)}
+.doc{max-width:760px}
+.doc h2{margin:26px 0 8px}
+.doc p{margin-bottom:12px;color:#334155}
+.doc ul{margin:0 0 14px 20px;color:#334155}
+.doc li{margin-bottom:6px}
+.doc .upd{font-size:13px;color:var(--faint);font-family:ui-monospace,monospace}
 </style>
 </head>
 <body>
@@ -125,13 +131,17 @@ color:var(--muted);border:1px solid var(--line);background:var(--card)}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script>
 
 <script>
-/* ===========================================================
-   Paste your two Supabase values here (Supabase → Project
-   Settings → API). Both are safe to publish — your RLS
-   policies are what protect the data.
-   =========================================================== */
+/* Paste your two Supabase values (Project Settings → API). Both are safe to
+   publish — your RLS policies are what protect the data. */
 var SUPABASE_URL = "https://zjgtceurzsvjkspkvroz.supabase.co";
 var SUPABASE_KEY = "sb_publishable_q9x-cmieOqpj3_rw3AGcEA_K-uynMSm";
+
+/* Business details shown in Terms & Privacy. Fill these in. */
+var LEGAL = {
+  entity:  "Cube3",                      // registered name, if you have one
+  contact: "boya16573@gmail.com",        // where users reach you
+  country: "India"
+};
 </script>
 
 <script>
@@ -142,12 +152,24 @@ var R=document.getElementById("root"),LAYER=document.getElementById("layer");
 if(/PASTE_YOUR/.test(SUPABASE_URL)||/PASTE_YOUR/.test(SUPABASE_KEY)){
   R.innerHTML='<div class="auth"><div class="box"><div class="bad"><b>Setup needed</b><code>'+
     'Open index.html and replace SUPABASE_URL and SUPABASE_KEY with your two Supabase values.'+
-    '</code></div></div></div>';return;
-}
+    '</code></div></div></div>';return;}
 
 var sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 var me=null,ATT="message-attachments",AVA="avatars",CIMG="campaign-images";
 var chan=null,active=null,pend=null,blocked={},blockedBy={},unread=0;
+
+/* One fixed list, used by profiles, campaigns and both filters.
+   Free text was the bug: "Beauty", "beauty" and "Content Creator" never match. */
+var CATEGORIES=["Beauty & Skincare","Fashion & Styling","Food & Cooking","Fitness & Health",
+"Tech & Gadgets","Gaming","Travel","Lifestyle & Vlogs","Comedy & Entertainment","Education & Learning",
+"Finance & Business","Parenting & Family","Home & Interiors","Automotive","Music & Dance",
+"Art & Craft","Sports","Pets & Animals","Books & Writing","Other"];
+
+function catSelect(id,value,blankLabel){
+  return '<select id="'+id+'"><option value="">'+(blankLabel||"Select a category")+'</option>'+
+    CATEGORIES.map(function(c){return '<option value="'+esc(c)+'"'+
+      (c===value?" selected":"")+'>'+esc(c)+'</option>';}).join("")+'</select>';
+}
 
 function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){
 return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m];});}
@@ -169,17 +191,15 @@ async function Q(label,builder){
   if(r&&r.error){var e=r.error,m=label+": "+(e.message||"failed");
     if(e.code)m+=" ["+e.code+"]";
     if(e.code==="42P01")m+=" — that table doesn't exist. Run features.sql in Supabase.";
-    if(e.code==="42703")m+=" — that column doesn't exist. Run hardening.sql in Supabase.";
+    if(e.code==="42703")m+=" — that column doesn't exist. Run hardening.sql / safeguards.sql.";
     if(e.code==="42501")m+=" — blocked by a security policy";
     throw new Error(m);}
-  return r?r.data:null;
-}
+  return r?r.data:null;}
 function boom(e,t){console.error(e);
   (t||el("view")||R).innerHTML='<div class="bad"><b>Something went wrong</b><code>'+esc(e.message)+
   '</code><button class="btn sm" style="margin-top:12px" onclick="location.reload()">Reload</button></div>';}
 function none(b,d,h,l){return '<div class="state"><b>'+esc(b)+'</b>'+esc(d||"")+
 (h?'<div style="margin-top:14px"><a class="btn sm" href="'+esc(h)+'">'+esc(l)+'</a></div>':"")+'</div>';}
-
 function modal(html){LAYER.innerHTML='<div class="modal" id="mdl"><div class="in">'+html+'</div></div>';
   el("mdl").onclick=function(e){if(e.target.id==="mdl")closeModal();};}
 function closeModal(){LAYER.innerHTML="";}
@@ -197,12 +217,13 @@ async function uploadImage(bucket,file,prefix){
     if(/bucket/i.test(up.error.message))
       throw new Error('Bucket "'+bucket+'" does not exist. Create it in Supabase → Storage (Public).');
     throw new Error(up.error.message);}
-  return sb.storage.from(bucket).getPublicUrl(path).data.publicUrl;
-}
+  return sb.storage.from(bucket).getPublicUrl(path).data.publicUrl;}
 
 /* ================= AUTH ================= */
 function authShell(inner){R.innerHTML='<div class="auth"><div class="box">'+LOGO+
-  '<div class="card pad" style="margin-top:16px">'+inner+'</div></div></div>';}
+  '<div class="card pad" style="margin-top:16px">'+inner+'</div>'+
+  '<p class="small muted" style="text-align:center;margin-top:14px">'+
+  '<a href="#terms">Terms</a> · <a href="#privacy">Privacy</a></p></div></div>';}
 
 function login(){
   authShell('<h1 style="font-size:21px">Sign in</h1><p class="muted small" style="margin-top:4px">Welcome back.</p>'+
@@ -217,8 +238,7 @@ function login(){
     if(r.error){el("m").innerHTML='<div class="bad" style="margin-top:14px"><code>'+esc(r.error.message)+'</code></div>';
       b.disabled=false;b.textContent="Sign in";return;}
     me=null;go("#dashboard");route();};
-  el("p").onkeydown=function(ev){if(ev.key==="Enter")el("b").click();};
-}
+  el("p").onkeydown=function(ev){if(ev.key==="Enter")el("b").click();};}
 
 function signup(){
   var role="creator";
@@ -230,7 +250,9 @@ function signup(){
     '<label>Password</label><input id="p" type="password" autocomplete="new-password">'+
     '<p class="small muted" style="margin-top:6px">At least 6 characters.</p>'+
     '<button class="btn blk" id="b" style="margin-top:18px">Create account</button><div id="m"></div>'+
-    '<p class="small muted" style="margin-top:16px;text-align:center">Already have one? <a href="#login" style="color:var(--blue);font-weight:600">Sign in</a></p>');
+    '<p class="small muted" style="margin-top:12px;text-align:center">By signing up you agree to the '+
+    '<a href="#terms" style="color:var(--blue)">Terms</a> and <a href="#privacy" style="color:var(--blue)">Privacy Policy</a>.</p>'+
+    '<p class="small muted" style="margin-top:10px;text-align:center">Already have one? <a href="#login" style="color:var(--blue);font-weight:600">Sign in</a></p>');
   el("rc").onclick=function(){role="creator";el("rc").setAttribute("aria-pressed","true");el("rb").setAttribute("aria-pressed","false");};
   el("rb").onclick=function(){role="brand";el("rb").setAttribute("aria-pressed","true");el("rc").setAttribute("aria-pressed","false");};
   el("b").onclick=async function(){
@@ -245,8 +267,7 @@ function signup(){
       await sb.from("profiles").upsert({id:r.data.user.id,full_name:name,role:role});
       if(role==="creator")await sb.from("creator_profiles").upsert({id:r.data.user.id});
       me=null;go("#dashboard");route();
-    }else el("m").innerHTML='<div class="ok">Check your email to confirm your account, then sign in.</div>';};
-}
+    }else el("m").innerHTML='<div class="ok">Check your email to confirm your account, then sign in.</div>';};}
 
 function forgot(){
   authShell('<h1 style="font-size:21px">Reset password</h1>'+
@@ -259,8 +280,7 @@ function forgot(){
     var r=await sb.auth.resetPasswordForEmail(el("e").value.trim(),{redirectTo:location.origin+"/#reset"});
     el("m").innerHTML=r.error?'<div class="bad" style="margin-top:14px"><code>'+esc(r.error.message)+'</code></div>'
       :'<div class="ok">Sent. Check your inbox.</div>';
-    b.disabled=false;b.textContent="Send reset link";};
-}
+    b.disabled=false;b.textContent="Send reset link";};}
 
 function reset(){
   authShell('<h1 style="font-size:21px">New password</h1>'+
@@ -272,15 +292,14 @@ function reset(){
     if(r.error){el("m").innerHTML='<div class="bad" style="margin-top:14px"><code>'+esc(r.error.message)+'</code></div>';
       b.disabled=false;b.textContent="Update password";return;}
     el("m").innerHTML='<div class="ok">Done. Taking you in…</div>';
-    setTimeout(function(){me=null;go("#dashboard");route();},900);};
-}
+    setTimeout(function(){me=null;go("#dashboard");route();},900);};}
 
 /* ================= SHELL ================= */
 var NAV=[["dashboard","◧","Dashboard"],["campaigns","◈","Campaigns"],["applications","✎","Applications"],
 ["creators","◕","Creators"],["messages","✉","Messages"],["profile","◑","Profile"],["settings","⚙","Settings"]];
 var TITLES={dashboard:"Dashboard",campaigns:"Campaigns",applications:"Applications",creators:"Creators",
 messages:"Messages",profile:"Profile",settings:"Settings",admin:"Admin — reports",creator:"Creators",
-"new-campaign":"New campaign","edit-campaign":"Edit campaign"};
+terms:"Terms of Use",privacy:"Privacy Policy","new-campaign":"New campaign","edit-campaign":"Edit campaign"};
 
 function shell(on){
   R.innerHTML='<div class="shell"><aside>'+LOGO+'<nav class="side">'+
@@ -294,38 +313,38 @@ function shell(on){
     esc(me.name)+'</div><div style="font-size:12px;color:var(--faint)">'+
     (me.admin?"Admin · ":"")+(me.role==="brand"?"Brand":"Creator")+
     '</div></div>'+avatarOf(me.av,me.name)+'</div></div>'+
-    '<div class="content" id="view"><div class="sk"></div><div class="sk"></div></div></main></div>';
+    '<div class="content" id="view">'+
+    (me.suspended?'<div class="warn" style="margin-bottom:16px"><strong>Your account is suspended.</strong> '+
+      'You can read but not post, apply, or start conversations.'+
+      (me.suspendReason?' Reason: '+esc(me.suspendReason)+'.':'')+
+      ' Contact '+esc(LEGAL.contact)+' to appeal.</div>':"")+
+    '<div class="sk"></div><div class="sk"></div></div></main></div>';
   el("bg").onclick=function(){document.body.classList.toggle("nav");};
-  el("out").onclick=async function(e){e.preventDefault();await sb.auth.signOut();me=null;go("#login");route();};
-}
+  el("out").onclick=async function(e){e.preventDefault();await sb.auth.signOut();me=null;go("#login");route();};}
 
 async function boot(){
   var a=await sb.auth.getUser();
   if(!a.data||!a.data.user)return false;
-  var u=a.data.user;
-  // is_admin may not exist yet if hardening.sql hasn't run — fall back.
-  var p=null;
-  try{p=await Q("Loading your profile",
-    sb.from("profiles").select("id,role,full_name,avatar_url,bio,is_admin").eq("id",u.id).maybeSingle());}
-  catch(e){p=await Q("Loading your profile",
-    sb.from("profiles").select("id,role,full_name,avatar_url,bio").eq("id",u.id).maybeSingle());}
+  var u=a.data.user,p=null;
+  try{p=await Q("Loading your profile",sb.from("profiles")
+    .select("id,role,full_name,avatar_url,bio,is_admin,suspended,suspended_reason").eq("id",u.id).maybeSingle());}
+  catch(e){p=await Q("Loading your profile",sb.from("profiles")
+    .select("id,role,full_name,avatar_url,bio").eq("id",u.id).maybeSingle());}
   if(!p){
     var md=u.user_metadata||{};
     await Q("Creating your profile",sb.from("profiles").insert({
       id:u.id,full_name:md.full_name||u.email.split("@")[0],role:md.role||"creator"}));
-    p=await Q("Loading your profile",
-      sb.from("profiles").select("id,role,full_name,avatar_url,bio").eq("id",u.id).maybeSingle());
-  }
-  me={id:p.id,role:p.role,name:p.full_name||"Cube3 user",av:p.avatar_url,bio:p.bio,
-      email:u.email,admin:!!p.is_admin};
+    p=await Q("Loading your profile",sb.from("profiles")
+      .select("id,role,full_name,avatar_url,bio").eq("id",u.id).maybeSingle());}
+  me={id:p.id,role:p.role,name:p.full_name||"Cube3 user",av:p.avatar_url,bio:p.bio,email:u.email,
+      admin:!!p.is_admin,suspended:!!p.suspended,suspendReason:p.suspended_reason};
   blocked={};blockedBy={};
   try{
     (await Q("Loading blocks",sb.from("user_blocks").select("blocker_id,blocked_id")
       .or("blocker_id.eq."+me.id+",blocked_id.eq."+me.id))||[]).forEach(function(b){
         if(b.blocker_id===me.id)blocked[b.blocked_id]=true; else blockedBy[b.blocker_id]=true;});
   }catch(e){console.warn("blocks unavailable",e.message);}
-  return true;
-}
+  return true;}
 
 function readKey(k,id){return "c3read:"+me.id+":"+k+":"+id;}
 function lastRead(k,id){try{return localStorage.getItem(readKey(k,id))||"1970-01-01";}catch(e){return "1970-01-01";}}
@@ -334,7 +353,8 @@ function markRead(k,id){try{localStorage.setItem(readKey(k,id),new Date().toISOS
 /* ================= DASHBOARD ================= */
 async function dashboard(){
   var V=el("view"),brand=me.role==="brand";
-  V.innerHTML='<h1>Welcome back, '+esc(me.name.split(" ")[0])+'</h1><p class="muted" style="margin:4px 0 20px">'+
+  V.innerHTML=(me.suspended?V.querySelector(".warn")?V.querySelector(".warn").outerHTML:"":"")+
+    '<h1>Welcome back, '+esc(me.name.split(" ")[0])+'</h1><p class="muted" style="margin:4px 0 20px">'+
     (brand?"Find creators and track your campaigns.":"Discover campaigns and grow your work.")+
     '</p><div class="stats" id="st"></div><div class="cols"><div class="card" id="l"></div><div class="card" id="r"></div></div>';
   var tone={blue:["var(--blues)","var(--blue)"],purple:["var(--purples)","var(--purple)"],
@@ -347,7 +367,6 @@ async function dashboard(){
     '<div class="grow"><h3 class="trunc">'+esc(r.t)+'</h3><div class="small muted trunc">'+esc(r.s)+'</div></div>'+
     (r.c?'<span class="chip '+(r.c==="accepted"||r.c==="open"?"g":r.c==="pending"?"a":"")+'">'+esc(r.c)+'</span>':"")+
     '</div>';}).join(""):none(eb,ed));}
-
   if(brand){
     var cs=await Q("Loading your campaigns",sb.from("campaigns")
       .select("id,title,budget,status,image_url,created_at").eq("brand_id",me.id))||[];
@@ -373,8 +392,7 @@ async function dashboard(){
       .order("created_at",{ascending:false}).limit(5))||[];
     list("l","Recommended for you","#campaigns",rec.map(function(c){
       return {t:c.title,s:inr(c.budget)+(c.category?" · "+c.category:""),c:"open",img:c.image_url};}),
-      "No open campaigns","Check back soon.");
-  }
+      "No open campaigns","Check back soon.");}
   var col=brand?"brand_id":"creator_id",oth=brand?"creator_id":"brand_id";
   var iq=await Q("Loading conversations",sb.from("creator_inquiries")
     .select("id,brand_id,creator_id,created_at").eq(col,me.id).limit(5))||[];
@@ -384,8 +402,7 @@ async function dashboard(){
     .in("id",iq.map(function(i){return i[oth];})))||[]).forEach(function(p){nm[p.id]=p;});}
   list("r","Recent messages","#messages",iq.map(function(i){var p=nm[i[oth]]||{};
     return {t:p.full_name||"Cube3 user",s:"Started "+ago(i.created_at),img:p.avatar_url};}),
-    "No messages yet",brand?"Message a creator to begin.":"Brands will reach out here.");
-}
+    "No messages yet",brand?"Message a creator to begin.":"Brands will reach out here.");}
 
 /* ================= CAMPAIGNS ================= */
 async function campaignsView(){
@@ -393,11 +410,12 @@ async function campaignsView(){
   V.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">'+
     '<div><h1>Campaigns</h1><p class="muted" style="margin-top:4px">'+
     (brand?"Campaigns you've posted.":"Open campaigns taking pitches.")+'</p></div>'+
-    (brand?'<a class="btn" href="#new-campaign">+ New campaign</a>':"")+'</div>'+
+    (brand&&!me.suspended?'<a class="btn" href="#new-campaign">+ New campaign</a>':"")+'</div>'+
     (brand?"":'<div class="row2" style="margin-top:16px;flex-wrap:wrap">'+
       '<input id="q" placeholder="Search campaigns" style="max-width:280px">'+
-      '<select id="cat" style="max-width:210px"><option value="">All categories</option></select></div>')+
+      catSelect("cat","","All categories")+'</div>')+
     '<div id="l" style="margin-top:18px"></div>';
+  if(!brand) el("cat").style.maxWidth="230px";
   var rows=brand
     ? await Q("Loading your campaigns",sb.from("campaigns")
         .select("id,title,description,budget,category,status,image_url,created_at")
@@ -411,8 +429,6 @@ async function campaignsView(){
   var did={};
   if(!brand){(await Q("Checking your applications",sb.from("campaign_applications")
     .select("campaign_id").eq("creator_id",me.id))||[]).forEach(function(a){did[a.campaign_id]=true;});
-    var cats=Array.from(new Set(rows.map(function(c){return c.category;}).filter(Boolean))).sort();
-    cats.forEach(function(c){var o=document.createElement("option");o.value=c;o.textContent=c;el("cat").appendChild(o);});
     el("q").addEventListener("input",draw);el("cat").addEventListener("change",draw);}
   function draw(){
     var t=brand?"":(el("q").value||"").toLowerCase().trim(),cat=brand?"":el("cat").value;
@@ -420,7 +436,7 @@ async function campaignsView(){
       if(cat&&c.category!==cat)return false;
       if(!t)return true;
       return ((c.title||"")+" "+(c.description||"")).toLowerCase().indexOf(t)>-1;});
-    if(!L.length)return void(el("l").innerHTML='<div class="card">'+none("No matches","Try a different search.")+'</div>');
+    if(!L.length)return void(el("l").innerHTML='<div class="card">'+none("No matches","Try a different search or category.")+'</div>');
     el("l").innerHTML='<div class="grid">'+L.map(function(c){
       return '<div class="card">'+
         (c.image_url?'<img class="cover" src="'+esc(c.image_url)+'" alt="" data-zoom="'+esc(c.image_url)+'">'
@@ -435,10 +451,10 @@ async function campaignsView(){
         (brand?'<span class="row2"><a class="btn sm g" href="#edit-campaign/'+esc(c.id)+'">Edit</a>'+
                '<a class="btn sm g" href="#applications">Pitches</a></span>'
           :(did[c.id]?'<span class="chip g">Applied</span>'
-            :'<button class="btn sm" data-apply="'+esc(c.id)+'" data-title="'+esc(c.title)+'">Apply</button>'))+
+            :(me.suspended?'<span class="chip r">Suspended</span>'
+              :'<button class="btn sm" data-apply="'+esc(c.id)+'" data-title="'+esc(c.title)+'">Apply</button>')))+
         '</div></div></div>';}).join("")+'</div>';}
-  draw();
-}
+  draw();}
 
 function campaignForm(existing){
   var c=existing||{};
@@ -451,7 +467,7 @@ function campaignForm(existing){
     '<label>Title</label><input id="t" value="'+esc(c.title||"")+'" placeholder="Monsoon skincare launch">'+
     '<label>Description</label><textarea id="d" placeholder="What you need, deliverables, timeline">'+esc(c.description||"")+'</textarea>'+
     '<label>Budget (₹)</label><input id="b" type="number" min="0" value="'+esc(c.budget||"")+'" placeholder="25000">'+
-    '<label>Category</label><input id="c" value="'+esc(c.category||"")+'" placeholder="Beauty, Food, Tech…">'+
+    '<label>Category</label>'+catSelect("c",c.category||"")+
     (existing?'<label>Status</label><select id="s"><option value="open"'+(c.status==="open"?" selected":"")+
       '>Open — accepting pitches</option><option value="closed"'+(c.status==="closed"?" selected":"")+
       '>Closed</option></select>':"")+
@@ -471,7 +487,7 @@ function campaignForm(existing){
     if(!el("t").value.trim())return void(el("m").innerHTML='<div class="bad" style="margin-top:14px"><code>Give it a title.</code></div>');
     var b=el("save");b.disabled=true;b.textContent="Saving…";
     var row={title:el("t").value.trim(),description:el("d").value.trim()||null,
-      budget:el("b").value?Number(el("b").value):null,category:el("c").value.trim()||null,image_url:imageUrl};
+      budget:el("b").value?Number(el("b").value):null,category:el("c").value||null,image_url:imageUrl};
     try{
       if(existing){row.status=el("s").value;
         await Q("Saving campaign",sb.from("campaigns").update(row).eq("id",c.id));}
@@ -488,16 +504,14 @@ function campaignForm(existing){
       '<button class="btn d" id="yes">Delete</button></div>');
     el("yes").onclick=async function(){
       try{await Q("Deleting",sb.from("campaigns").delete().eq("id",c.id));closeModal();go("#campaigns");}
-      catch(e){alert(e.message);}};};
-}
+      catch(e){alert(e.message);}};};}
 
 async function editCampaign(id){
   el("view").innerHTML='<div class="sk"></div>';
   var c=await Q("Loading campaign",sb.from("campaigns").select("*").eq("id",id).maybeSingle());
   if(!c||c.brand_id!==me.id)return void(el("view").innerHTML='<div class="card">'+
     none("Campaign not found","It may have been deleted.","#campaigns","Back to campaigns")+'</div>');
-  campaignForm(c);
-}
+  campaignForm(c);}
 
 /* ================= APPLICATIONS ================= */
 async function applications(){
@@ -548,16 +562,16 @@ async function applications(){
       return item(c.title||"Campaign unavailable","",a,
         (a.status==="accepted"?'<a class="btn sm" href="#messages">Open chat</a>':"")+
         (a.status==="pending"?'<button class="btn sm d" data-withdraw="'+esc(a.id)+'">Withdraw</button>':""),
-        c.image_url);}).join("");}
-}
+        c.image_url);}).join("");}}
 
 /* ================= CREATORS ================= */
 async function creators(){
   var V=el("view");
   V.innerHTML='<h1>Creators</h1><p class="muted" style="margin:4px 0 16px">Search the directory.</p>'+
     '<div class="row2" style="flex-wrap:wrap"><input id="s" placeholder="Search name, handle or bio" style="max-width:340px">'+
-    '<select id="cat" style="max-width:210px"><option value="">All categories</option></select></div>'+
+    catSelect("cat","","All categories")+'</div>'+
     '<div class="small muted" id="ct" style="margin:14px 0 10px"></div><div id="g"></div>';
+  el("cat").style.maxWidth="230px";
   var rows=await Q("Loading creators",sb.from("creator_profiles").select("id,handle,category,location"))||[];
   rows=rows.filter(function(r){return r.id!==me.id&&!blocked[r.id]&&!blockedBy[r.id];});
   if(!rows.length)return void(el("g").innerHTML='<div class="card">'+none("No creators yet","Profiles appear once people sign up.")+'</div>');
@@ -565,8 +579,6 @@ async function creators(){
     .in("id",rows.map(function(r){return r.id;})))||[]).forEach(function(p){by[p.id]=p;});
   var all=rows.map(function(r){var p=by[r.id]||{};
     return Object.assign({},r,{name:p.full_name||"Unnamed creator",bio:p.bio||"",av:p.avatar_url||""});});
-  var cats=Array.from(new Set(all.map(function(c){return c.category;}).filter(Boolean))).sort();
-  cats.forEach(function(c){var o=document.createElement("option");o.value=c;o.textContent=c;el("cat").appendChild(o);});
   function draw(){
     var t=(el("s").value||"").toLowerCase().trim(),cat=el("cat").value;
     var L=all.filter(function(c){
@@ -582,10 +594,9 @@ async function creators(){
       (c.category?'<span class="chip">'+esc(c.category)+'</span>':"")+
       '<div style="display:flex;gap:8px;margin-top:13px">'+
       '<a class="btn sm g" style="flex:1" href="#creator/'+esc(c.id)+'">Profile</a>'+
-      (me.role==="brand"?'<button class="btn sm" style="flex:1" data-msg="'+esc(c.id)+'">Message</button>':"")+
-      '</div></div>';}).join("")+'</div>':'<div class="card">'+none("No matches","Try a different search.")+'</div>';}
-  el("s").addEventListener("input",draw);el("cat").addEventListener("change",draw);draw();
-}
+      (me.role==="brand"&&!me.suspended?'<button class="btn sm" style="flex:1" data-msg="'+esc(c.id)+'">Message</button>':"")+
+      '</div></div>';}).join("")+'</div>':'<div class="card">'+none("No matches","Try a different search or category.")+'</div>';}
+  el("s").addEventListener("input",draw);el("cat").addEventListener("change",draw);draw();}
 
 async function creatorPage(id){
   var V=el("view");V.innerHTML='<div class="sk"></div>';
@@ -599,7 +610,7 @@ async function creatorPage(id){
     .filter(function(l){return c[l[0]];})
     .map(function(l){return '<a class="chip" href="'+esc(c[l[0]])+'" target="_blank" rel="noopener nofollow">'+l[1]+'</a>';}).join("");
   var mine=me.id===id,isB=!!blocked[id];
-  var can=me.role==="brand"&&p.role==="creator"&&!mine&&!isB;
+  var can=me.role==="brand"&&p.role==="creator"&&!mine&&!isB&&!me.suspended;
   V.innerHTML='<a class="small muted" href="#creators">← All creators</a>'+
     '<div class="card pad" style="margin-top:14px"><div style="display:flex;gap:15px;align-items:center;flex-wrap:wrap">'+
     avatarOf(p.avatar_url,p.full_name,74)+
@@ -619,11 +630,12 @@ async function creatorPage(id){
     var box=el("mo").parentNode;
     if(box.querySelector(".pop"))return void(box.querySelector(".pop").remove());
     var pop=document.createElement("div");pop.className="pop";
-    pop.innerHTML='<button id="rp">Report this person</button><button class="dg" id="bl">'+(isB?"Unblock":"Block")+'</button>';
+    pop.innerHTML='<button id="rp">Report this person</button><button class="dg" id="bl">'+(isB?"Unblock":"Block")+'</button>'+
+      (me.admin?'<button class="dg" id="sp">Suspend account</button>':"");
     box.appendChild(pop);
     pop.querySelector("#rp").onclick=function(){pop.remove();reportDialog(id,"profile",p.full_name);};
-    pop.querySelector("#bl").onclick=function(){pop.remove();toggleBlock(id,p.full_name,isB);};};
-}
+    pop.querySelector("#bl").onclick=function(){pop.remove();toggleBlock(id,p.full_name,isB);};
+    if(me.admin)pop.querySelector("#sp").onclick=function(){pop.remove();suspendDialog(id,p.full_name);};};}
 
 function reportDialog(userId,context,name){
   modal('<h2>Report '+esc(name||"this user")+'</h2>'+
@@ -646,8 +658,25 @@ function reportDialog(userId,context,name){
       el("rm").innerHTML='<div class="ok">Report submitted. Thank you.</div>';
       setTimeout(closeModal,1400);
     }catch(e){el("rm").innerHTML='<div class="bad" style="margin-top:12px"><code>'+esc(e.message)+'</code></div>';
-      b.disabled=false;b.textContent="Submit report";}};
-}
+      b.disabled=false;b.textContent="Submit report";}};}
+
+function suspendDialog(userId,name){
+  modal('<h2>Suspend '+esc(name||"this account")+'?</h2>'+
+    '<p class="muted small" style="margin-top:6px">They can still sign in and read, but cannot post '+
+    'campaigns, apply, or start conversations. Reversible.</p>'+
+    '<label>Reason (they will see this)</label><input id="sr" placeholder="Spam, impersonation…">'+
+    '<div class="row2" style="margin-top:16px;justify-content:flex-end">'+
+    '<button class="btn g" onclick="closeModal()">Cancel</button>'+
+    '<button class="btn d" id="sy">Suspend</button></div><div id="sm"></div>');
+  el("sy").onclick=async function(){
+    var b=el("sy");b.disabled=true;b.textContent="…";
+    try{
+      await Q("Suspending",sb.from("profiles").update({suspended:true,
+        suspended_reason:el("sr").value.trim()||null,suspended_at:new Date().toISOString()}).eq("id",userId));
+      el("sm").innerHTML='<div class="ok">Account suspended.</div>';
+      setTimeout(function(){closeModal();route();},1000);
+    }catch(e){el("sm").innerHTML='<div class="bad" style="margin-top:12px"><code>'+esc(e.message)+'</code></div>';
+      b.disabled=false;b.textContent="Suspend";}};}
 
 function toggleBlock(userId,name,isB){
   modal('<h2>'+(isB?"Unblock":"Block")+' '+esc(name||"this user")+'?</h2>'+
@@ -666,8 +695,7 @@ function toggleBlock(userId,name,isB){
         blocked[userId]=true;}
       closeModal();route();
     }catch(e){el("bm").innerHTML='<div class="bad" style="margin-top:12px"><code>'+esc(e.message)+'</code></div>';
-      b.disabled=false;b.textContent=isB?"Unblock":"Block";}};
-}
+      b.disabled=false;b.textContent=isB?"Unblock":"Block";}};}
 
 /* ================= PROFILE ================= */
 async function profileView(){
@@ -682,7 +710,8 @@ async function profileView(){
     '<label>Full name</label><input id="n" value="'+esc(me.name)+'">'+
     '<label>Bio</label><textarea id="b">'+esc(me.bio||"")+'</textarea>'+
     (isC?'<label>Handle</label><input id="h" value="'+esc(c.handle||"")+'" placeholder="yourname">'+
-      '<label>Category</label><input id="cat" value="'+esc(c.category||"")+'" placeholder="Beauty, Food, Tech…">'+
+      '<label>Category</label>'+catSelect("cat",c.category||"")+
+      '<p class="small muted" style="margin-top:6px">Brands filter by this. Pick the closest match.</p>'+
       '<label>Location</label><input id="loc" value="'+esc(c.location||"")+'" placeholder="Mumbai">'+
       '<label>Instagram URL</label><input id="ig" value="'+esc(c.instagram_url||"")+'">'+
       '<label>YouTube URL</label><input id="yt" value="'+esc(c.youtube_url||"")+'">'+
@@ -703,14 +732,13 @@ async function profileView(){
       await Q("Saving profile",sb.from("profiles").update({full_name:el("n").value.trim(),
         bio:el("b").value.trim()||null,avatar_url:avUrl}).eq("id",me.id));
       if(isC)await Q("Saving creator details",sb.from("creator_profiles").upsert({id:me.id,
-        handle:el("h").value.trim()||null,category:el("cat").value.trim()||null,
+        handle:el("h").value.trim()||null,category:el("cat").value||null,
         location:el("loc").value.trim()||null,instagram_url:el("ig").value.trim()||null,
         youtube_url:el("yt").value.trim()||null,portfolio_url:el("pf").value.trim()||null}));
       el("m").innerHTML='<div class="ok">Saved.</div>';
       me=null;setTimeout(route,700);
     }catch(e){el("m").innerHTML='<div class="bad" style="margin-top:14px"><code>'+esc(e.message)+'</code></div>';
-      b.disabled=false;b.textContent="Save profile";}};
-}
+      b.disabled=false;b.textContent="Save profile";}};}
 
 /* ================= SETTINGS ================= */
 async function settings(){
@@ -726,6 +754,9 @@ async function settings(){
     '<div id="bl" style="margin-top:10px"><div class="sk" style="height:40px"></div></div></div>'+
     '<div class="card pad" style="margin-top:16px;max-width:620px"><h2>Your reports</h2>'+
     '<div id="rp" style="margin-top:10px"><div class="sk" style="height:40px"></div></div></div>'+
+    '<div class="card pad" style="margin-top:16px;max-width:620px"><h2>Legal</h2>'+
+    '<p class="small muted" style="margin-top:6px"><a href="#terms" style="color:var(--blue);font-weight:600">Terms of Use</a>'+
+    ' · <a href="#privacy" style="color:var(--blue);font-weight:600">Privacy Policy</a></p></div>'+
     '<div class="card pad" style="margin-top:16px;max-width:620px">'+
     '<h2 style="color:var(--red)">Danger zone</h2>'+
     '<p class="small muted" style="margin-top:6px">Signing out ends this session on this device.</p>'+
@@ -758,49 +789,124 @@ async function settings(){
       '<h3>'+esc(r.reason)+'</h3><div class="small muted">'+esc(r.context||"")+' · '+esc(ago(r.created_at))+'</div></div>'+
       '<span class="chip '+(r.status==="open"?"a":"g")+'">'+esc(r.status)+'</span></div>';}).join("")
       :'<p class="small muted">You haven\'t reported anyone.</p>';
-  }catch(e){el("rp").innerHTML='<p class="small muted">Could not load: '+esc(e.message)+'</p>';}
-}
+  }catch(e){el("rp").innerHTML='<p class="small muted">Could not load: '+esc(e.message)+'</p>';}}
 
-/* ================= ADMIN — REPORTS ================= */
+/* ================= LEGAL ================= */
+var UPDATED="16 August 2026";
+function terms(){
+  el("view").innerHTML='<div class="doc"><h1>Terms of Use</h1>'+
+  '<p class="upd">Last updated '+UPDATED+'</p>'+
+  '<h2>1. What Cube3 is</h2>'+
+  '<p>Cube3 is an introduction service. Brands post campaigns and creators apply to them. '+
+  'We are not a party to any agreement you reach with another user, and we do not employ, '+
+  'represent, or act as an agent for anyone on the platform.</p>'+
+  '<h2>2. Payments happen between you</h2>'+
+  '<p><strong>Cube3 does not currently process, hold, or guarantee any payment.</strong> Money moves '+
+  'directly between the brand and the creator, on terms you agree between yourselves. We cannot '+
+  'refund you, release funds, or enforce payment. Agree your terms in writing before starting work, '+
+  'and treat any request to pay a fee in order to receive work as a scam.</p>'+
+  '<h2>3. Who may use it</h2>'+
+  '<p>You must be 18 or older and provide accurate information. One account per person or business. '+
+  'Impersonating someone else, or inflating your audience figures, is grounds for removal.</p>'+
+  '<h2>4. Your content</h2>'+
+  '<p>You keep ownership of everything you upload. You grant us permission to display it on the '+
+  'platform so the service can function. Do not upload anything you lack the rights to, or anything '+
+  'unlawful, hateful, sexual, or misleading.</p>'+
+  '<h2>5. Conduct</h2>'+
+  '<ul><li>No spam, scraping, or automated bulk messaging</li>'+
+  '<li>No harassment, threats, or abuse</li>'+
+  '<li>No attempt to bypass security, rate limits, or access other users\' data</li>'+
+  '<li>No fake campaigns or fake profiles</li></ul>'+
+  '<h2>6. Suspension</h2>'+
+  '<p>We may suspend or remove an account that breaks these terms, with or without notice. '+
+  'A suspended account can still read but cannot post, apply, or start conversations. '+
+  'To appeal, write to '+esc(LEGAL.contact)+'.</p>'+
+  '<h2>7. No warranty</h2>'+
+  '<p>The service is provided as-is. We do not verify the identity, claims, follower counts, or '+
+  'reliability of any user. You are responsible for your own due diligence before working with '+
+  'someone or sending them money.</p>'+
+  '<h2>8. Limitation of liability</h2>'+
+  '<p>To the fullest extent the law allows, '+esc(LEGAL.entity)+' is not liable for lost income, '+
+  'unpaid fees, disputes between users, or any indirect loss arising from your use of the platform.</p>'+
+  '<h2>9. Changes</h2>'+
+  '<p>We may update these terms. Continuing to use Cube3 after a change means you accept it.</p>'+
+  '<h2>10. Governing law</h2>'+
+  '<p>These terms are governed by the laws of '+esc(LEGAL.country)+'.</p>'+
+  '<h2>11. Contact</h2><p>'+esc(LEGAL.contact)+'</p>'+
+  '<p class="small muted" style="margin-top:26px">This is a plain-language starting point, not legal '+
+  'advice. Have a lawyer review it before you handle real money or scale up.</p></div>';}
+
+function privacy(){
+  el("view").innerHTML='<div class="doc"><h1>Privacy Policy</h1>'+
+  '<p class="upd">Last updated '+UPDATED+'</p>'+
+  '<h2>What we collect</h2>'+
+  '<ul><li><strong>Account:</strong> email address, password (stored hashed, never in plain text), '+
+  'account type</li>'+
+  '<li><strong>Profile:</strong> name, bio, photo, category, location, and the social media links '+
+  'you choose to add</li>'+
+  '<li><strong>Activity:</strong> campaigns, applications and pitches you write</li>'+
+  '<li><strong>Messages:</strong> the content of your conversations and any files you attach</li>'+
+  '<li><strong>Reports and blocks</strong> you submit</li></ul>'+
+  '<h2>Why we collect it</h2>'+
+  '<p>To run the service — to show your profile to brands, deliver your messages, and keep the '+
+  'platform usable and safe. We do not sell your data and we do not run advertising.</p>'+
+  '<h2>Who can see what</h2>'+
+  '<ul><li>Your name, photo, bio, category and social links are visible to other signed-in users</li>'+
+  '<li>Your email address is not shown to other users</li>'+
+  '<li>Private messages are visible only to you and the person you are talking to</li>'+
+  '<li>Administrators can read reports, and can see profile information</li></ul>'+
+  '<h2>Where it is stored</h2>'+
+  '<p>On Supabase, which hosts our database and file storage. Data is protected by row-level '+
+  'security rules so users can only read what they are entitled to.</p>'+
+  '<h2>How long we keep it</h2>'+
+  '<p>Until you ask us to delete your account. Reports may be kept longer, since deleting them on '+
+  'request would let a reported person erase the record against them.</p>'+
+  '<h2>Your rights</h2>'+
+  '<p>You may ask us to show you what we hold about you, correct it, or delete your account and its '+
+  'data. Write to '+esc(LEGAL.contact)+' and we will respond within 30 days.</p>'+
+  '<h2>Cookies</h2>'+
+  '<p>We use browser storage only to keep you signed in and to remember which conversations you have '+
+  'read. No advertising or tracking cookies.</p>'+
+  '<h2>Children</h2>'+
+  '<p>Cube3 is not for anyone under 18. If we learn that a minor has registered, we will remove the '+
+  'account.</p>'+
+  '<h2>Contact</h2><p>'+esc(LEGAL.contact)+'</p>'+
+  '<p class="small muted" style="margin-top:26px">A plain-language starting point, not legal advice. '+
+  'India\'s DPDP Act and the GDPR may impose additional duties depending on who signs up.</p></div>';}
+
+/* ================= ADMIN ================= */
 var adminFilter="open";
 async function admin(){
   if(!me.admin)return void(el("view").innerHTML='<div class="card">'+
     none("Not available","This section is for administrators.","#dashboard","Back to dashboard")+'</div>');
   var V=el("view");
-  V.innerHTML='<h1>Reports</h1><p class="muted" style="margin-top:4px">'+
-    'Reports filed by users. Only admins can see this.</p>'+
+  V.innerHTML='<h1>Reports</h1><p class="muted" style="margin-top:4px">Only admins can see this.</p>'+
     '<div class="tabs" id="tb">'+
     [["open","Open"],["reviewing","Reviewing"],["resolved","Resolved"],["dismissed","Dismissed"],["all","All"]]
       .map(function(t){return '<button data-f="'+t[0]+'" aria-pressed="'+(adminFilter===t[0])+'">'+t[1]+'</button>';}).join("")+
     '</div><div id="l"><div class="sk"></div><div class="sk"></div></div>';
-
   el("tb").querySelectorAll("button").forEach(function(b){
     b.onclick=function(){adminFilter=b.dataset.f;admin();};});
-
   var qy=sb.from("reports").select("id,reporter_id,reported_id,context,reason,details,status,created_at")
     .order("created_at",{ascending:false}).limit(100);
   if(adminFilter!=="all") qy=qy.eq("status",adminFilter);
   var rs=await Q("Loading reports",qy)||[];
-
   if(!rs.length)return void(el("l").innerHTML='<div class="card">'+
     none("Nothing here",adminFilter==="open"?"No open reports. Good sign.":"No reports with that status.")+'</div>');
-
   var ids=Array.from(new Set(rs.map(function(r){return r.reporter_id;})
     .concat(rs.map(function(r){return r.reported_id;})).filter(Boolean)));
-  var nm={};(await Q("Loading people",sb.from("profiles").select("id,full_name,avatar_url,role").in("id",ids))||[])
+  var nm={};(await Q("Loading people",sb.from("profiles")
+    .select("id,full_name,avatar_url,role,suspended").in("id",ids))||[])
     .forEach(function(p){nm[p.id]=p;});
-
-  // How many times each person has been reported — repeat offenders matter more.
   var counts={};rs.forEach(function(r){counts[r.reported_id]=(counts[r.reported_id]||0)+1;});
-
   var TONE={open:"a",reviewing:"p",resolved:"g",dismissed:""};
   el("l").innerHTML=rs.map(function(r){
-    var who=nm[r.reported_id]||{},by=nm[r.reporter_id]||{};
-    var n=counts[r.reported_id]||1;
+    var who=nm[r.reported_id]||{},by=nm[r.reporter_id]||{},n=counts[r.reported_id]||1;
     return '<div class="card pad" style="margin-bottom:12px">'+
       '<div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap">'+
       '<div class="row2">'+avatarOf(who.avatar_url,who.full_name)+
-      '<div><h2 style="font-size:16px">'+esc(who.full_name||"Unknown user")+'</h2>'+
+      '<div><h2 style="font-size:16px">'+esc(who.full_name||"Unknown user")+
+      (who.suspended?' <span class="chip r">suspended</span>':"")+'</h2>'+
       '<div class="small muted">'+esc(who.role||"")+' · reported by '+esc(by.full_name||"someone")+'</div></div></div>'+
       '<div class="row2">'+(n>1?'<span class="chip r">'+n+' reports</span>':"")+
       '<span class="chip '+(TONE[r.status]||"")+'">'+esc(r.status)+'</span></div></div>'+
@@ -811,12 +917,14 @@ async function admin(){
       '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:13px;'+
       'padding-top:12px;border-top:1px solid var(--line);flex-wrap:wrap">'+
       '<span class="small muted">'+esc(ago(r.created_at))+'</span><span class="row2">'+
-      '<a class="btn sm g" href="#creator/'+esc(r.reported_id)+'">View profile</a>'+
+      '<a class="btn sm g" href="#creator/'+esc(r.reported_id)+'">Profile</a>'+
+      (who.suspended
+        ? '<button class="btn sm g" data-unsuspend="'+esc(r.reported_id)+'">Lift suspension</button>'
+        : '<button class="btn sm d" data-suspend="'+esc(r.reported_id)+'" data-name="'+esc(who.full_name||"")+'">Suspend</button>')+
       (r.status!=="reviewing"?'<button class="btn sm g" data-rep="'+esc(r.id)+'" data-to="reviewing">Reviewing</button>':"")+
       (r.status!=="resolved"?'<button class="btn sm" data-rep="'+esc(r.id)+'" data-to="resolved">Resolve</button>':"")+
-      (r.status!=="dismissed"?'<button class="btn sm d" data-rep="'+esc(r.id)+'" data-to="dismissed">Dismiss</button>':"")+
-      '</span></div></div>';}).join("");
-}
+      (r.status!=="dismissed"?'<button class="btn sm g" data-rep="'+esc(r.id)+'" data-to="dismissed">Dismiss</button>':"")+
+      '</span></div></div>';}).join("");}
 
 /* ================= MESSAGES ================= */
 async function messages(){
@@ -832,7 +940,6 @@ async function messages(){
   el("clip").onclick=function(){el("f").click();};
   el("f").onchange=pickFile;el("sd").onclick=send;
   el("tx").onkeydown=function(e){if(e.key==="Enter")send();};
-
   var th=[],brand=me.role==="brand",col=brand?"brand_id":"creator_id",oth=brand?"creator_id":"brand_id";
   (await Q("Loading conversations",sb.from("creator_inquiries")
     .select("id,brand_id,creator_id").eq(col,me.id))||[]).forEach(function(i){
@@ -869,8 +976,7 @@ async function messages(){
       var m0=last&&last[0];
       t.fresh=!!(m0&&m0.sender_id!==me.id&&new Date(m0.created_at)>new Date(lastRead(t.k,t.id)));
       if(t.fresh)unread++;
-    }catch(e){t.fresh=false;}
-  }
+    }catch(e){t.fresh=false;}}
   var link=document.querySelector('.side a[href="#messages"]');
   if(link){var bd=link.querySelector(".badge");
     if(unread){if(bd)bd.textContent=unread;else link.insertAdjacentHTML("beforeend",'<span class="badge">'+unread+'</span>');}
@@ -885,14 +991,14 @@ async function messages(){
     x.classList.add("on");
     var d=x.querySelector(".dot");if(d)d.remove();
     var t=th[+x.dataset.i],p=nm[t.o]||{};
-    openThread(t,p.full_name||"Cube3 user");};});
-}
+    openThread(t,p.full_name||"Cube3 user");};});}
 function tbl(k){return k==="inquiry"?"inquiry_messages":"messages";}
 function fkey(k){return k==="inquiry"?"inquiry_id":"application_id";}
 
 async function openThread(t,name){
   active=t;document.body.classList.add("open");
-  el("who").textContent=name;el("cp").style.display="flex";
+  el("who").textContent=name;
+  el("cp").style.display=me.suspended?"none":"flex";
   markRead(t.k,t.id);
   el("tm").innerHTML='<button class="btn g sm" id="tmo">⋯</button>';
   el("tmo").onclick=function(ev){
@@ -911,8 +1017,7 @@ async function openThread(t,name){
     chan=sb.channel("t-"+t.id).on("postgres_changes",
       {event:"INSERT",schema:"public",table:tbl(t.k),filter:fkey(t.k)+"=eq."+t.id},
       function(){paint();markRead(t.k,t.id);}).subscribe();
-  }catch(e){boom(e,el("msgs"));}
-}
+  }catch(e){boom(e,el("msgs"));}}
 
 async function paint(){
   var box=el("msgs");
@@ -926,8 +1031,7 @@ async function paint(){
     if(att)setTimeout(function(){fillAtt(aid,m);},0);
     return '<div class="bub '+(mine?"me":"th")+'">'+att+(m.body?esc(m.body):"")+
     '<span class="ts">'+esc(ago(m.created_at))+'</span></div>';}).join("");
-  box.scrollTop=box.scrollHeight;
-}
+  box.scrollTop=box.scrollHeight;}
 
 async function fillAtt(id,m){
   var e=el(id);if(!e)return;
@@ -941,15 +1045,13 @@ async function fillAtt(id,m){
   else if(t==="video")e.innerHTML='<video src="'+esc(url)+'" controls preload="metadata" style="max-width:210px;border-radius:9px;display:block"></video>';
   else if(t==="audio")e.innerHTML='<audio src="'+esc(url)+'" controls style="max-width:210px"></audio>';
   else e.innerHTML='<a href="'+esc(url)+'" target="_blank" rel="noopener" download="'+esc(m.attachment_name||"file")+
-    '" style="text-decoration:underline">↓ '+esc(m.attachment_name||"Download")+'</a> <span style="opacity:.7">'+esc(fsz(m.attachment_size))+'</span>';
-}
+    '" style="text-decoration:underline">↓ '+esc(m.attachment_name||"Download")+'</a> <span style="opacity:.7">'+esc(fsz(m.attachment_size))+'</span>';}
 
 function pickFile(e){
   pend=e.target.files[0]||null;
   el("pb").innerHTML=pend?'<div style="padding:9px 13px;font-size:13px;background:var(--bg);border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px"><span>'+
     esc(pend.name)+' ('+esc(fsz(pend.size))+')</span><button class="btn g sm" id="rm">Remove</button></div>':"";
-  var r=el("rm");if(r)r.onclick=function(){pend=null;el("f").value="";el("pb").innerHTML="";};
-}
+  var r=el("rm");if(r)r.onclick=function(){pend=null;el("f").value="";el("pb").innerHTML="";};}
 var BLOCKED_EXT=["exe","msi","bat","cmd","com","scr","jar","js","html","htm","svg","php","sh","ps1","vbs","apk"];
 
 async function send(){
@@ -977,17 +1079,14 @@ async function send(){
     tx.value="";pend=null;el("f").value="";el("pb").innerHTML="";
     await paint();
   }catch(e){alert(e.message);}
-  finally{b.disabled=false;b.textContent="Send";}
-}
+  finally{b.disabled=false;b.textContent="Send";}}
 
 /* ================= GLOBAL CLICKS ================= */
 document.addEventListener("click",async function(e){
   document.querySelectorAll(".menu .pop").forEach(function(p){
     if(!p.parentNode.contains(e.target))p.remove();});
-
   var zoom=e.target.closest("[data-zoom]");
   if(zoom){lightbox(zoom.dataset.zoom);return;}
-
   var m=e.target.closest("[data-msg]");
   if(m){
     var lbl=m.textContent;m.disabled=true;m.textContent="Opening…";
@@ -999,7 +1098,6 @@ document.addEventListener("click",async function(e){
       go("#messages");
     }catch(x){alert(x.message);m.disabled=false;m.textContent=lbl;}
     return;}
-
   var ap=e.target.closest("[data-apply]");
   if(ap){
     var cid=ap.dataset.apply,title=ap.dataset.title;
@@ -1019,7 +1117,6 @@ document.addEventListener("click",async function(e){
       }catch(x){el("pm").innerHTML='<div class="bad" style="margin-top:12px"><code>'+esc(x.message)+'</code></div>';
         b.disabled=false;b.textContent="Send pitch";}};
     return;}
-
   var st=e.target.closest("[data-status]");
   if(st){
     st.disabled=true;var was=st.textContent;st.textContent="…";
@@ -1027,7 +1124,6 @@ document.addEventListener("click",async function(e){
       .update({status:st.dataset.status}).eq("id",st.dataset.app));route();}
     catch(x){alert(x.message);st.disabled=false;st.textContent=was;}
     return;}
-
   var wd=e.target.closest("[data-withdraw]");
   if(wd){
     wd.disabled=true;wd.textContent="…";
@@ -1035,7 +1131,6 @@ document.addEventListener("click",async function(e){
       .update({status:"withdrawn"}).eq("id",wd.dataset.withdraw));route();}
     catch(x){alert(x.message);wd.disabled=false;wd.textContent="Withdraw";}
     return;}
-
   var rep=e.target.closest("[data-rep]");
   if(rep){
     rep.disabled=true;var w2=rep.textContent;rep.textContent="…";
@@ -1043,7 +1138,15 @@ document.addEventListener("click",async function(e){
       .update({status:rep.dataset.to}).eq("id",rep.dataset.rep));admin();}
     catch(x){alert(x.message);rep.disabled=false;rep.textContent=w2;}
     return;}
-
+  var sp=e.target.closest("[data-suspend]");
+  if(sp){suspendDialog(sp.dataset.suspend,sp.dataset.name);return;}
+  var us=e.target.closest("[data-unsuspend]");
+  if(us){
+    us.disabled=true;us.textContent="…";
+    try{await Q("Lifting suspension",sb.from("profiles").update({suspended:false,
+      suspended_reason:null,suspended_at:null}).eq("id",us.dataset.unsuspend));admin();}
+    catch(x){alert(x.message);us.disabled=false;us.textContent="Lift suspension";}
+    return;}
   var ub=e.target.closest("[data-unblock]");
   if(ub){toggleBlock(ub.dataset.unblock,ub.dataset.name,true);return;}
 });
@@ -1056,7 +1159,15 @@ async function route(){
   if(chan){sb.removeChannel(chan);chan=null;}
   var AUTH={login:login,signup:signup,forgot:forgot,reset:reset};
   try{
-    if(!me){var ok=await boot();if(!ok){(AUTH[base]||login)();return;}}
+    if(!me){
+      var ok=await boot();
+      if(!ok){
+        // Terms and Privacy must be readable before signing up.
+        if(base==="terms"||base==="privacy"){
+          R.innerHTML='<div class="content" style="margin:0 auto"><p style="margin-bottom:16px">'+
+            '<a class="small muted" href="#login">← Back to sign in</a></p><div id="view"></div></div>';
+          (base==="terms"?terms:privacy)();return;}
+        (AUTH[base]||login)();return;}}
     if(base==="reset"){reset();return;}
     if(AUTH[base]){base="dashboard";location.hash="#dashboard";}
     if(!base)base="dashboard";
@@ -1072,9 +1183,10 @@ async function route(){
     else if(base==="profile")await profileView();
     else if(base==="settings")await settings();
     else if(base==="admin")await admin();
+    else if(base==="terms")terms();
+    else if(base==="privacy")privacy();
     else await dashboard();
-  }catch(e){boom(e);}
-}
+  }catch(e){boom(e);}}
 window.addEventListener("hashchange",route);
 sb.auth.onAuthStateChange(function(ev){if(ev==="SIGNED_OUT")me=null;});
 route();
