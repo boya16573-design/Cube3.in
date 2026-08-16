@@ -2,1195 +2,624 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cube3 — creator & brand collaborations</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%232563EB'/%3E%3Cpolygon points='50,22 76,37 50,52 24,37' fill='%23fff'/%3E%3Cpolygon points='76,37 76,64 50,79 50,52' fill='%23BFDBFE'/%3E%3Cpolygon points='24,37 24,64 50,79 50,52' fill='%23DBEAFE'/%3E%3C/svg%3E">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cube3</title>
 <style>
-:root{--bg:#F6F8FC;--card:#fff;--ink:#0F172A;--muted:#64748B;--faint:#94A3B8;--line:#E7EBF3;
---blue:#2563EB;--blued:#1D4ED8;--blues:#EFF4FF;--green:#10B981;--greens:#ECFDF5;
---amber:#F59E0B;--ambers:#FFFBEB;--purple:#7C3AED;--purples:#F5F3FF;--red:#EF4444;--reds:#FEF2F2;
---r:12px;--sh:0 1px 2px rgba(15,23,42,.04),0 4px 16px rgba(15,23,42,.05)}
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
-a{color:inherit;text-decoration:none}:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
-h1{font-size:26px;font-weight:700;letter-spacing:-.02em}h2{font-size:18px;font-weight:700}h3{font-size:15px;font-weight:600}
-.muted{color:var(--muted)}.small{font-size:13px}.trunc{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.grow{flex:1;min-width:0}.row2{display:flex;gap:10px;align-items:center}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;background:var(--blue);color:#fff;
-border:0;border-radius:9px;padding:11px 18px;font-weight:600;font-size:14px;cursor:pointer;font-family:inherit}
-.btn:hover{background:var(--blued)}.btn:disabled{opacity:.5}
-.btn.g{background:var(--card);color:var(--ink);border:1px solid var(--line)}.btn.g:hover{background:var(--bg)}
-.btn.d{background:var(--reds);color:var(--red);border:1px solid #FECACA}
-.btn.sm{padding:7px 12px;font-size:13px;border-radius:8px}.btn.blk{width:100%}
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh)}
-.pad{padding:18px}
-label{display:block;font-size:13px;font-weight:600;margin:14px 0 6px}
-input,select,textarea{width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:9px;
-font-size:16px;font-family:inherit;background:var(--card);color:var(--ink)}
-input:focus,select:focus,textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--blues)}
-textarea{min-height:100px;resize:vertical}
-.chip{display:inline-block;background:var(--blues);color:var(--blue);font-size:12px;font-weight:600;padding:4px 10px;border-radius:7px;margin:2px 4px 2px 0}
-.chip.g{background:var(--greens);color:var(--green)}.chip.a{background:var(--ambers);color:var(--amber)}
-.chip.r{background:var(--reds);color:var(--red)}.chip.p{background:var(--purples);color:var(--purple)}
-.av{width:38px;height:38px;border-radius:50%;object-fit:cover;background:var(--blue);color:#fff;
-display:grid;place-items:center;font-weight:700;font-size:14px;flex:0 0 auto}
-.state{padding:34px 20px;text-align:center;color:var(--muted)}
-.state b{display:block;color:var(--ink);font-size:16px;margin-bottom:5px}
-.bad{background:var(--reds);border:1px solid #FECACA;border-radius:var(--r);padding:16px;text-align:left}
-.bad b{color:var(--red);display:block;margin-bottom:5px}
-.bad code{display:block;font-family:ui-monospace,monospace;font-size:12.5px;word-break:break-word}
-.ok{background:var(--greens);border:1px solid #A7F3D0;border-radius:9px;padding:11px 14px;font-size:14px;color:#065F46;margin-top:14px}
-.warn{background:var(--ambers);border:1px solid #FDE68A;border-radius:9px;padding:11px 14px;font-size:14px;color:#8A5D05;margin-top:14px}
-.sk{height:64px;background:linear-gradient(90deg,#EEF2F8,#F7F9FC,#EEF2F8);background-size:200% 100%;
-animation:sh 1.3s infinite;border-radius:10px;margin-bottom:12px}
-@keyframes sh{0%{background-position:200% 0}100%{background-position:-200% 0}}
-.auth{min-height:100vh;display:grid;place-items:center;padding:22px}
-.auth .box{width:100%;max-width:410px}
-.logo{display:flex;align-items:center;justify-content:center;gap:10px;font-weight:800;font-size:24px;letter-spacing:-.02em}
-.logo .m{width:34px;height:34px;flex:0 0 auto}
-.logo b{color:var(--blue)}
-.pick{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
-.pick button{all:unset;cursor:pointer;border:1.5px solid var(--line);border-radius:10px;padding:14px;text-align:center;font-weight:600;font-size:14px}
-.pick button[aria-pressed="true"]{border-color:var(--blue);background:var(--blues);color:var(--blue)}
-.shell{display:flex;min-height:100vh}
-aside{width:248px;flex:0 0 248px;background:var(--card);border-right:1px solid var(--line);padding:20px 14px;
-position:fixed;top:0;bottom:0;left:0;overflow-y:auto;z-index:60;transition:transform .22s}
-aside .logo{justify-content:flex-start;font-size:20px;padding:0 8px 20px}
-aside .logo .m{width:30px;height:30px}
-.side a{display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:9px;color:var(--muted);font-weight:500;font-size:14.5px;margin-bottom:2px}
-.side a:hover{background:var(--bg);color:var(--ink)}
-.side a.on{background:var(--blue);color:#fff;font-weight:600}
-.side a .ic{width:19px;text-align:center}
-.side a .badge{margin-left:auto;background:var(--red);color:#fff;font-size:11px;font-weight:700;padding:1px 7px;border-radius:20px}
-.side a.on .badge{background:rgba(255,255,255,.3)}
-.side .sep{margin:14px 8px 8px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);font-weight:600}
-main{flex:1;margin-left:248px;min-width:0}
-.top{background:var(--card);border-bottom:1px solid var(--line);padding:12px 22px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:50}
-.burger{display:none;background:none;border:1px solid var(--line);border-radius:8px;width:38px;height:38px;font-size:17px;cursor:pointer}
-.who{margin-left:auto;display:flex;align-items:center;gap:10px}
-.content{padding:22px;max-width:1150px}
-.scrim{display:none;position:fixed;inset:0;background:rgba(15,23,42,.4);z-index:55}
-@media(max-width:900px){aside{transform:translateX(-100%)}body.nav aside{transform:none}
-body.nav .scrim{display:block}main{margin-left:0}.burger{display:block}.content{padding:16px}}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:20px}
-.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:17px;box-shadow:var(--sh);display:flex;justify-content:space-between;gap:10px}
-.stat .lb{font-size:13.5px;color:var(--muted);font-weight:500}
-.stat .vl{font-size:28px;font-weight:700;letter-spacing:-.02em;margin-top:5px}
-.stat .ic{width:42px;height:42px;border-radius:11px;display:grid;place-items:center;font-size:18px}
-.cols{display:grid;grid-template-columns:1.7fr 1fr;gap:16px;align-items:start}
-@media(max-width:980px){.cols{grid-template-columns:1fr}}
-.hd{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;border-bottom:1px solid var(--line)}
-.hd a{color:var(--blue);font-size:13.5px;font-weight:600}
-.row{display:flex;gap:13px;padding:14px 18px;border-bottom:1px solid var(--line);align-items:center}
-.row:last-child{border-bottom:0}.row:hover{background:var(--bg)}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(265px,1fr));gap:14px}
-.cover{width:100%;height:160px;object-fit:cover;border-radius:var(--r) var(--r) 0 0;display:block;background:var(--blues)}
-.chat{display:grid;grid-template-columns:285px 1fr;gap:16px;height:calc(100vh - 132px)}
-.pane{display:flex;flex-direction:column;overflow:hidden;min-height:0}
-#thr{overflow-y:auto;flex:1}
-#msgs{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:9px;background:var(--bg)}
-.bub{max-width:76%;padding:10px 14px;border-radius:14px;font-size:14.5px;word-break:break-word;box-shadow:var(--sh)}
-.bub.me{align-self:flex-end;background:var(--blue);color:#fff;border-bottom-right-radius:4px}
-.bub.th{align-self:flex-start;background:var(--card);border-bottom-left-radius:4px}
-.bub .ts{display:block;font-size:11px;opacity:.65;margin-top:4px}
-.comp{display:flex;gap:9px;padding:13px;border-top:1px solid var(--line);align-items:center;background:var(--card)}
-.thr{padding:13px 16px;border-bottom:1px solid var(--line);cursor:pointer;display:flex;gap:11px;align-items:center}
-.thr.on{background:var(--blues)}
-.dot{width:8px;height:8px;border-radius:50%;background:var(--blue);flex:0 0 auto}
-.back{display:none}
-@media(max-width:820px){.chat{grid-template-columns:1fr;height:auto}.pane.cv{display:none}
-body.open .pane.cv{display:flex;height:calc(100vh - 150px)}body.open .pane.ls{display:none}.back{display:inline-flex}}
-.modal{position:fixed;inset:0;background:rgba(15,23,42,.55);display:grid;place-items:center;z-index:200;padding:18px}
-.modal .in{background:var(--card);border-radius:var(--r);max-width:460px;width:100%;padding:20px;max-height:90vh;overflow:auto}
-.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.9);display:grid;place-items:center;z-index:300;padding:16px}
-.lightbox img{max-width:100%;max-height:90vh;border-radius:8px}
-.menu{position:relative}
-.menu .pop{position:absolute;right:0;top:110%;background:var(--card);border:1px solid var(--line);
-border-radius:10px;box-shadow:0 10px 30px rgba(15,23,42,.15);min-width:170px;z-index:120;overflow:hidden}
-.menu .pop button{all:unset;display:block;width:100%;padding:11px 14px;font-size:14px;cursor:pointer;box-sizing:border-box}
-.menu .pop button:hover{background:var(--bg)}
-.menu .pop button.dg{color:var(--red)}
-.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:16px 0}
-.tabs button{all:unset;cursor:pointer;padding:8px 14px;border-radius:8px;font-size:13.5px;font-weight:600;
-color:var(--muted);border:1px solid var(--line);background:var(--card)}
-.tabs button[aria-pressed="true"]{background:var(--blue);color:#fff;border-color:var(--blue)}
-.doc{max-width:760px}.doc h2{margin:26px 0 8px}.doc p{margin-bottom:12px;color:#334155}
-.doc ul{margin:0 0 14px 20px;color:#334155}.doc li{margin-bottom:6px}
-.doc .upd{font-size:13px;color:var(--faint);font-family:ui-monospace,monospace}
+  :root{
+    --blue:#1d4ed8; --blue-dark:#1e40af; --bg:#f4f6fb; --card:#fff;
+    --ink:#0b1220; --muted:#6b7280; --line:#e5e7eb; --field:#eef2ff;
+    --err-bg:#fef2f2; --err-line:#fecaca; --err-ink:#b91c1c;
+    --ok-bg:#f0fdf4; --ok-line:#bbf7d0; --ok-ink:#15803d;
+    --side:232px; --top:56px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  .hide{display:none !important}
+
+  /* ══════════ shared controls ══════════ */
+  label{display:block;font-weight:700;font-size:14px;margin-bottom:7px}
+  .field{position:relative;margin-bottom:16px}
+  input{width:100%;padding:14px 15px;font-size:16px;border:1px solid transparent;
+    background:var(--field);border-radius:11px;outline:none;color:var(--ink);
+    transition:border-color .15s,background .15s}
+  input::placeholder{color:#9aa3b2}
+  input:focus{border-color:var(--blue);background:#fff}
+  input:focus-visible{box-shadow:0 0 0 3px rgba(29,78,216,.18)}
+  .pw input{padding-right:52px}
+  .peek{position:absolute;right:6px;top:50%;transform:translateY(-50%);
+    width:40px;height:40px;border:0;background:transparent;cursor:pointer;
+    display:grid;place-items:center;border-radius:9px;color:var(--muted)}
+  .peek:hover{color:var(--ink);background:rgba(15,23,42,.05)}
+  .peek:focus-visible{outline:2px solid var(--blue);outline-offset:1px}
+  .peek svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.9;
+    stroke-linecap:round;stroke-linejoin:round}
+  button.primary{width:100%;padding:15px;font-size:16px;font-weight:700;color:#fff;
+    background:var(--blue);border:0;border-radius:11px;cursor:pointer;
+    transition:background .15s,transform .06s}
+  button.primary:hover{background:var(--blue-dark)}
+  button.primary:active{transform:translateY(1px)}
+  button.primary:disabled{opacity:.6;cursor:not-allowed}
+  .msg{margin-top:16px;padding:14px 15px;border-radius:11px;font-size:14.5px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;display:none}
+  .msg.err{display:block;background:var(--err-bg);border:1px solid var(--err-line);color:var(--err-ink)}
+  .msg.ok{display:block;background:var(--ok-bg);border:1px solid var(--ok-line);color:var(--ok-ink)}
+
+  /* ══════════ auth screen ══════════ */
+  #auth{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+  #auth .wrap{width:100%;max-width:420px}
+  .brand{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:28px}
+  .brand .mk{width:52px;height:52px;border-radius:13px;background:var(--blue);display:grid;place-items:center}
+  .brand .mk svg{width:28px;height:28px}
+  .brand h1{margin:0;font-size:34px;font-weight:800;letter-spacing:-.5px}
+  .brand h1 span{color:var(--blue)}
+  .card{background:var(--card);border-radius:18px;padding:28px 24px 24px;
+    box-shadow:0 1px 2px rgba(16,24,40,.05),0 12px 32px rgba(16,24,40,.07)}
+  .card h2{margin:0 0 4px;font-size:26px;font-weight:800;letter-spacing:-.3px}
+  .card .sub{margin:0 0 22px;color:var(--muted);font-size:15px}
+  .roles{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
+  .role{padding:14px;text-align:center;font-size:15px;font-weight:700;cursor:pointer;
+    border:1.5px solid #d9dee8;background:#fff;border-radius:11px;color:var(--ink);
+    transition:border-color .15s,background .15s,color .15s}
+  .role[aria-pressed="true"]{border-color:var(--blue);background:#eff4ff;color:var(--blue)}
+  .role:focus-visible{outline:2px solid var(--blue);outline-offset:1px}
+  .hint{font-size:13px;color:var(--muted);margin:-8px 0 16px}
+  .links{margin-top:20px;text-align:center;font-size:15px}
+  .links a{color:var(--blue);text-decoration:none;font-weight:700;cursor:pointer}
+  .links a:hover{text-decoration:underline}
+  .links .row{margin-top:10px;color:var(--muted);font-weight:400}
+  .legal{margin-top:18px;text-align:center;font-size:14px;color:var(--muted);line-height:1.5}
+  .legal a{color:var(--blue);text-decoration:none}
+  .foot{margin-top:22px;text-align:center;font-size:14px;color:var(--muted)}
+  .foot a{color:var(--muted);text-decoration:none;margin:0 6px}
+  .foot a:hover{color:var(--ink)}
+  .pane{display:none}
+  .pane.on{display:block}
+
+  /* ══════════ app shell ══════════ */
+  .topbar{position:fixed;top:0;left:0;right:0;height:var(--top);background:#fff;
+    border-bottom:1px solid var(--line);display:flex;align-items:center;
+    justify-content:space-between;padding:0 16px;z-index:30}
+  .topbar .title{font-weight:700;font-size:15px}
+  .burger{border:0;background:transparent;font-size:20px;cursor:pointer;padding:6px;
+    display:none;color:var(--ink)}
+  .who{display:flex;align-items:center;gap:10px}
+  .who .name{text-align:right;line-height:1.25}
+  .who .name b{display:block;font-size:13.5px}
+  .who .name small{color:var(--muted);font-size:12px}
+  .avatar{width:32px;height:32px;border-radius:50%;background:var(--blue);color:#fff;
+    display:grid;place-items:center;font-weight:700;font-size:14px}
+  .side{position:fixed;top:0;bottom:0;left:0;width:var(--side);background:#fff;
+    border-right:1px solid var(--line);padding:14px 12px;z-index:40;overflow-y:auto}
+  .side .logo{display:flex;align-items:center;gap:9px;padding:6px 8px 18px;font-weight:800;font-size:19px}
+  .side .logo i{width:26px;height:26px;border-radius:7px;background:var(--blue);display:grid;
+    place-items:center;font-style:normal}
+  .side .logo i svg{width:15px;height:15px}
+  .side .logo span{color:var(--blue)}
+  .nav a{display:flex;align-items:center;gap:10px;padding:10px 11px;border-radius:9px;
+    color:var(--ink);text-decoration:none;font-size:14.5px;font-weight:600;margin-bottom:2px}
+  .nav a:hover{background:#f1f4f9}
+  .nav a.on{background:var(--blue);color:#fff}
+  .nav .sep{height:1px;background:var(--line);margin:10px 4px}
+  .nav svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;
+    stroke-linecap:round;stroke-linejoin:round;flex:none}
+  main{margin-left:var(--side);padding:calc(var(--top) + 22px) 22px 60px}
+  .scrim{display:none;position:fixed;inset:0;background:rgba(11,18,32,.42);z-index:35}
+  @media(max-width:860px){
+    .burger{display:block}
+    .side{transform:translateX(-100%);transition:transform .22s ease}
+    body.menu .side{transform:none}
+    body.menu .scrim{display:block}
+    main{margin-left:0;padding:calc(var(--top) + 18px) 16px 60px}
+  }
+
+  /* ══════════ app content ══════════ */
+  main h2{margin:0 0 3px;font-size:23px;font-weight:800;letter-spacing:-.3px}
+  .lede{margin:0 0 20px;color:var(--muted);font-size:14.5px}
+  .bar{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap}
+  .bar input{flex:1;min-width:180px;padding:11px 13px;font-size:15px}
+  .btn{padding:11px 16px;font-size:14.5px;font-weight:700;border:0;border-radius:10px;
+    background:var(--blue);color:#fff;cursor:pointer;text-decoration:none;display:inline-block}
+  .btn:hover{background:var(--blue-dark)}
+  .btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
+  .btn.ghost:hover{background:#f1f4f9}
+  .grid{display:grid;gap:13px}
+  .item{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 17px}
+  .item h3{margin:0 0 5px;font-size:16.5px;font-weight:700}
+  .item p{margin:0 0 12px;color:var(--muted);font-size:14px;line-height:1.5}
+  .item p.req{background:#f7f9fc;border-radius:9px;padding:9px 11px;font-size:13.5px}
+  .item p.req b{color:var(--ink);display:block;margin-bottom:2px;font-size:12.5px;
+    text-transform:uppercase;letter-spacing:.4px}
+  .meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .tag{font-size:12.5px;font-weight:700;padding:4px 9px;border-radius:999px;
+    background:#eff4ff;color:var(--blue)}
+  .tag.grey{background:#f1f3f7;color:var(--muted)}
+  .pay{margin-left:auto;font-weight:800;font-size:15px}
+  .note{padding:15px 16px;border-radius:12px;font-size:14.5px;margin-bottom:16px;display:none}
+  .note.err{display:block;background:var(--err-bg);border:1px solid var(--err-line);color:var(--err-ink)}
+  .note.ok{display:block;background:var(--ok-bg);border:1px solid var(--ok-line);color:var(--ok-ink)}
+  .note b{display:block;margin-bottom:4px}
+  .note code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13.5px}
+  .empty{background:var(--card);border:1px dashed #cbd3e1;border-radius:14px;
+    padding:38px 22px;text-align:center}
+  .empty h3{margin:0 0 6px;font-size:17px}
+  .empty p{margin:0 0 16px;color:var(--muted);font-size:14.5px}
+  .skel{background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:16px 17px;margin-bottom:13px}
+  .skel div{height:11px;border-radius:6px;background:#eef1f6;margin-bottom:9px}
+  .skel div:nth-child(1){width:42%}
+  .skel div:nth-child(2){width:88%}
+  .skel div:nth-child(3){width:64%;margin-bottom:0}
+  @media (prefers-reduced-motion:no-preference){
+    .skel div{animation:pulse 1.4s ease-in-out infinite}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body>
-<div class="scrim" onclick="document.body.classList.remove('nav')"></div>
-<div id="root"><div class="auth"><div class="box"><div class="sk"></div></div></div></div>
-<div id="layer"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script>
+<!-- ════════════════ AUTH ════════════════ -->
+<div id="auth" class="hide">
+  <div class="wrap">
+    <div class="brand">
+      <div class="mk"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linejoin="round">
+        <path d="M12 2.6 20.4 7v10L12 21.4 3.6 17V7z"/><path d="M3.6 7 12 11.6 20.4 7M12 11.6v9.8"/></svg></div>
+      <h1>Cube <span>3</span></h1>
+    </div>
 
+    <div class="card">
+      <!-- sign in -->
+      <div class="pane on" id="p-signin">
+        <h2>Sign in</h2>
+        <p class="sub">Welcome back.</p>
+        <label for="si-email">Email</label>
+        <div class="field"><input id="si-email" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com"></div>
+        <label for="si-pw">Password</label>
+        <div class="field pw">
+          <input id="si-pw" type="password" autocomplete="current-password" placeholder="Your password">
+          <button class="peek" type="button" data-peek="si-pw" aria-label="Show password" aria-pressed="false"></button>
+        </div>
+        <button class="primary" id="si-go">Sign in</button>
+        <div class="msg" id="si-msg"></div>
+        <div class="links">
+          <a data-go="forgot">Forgot password?</a>
+          <div class="row">No account? <a data-go="signup">Sign up</a></div>
+        </div>
+      </div>
+
+      <!-- sign up -->
+      <div class="pane" id="p-signup">
+        <h2>Create your account</h2>
+        <p class="sub">I am a…</p>
+        <div class="roles">
+          <button class="role" type="button" data-role="creator" aria-pressed="true">Creator</button>
+          <button class="role" type="button" data-role="brand" aria-pressed="false">Brand</button>
+        </div>
+        <label for="su-name">Full name</label>
+        <div class="field"><input id="su-name" type="text" autocomplete="name" placeholder="Your name"></div>
+        <label for="su-email">Email</label>
+        <div class="field"><input id="su-email" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com"></div>
+        <label for="su-pw">Password</label>
+        <div class="field pw">
+          <input id="su-pw" type="password" autocomplete="new-password" placeholder="Choose a password">
+          <button class="peek" type="button" data-peek="su-pw" aria-label="Show password" aria-pressed="false"></button>
+        </div>
+        <p class="hint">At least 6 characters.</p>
+        <button class="primary" id="su-go">Create account</button>
+        <div class="msg" id="su-msg"></div>
+        <p class="legal">By signing up you agree to the <a href="/terms">Terms</a> and <a href="/privacy">Privacy Policy</a>.</p>
+        <div class="links"><div class="row">Already have one? <a data-go="signin">Sign in</a></div></div>
+      </div>
+
+      <!-- forgot -->
+      <div class="pane" id="p-forgot">
+        <h2>Reset password</h2>
+        <p class="sub">We'll email you a link.</p>
+        <label for="fp-email">Email</label>
+        <div class="field"><input id="fp-email" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com"></div>
+        <button class="primary" id="fp-go">Send reset link</button>
+        <div class="msg" id="fp-msg"></div>
+        <div class="links"><a data-go="signin">Back to sign in</a></div>
+      </div>
+
+      <!-- set new password (arrives from the reset email) -->
+      <div class="pane" id="p-reset">
+        <h2>Choose a new password</h2>
+        <p class="sub">Almost done.</p>
+        <label for="np-pw">New password</label>
+        <div class="field pw">
+          <input id="np-pw" type="password" autocomplete="new-password" placeholder="New password">
+          <button class="peek" type="button" data-peek="np-pw" aria-label="Show password" aria-pressed="false"></button>
+        </div>
+        <p class="hint">At least 6 characters.</p>
+        <button class="primary" id="np-go">Update password</button>
+        <div class="msg" id="np-msg"></div>
+      </div>
+    </div>
+
+    <div class="foot"><a href="/terms">Terms</a>·<a href="/privacy">Privacy</a></div>
+  </div>
+</div>
+
+<!-- ════════════════ APP ════════════════ -->
+<div id="app" class="hide">
+  <div class="scrim" data-close-menu></div>
+
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:6px">
+      <button class="burger" data-toggle-menu aria-label="Menu">☰</button>
+      <span class="title" id="page-title">Campaigns</span>
+    </div>
+    <div class="who">
+      <div class="name"><b id="who-name">—</b><small id="who-role"></small></div>
+      <div class="avatar" id="who-initial">·</div>
+    </div>
+  </header>
+
+  <nav class="side">
+    <div class="logo">
+      <i><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linejoin="round">
+        <path d="M12 2.6 20.4 7v10L12 21.4 3.6 17V7z"/><path d="M3.6 7 12 11.6 20.4 7M12 11.6v9.8"/></svg></i>
+      Cube <span>3</span>
+    </div>
+    <div class="nav" id="nav">
+      <a href="#dashboard"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Dashboard</a>
+      <a href="#campaigns"><svg viewBox="0 0 24 24"><path d="m3 11 18-8-8 18-2-8z"/></svg>Campaigns</a>
+      <a href="#applications"><svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 14h6M9 17h4"/></svg>Applications</a>
+      <a href="#creators"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M17 11.5a3 3 0 1 0-1.6-5.5M18 20a5.6 5.6 0 0 0-2.2-4.4"/></svg>Creators</a>
+      <a href="#messages"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L3 21l1.9-6.4A8 8 0 1 1 21 12z"/></svg>Messages</a>
+      <a href="#profile"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg>Profile</a>
+      <div class="sep"></div>
+      <a href="#settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2.6v2.6M12 18.8v2.6M21.4 12h-2.6M5.2 12H2.6M18.6 5.4l-1.8 1.8M7.2 16.8l-1.8 1.8M18.6 18.6l-1.8-1.8M7.2 7.2 5.4 5.4"/></svg>Settings</a>
+      <a href="#signout"><svg viewBox="0 0 24 24"><path d="M15 17l5-5-5-5M20 12H9M11 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h5"/></svg>Sign out</a>
+    </div>
+  </nav>
+
+  <main id="view"></main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-/* Paste your two Supabase values (Project Settings → API). Both are safe to
-   publish — your RLS policies are what protect the data. */
-var SUPABASE_URL = "https://zjgtceurzsvjkspkvroz.supabase.co";
-var SUPABASE_KEY = "sb_publishable_q9x-cmieOqpj3_rw3AGcEA_K-uynMSm";
+/* ═══════════ config ═══════════ */
+const SUPABASE_URL      = "https://zjgtceurzsvjkspkvroz.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpqZ3RjZXVyenN2amtzcGt2cm96Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYxMjg3MjgsImV4cCI6MjEwMTcwNDcyOH0.OFFOaDuSVxdcOvUxWPiH_jw5PIvnNQaLfK-FRRvLTvE";
 
-/* Shown in Terms & Privacy. */
-var LEGAL = { entity:"Cube3", contact:"boya16573@gmail.com", country:"India" };
-</script>
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-<script>
-(function(){
-"use strict";
-var R=document.getElementById("root"),LAYER=document.getElementById("layer");
+/* ═══════════ helpers ═══════════
+   Nothing binds a listener to an element that may not exist:
+   all clicks run through one delegated listener on document.
+   That is what prevents "Cannot read properties of null".
+================================== */
+const $     = id => document.getElementById(id);
+const esc   = s => String(s ?? "").replace(/[&<>"']/g, c =>
+                ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const money = n => n == null ? "—" : "₹" + Number(n).toLocaleString("en-IN");
+const when  = d => d ? new Date(d).toLocaleDateString("en-IN",
+                {day:"numeric", month:"short", year:"numeric"}) : "—";
 
-if(/PASTE_YOUR/.test(SUPABASE_URL)||/PASTE_YOUR/.test(SUPABASE_KEY)){
-  R.innerHTML='<div class="auth"><div class="box"><div class="bad"><b>Setup needed</b><code>'+
-    'Open index.html and replace SUPABASE_URL and SUPABASE_KEY with your two Supabase values.'+
-    '</code></div></div></div>';return;}
+const AUTH_PANES = { signin:"p-signin", signup:"p-signup", forgot:"p-forgot", reset:"p-reset" };
+const APP_PAGES  = {
+  dashboard:"Dashboard", campaigns:"Campaigns", applications:"Applications",
+  creators:"Creators", messages:"Messages", profile:"Profile", settings:"Settings"
+};
 
-var sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-var me=null,ATT="message-attachments",AVA="avatars",CIMG="campaign-images";
-var chan=null,active=null,pend=null,blocked={},blockedBy={},unread=0;
+let me = null;
+let allCampaigns = [];
+let recovering = false;   // true while handling a password-reset link
 
-var CATEGORIES=["Beauty & Skincare","Fashion & Styling","Food & Cooking","Fitness & Health",
-"Tech & Gadgets","Gaming","Travel","Lifestyle & Vlogs","Comedy & Entertainment","Education & Learning",
-"Finance & Business","Parenting & Family","Home & Interiors","Automotive","Music & Dance",
-"Art & Craft","Sports","Pets & Animals","Books & Writing","Other"];
+function show(el, text, kind){ if(el){ el.textContent = text; el.className = "msg " + kind; } }
+function busy(btn, on, label){ if(btn){ btn.disabled = on; btn.textContent = on ? label : btn.dataset.label; } }
 
-function catSelect(id,value,blankLabel){
-  return '<select id="'+id+'"><option value="">'+(blankLabel||"Select a category")+'</option>'+
-    CATEGORIES.map(function(c){return '<option value="'+esc(c)+'"'+
-      (c===value?" selected":"")+'>'+esc(c)+'</option>';}).join("")+'</select>';}
+function friendly(error){
+  const m = (error.message || "").toLowerCase();
+  if(m.includes("confirm")) return "Confirm your email first — check your inbox.";
+  if(m.includes("invalid")) return "That email and password don't match.";
+  if(m.includes("already registered") || m.includes("already been registered"))
+    return "That email already has an account. Try signing in.";
+  if(m.includes("rate") || m.includes("too many")) return "Too many attempts. Wait a minute and try again.";
+  if(m.includes("password")) return "Password must be at least 6 characters.";
+  return error.message;
+}
 
-function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){
-return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m];});}
-function ini(n){return String(n||"?").trim().split(/\s+/).slice(0,2).map(function(w){return w[0];}).join("").toUpperCase()||"?";}
-function ago(t){if(!t)return"";var m=Math.round((Date.now()-new Date(t))/60000);
-if(m<1)return"just now";if(m<60)return m+"m ago";if(m<1440)return Math.round(m/60)+"h ago";return Math.round(m/1440)+"d ago";}
-function inr(n){return n==null||n===""?"—":"₹"+Number(n).toLocaleString("en-IN");}
-function fsz(b){if(b==null)return"";if(b<1024)return b+" B";if(b<1048576)return Math.round(b/1024)+" KB";return (b/1048576).toFixed(1)+" MB";}
-function el(i){return document.getElementById(i);}
-function go(h){location.hash=h;}
-var MARK='<svg class="m" viewBox="0 0 100 100"><rect width="100" height="100" rx="24" fill="#2563EB"/>'+
-'<polygon points="50,22 76,37 50,52 24,37" fill="#fff"/>'+
-'<polygon points="76,37 76,64 50,79 50,52" fill="#BFDBFE"/>'+
-'<polygon points="24,37 24,64 50,79 50,52" fill="#DBEAFE"/></svg>';
-var LOGO='<div class="logo">'+MARK+'Cube<b>3</b></div>';
-function avatarOf(url,name,size){var s=size||38;
-  return url?'<img class="av" style="width:'+s+'px;height:'+s+'px" src="'+esc(url)+'" alt="">'
-    :'<div class="av" style="width:'+s+'px;height:'+s+'px;font-size:'+Math.round(s/2.7)+'px">'+esc(ini(name))+'</div>';}
+/* ═══════════ password show/hide ═══════════ */
+const EYE_OPEN = '<svg viewBox="0 0 24 24"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+const EYE_SHUT = '<svg viewBox="0 0 24 24"><path d="M10.6 6.1A9.7 9.7 0 0 1 12 5.5c6.4 0 10 6.5 10 6.5a17 17 0 0 1-3.4 4.1M6.2 7.9A16.9 16.9 0 0 0 2 12s3.6 6.5 10 6.5c1.6 0 3-.4 4.3-1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2M3 3l18 18"/></svg>';
+document.querySelectorAll(".peek").forEach(b => b.innerHTML = EYE_OPEN);
 
-async function Q(label,builder){
-  var r=await Promise.race([builder,new Promise(function(_,j){
-    setTimeout(function(){j(new Error(label+": server didn't respond in 15s"));},15000);})]);
-  if(r&&r.error){var e=r.error,m=label+": "+(e.message||"failed");
-    if(e.code)m+=" ["+e.code+"]";
-    if(e.code==="42P01")m+=" — that table doesn't exist. Run features.sql in Supabase.";
-    if(e.code==="42703")m+=" — that column doesn't exist. Run hardening.sql / safeguards.sql.";
-    if(e.code==="42501")m+=" — blocked by a security policy";
-    throw new Error(m);}
-  return r?r.data:null;}
-function boom(e,t){console.error(e);
-  (t||el("view")||R).innerHTML='<div class="bad"><b>Something went wrong</b><code>'+esc(e.message)+
-  '</code><button class="btn sm" style="margin-top:12px" onclick="location.reload()">Reload</button></div>';}
-function none(b,d,h,l){return '<div class="state"><b>'+esc(b)+'</b>'+esc(d||"")+
-(h?'<div style="margin-top:14px"><a class="btn sm" href="'+esc(h)+'">'+esc(l)+'</a></div>':"")+'</div>';}
-function modal(html){LAYER.innerHTML='<div class="modal" id="mdl"><div class="in">'+html+'</div></div>';
-  el("mdl").onclick=function(e){if(e.target.id==="mdl")closeModal();};}
-function closeModal(){LAYER.innerHTML="";}
-window.closeModal=closeModal;
-function lightbox(url){LAYER.innerHTML='<div class="lightbox" id="lb"><img src="'+esc(url)+'" alt=""></div>';
-  el("lb").onclick=closeModal;}
-
-async function uploadImage(bucket,file,prefix){
-  if(!file.type||file.type.indexOf("image/")!==0) throw new Error("Please choose an image file.");
-  if(file.size>5*1024*1024) throw new Error("Image is "+fsz(file.size)+". Keep it under 5 MB.");
-  var ext=(file.name.split(".").pop()||"jpg").toLowerCase();
-  var path=prefix+"/"+(crypto.randomUUID?crypto.randomUUID():Date.now())+"."+ext;
-  var up=await sb.storage.from(bucket).upload(path,file,{contentType:file.type,upsert:true});
-  if(up.error){
-    if(/bucket/i.test(up.error.message))
-      throw new Error('Bucket "'+bucket+'" does not exist. Create it in Supabase → Storage (Public).');
-    throw new Error(up.error.message);}
-  return sb.storage.from(bucket).getPublicUrl(path).data.publicUrl;}
-
-/* ================= AUTH ================= */
-function authShell(inner){R.innerHTML='<div class="auth"><div class="box">'+LOGO+
-  '<div class="card pad" style="margin-top:16px">'+inner+'</div>'+
-  '<p class="small muted" style="text-align:center;margin-top:14px">'+
-  '<a href="#terms">Terms</a> · <a href="#privacy">Privacy</a></p></div></div>';}
-
-function login(){
-  authShell('<h1 style="font-size:21px">Sign in</h1><p class="muted small" style="margin-top:4px">Welcome back.</p>'+
-    '<label>Email</label><input id="e" type="email" autocomplete="email">'+
-    '<label>Password</label><input id="p" type="password" autocomplete="current-password">'+
-    '<button class="btn blk" id="b" style="margin-top:18px">Sign in</button><div id="m"></div>'+
-    '<p class="small muted" style="margin-top:16px;text-align:center"><a href="#forgot" style="color:var(--blue);font-weight:600">Forgot password?</a></p>'+
-    '<p class="small muted" style="margin-top:8px;text-align:center">No account? <a href="#signup" style="color:var(--blue);font-weight:600">Sign up</a></p>');
-  el("b").onclick=async function(){
-    var b=el("b");b.disabled=true;b.textContent="Signing in…";
-    var r=await sb.auth.signInWithPassword({email:el("e").value.trim(),password:el("p").value});
-    if(r.error){el("m").innerHTML='<div class="bad" style="margin-top:14px"><code>'+esc(r.error.message)+'</code></div>';
-      b.disabled=false;b.textContent="Sign in";return;}
-    me=null;go("#dashboard");route();};
-  el("p").onkeydown=function(ev){if(ev.key==="Enter")el("b").click();};}
-
-function signup(){
-  var role="creator";
-  authShell('<h1 style="font-size:21px">Create your account</h1>'+
-    '<label>I am a…</label><div class="pick"><button id="rc" aria-pressed="true">Creator</button>'+
-    '<button id="rb" aria-pressed="false">Brand</button></div>'+
-    '<label>Full name</label><input id="n" autocomplete="name">'+
-    '<label>Email</label><input id="e" type="email" autocomplete="email">'+
-    '<label>Password</label><input id="p" type="password" autocomplete="new-password">'+
-    '<p class="small muted" style="margin-top:6px">At least 6 characters.</p>'+
-    '<button class="btn blk" id="b" style="margin-top:18px">Create account</button><div id="m"></div>'+
-    '<p class="small muted" style="margin-top:12px;text-align:center">By signing up you agree to the '+
-    '<a href="#terms" style="color:var(--blue)">Terms</a> and <a href="#privacy" style="color:var(--blue)">Privacy Policy</a>.</p>'+
-    '<p class="small muted" style="margin-top:10px;text-align:center">Already have one? <a href="#login" style="color:var(--blue);font-weight:600">Sign in</a></p>');
-  el("rc").onclick=function(){role="creator";el("rc").setAttribute("aria-pressed","true");el("rb").setAttribute("aria-pressed","false");};
-  el("rb").onclick=function(){role="brand";el("rb").setAttribute("aria-pressed","true");el("rc").setAttribute("aria-pressed","false");};
-
-  el("b").onclick=async function(){
-    var b=el("b"),name=el("n").value.trim(),email=el("e").value.trim(),pw=el("p").value;
-    if(!name)return void(el("m").innerHTML='<div class="bad" style="margin-top:14px"><code>Please enter your name.</code></div>');
-    b.disabled=true;b.textContent="Creating…";
-
-    async function finish(user){
-      await sb.from("profiles").upsert({id:user.id,full_name:name,role:role});
-      if(role==="creator")await sb.from("creator_profiles").upsert({id:user.id});
-      me=null;go("#dashboard");route();}
-
-    var r=await sb.auth.signUp({email:email,password:pw,options:{data:{full_name:name,role:role}}});
-
-    if(r.error){
-      // Supabase often creates the account even when the confirmation email
-      // fails to send. Don't strand the user — sign them straight in.
-      var s=await sb.auth.signInWithPassword({email:email,password:pw});
-      if(!s.error&&s.data&&s.data.session){ await finish(s.data.user); return; }
-      el("m").innerHTML='<div class="bad" style="margin-top:14px"><code>'+esc(r.error.message)+'</code></div>';
-      b.disabled=false;b.textContent="Create account";return;}
-
-    if(r.data.session&&r.data.user){ await finish(r.data.user); return; }
-
-    // No session: email confirmation is switched on. Try signing in anyway,
-    // in case confirmation isn't actually required.
-    var s2=await sb.auth.signInWithPassword({email:email,password:pw});
-    if(!s2.error&&s2.data&&s2.data.session){ await finish(s2.data.user); return; }
-    el("m").innerHTML='<div class="ok">Account created. Check your email to confirm, then sign in.</div>';
-    b.disabled=false;b.textContent="Create account";};}
-
-function forgot(){
-  authShell('<h1 style="font-size:21px">Reset password</h1>'+
-    '<p class="muted small" style="margin-top:4px">We\'ll email you a link.</p>'+
-    '<label>Email</label><input id="e" type="email">'+
-    '<button class="btn blk" id="b" style="margin-top:18px">Send reset link</button><div id="m"></div>'+
-    '<p class="small muted" style="margin-top:16px;text-align:center"><a href="#login" style="color:var(--blue);font-weight:600">Back to sign in</a></p>');
-  el("b").onclick=async function(){
-    var b=el("b");b.disabled=true;b.textContent="Sending…";
-    var r=await sb.auth.resetPasswordForEmail(el("e").value.trim(),{redirectTo:location.origin+"/#reset"});
-    el("m").innerHTML=r.error
-      ?'<div class="bad" style="margin-top:14px"><code>'+esc(r.error.message)+
-       '</code><span style="display:block;margin-top:6px;font-family:Inter,sans-serif">'+
-       'Email is temporarily unavailable. Contact '+esc(LEGAL.contact)+' and we\'ll reset it for you.</span></div>'
-      :'<div class="ok">Sent. Check your inbox and spam folder.</div>';
-    b.disabled=false;b.textContent="Send reset link";};}
-
-function reset(){
-  authShell('<h1 style="font-size:21px">New password</h1>'+
-    '<label>Password</label><input id="p" type="password" autocomplete="new-password">'+
-    '<button class="btn blk" id="b" style="margin-top:18px">Update password</button><div id="m"></div>');
-  el("b").onclick=async function(){
-    var b=el("b");b.disabled=true;b.textContent="Updating…";
-    var r=await sb.auth.updateUser({password:el("p").value});
-    if(r.error){el("m").innerHTML='<div class="bad" style="margin-top:14px"><code>'+esc(r.error.message)+'</code></div>';
-      b.disabled=false;b.textContent="Update password";return;}
-    el("m").innerHTML='<div class="ok">Done. Taking you in…</div>';
-    setTimeout(function(){me=null;go("#dashboard");route();},900);};}
-
-/* ================= SHELL ================= */
-var NAV=[["dashboard","◧","Dashboard"],["campaigns","◈","Campaigns"],["applications","✎","Applications"],
-["creators","◕","Creators"],["messages","✉","Messages"],["profile","◑","Profile"],["settings","⚙","Settings"]];
-var TITLES={dashboard:"Dashboard",campaigns:"Campaigns",applications:"Applications",creators:"Creators",
-messages:"Messages",profile:"Profile",settings:"Settings",admin:"Admin — reports",creator:"Creators",
-terms:"Terms of Use",privacy:"Privacy Policy","new-campaign":"New campaign","edit-campaign":"Edit campaign"};
-
-function shell(on){
-  R.innerHTML='<div class="shell"><aside>'+LOGO+'<nav class="side">'+
-    NAV.map(function(n){return '<a href="#'+n[0]+'" class="'+(n[0]===on?"on":"")+'"><span class="ic">'+
-      n[1]+'</span>'+n[2]+(n[0]==="messages"&&unread?'<span class="badge">'+unread+'</span>':"")+'</a>';}).join("")+
-    (me.admin?'<div class="sep">Admin</div><a href="#admin" class="'+(on==="admin"?"on":"")+
-      '"><span class="ic">⚑</span>Reports</a>':"")+
-    '<a href="#" id="out" style="margin-top:14px"><span class="ic">⏻</span>Sign out</a></nav></aside>'+
-    '<main><div class="top"><button class="burger" id="bg">☰</button><strong id="ttl">Dashboard</strong>'+
-    '<div class="who"><div style="text-align:right"><div style="font-weight:600;font-size:14px;line-height:1.2">'+
-    esc(me.name)+'</div><div style="font-size:12px;color:var(--faint)">'+
-    (me.admin?"Admin · ":"")+(me.role==="brand"?"Brand":"Creator")+
-    '</div></div>'+avatarOf(me.av,me.name)+'</div></div>'+
-    '<div class="content" id="view">'+
-    (me.suspended?'<div class="warn" style="margin-bottom:16px"><strong>Your account is suspended.</strong> '+
-      'You can read but not post, apply, or start conversations.'+
-      (me.suspendReason?' Reason: '+esc(me.suspendReason)+'.':'')+
-      ' Contact '+esc(LEGAL.contact)+' to appeal.</div>':"")+
-    '<div class="sk"></div><div class="sk"></div></div></main></div>';
-  el("bg").onclick=function(){document.body.classList.toggle("nav");};
-  el("out").onclick=async function(e){e.preventDefault();await sb.auth.signOut();me=null;go("#login");route();};}
-
+/* ═══════════ boot ═══════════ */
 async function boot(){
-  var a=await sb.auth.getUser();
-  if(!a.data||!a.data.user)return false;
-  var u=a.data.user,p=null;
-  try{p=await Q("Loading your profile",sb.from("profiles")
-    .select("id,role,full_name,avatar_url,bio,is_admin,suspended,suspended_reason").eq("id",u.id).maybeSingle());}
-  catch(e){p=await Q("Loading your profile",sb.from("profiles")
-    .select("id,role,full_name,avatar_url,bio").eq("id",u.id).maybeSingle());}
-  if(!p){
-    var md=u.user_metadata||{};
-    await Q("Creating your profile",sb.from("profiles").insert({
-      id:u.id,full_name:md.full_name||u.email.split("@")[0],role:md.role||"creator"}));
-    p=await Q("Loading your profile",sb.from("profiles")
-      .select("id,role,full_name,avatar_url,bio").eq("id",u.id).maybeSingle());}
-  me={id:p.id,role:p.role,name:p.full_name||"Cube3 user",av:p.avatar_url,bio:p.bio,email:u.email,
-      admin:!!p.is_admin,suspended:!!p.suspended,suspendReason:p.suspended_reason};
-  blocked={};blockedBy={};
+  // A reset link lands here with a recovery token in the URL hash
+  if(location.hash.includes("type=recovery")){
+    recovering = true;
+    history.replaceState(null, "", location.pathname + "#reset");
+  }
+
+  const { data:{ session } } = await sb.auth.getSession();
+
+  if(recovering){ showAuth("reset"); return; }
+  if(session){ me = session.user; enterApp(); }
+  else       { showAuth(); }
+}
+
+/* ═══════════ auth view ═══════════ */
+function showAuth(force){
+  $("app").classList.add("hide");
+  $("auth").classList.remove("hide");
+  document.body.classList.remove("menu");
+
+  const key = force || location.hash.replace("#","") || "signin";
+  const id  = AUTH_PANES[key] || AUTH_PANES.signin;
+  document.querySelectorAll(".pane").forEach(p => p.classList.toggle("on", p.id === id));
+  document.querySelectorAll(".msg").forEach(m => m.className = "msg");
+}
+
+/* ═══════════ app view ═══════════ */
+function enterApp(){
+  $("auth").classList.add("hide");
+  $("app").classList.remove("hide");
+
+  const m    = me.user_metadata || {};
+  const name = m.full_name || me.email || "Account";
+  const role = m.role ? m.role[0].toUpperCase() + m.role.slice(1) : "";
+  $("who-name").textContent    = name;
+  $("who-role").textContent    = role;
+  $("who-initial").textContent = name.trim()[0].toUpperCase();
+
+  if(!APP_PAGES[location.hash.replace("#","")]) location.hash = "campaigns";
+  else routeApp();
+}
+
+async function routeApp(){
+  const key = location.hash.replace("#","") || "campaigns";
+
+  if(key === "signout"){
+    await sb.auth.signOut();
+    me = null;
+    location.hash = "signin";
+    showAuth("signin");
+    return;
+  }
+
+  const title = APP_PAGES[key] || "Campaigns";
+  $("page-title").textContent = title;
+  document.querySelectorAll("#nav a").forEach(a =>
+    a.classList.toggle("on", a.getAttribute("href") === "#" + key));
+  document.body.classList.remove("menu");
+
+  const view = $("view");
+  view.innerHTML = "";
   try{
-    (await Q("Loading blocks",sb.from("user_blocks").select("blocker_id,blocked_id")
-      .or("blocker_id.eq."+me.id+",blocked_id.eq."+me.id))||[]).forEach(function(b){
-        if(b.blocker_id===me.id)blocked[b.blocked_id]=true; else blockedBy[b.blocker_id]=true;});
-  }catch(e){console.warn("blocks unavailable",e.message);}
-  return true;}
+    if(key === "campaigns") await campaigns();
+    else soon(title);
+  }catch(err){
+    view.innerHTML = `<div class="note err"><b>Something went wrong</b>
+      <code>${esc(err.message)}</code></div>
+      <button class="btn" data-act="reload">Reload</button>`;
+    console.error(err);
+  }
+}
 
-function readKey(k,id){return "c3read:"+me.id+":"+k+":"+id;}
-function lastRead(k,id){try{return localStorage.getItem(readKey(k,id))||"1970-01-01";}catch(e){return "1970-01-01";}}
-function markRead(k,id){try{localStorage.setItem(readKey(k,id),new Date().toISOString());}catch(e){}}
+function soon(title){
+  $("view").innerHTML = `<h2>${esc(title)}</h2>
+    <p class="lede">Not built yet.</p>
+    <div class="empty"><h3>Nothing here yet</h3>
+      <p>This section is still being built.</p>
+      <a class="btn" href="#campaigns">Go to Campaigns</a></div>`;
+}
 
-/* ================= DASHBOARD ================= */
-async function dashboard(){
-  var V=el("view"),brand=me.role==="brand";
-  var banner=V.querySelector(".warn");
-  V.innerHTML=(banner?banner.outerHTML:"")+
-    '<h1>Welcome back, '+esc(me.name.split(" ")[0])+'</h1><p class="muted" style="margin:4px 0 20px">'+
-    (brand?"Find creators and track your campaigns.":"Discover campaigns and grow your work.")+
-    '</p><div class="stats" id="st"></div><div class="cols"><div class="card" id="l"></div><div class="card" id="r"></div></div>';
-  var tone={blue:["var(--blues)","var(--blue)"],purple:["var(--purples)","var(--purple)"],
-    amber:["var(--ambers)","var(--amber)"],green:["var(--greens)","var(--green)"]};
-  function stats(rows){el("st").innerHTML=rows.map(function(x){var c=tone[x[3]];
-    return '<div class="stat"><div><div class="lb">'+esc(x[0])+'</div><div class="vl">'+esc(x[1])+
-    '</div></div><div class="ic" style="background:'+c[0]+';color:'+c[1]+'">'+x[2]+'</div></div>';}).join("");}
-  function list(id,t,h,rows,eb,ed){el(id).innerHTML='<div class="hd"><h2>'+esc(t)+'</h2><a href="'+h+'">View all</a></div>'+
-    (rows.length?rows.map(function(r){return '<div class="row">'+avatarOf(r.img,r.t)+
-    '<div class="grow"><h3 class="trunc">'+esc(r.t)+'</h3><div class="small muted trunc">'+esc(r.s)+'</div></div>'+
-    (r.c?'<span class="chip '+(r.c==="accepted"||r.c==="open"?"g":r.c==="pending"?"a":"")+'">'+esc(r.c)+'</span>':"")+
-    '</div>';}).join(""):none(eb,ed));}
-  if(brand){
-    var cs=await Q("Loading your campaigns",sb.from("campaigns")
-      .select("id,title,budget,status,image_url,created_at").eq("brand_id",me.id))||[];
-    var ids=cs.map(function(c){return c.id;});
-    var ap=ids.length?(await Q("Counting pitches",sb.from("campaign_applications")
-      .select("id,status").in("campaign_id",ids))||[]):[];
-    stats([["Your campaigns",cs.length,"◈","blue"],["Pitches received",ap.length,"✎","purple"],
-      ["Awaiting review",ap.filter(function(a){return a.status==="pending";}).length,"◷","amber"],
-      ["Selected",ap.filter(function(a){return a.status==="accepted";}).length,"✓","green"]]);
-    list("l","Your campaigns","#campaigns",cs.slice(0,5).map(function(c){
-      return {t:c.title,s:inr(c.budget)+" · "+ago(c.created_at),c:c.status,img:c.image_url};}),
-      "No campaigns yet","Post one to start receiving pitches.");
-  }else{
-    var open=await Q("Counting open campaigns",
-      sb.from("campaigns").select("id",{count:"exact",head:true}).eq("status","open"));
-    var mine=await Q("Loading your applications",sb.from("campaign_applications")
-      .select("id,status").eq("creator_id",me.id))||[];
-    stats([["Open campaigns",open==null?"—":open,"◈","blue"],["My applications",mine.length,"✎","purple"],
-      ["Awaiting reply",mine.filter(function(a){return a.status==="pending";}).length,"◷","amber"],
-      ["Selected",mine.filter(function(a){return a.status==="accepted";}).length,"✓","green"]]);
-    var rec=await Q("Loading campaigns",sb.from("campaigns")
-      .select("id,title,budget,category,image_url,created_at").eq("status","open")
-      .order("created_at",{ascending:false}).limit(5))||[];
-    list("l","Recommended for you","#campaigns",rec.map(function(c){
-      return {t:c.title,s:inr(c.budget)+(c.category?" · "+c.category:""),c:"open",img:c.image_url};}),
-      "No open campaigns","Check back soon.");}
-  var col=brand?"brand_id":"creator_id",oth=brand?"creator_id":"brand_id";
-  var iq=await Q("Loading conversations",sb.from("creator_inquiries")
-    .select("id,brand_id,creator_id,created_at").eq(col,me.id).limit(5))||[];
-  iq=iq.filter(function(i){return !blocked[i[oth]]&&!blockedBy[i[oth]];});
-  var nm={};
-  if(iq.length){(await Q("Loading names",sb.from("profiles").select("id,full_name,avatar_url")
-    .in("id",iq.map(function(i){return i[oth];})))||[]).forEach(function(p){nm[p.id]=p;});}
-  list("r","Recent messages","#messages",iq.map(function(i){var p=nm[i[oth]]||{};
-    return {t:p.full_name||"Cube3 user",s:"Started "+ago(i.created_at),img:p.avatar_url};}),
-    "No messages yet",brand?"Message a creator to begin.":"Brands will reach out here.");}
+/* ═══════════ campaigns ═══════════ */
+async function campaigns(){
+  $("view").innerHTML = `
+    <h2>Campaigns</h2>
+    <p class="lede">Browse open briefs and apply.</p>
+    <div class="bar">
+      <input id="q" type="search" placeholder="Search campaigns…" autocomplete="off">
+      <button class="btn ghost" data-act="refresh">Refresh</button>
+    </div>
+    <div class="note" id="note"></div>
+    <div id="list">
+      <div class="skel"><div></div><div></div><div></div></div>
+      <div class="skel"><div></div><div></div><div></div></div>
+    </div>`;
+  await load();
+}
 
-/* ================= CAMPAIGNS ================= */
-async function campaignsView(){
-  var V=el("view"),brand=me.role==="brand";
-  V.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">'+
-    '<div><h1>Campaigns</h1><p class="muted" style="margin-top:4px">'+
-    (brand?"Campaigns you've posted.":"Open campaigns taking pitches.")+'</p></div>'+
-    (brand&&!me.suspended?'<a class="btn" href="#new-campaign">+ New campaign</a>':"")+'</div>'+
-    (brand?"":'<div class="row2" style="margin-top:16px;flex-wrap:wrap">'+
-      '<input id="q" placeholder="Search campaigns" style="max-width:280px">'+
-      catSelect("cat","","All categories")+'</div>')+
-    '<div id="l" style="margin-top:18px"></div>';
-  if(!brand) el("cat").style.maxWidth="230px";
-  var rows=brand
-    ? await Q("Loading your campaigns",sb.from("campaigns")
-        .select("id,title,description,budget,category,status,image_url,created_at")
-        .eq("brand_id",me.id).order("created_at",{ascending:false}))
-    : await Q("Loading campaigns",sb.from("campaigns")
-        .select("id,title,description,budget,category,status,image_url,brand_id,created_at")
-        .eq("status","open").order("created_at",{ascending:false}));
-  rows=(rows||[]).filter(function(c){return brand||(!blocked[c.brand_id]&&!blockedBy[c.brand_id]);});
-  if(!rows.length)return void(el("l").innerHTML='<div class="card">'+
-    none(brand?"No campaigns yet":"No open campaigns",brand?"Post your first one.":"Check back soon.")+'</div>');
-  var did={};
-  if(!brand){(await Q("Checking your applications",sb.from("campaign_applications")
-    .select("campaign_id").eq("creator_id",me.id))||[]).forEach(function(a){did[a.campaign_id]=true;});
-    el("q").addEventListener("input",draw);el("cat").addEventListener("change",draw);}
-  function draw(){
-    var t=brand?"":(el("q").value||"").toLowerCase().trim(),cat=brand?"":el("cat").value;
-    var L=rows.filter(function(c){
-      if(cat&&c.category!==cat)return false;
-      if(!t)return true;
-      return ((c.title||"")+" "+(c.description||"")).toLowerCase().indexOf(t)>-1;});
-    if(!L.length)return void(el("l").innerHTML='<div class="card">'+none("No matches","Try a different search or category.")+'</div>');
-    el("l").innerHTML='<div class="grid">'+L.map(function(c){
-      return '<div class="card">'+
-        (c.image_url?'<img class="cover" src="'+esc(c.image_url)+'" alt="" data-zoom="'+esc(c.image_url)+'">'
-          :'<div class="cover" style="display:grid;place-items:center;color:var(--blue);font-size:30px">◈</div>')+
-        '<div class="pad"><div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">'+
-        '<h2 style="font-size:16px">'+esc(c.title)+'</h2>'+
-        '<span class="chip '+(c.status==="open"?"g":"")+'">'+esc(c.status||"")+'</span></div>'+
-        (c.category?'<div style="margin-top:6px"><span class="chip">'+esc(c.category)+'</span></div>':"")+
-        (c.description?'<p class="muted small" style="margin-top:8px">'+esc(String(c.description).slice(0,140))+'</p>':"")+
-        '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:13px;padding-top:12px;border-top:1px solid var(--line)">'+
-        '<strong>'+esc(inr(c.budget))+'</strong>'+
-        (brand?'<span class="row2"><a class="btn sm g" href="#edit-campaign/'+esc(c.id)+'">Edit</a>'+
-               '<a class="btn sm g" href="#applications">Pitches</a></span>'
-          :(did[c.id]?'<span class="chip g">Applied</span>'
-            :(me.suspended?'<span class="chip r">Suspended</span>'
-              :'<button class="btn sm" data-apply="'+esc(c.id)+'" data-title="'+esc(c.title)+'">Apply</button>')))+
-        '</div></div></div>';}).join("")+'</div>';}
-  draw();}
+async function load(){
+  if(!$("list")) return;
 
-function campaignForm(existing){
-  var c=existing||{};
-  el("view").innerHTML='<h1>'+(existing?"Edit campaign":"New campaign")+'</h1>'+
-    '<div class="card pad" style="margin-top:16px;max-width:620px">'+
-    '<label>Cover image</label><div class="row2"><div id="prev" style="width:96px;height:64px;border-radius:8px;'+
-    'background:var(--blues);display:grid;place-items:center;color:var(--blue);overflow:hidden">'+
-    (c.image_url?'<img src="'+esc(c.image_url)+'" style="width:100%;height:100%;object-fit:cover">':'◈')+'</div>'+
-    '<button class="btn g sm" id="pick">Choose image</button><input type="file" id="img" accept="image/*" hidden></div>'+
-    '<label>Title</label><input id="t" value="'+esc(c.title||"")+'" placeholder="Monsoon skincare launch">'+
-    '<label>Description</label><textarea id="d" placeholder="What you need, deliverables, timeline">'+esc(c.description||"")+'</textarea>'+
-    '<label>Budget (₹)</label><input id="b" type="number" min="0" value="'+esc(c.budget||"")+'" placeholder="25000">'+
-    '<label>Category</label>'+catSelect("c",c.category||"")+
-    (existing?'<label>Status</label><select id="s"><option value="open"'+(c.status==="open"?" selected":"")+
-      '>Open — accepting pitches</option><option value="closed"'+(c.status==="closed"?" selected":"")+
-      '>Closed</option></select>':"")+
-    '<div class="row2" style="margin-top:18px"><button class="btn" id="save">'+
-    (existing?"Save changes":"Post campaign")+'</button>'+
-    (existing?'<button class="btn d" id="del">Delete</button>':"")+'</div><div id="m"></div></div>';
-  var imageUrl=c.image_url||null;
-  el("pick").onclick=function(){el("img").click();};
-  el("img").onchange=async function(e){
-    var f=e.target.files[0];if(!f)return;
-    el("pick").disabled=true;el("pick").textContent="Uploading…";
-    try{imageUrl=await uploadImage(CIMG,f,me.id);
-      el("prev").innerHTML='<img src="'+esc(imageUrl)+'" style="width:100%;height:100%;object-fit:cover">';}
-    catch(x){el("m").innerHTML='<div class="bad" style="margin-top:14px"><code>'+esc(x.message)+'</code></div>';}
-    el("pick").disabled=false;el("pick").textContent="Choose image";};
-  el("save").onclick=async function(){
-    if(!el("t").value.trim())return void(el("m").innerHTML='<div class="bad" style="margin-top:14px"><code>Give it a title.</code></div>');
-    var b=el("save");b.disabled=true;b.textContent="Saving…";
-    var row={title:el("t").value.trim(),description:el("d").value.trim()||null,
-      budget:el("b").value?Number(el("b").value):null,category:el("c").value||null,image_url:imageUrl};
-    try{
-      if(existing){row.status=el("s").value;
-        await Q("Saving campaign",sb.from("campaigns").update(row).eq("id",c.id));}
-      else{row.brand_id=me.id;row.status="open";
-        await Q("Posting campaign",sb.from("campaigns").insert(row));}
-      go("#campaigns");
-    }catch(e){el("m").innerHTML='<div class="bad" style="margin-top:14px"><code>'+esc(e.message)+'</code></div>';
-      b.disabled=false;b.textContent=existing?"Save changes":"Post campaign";}};
-  if(existing) el("del").onclick=function(){
-    modal('<h2>Delete this campaign?</h2><p class="muted small" style="margin-top:6px">'+
-      'Pitches attached to it will be removed too. This cannot be undone.</p>'+
-      '<div class="row2" style="margin-top:18px;justify-content:flex-end">'+
-      '<button class="btn g" onclick="closeModal()">Cancel</button>'+
-      '<button class="btn d" id="yes">Delete</button></div>');
-    el("yes").onclick=async function(){
-      try{await Q("Deleting",sb.from("campaigns").delete().eq("id",c.id));closeModal();go("#campaigns");}
-      catch(e){alert(e.message);}};};}
+  const { data, error } = await sb
+    .from("campaigns")
+    .select("id,title,description,budget,category,platform,location,requirements,deadline,status")
+    .eq("status","open")
+    .order("created_at",{ ascending:false })
+    .limit(50);
 
-async function editCampaign(id){
-  el("view").innerHTML='<div class="sk"></div>';
-  var c=await Q("Loading campaign",sb.from("campaigns").select("*").eq("id",id).maybeSingle());
-  if(!c||c.brand_id!==me.id)return void(el("view").innerHTML='<div class="card">'+
-    none("Campaign not found","It may have been deleted.","#campaigns","Back to campaigns")+'</div>');
-  campaignForm(c);}
+  const list = $("list");
+  if(!list) return;                       // user navigated away mid-request
 
-/* ================= APPLICATIONS ================= */
-async function applications(){
-  var V=el("view"),brand=me.role==="brand";
-  V.innerHTML='<h1>'+(brand?"Pitches received":"My applications")+'</h1><div id="l" style="margin-top:18px"></div>';
-  var L={pending:"a",shortlisted:"p",accepted:"g",rejected:"r",withdrawn:"r"};
-  function item(title,sub,a,act,img){
-    return '<div class="card pad" style="margin-bottom:12px">'+
-      '<div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">'+
-      '<div class="row2">'+(img!==undefined?avatarOf(img,title):"")+
-      '<div><h2 style="font-size:16px">'+esc(title)+'</h2>'+
-      (sub?'<div class="small muted">'+esc(sub)+'</div>':"")+'</div></div>'+
-      '<span class="chip '+(L[a.status]||"")+'">'+esc(a.status)+'</span></div>'+
-      (a.pitch?'<p class="small muted" style="margin-top:10px;padding-left:11px;border-left:3px solid var(--line);white-space:pre-wrap">'+esc(a.pitch)+'</p>':"")+
-      '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:13px;padding-top:12px;border-top:1px solid var(--line);flex-wrap:wrap">'+
-      '<span class="small muted">'+esc(ago(a.created_at))+'</span><span class="row2">'+act+'</span></div></div>';}
-  if(brand){
-    var cs=await Q("Loading your campaigns",sb.from("campaigns").select("id,title").eq("brand_id",me.id))||[];
-    if(!cs.length)return void(el("l").innerHTML='<div class="card">'+none("No campaigns yet","Post one and pitches land here.")+'</div>');
-    var t={};cs.forEach(function(c){t[c.id]=c.title;});
-    var ap=await Q("Loading pitches",sb.from("campaign_applications")
-      .select("id,campaign_id,creator_id,pitch,status,created_at")
-      .in("campaign_id",cs.map(function(c){return c.id;})).order("created_at",{ascending:false}))||[];
-    ap=ap.filter(function(a){return !blocked[a.creator_id];});
-    if(!ap.length)return void(el("l").innerHTML='<div class="card">'+none("No pitches yet","Creators haven't applied yet.")+'</div>');
-    var nm={};(await Q("Loading creators",sb.from("profiles").select("id,full_name,avatar_url")
-      .in("id",Array.from(new Set(ap.map(function(a){return a.creator_id;})))))||[])
-      .forEach(function(p){nm[p.id]=p;});
-    el("l").innerHTML=ap.map(function(a){var p=nm[a.creator_id]||{};
-      var acts='<a class="btn sm g" href="#creator/'+esc(a.creator_id)+'">Profile</a>';
-      if(a.status==="pending")acts+='<button class="btn sm g" data-status="shortlisted" data-app="'+esc(a.id)+'">Shortlist</button>'+
-        '<button class="btn sm" data-status="accepted" data-app="'+esc(a.id)+'">Select</button>'+
-        '<button class="btn sm d" data-status="rejected" data-app="'+esc(a.id)+'">Decline</button>';
-      else if(a.status==="shortlisted")acts+='<button class="btn sm" data-status="accepted" data-app="'+esc(a.id)+'">Select</button>'+
-        '<button class="btn sm d" data-status="rejected" data-app="'+esc(a.id)+'">Decline</button>';
-      else if(a.status==="accepted")acts+='<a class="btn sm" href="#messages">Open chat</a>';
-      return item(p.full_name||"Creator",t[a.campaign_id],a,acts,p.avatar_url);}).join("");
-  }else{
-    var mine=await Q("Loading your applications",sb.from("campaign_applications")
-      .select("id,campaign_id,pitch,status,created_at").eq("creator_id",me.id)
-      .order("created_at",{ascending:false}))||[];
-    if(!mine.length)return void(el("l").innerHTML='<div class="card">'+
-      none("No applications yet","Pitch for a campaign and it shows up here.","#campaigns","Browse campaigns")+'</div>');
-    var ti={};(await Q("Loading campaigns",sb.from("campaigns").select("id,title,image_url")
-      .in("id",Array.from(new Set(mine.map(function(a){return a.campaign_id;})))))||[])
-      .forEach(function(c){ti[c.id]=c;});
-    el("l").innerHTML=mine.map(function(a){var c=ti[a.campaign_id]||{};
-      return item(c.title||"Campaign unavailable","",a,
-        (a.status==="accepted"?'<a class="btn sm" href="#messages">Open chat</a>':"")+
-        (a.status==="pending"?'<button class="btn sm d" data-withdraw="'+esc(a.id)+'">Withdraw</button>':""),
-        c.image_url);}).join("");}}
+  if(error){
+    const note = $("note");
+    if(note){
+      note.innerHTML = `<b>Couldn't load campaigns</b><code>${esc(error.message)}</code>`;
+      note.className = "note err";
+    }
+    list.innerHTML = "";
+    return;
+  }
 
-/* ================= CREATORS ================= */
-async function creators(){
-  var V=el("view");
-  V.innerHTML='<h1>Creators</h1><p class="muted" style="margin:4px 0 16px">Search the directory.</p>'+
-    '<div class="row2" style="flex-wrap:wrap"><input id="s" placeholder="Search name, handle or bio" style="max-width:340px">'+
-    catSelect("cat","","All categories")+'</div>'+
-    '<div class="small muted" id="ct" style="margin:14px 0 10px"></div><div id="g"></div>';
-  el("cat").style.maxWidth="230px";
-  var rows=await Q("Loading creators",sb.from("creator_profiles").select("id,handle,category,location"))||[];
-  rows=rows.filter(function(r){return r.id!==me.id&&!blocked[r.id]&&!blockedBy[r.id];});
-  if(!rows.length)return void(el("g").innerHTML='<div class="card">'+none("No creators yet","Profiles appear once people sign up.")+'</div>');
-  var by={};(await Q("Loading names",sb.from("profiles").select("id,full_name,bio,avatar_url")
-    .in("id",rows.map(function(r){return r.id;})))||[]).forEach(function(p){by[p.id]=p;});
-  var all=rows.map(function(r){var p=by[r.id]||{};
-    return Object.assign({},r,{name:p.full_name||"Unnamed creator",bio:p.bio||"",av:p.avatar_url||""});});
-  function draw(){
-    var t=(el("s").value||"").toLowerCase().trim(),cat=el("cat").value;
-    var L=all.filter(function(c){
-      if(cat&&c.category!==cat)return false;
-      return !t||(c.name+" "+(c.handle||"")+" "+c.bio).toLowerCase().indexOf(t)>-1;});
-    el("ct").textContent=L.length+(L.length===1?" creator":" creators");
-    el("g").innerHTML=L.length?'<div class="grid">'+L.map(function(c){
-      return '<div class="card pad"><div style="display:flex;gap:11px;align-items:center;margin-bottom:10px">'+
-      avatarOf(c.av,c.name,44)+
-      '<div style="min-width:0"><h3 class="trunc">'+esc(c.name)+'</h3><div class="small muted trunc">'+
-      (c.handle?"@"+esc(String(c.handle).replace(/^@/,"")):"")+(c.location?" · "+esc(c.location):"")+'</div></div></div>'+
-      (c.bio?'<p class="small muted" style="margin-bottom:9px">'+esc(String(c.bio).slice(0,110))+'</p>':"")+
-      (c.category?'<span class="chip">'+esc(c.category)+'</span>':"")+
-      '<div style="display:flex;gap:8px;margin-top:13px">'+
-      '<a class="btn sm g" style="flex:1" href="#creator/'+esc(c.id)+'">Profile</a>'+
-      (me.role==="brand"&&!me.suspended?'<button class="btn sm" style="flex:1" data-msg="'+esc(c.id)+'">Message</button>':"")+
-      '</div></div>';}).join("")+'</div>':'<div class="card">'+none("No matches","Try a different search or category.")+'</div>';}
-  el("s").addEventListener("input",draw);el("cat").addEventListener("change",draw);draw();}
+  allCampaigns = data || [];
+  paint(allCampaigns);
+}
 
-async function creatorPage(id){
-  var V=el("view");V.innerHTML='<div class="sk"></div>';
-  var p=await Q("Loading profile",sb.from("profiles").select("id,full_name,bio,avatar_url,role").eq("id",id).maybeSingle());
-  if(!p)return void(V.innerHTML='<a class="small muted" href="#creators">← All creators</a>'+
-    '<div class="card" style="margin-top:14px">'+none("Profile not found","This account may have been deleted.")+'</div>');
-  var c=await Q("Loading creator details",sb.from("creator_profiles").select("*").eq("id",id).maybeSingle())||{};
-  var links=[["instagram_url","Instagram"],["youtube_url","YouTube"],["x_url","X"],["tiktok_url","TikTok"],
-    ["facebook_url","Facebook"],["linkedin_url","LinkedIn"],["threads_url","Threads"],
-    ["snapchat_url","Snapchat"],["portfolio_url","Portfolio"]]
-    .filter(function(l){return c[l[0]];})
-    .map(function(l){return '<a class="chip" href="'+esc(c[l[0]])+'" target="_blank" rel="noopener nofollow">'+l[1]+'</a>';}).join("");
-  var mine=me.id===id,isB=!!blocked[id];
-  var can=me.role==="brand"&&p.role==="creator"&&!mine&&!isB&&!me.suspended;
-  V.innerHTML='<a class="small muted" href="#creators">← All creators</a>'+
-    '<div class="card pad" style="margin-top:14px"><div style="display:flex;gap:15px;align-items:center;flex-wrap:wrap">'+
-    avatarOf(p.avatar_url,p.full_name,74)+
-    '<div style="flex:1;min-width:170px"><h1 style="font-size:23px">'+esc(p.full_name||"Unnamed creator")+'</h1>'+
-    '<div class="muted small">'+(c.handle?"@"+esc(String(c.handle).replace(/^@/,"")):"")+
-    (c.location?" · "+esc(c.location):"")+'</div></div><div class="row2">'+
-    (can?'<button class="btn" data-msg="'+esc(id)+'">Message</button>':"")+
-    (mine?'':'<div class="menu"><button class="btn g sm" id="mo">⋯</button></div>')+'</div></div>'+
-    (isB?'<div class="warn">You blocked this person. Unblock in Settings.</div>':"")+
-    (p.bio?'<p style="margin-top:15px;white-space:pre-wrap">'+esc(p.bio)+'</p>':"")+
-    (c.category?'<div style="margin-top:12px"><span class="chip">'+esc(c.category)+'</span></div>':"")+
-    (links?'<div style="margin-top:12px">'+links+'</div>':"")+
-    (!can&&me.role==="creator"&&!mine?'<p class="small muted" style="margin-top:14px">Only brand accounts can start a conversation.</p>':"")+
-    '</div>';
-  if(!mine) el("mo").onclick=function(ev){
-    ev.stopPropagation();
-    var box=el("mo").parentNode;
-    if(box.querySelector(".pop"))return void(box.querySelector(".pop").remove());
-    var pop=document.createElement("div");pop.className="pop";
-    pop.innerHTML='<button id="rp">Report this person</button><button class="dg" id="bl">'+(isB?"Unblock":"Block")+'</button>'+
-      (me.admin?'<button class="dg" id="sp">Suspend account</button>':"");
-    box.appendChild(pop);
-    pop.querySelector("#rp").onclick=function(){pop.remove();reportDialog(id,"profile",p.full_name);};
-    pop.querySelector("#bl").onclick=function(){pop.remove();toggleBlock(id,p.full_name,isB);};
-    if(me.admin)pop.querySelector("#sp").onclick=function(){pop.remove();suspendDialog(id,p.full_name);};};}
+function paint(rows){
+  const list = $("list");
+  if(!list) return;
 
-function reportDialog(userId,context,name){
-  modal('<h2>Report '+esc(name||"this user")+'</h2>'+
-    '<p class="muted small" style="margin-top:4px">Reports are private. The person is not told.</p>'+
-    '<label>Reason</label><select id="rr">'+
-    '<option value="spam">Spam or scam</option><option value="harassment">Harassment or abuse</option>'+
-    '<option value="impersonation">Impersonation / fake account</option>'+
-    '<option value="inappropriate">Inappropriate content</option>'+
-    '<option value="payment">Payment or contract dispute</option>'+
-    '<option value="other">Something else</option></select>'+
-    '<label>Details (optional)</label><textarea id="rd" placeholder="What happened?"></textarea>'+
-    '<div class="row2" style="margin-top:16px;justify-content:flex-end">'+
-    '<button class="btn g" onclick="closeModal()">Cancel</button>'+
-    '<button class="btn" id="rs">Submit report</button></div><div id="rm"></div>');
-  el("rs").onclick=async function(){
-    var b=el("rs");b.disabled=true;b.textContent="Sending…";
-    try{
-      await Q("Filing report",sb.from("reports").insert({reporter_id:me.id,reported_id:userId,
-        context:context,reason:el("rr").value,details:el("rd").value.trim()||null}));
-      el("rm").innerHTML='<div class="ok">Report submitted. Thank you.</div>';
-      setTimeout(closeModal,1400);
-    }catch(e){el("rm").innerHTML='<div class="bad" style="margin-top:12px"><code>'+esc(e.message)+'</code></div>';
-      b.disabled=false;b.textContent="Submit report";}};}
+  if(!rows.length){
+    list.innerHTML = `<div class="empty">
+      <h3>No open campaigns</h3>
+      <p>Nothing matches right now. Check back soon.</p></div>`;
+    return;
+  }
 
-function suspendDialog(userId,name){
-  modal('<h2>Suspend '+esc(name||"this account")+'?</h2>'+
-    '<p class="muted small" style="margin-top:6px">They can still sign in and read, but cannot post '+
-    'campaigns, apply, or start conversations. Reversible.</p>'+
-    '<label>Reason (they will see this)</label><input id="sr" placeholder="Spam, impersonation…">'+
-    '<div class="row2" style="margin-top:16px;justify-content:flex-end">'+
-    '<button class="btn g" onclick="closeModal()">Cancel</button>'+
-    '<button class="btn d" id="sy">Suspend</button></div><div id="sm"></div>');
-  el("sy").onclick=async function(){
-    var b=el("sy");b.disabled=true;b.textContent="…";
-    try{
-      await Q("Suspending",sb.from("profiles").update({suspended:true,
-        suspended_reason:el("sr").value.trim()||null,suspended_at:new Date().toISOString()}).eq("id",userId));
-      el("sm").innerHTML='<div class="ok">Account suspended.</div>';
-      setTimeout(function(){closeModal();route();},1000);
-    }catch(e){el("sm").innerHTML='<div class="bad" style="margin-top:12px"><code>'+esc(e.message)+'</code></div>';
-      b.disabled=false;b.textContent="Suspend";}};}
+  list.innerHTML = `<div class="grid">` + rows.map(c => `
+    <article class="item">
+      <h3>${esc(c.title)}</h3>
+      <p>${esc(c.description)}</p>
+      ${c.requirements ? `<p class="req"><b>Requirements</b>${esc(c.requirements)}</p>` : ""}
+      <div class="meta">
+        ${c.category ? `<span class="tag">${esc(c.category)}</span>` : ""}
+        ${c.platform ? `<span class="tag grey">${esc(c.platform)}</span>` : ""}
+        ${c.location ? `<span class="tag grey">${esc(c.location)}</span>` : ""}
+        <span class="tag grey">Closes ${when(c.deadline)}</span>
+        <span class="pay">${money(c.budget)}</span>
+      </div>
+    </article>`).join("") + `</div>`;
+}
 
-function toggleBlock(userId,name,isB){
-  modal('<h2>'+(isB?"Unblock":"Block")+' '+esc(name||"this user")+'?</h2>'+
-    '<p class="muted small" style="margin-top:6px">'+
-    (isB?"They will appear in listings and can message you again."
-      :"You won't see each other in listings, campaigns, or messages. They aren't told.")+'</p>'+
-    '<div class="row2" style="margin-top:18px;justify-content:flex-end">'+
-    '<button class="btn g" onclick="closeModal()">Cancel</button>'+
-    '<button class="btn '+(isB?"":"d")+'" id="bg2">'+(isB?"Unblock":"Block")+'</button></div><div id="bm"></div>');
-  el("bg2").onclick=async function(){
-    var b=el("bg2");b.disabled=true;b.textContent="…";
-    try{
-      if(isB){await Q("Unblocking",sb.from("user_blocks").delete()
-        .eq("blocker_id",me.id).eq("blocked_id",userId));delete blocked[userId];}
-      else{await Q("Blocking",sb.from("user_blocks").insert({blocker_id:me.id,blocked_id:userId}));
-        blocked[userId]=true;}
-      closeModal();route();
-    }catch(e){el("bm").innerHTML='<div class="bad" style="margin-top:12px"><code>'+esc(e.message)+'</code></div>';
-      b.disabled=false;b.textContent=isB?"Unblock":"Block";}};}
+/* ═══════════ auth actions ═══════════ */
+let role = "creator";
 
-/* ================= PROFILE ================= */
-async function profileView(){
-  var V=el("view"),isC=me.role==="creator";
-  var c=isC?(await Q("Loading your creator profile",
-    sb.from("creator_profiles").select("*").eq("id",me.id).maybeSingle())||{}):{};
-  V.innerHTML='<h1>Your profile</h1><div class="card pad" style="margin-top:16px;max-width:620px">'+
-    '<label>Profile picture</label><div class="row2"><span id="pv">'+avatarOf(me.av,me.name,72)+'</span>'+
-    '<button class="btn g sm" id="pick">Upload photo</button>'+
-    (me.av?'<button class="btn g sm" id="rmv">Remove</button>':"")+
-    '<input type="file" id="ph" accept="image/*" hidden></div>'+
-    '<label>Full name</label><input id="n" value="'+esc(me.name)+'">'+
-    '<label>Bio</label><textarea id="b">'+esc(me.bio||"")+'</textarea>'+
-    (isC?'<label>Handle</label><input id="h" value="'+esc(c.handle||"")+'" placeholder="yourname">'+
-      '<label>Category</label>'+catSelect("cat",c.category||"")+
-      '<p class="small muted" style="margin-top:6px">Brands filter by this. Pick the closest match.</p>'+
-      '<label>Location</label><input id="loc" value="'+esc(c.location||"")+'" placeholder="Mumbai">'+
-      '<label>Instagram URL</label><input id="ig" value="'+esc(c.instagram_url||"")+'">'+
-      '<label>YouTube URL</label><input id="yt" value="'+esc(c.youtube_url||"")+'">'+
-      '<label>Portfolio URL</label><input id="pf" value="'+esc(c.portfolio_url||"")+'">':"")+
-    '<button class="btn" id="s" style="margin-top:18px">Save profile</button><div id="m"></div></div>';
-  var avUrl=me.av||null;
-  el("pick").onclick=function(){el("ph").click();};
-  if(el("rmv")) el("rmv").onclick=function(){avUrl=null;el("pv").innerHTML=avatarOf(null,me.name,72);};
-  el("ph").onchange=async function(e){
-    var f=e.target.files[0];if(!f)return;
-    el("pick").disabled=true;el("pick").textContent="Uploading…";
-    try{avUrl=await uploadImage(AVA,f,me.id);el("pv").innerHTML=avatarOf(avUrl,me.name,72);}
-    catch(x){el("m").innerHTML='<div class="bad" style="margin-top:14px"><code>'+esc(x.message)+'</code></div>';}
-    el("pick").disabled=false;el("pick").textContent="Upload photo";};
-  el("s").onclick=async function(){
-    var b=el("s");b.disabled=true;b.textContent="Saving…";
-    try{
-      await Q("Saving profile",sb.from("profiles").update({full_name:el("n").value.trim(),
-        bio:el("b").value.trim()||null,avatar_url:avUrl}).eq("id",me.id));
-      if(isC)await Q("Saving creator details",sb.from("creator_profiles").upsert({id:me.id,
-        handle:el("h").value.trim()||null,category:el("cat").value||null,
-        location:el("loc").value.trim()||null,instagram_url:el("ig").value.trim()||null,
-        youtube_url:el("yt").value.trim()||null,portfolio_url:el("pf").value.trim()||null}));
-      el("m").innerHTML='<div class="ok">Saved.</div>';
-      me=null;setTimeout(route,700);
-    }catch(e){el("m").innerHTML='<div class="bad" style="margin-top:14px"><code>'+esc(e.message)+'</code></div>';
-      b.disabled=false;b.textContent="Save profile";}};}
+async function signIn(){
+  const email = $("si-email").value.trim(), password = $("si-pw").value;
+  if(!email || !password) return show($("si-msg"), "Enter your email and password.", "err");
+  busy($("si-go"), true, "Signing in…");
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+  busy($("si-go"), false);
+  if(error) return show($("si-msg"), friendly(error), "err");
+  me = data.user;
+  location.hash = "campaigns";
+  enterApp();
+}
 
-/* ================= SETTINGS ================= */
-async function settings(){
-  var V=el("view");
-  V.innerHTML='<h1>Settings</h1>'+
-    '<div class="card pad" style="margin-top:16px;max-width:620px"><h2>Account</h2>'+
-    '<p class="small muted" style="margin-top:6px">Signed in as <strong>'+esc(me.email||"")+'</strong></p>'+
-    '<p class="small muted" style="margin-top:4px">Account type: <strong>'+
-    (me.role==="brand"?"Brand":"Creator")+(me.admin?" · Admin":"")+'</strong></p>'+
-    '<label>New password</label><input id="np" type="password" placeholder="At least 6 characters">'+
-    '<button class="btn sm" id="cp" style="margin-top:12px">Change password</button><div id="pm"></div></div>'+
-    '<div class="card pad" style="margin-top:16px;max-width:620px"><h2>Blocked people</h2>'+
-    '<div id="bl" style="margin-top:10px"><div class="sk" style="height:40px"></div></div></div>'+
-    '<div class="card pad" style="margin-top:16px;max-width:620px"><h2>Your reports</h2>'+
-    '<div id="rp" style="margin-top:10px"><div class="sk" style="height:40px"></div></div></div>'+
-    '<div class="card pad" style="margin-top:16px;max-width:620px"><h2>Legal</h2>'+
-    '<p class="small muted" style="margin-top:6px"><a href="#terms" style="color:var(--blue);font-weight:600">Terms of Use</a>'+
-    ' · <a href="#privacy" style="color:var(--blue);font-weight:600">Privacy Policy</a></p></div>'+
-    '<div class="card pad" style="margin-top:16px;max-width:620px">'+
-    '<h2 style="color:var(--red)">Danger zone</h2>'+
-    '<p class="small muted" style="margin-top:6px">Signing out ends this session on this device.</p>'+
-    '<button class="btn d sm" id="so" style="margin-top:12px">Sign out</button></div>';
-  el("so").onclick=async function(){await sb.auth.signOut();me=null;go("#login");route();};
-  el("cp").onclick=async function(){
-    var v=el("np").value;
-    if(!v||v.length<6)return void(el("pm").innerHTML='<div class="bad" style="margin-top:12px"><code>Use at least 6 characters.</code></div>');
-    var b=el("cp");b.disabled=true;b.textContent="Updating…";
-    var r=await sb.auth.updateUser({password:v});
-    el("pm").innerHTML=r.error?'<div class="bad" style="margin-top:12px"><code>'+esc(r.error.message)+'</code></div>'
-      :'<div class="ok">Password updated.</div>';
-    el("np").value="";b.disabled=false;b.textContent="Change password";};
-  try{
-    var ids=Object.keys(blocked);
-    if(!ids.length) el("bl").innerHTML='<p class="small muted">You haven\'t blocked anyone.</p>';
-    else{
-      var ppl=await Q("Loading blocked people",sb.from("profiles").select("id,full_name,avatar_url").in("id",ids))||[];
-      el("bl").innerHTML=ppl.map(function(p){
-        return '<div class="row" style="padding-left:0;padding-right:0">'+avatarOf(p.avatar_url,p.full_name)+
-        '<div class="grow"><h3 class="trunc">'+esc(p.full_name||"Cube3 user")+'</h3></div>'+
-        '<button class="btn g sm" data-unblock="'+esc(p.id)+'" data-name="'+esc(p.full_name||"")+'">Unblock</button></div>';}).join("");}
-  }catch(e){el("bl").innerHTML='<p class="small muted">Could not load: '+esc(e.message)+'</p>';}
-  try{
-    var rs=await Q("Loading your reports",sb.from("reports")
-      .select("id,reason,status,context,created_at").eq("reporter_id",me.id)
-      .order("created_at",{ascending:false}).limit(20))||[];
-    el("rp").innerHTML=rs.length?rs.map(function(r){
-      return '<div class="row" style="padding-left:0;padding-right:0"><div class="grow">'+
-      '<h3>'+esc(r.reason)+'</h3><div class="small muted">'+esc(r.context||"")+' · '+esc(ago(r.created_at))+'</div></div>'+
-      '<span class="chip '+(r.status==="open"?"a":"g")+'">'+esc(r.status)+'</span></div>';}).join("")
-      :'<p class="small muted">You haven\'t reported anyone.</p>';
-  }catch(e){el("rp").innerHTML='<p class="small muted">Could not load: '+esc(e.message)+'</p>';}}
+async function signUp(){
+  const full_name = $("su-name").value.trim();
+  const email     = $("su-email").value.trim();
+  const password  = $("su-pw").value;
+  if(!full_name) return show($("su-msg"), "Enter your full name.", "err");
+  if(!email)     return show($("su-msg"), "Enter your email.", "err");
+  if(password.length < 6) return show($("su-msg"), "Password must be at least 6 characters.", "err");
 
-/* ================= LEGAL ================= */
-var UPDATED="16 August 2026";
-function terms(){
-  el("view").innerHTML='<div class="doc"><h1>Terms of Use</h1><p class="upd">Last updated '+UPDATED+'</p>'+
-  '<h2>1. What Cube3 is</h2><p>Cube3 is an introduction service. Brands post campaigns and creators '+
-  'apply to them. We are not a party to any agreement you reach with another user, and we do not '+
-  'employ, represent, or act as an agent for anyone on the platform.</p>'+
-  '<h2>2. Payments happen between you</h2>'+
-  '<p><strong>Cube3 does not currently process, hold, or guarantee any payment.</strong> Money moves '+
-  'directly between the brand and the creator, on terms you agree between yourselves. We cannot '+
-  'refund you, release funds, or enforce payment. Agree your terms in writing before starting work, '+
-  'and treat any request to pay a fee in order to receive work as a scam.</p>'+
-  '<h2>3. Who may use it</h2><p>You must be 18 or older and provide accurate information. One account '+
-  'per person or business. Impersonating someone else, or inflating your audience figures, is grounds '+
-  'for removal.</p>'+
-  '<h2>4. Your content</h2><p>You keep ownership of everything you upload. You grant us permission to '+
-  'display it on the platform so the service can function. Do not upload anything you lack the rights '+
-  'to, or anything unlawful, hateful, sexual, or misleading.</p>'+
-  '<h2>5. Conduct</h2><ul><li>No spam, scraping, or automated bulk messaging</li>'+
-  '<li>No harassment, threats, or abuse</li>'+
-  '<li>No attempt to bypass security, rate limits, or access other users\' data</li>'+
-  '<li>No fake campaigns or fake profiles</li></ul>'+
-  '<h2>6. Suspension</h2><p>We may suspend or remove an account that breaks these terms, with or '+
-  'without notice. A suspended account can still read but cannot post, apply, or start conversations. '+
-  'To appeal, write to '+esc(LEGAL.contact)+'.</p>'+
-  '<h2>7. No warranty</h2><p>The service is provided as-is. We do not verify the identity, claims, '+
-  'follower counts, or reliability of any user. You are responsible for your own due diligence before '+
-  'working with someone or sending them money.</p>'+
-  '<h2>8. Limitation of liability</h2><p>To the fullest extent the law allows, '+esc(LEGAL.entity)+
-  ' is not liable for lost income, unpaid fees, disputes between users, or any indirect loss arising '+
-  'from your use of the platform.</p>'+
-  '<h2>9. Changes</h2><p>We may update these terms. Continuing to use Cube3 after a change means you '+
-  'accept it.</p>'+
-  '<h2>10. Governing law</h2><p>These terms are governed by the laws of '+esc(LEGAL.country)+'.</p>'+
-  '<h2>11. Contact</h2><p>'+esc(LEGAL.contact)+'</p>'+
-  '<p class="small muted" style="margin-top:26px">This is a plain-language starting point, not legal '+
-  'advice. Have a lawyer review it before you handle real money or scale up.</p></div>';}
+  busy($("su-go"), true, "Creating account…");
+  const { data, error } = await sb.auth.signUp({
+    email, password,
+    options:{ data:{ full_name, role }, emailRedirectTo: location.origin }
+  });
+  busy($("su-go"), false);
+  if(error) return show($("su-msg"), friendly(error), "err");
 
-function privacy(){
-  el("view").innerHTML='<div class="doc"><h1>Privacy Policy</h1><p class="upd">Last updated '+UPDATED+'</p>'+
-  '<h2>What we collect</h2><ul>'+
-  '<li><strong>Account:</strong> email address, password (stored hashed, never in plain text), account type</li>'+
-  '<li><strong>Profile:</strong> name, bio, photo, category, location, and the social media links you add</li>'+
-  '<li><strong>Activity:</strong> campaigns, applications and pitches you write</li>'+
-  '<li><strong>Messages:</strong> the content of your conversations and any files you attach</li>'+
-  '<li><strong>Reports and blocks</strong> you submit</li></ul>'+
-  '<h2>Why we collect it</h2><p>To run the service — to show your profile to brands, deliver your '+
-  'messages, and keep the platform usable and safe. We do not sell your data and we do not run '+
-  'advertising.</p>'+
-  '<h2>Who can see what</h2><ul>'+
-  '<li>Your name, photo, bio, category and social links are visible to other signed-in users</li>'+
-  '<li>Your email address is not shown to other users</li>'+
-  '<li>Private messages are visible only to you and the person you are talking to</li>'+
-  '<li>Administrators can read reports, and can see profile information</li></ul>'+
-  '<h2>Where it is stored</h2><p>On Supabase, which hosts our database and file storage. Data is '+
-  'protected by row-level security rules so users can only read what they are entitled to.</p>'+
-  '<h2>How long we keep it</h2><p>Until you ask us to delete your account. Reports may be kept longer, '+
-  'since deleting them on request would let a reported person erase the record against them.</p>'+
-  '<h2>Your rights</h2><p>You may ask us to show you what we hold about you, correct it, or delete '+
-  'your account and its data. Write to '+esc(LEGAL.contact)+' and we will respond within 30 days.</p>'+
-  '<h2>Cookies</h2><p>We use browser storage only to keep you signed in and to remember which '+
-  'conversations you have read. No advertising or tracking cookies.</p>'+
-  '<h2>Children</h2><p>Cube3 is not for anyone under 18. If we learn that a minor has registered, we '+
-  'will remove the account.</p>'+
-  '<h2>Contact</h2><p>'+esc(LEGAL.contact)+'</p>'+
-  '<p class="small muted" style="margin-top:26px">A plain-language starting point, not legal advice. '+
-  'India\'s DPDP Act and the GDPR may impose additional duties depending on who signs up.</p></div>';}
+  if(data.session){ me = data.user; location.hash = "campaigns"; enterApp(); return; }
+  show($("su-msg"), "Account created. Check your inbox to confirm.", "ok");
+}
 
-/* ================= ADMIN ================= */
-var adminFilter="open";
-async function admin(){
-  if(!me.admin)return void(el("view").innerHTML='<div class="card">'+
-    none("Not available","This section is for administrators.","#dashboard","Back to dashboard")+'</div>');
-  var V=el("view");
-  V.innerHTML='<h1>Reports</h1><p class="muted" style="margin-top:4px">Only admins can see this.</p>'+
-    '<div class="tabs" id="tb">'+
-    [["open","Open"],["reviewing","Reviewing"],["resolved","Resolved"],["dismissed","Dismissed"],["all","All"]]
-      .map(function(t){return '<button data-f="'+t[0]+'" aria-pressed="'+(adminFilter===t[0])+'">'+t[1]+'</button>';}).join("")+
-    '</div><div id="l"><div class="sk"></div><div class="sk"></div></div>';
-  el("tb").querySelectorAll("button").forEach(function(b){
-    b.onclick=function(){adminFilter=b.dataset.f;admin();};});
-  var qy=sb.from("reports").select("id,reporter_id,reported_id,context,reason,details,status,created_at")
-    .order("created_at",{ascending:false}).limit(100);
-  if(adminFilter!=="all") qy=qy.eq("status",adminFilter);
-  var rs=await Q("Loading reports",qy)||[];
-  if(!rs.length)return void(el("l").innerHTML='<div class="card">'+
-    none("Nothing here",adminFilter==="open"?"No open reports. Good sign.":"No reports with that status.")+'</div>');
-  var ids=Array.from(new Set(rs.map(function(r){return r.reporter_id;})
-    .concat(rs.map(function(r){return r.reported_id;})).filter(Boolean)));
-  var nm={};(await Q("Loading people",sb.from("profiles")
-    .select("id,full_name,avatar_url,role,suspended").in("id",ids))||[])
-    .forEach(function(p){nm[p.id]=p;});
-  var counts={};rs.forEach(function(r){counts[r.reported_id]=(counts[r.reported_id]||0)+1;});
-  var TONE={open:"a",reviewing:"p",resolved:"g",dismissed:""};
-  el("l").innerHTML=rs.map(function(r){
-    var who=nm[r.reported_id]||{},by=nm[r.reporter_id]||{},n=counts[r.reported_id]||1;
-    return '<div class="card pad" style="margin-bottom:12px">'+
-      '<div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap">'+
-      '<div class="row2">'+avatarOf(who.avatar_url,who.full_name)+
-      '<div><h2 style="font-size:16px">'+esc(who.full_name||"Unknown user")+
-      (who.suspended?' <span class="chip r">suspended</span>':"")+'</h2>'+
-      '<div class="small muted">'+esc(who.role||"")+' · reported by '+esc(by.full_name||"someone")+'</div></div></div>'+
-      '<div class="row2">'+(n>1?'<span class="chip r">'+n+' reports</span>':"")+
-      '<span class="chip '+(TONE[r.status]||"")+'">'+esc(r.status)+'</span></div></div>'+
-      '<div style="margin-top:10px"><span class="chip">'+esc(r.reason)+'</span>'+
-      (r.context?'<span class="chip">'+esc(r.context)+'</span>':"")+'</div>'+
-      (r.details?'<p class="small muted" style="margin-top:10px;padding-left:11px;border-left:3px solid var(--line);white-space:pre-wrap">'+
-        esc(r.details)+'</p>':'<p class="small muted" style="margin-top:10px">No details given.</p>')+
-      '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:13px;'+
-      'padding-top:12px;border-top:1px solid var(--line);flex-wrap:wrap">'+
-      '<span class="small muted">'+esc(ago(r.created_at))+'</span><span class="row2">'+
-      '<a class="btn sm g" href="#creator/'+esc(r.reported_id)+'">Profile</a>'+
-      (who.suspended
-        ? '<button class="btn sm g" data-unsuspend="'+esc(r.reported_id)+'">Lift suspension</button>'
-        : '<button class="btn sm d" data-suspend="'+esc(r.reported_id)+'" data-name="'+esc(who.full_name||"")+'">Suspend</button>')+
-      (r.status!=="reviewing"?'<button class="btn sm g" data-rep="'+esc(r.id)+'" data-to="reviewing">Reviewing</button>':"")+
-      (r.status!=="resolved"?'<button class="btn sm" data-rep="'+esc(r.id)+'" data-to="resolved">Resolve</button>':"")+
-      (r.status!=="dismissed"?'<button class="btn sm g" data-rep="'+esc(r.id)+'" data-to="dismissed">Dismiss</button>':"")+
-      '</span></div></div>';}).join("");}
+async function reset(){
+  const email = $("fp-email").value.trim();
+  if(!email) return show($("fp-msg"), "Enter your email.", "err");
+  busy($("fp-go"), true, "Sending…");
+  const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: location.origin });
+  busy($("fp-go"), false);
+  if(error) return show($("fp-msg"), friendly(error), "err");
+  show($("fp-msg"), "Sent. Check your inbox and spam folder.", "ok");
+}
 
-/* ================= MESSAGES ================= */
-async function messages(){
-  el("view").innerHTML='<h1 style="margin-bottom:14px">Messages</h1><div class="chat">'+
-    '<div class="card pane ls"><div class="hd"><h2>Conversations</h2></div><div id="thr"><div class="sk" style="margin:12px"></div></div></div>'+
-    '<div class="card pane cv"><div class="hd"><button class="btn sm g back" id="bk">← Back</button>'+
-    '<h2 id="who" class="grow trunc">Select a conversation</h2><div class="menu" id="tm"></div></div>'+
-    '<div id="msgs"><div class="state">Pick a conversation.</div></div>'+
-    '<div id="pb"></div><div class="comp" id="cp" style="display:none"><input type="file" id="f" hidden>'+
-    '<button class="btn sm g" id="clip">📎</button><input type="text" id="tx" placeholder="Type a message" maxlength="2000">'+
-    '<button class="btn sm" id="sd">Send</button></div></div></div>';
-  el("bk").onclick=function(){document.body.classList.remove("open");};
-  el("clip").onclick=function(){el("f").click();};
-  el("f").onchange=pickFile;el("sd").onclick=send;
-  el("tx").onkeydown=function(e){if(e.key==="Enter")send();};
-  var th=[],brand=me.role==="brand",col=brand?"brand_id":"creator_id",oth=brand?"creator_id":"brand_id";
-  (await Q("Loading conversations",sb.from("creator_inquiries")
-    .select("id,brand_id,creator_id").eq(col,me.id))||[]).forEach(function(i){
-      if(!blocked[i[oth]]&&!blockedBy[i[oth]]) th.push({k:"inquiry",id:i.id,o:i[oth]});});
-  if(brand){
-    var cs=await Q("Loading campaigns",sb.from("campaigns").select("id,title").eq("brand_id",me.id))||[];
-    if(cs.length){var t={};cs.forEach(function(c){t[c.id]=c.title;});
-      (await Q("Loading accepted pitches",sb.from("campaign_applications")
-        .select("id,campaign_id,creator_id").in("campaign_id",cs.map(function(c){return c.id;}))
-        .eq("status","accepted"))||[]).forEach(function(a){
-          if(!blocked[a.creator_id]&&!blockedBy[a.creator_id])
-            th.push({k:"campaign",id:a.id,o:a.creator_id,n:t[a.campaign_id]});});}
-  }else{
-    var ap=await Q("Loading accepted pitches",sb.from("campaign_applications")
-      .select("id,campaign_id").eq("creator_id",me.id).eq("status","accepted"))||[];
-    if(ap.length){var ci={};
-      (await Q("Loading campaigns",sb.from("campaigns").select("id,title,brand_id")
-        .in("id",ap.map(function(a){return a.campaign_id;})))||[]).forEach(function(c){ci[c.id]=c;});
-      ap.forEach(function(a){var c=ci[a.campaign_id];
-        if(c&&!blocked[c.brand_id]&&!blockedBy[c.brand_id])
-          th.push({k:"campaign",id:a.id,o:c.brand_id,n:c.title});});}}
-  if(!th.length)return void(el("thr").innerHTML=none("No conversations yet",
-    brand?"Message a creator to start one.":"A chat opens when a brand accepts your pitch."));
-  var nm={};(await Q("Loading names",sb.from("profiles").select("id,full_name,avatar_url")
-    .in("id",Array.from(new Set(th.map(function(t){return t.o;}).filter(Boolean)))))||[])
-    .forEach(function(p){nm[p.id]=p;});
-  unread=0;
-  for(var i=0;i<th.length;i++){
-    var t=th[i];
-    try{
-      var last=await Q("Checking messages",sb.from(tbl(t.k))
-        .select("created_at,sender_id").eq(fkey(t.k),t.id)
-        .order("created_at",{ascending:false}).limit(1));
-      var m0=last&&last[0];
-      t.fresh=!!(m0&&m0.sender_id!==me.id&&new Date(m0.created_at)>new Date(lastRead(t.k,t.id)));
-      if(t.fresh)unread++;
-    }catch(e){t.fresh=false;}}
-  var link=document.querySelector('.side a[href="#messages"]');
-  if(link){var bd=link.querySelector(".badge");
-    if(unread){if(bd)bd.textContent=unread;else link.insertAdjacentHTML("beforeend",'<span class="badge">'+unread+'</span>');}
-    else if(bd)bd.remove();}
-  el("thr").innerHTML=th.map(function(t,i){var p=nm[t.o]||{};
-    return '<div class="thr" data-i="'+i+'">'+avatarOf(p.avatar_url,p.full_name)+
-    '<div class="grow"><h3 class="trunc">'+esc(p.full_name||"Cube3 user")+'</h3>'+
-    '<div class="small muted trunc">'+esc(t.n||"Direct message")+'</div></div>'+
-    (t.fresh?'<span class="dot"></span>':"")+'</div>';}).join("");
-  el("thr").querySelectorAll(".thr").forEach(function(x){x.onclick=function(){
-    el("thr").querySelectorAll(".thr").forEach(function(y){y.classList.remove("on");});
-    x.classList.add("on");
-    var d=x.querySelector(".dot");if(d)d.remove();
-    var t=th[+x.dataset.i],p=nm[t.o]||{};
-    openThread(t,p.full_name||"Cube3 user");};});}
-function tbl(k){return k==="inquiry"?"inquiry_messages":"messages";}
-function fkey(k){return k==="inquiry"?"inquiry_id":"application_id";}
+async function newPassword(){
+  const password = $("np-pw").value;
+  if(password.length < 6) return show($("np-msg"), "Password must be at least 6 characters.", "err");
+  busy($("np-go"), true, "Updating…");
+  const { error } = await sb.auth.updateUser({ password });
+  busy($("np-go"), false);
+  if(error) return show($("np-msg"), friendly(error), "err");
 
-async function openThread(t,name){
-  active=t;document.body.classList.add("open");
-  el("who").textContent=name;
-  el("cp").style.display=me.suspended?"none":"flex";
-  markRead(t.k,t.id);
-  el("tm").innerHTML='<button class="btn g sm" id="tmo">⋯</button>';
-  el("tmo").onclick=function(ev){
-    ev.stopPropagation();
-    var box=el("tm");
-    if(box.querySelector(".pop"))return void(box.querySelector(".pop").remove());
-    var pop=document.createElement("div");pop.className="pop";
-    pop.innerHTML='<button id="vp">View profile</button><button id="rp2">Report</button>'+
-      '<button class="dg" id="bl2">Block</button>';
-    box.appendChild(pop);
-    pop.querySelector("#vp").onclick=function(){pop.remove();go("#creator/"+t.o);};
-    pop.querySelector("#rp2").onclick=function(){pop.remove();reportDialog(t.o,"message",name);};
-    pop.querySelector("#bl2").onclick=function(){pop.remove();toggleBlock(t.o,name,false);};};
-  try{await paint();
-    if(chan)sb.removeChannel(chan);
-    chan=sb.channel("t-"+t.id).on("postgres_changes",
-      {event:"INSERT",schema:"public",table:tbl(t.k),filter:fkey(t.k)+"=eq."+t.id},
-      function(){paint();markRead(t.k,t.id);}).subscribe();
-  }catch(e){boom(e,el("msgs"));}}
+  recovering = false;
+  show($("np-msg"), "Password updated. Signing you in…", "ok");
+  const { data:{ session } } = await sb.auth.getSession();
+  if(session){ me = session.user; location.hash = "campaigns"; enterApp(); }
+  else showAuth("signin");
+}
 
-async function paint(){
-  var box=el("msgs");
-  var rows=await Q("Loading messages",sb.from(tbl(active.k))
-    .select("id,sender_id,body,attachment_path,attachment_url,attachment_type,attachment_name,attachment_size,created_at")
-    .eq(fkey(active.k),active.id).order("created_at",{ascending:true}))||[];
-  if(!rows.length)return void(box.innerHTML='<div class="state">No messages yet. Say hello.</div>');
-  box.innerHTML=rows.map(function(m){
-    var mine=m.sender_id===me.id,aid="at"+m.id;
-    var att=(m.attachment_path||m.attachment_url)?'<div id="'+aid+'" class="small" style="margin-bottom:6px">Loading…</div>':"";
-    if(att)setTimeout(function(){fillAtt(aid,m);},0);
-    return '<div class="bub '+(mine?"me":"th")+'">'+att+(m.body?esc(m.body):"")+
-    '<span class="ts">'+esc(ago(m.created_at))+'</span></div>';}).join("");
-  box.scrollTop=box.scrollHeight;}
+/* ═══════════ one delegated listener ═══════════ */
+document.querySelectorAll("button.primary").forEach(b => b.dataset.label = b.textContent);
 
-async function fillAtt(id,m){
-  var e=el(id);if(!e)return;
-  var url=m.attachment_url;
-  if(!url&&m.attachment_path){var r=await sb.storage.from(ATT).createSignedUrl(m.attachment_path,3600);
-    url=r.data?r.data.signedUrl:null;}
-  if(!url)return void(e.textContent="Attachment unavailable");
-  var t=m.attachment_type;
-  if(t==="image")e.innerHTML='<img src="'+esc(url)+'" alt="" data-zoom="'+esc(url)+
-    '" style="max-width:210px;border-radius:9px;display:block;cursor:zoom-in">';
-  else if(t==="video")e.innerHTML='<video src="'+esc(url)+'" controls preload="metadata" style="max-width:210px;border-radius:9px;display:block"></video>';
-  else if(t==="audio")e.innerHTML='<audio src="'+esc(url)+'" controls style="max-width:210px"></audio>';
-  else e.innerHTML='<a href="'+esc(url)+'" target="_blank" rel="noopener" download="'+esc(m.attachment_name||"file")+
-    '" style="text-decoration:underline">↓ '+esc(m.attachment_name||"Download")+'</a> <span style="opacity:.7">'+esc(fsz(m.attachment_size))+'</span>';}
+document.addEventListener("click", e => {
+  // password eye
+  const peek = e.target.closest(".peek");
+  if(peek){
+    const input = $(peek.dataset.peek);
+    if(input){
+      const showing = input.type === "text";
+      input.type = showing ? "password" : "text";
+      peek.innerHTML = showing ? EYE_OPEN : EYE_SHUT;
+      peek.setAttribute("aria-label", showing ? "Show password" : "Hide password");
+      peek.setAttribute("aria-pressed", String(!showing));
+      input.focus();
+    }
+    return;
+  }
 
-function pickFile(e){
-  pend=e.target.files[0]||null;
-  el("pb").innerHTML=pend?'<div style="padding:9px 13px;font-size:13px;background:var(--bg);border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px"><span>'+
-    esc(pend.name)+' ('+esc(fsz(pend.size))+')</span><button class="btn g sm" id="rm">Remove</button></div>':"";
-  var r=el("rm");if(r)r.onclick=function(){pend=null;el("f").value="";el("pb").innerHTML="";};}
-var BLOCKED_EXT=["exe","msi","bat","cmd","com","scr","jar","js","html","htm","svg","php","sh","ps1","vbs","apk"];
+  // role picker
+  const roleBtn = e.target.closest(".role");
+  if(roleBtn){
+    role = roleBtn.dataset.role;
+    document.querySelectorAll(".role").forEach(x =>
+      x.setAttribute("aria-pressed", String(x === roleBtn)));
+    return;
+  }
 
-async function send(){
-  if(!active)return;
-  var tx=el("tx"),body=tx.value.trim();
-  if(!body&&!pend)return;
-  var b=el("sd");b.disabled=true;b.textContent="…";
-  try{
-    var row={sender_id:me.id,body:body||null};row[fkey(active.k)]=active.id;
-    if(pend){
-      var ext=(pend.name.split(".").pop()||"").toLowerCase();
-      if(BLOCKED_EXT.indexOf(ext)>-1)throw new Error("."+ext+" files can't be shared here. Zip it first.");
-      if(pend.size>50*1024*1024)throw new Error("That file is "+fsz(pend.size)+". Limit is 50 MB.");
-      var kind=pend.type.indexOf("image/")===0?"image":pend.type.indexOf("video/")===0?"video"
-        :pend.type.indexOf("audio/")===0?"audio":"file";
-      var path=active.id+"/"+(crypto.randomUUID?crypto.randomUUID():Date.now()+"-"+Math.random().toString(36).slice(2))+(ext?"."+ext:"");
-      var up=await sb.storage.from(ATT).upload(path,pend,{contentType:pend.type||"application/octet-stream"});
-      if(up.error){
-        if(/bucket/i.test(up.error.message))throw new Error('Bucket "'+ATT+
-          '" does not exist. Create it in Supabase → Storage (private).');
-        throw new Error("Upload failed: "+up.error.message);}
-      row.attachment_path=path;row.attachment_type=kind;
-      row.attachment_name=pend.name.slice(0,200);row.attachment_size=pend.size;}
-    await Q("Sending",sb.from(tbl(active.k)).insert(row));
-    tx.value="";pend=null;el("f").value="";el("pb").innerHTML="";
-    await paint();
-  }catch(e){alert(e.message);}
-  finally{b.disabled=false;b.textContent="Send";}}
+  // auth pane links
+  const go = e.target.closest("[data-go]");
+  if(go){ location.hash = go.dataset.go; return; }
 
-/* ================= GLOBAL CLICKS ================= */
-document.addEventListener("click",async function(e){
-  document.querySelectorAll(".menu .pop").forEach(function(p){
-    if(!p.parentNode.contains(e.target))p.remove();});
-  var zoom=e.target.closest("[data-zoom]");
-  if(zoom){lightbox(zoom.dataset.zoom);return;}
-  var m=e.target.closest("[data-msg]");
-  if(m){
-    var lbl=m.textContent;m.disabled=true;m.textContent="Opening…";
-    try{
-      var f=await Q("Checking for an existing conversation",sb.from("creator_inquiries")
-        .select("id").eq("brand_id",me.id).eq("creator_id",m.dataset.msg).maybeSingle());
-      if(!f)await Q("Starting the conversation",sb.from("creator_inquiries")
-        .insert({brand_id:me.id,creator_id:m.dataset.msg}).select("id").single());
-      go("#messages");
-    }catch(x){alert(x.message);m.disabled=false;m.textContent=lbl;}
-    return;}
-  var ap=e.target.closest("[data-apply]");
-  if(ap){
-    var cid=ap.dataset.apply,title=ap.dataset.title;
-    modal('<h2>Apply to this campaign</h2><p class="muted small" style="margin-top:4px">'+esc(title)+'</p>'+
-      '<label>Your pitch</label><textarea id="pt" placeholder="Why you\'re a fit, what you\'d make, your rate"></textarea>'+
-      '<div class="row2" style="margin-top:16px;justify-content:flex-end">'+
-      '<button class="btn g" onclick="closeModal()">Cancel</button>'+
-      '<button class="btn" id="ps">Send pitch</button></div><div id="pm"></div>');
-    el("ps").onclick=async function(){
-      var t=el("pt").value.trim();
-      if(!t)return void(el("pm").innerHTML='<div class="bad" style="margin-top:12px"><code>Write a short pitch first.</code></div>');
-      var b=el("ps");b.disabled=true;b.textContent="Sending…";
-      try{
-        await Q("Sending your pitch",sb.from("campaign_applications").insert({
-          campaign_id:cid,creator_id:me.id,pitch:t,status:"pending"}));
-        closeModal();route();
-      }catch(x){el("pm").innerHTML='<div class="bad" style="margin-top:12px"><code>'+esc(x.message)+'</code></div>';
-        b.disabled=false;b.textContent="Send pitch";}};
-    return;}
-  var st=e.target.closest("[data-status]");
-  if(st){
-    st.disabled=true;var was=st.textContent;st.textContent="…";
-    try{await Q("Updating pitch",sb.from("campaign_applications")
-      .update({status:st.dataset.status}).eq("id",st.dataset.app));route();}
-    catch(x){alert(x.message);st.disabled=false;st.textContent=was;}
-    return;}
-  var wd=e.target.closest("[data-withdraw]");
-  if(wd){
-    wd.disabled=true;wd.textContent="…";
-    try{await Q("Withdrawing",sb.from("campaign_applications")
-      .update({status:"withdrawn"}).eq("id",wd.dataset.withdraw));route();}
-    catch(x){alert(x.message);wd.disabled=false;wd.textContent="Withdraw";}
-    return;}
-  var rep=e.target.closest("[data-rep]");
-  if(rep){
-    rep.disabled=true;var w2=rep.textContent;rep.textContent="…";
-    try{await Q("Updating report",sb.from("reports")
-      .update({status:rep.dataset.to}).eq("id",rep.dataset.rep));admin();}
-    catch(x){alert(x.message);rep.disabled=false;rep.textContent=w2;}
-    return;}
-  var sp=e.target.closest("[data-suspend]");
-  if(sp){suspendDialog(sp.dataset.suspend,sp.dataset.name);return;}
-  var us=e.target.closest("[data-unsuspend]");
-  if(us){
-    us.disabled=true;us.textContent="…";
-    try{await Q("Lifting suspension",sb.from("profiles").update({suspended:false,
-      suspended_reason:null,suspended_at:null}).eq("id",us.dataset.unsuspend));admin();}
-    catch(x){alert(x.message);us.disabled=false;us.textContent="Lift suspension";}
-    return;}
-  var ub=e.target.closest("[data-unblock]");
-  if(ub){toggleBlock(ub.dataset.unblock,ub.dataset.name,true);return;}
+  // menu
+  if(e.target.closest("[data-toggle-menu]")){ document.body.classList.toggle("menu"); return; }
+  if(e.target.closest("[data-close-menu]")){  document.body.classList.remove("menu"); return; }
+
+  // buttons
+  const id = e.target.closest("button")?.id;
+  if(id === "si-go") signIn();
+  if(id === "su-go") signUp();
+  if(id === "fp-go") reset();
+  if(id === "np-go") newPassword();
+
+  const act = e.target.closest("[data-act]")?.dataset.act;
+  if(act === "reload")  location.reload();
+  if(act === "refresh") load();
 });
 
-/* ================= ROUTER ================= */
-async function route(){
-  var h=(location.hash||"").slice(1),base=h.split("/")[0];
-  document.body.classList.remove("nav","open");
-  closeModal();
-  if(chan){sb.removeChannel(chan);chan=null;}
-  var AUTH={login:login,signup:signup,forgot:forgot,reset:reset};
-  try{
-    if(!me){
-      var ok=await boot();
-      if(!ok){
-        if(base==="terms"||base==="privacy"){
-          R.innerHTML='<div class="content" style="margin:0 auto"><p style="margin-bottom:16px">'+
-            '<a class="small muted" href="#login">← Back to sign in</a></p><div id="view"></div></div>';
-          (base==="terms"?terms:privacy)();return;}
-        (AUTH[base]||login)();return;}}
-    if(base==="reset"){reset();return;}
-    if(AUTH[base]){base="dashboard";location.hash="#dashboard";}
-    if(!base)base="dashboard";
-    shell(base==="creator"?"creators":(base==="new-campaign"||base==="edit-campaign"?"campaigns":base));
-    el("ttl").textContent=TITLES[base]||"Dashboard";
-    if(base==="creator")await creatorPage(h.slice(8));
-    else if(base==="edit-campaign")await editCampaign(h.slice(14));
-    else if(base==="campaigns")await campaignsView();
-    else if(base==="new-campaign")campaignForm(null);
-    else if(base==="applications")await applications();
-    else if(base==="creators")await creators();
-    else if(base==="messages")await messages();
-    else if(base==="profile")await profileView();
-    else if(base==="settings")await settings();
-    else if(base==="admin")await admin();
-    else if(base==="terms")terms();
-    else if(base==="privacy")privacy();
-    else await dashboard();
-  }catch(e){boom(e);}}
-window.addEventListener("hashchange",route);
-sb.auth.onAuthStateChange(function(ev){if(ev==="SIGNED_OUT")me=null;});
-route();
-})();
+document.addEventListener("input", e => {
+  if(e.target.id !== "q") return;
+  const q = e.target.value.trim().toLowerCase();
+  paint(!q ? allCampaigns : allCampaigns.filter(c =>
+    [c.title, c.description, c.category, c.platform, c.location, c.requirements]
+      .filter(Boolean).join(" ").toLowerCase().includes(q)));
+});
+
+document.addEventListener("keydown", e => {
+  if(e.key !== "Enter") return;
+  const pane = e.target.closest?.(".pane")?.id;
+  if(pane === "p-signin") signIn();
+  else if(pane === "p-signup") signUp();
+  else if(pane === "p-forgot") reset();
+  else if(pane === "p-reset")  newPassword();
+});
+
+window.addEventListener("hashchange", () => {
+  if(recovering) return;
+  if(me) {
+    if(APP_PAGES[location.hash.replace("#","")] || location.hash === "#signout") routeApp();
+    else location.hash = "campaigns";
+  } else {
+    showAuth();
+  }
+});
+
+sb.auth.onAuthStateChange((evt, session) => {
+  if(evt === "PASSWORD_RECOVERY"){ recovering = true; showAuth("reset"); return; }
+  if(evt === "SIGNED_OUT"){ me = null; showAuth("signin"); }
+});
+
+boot();
 </script>
 </body>
 </html>
