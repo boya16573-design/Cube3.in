@@ -3,7 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cube3</title>
+<title>Cube3 — Connect Brands with Creators</title>
+<meta name="description" content="Cube3 is where brands post influencer campaigns and creators find paid collaborations. Post a brief, browse open briefs, apply, and message — all in one place. Free to join.">
+<meta name="theme-color" content="#1d4ed8">
+<link rel="canonical" href="https://cube3.in/">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Cube3">
+<meta property="og:title" content="Cube3 — Connect Brands with Creators">
+<meta property="og:description" content="Post a campaign or apply as a creator. Cube3 connects brands and creators for paid collaborations — campaigns, applications, and messaging in one place.">
+<meta property="og:url" content="https://cube3.in/">
+<meta property="og:image" content="https://cube3.in/favicon.svg">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Cube3 — Connect Brands with Creators">
+<meta name="twitter:description" content="Post a campaign or apply as a creator. Cube3 connects brands and creators for paid collaborations.">
+<meta name="twitter:image" content="https://cube3.in/favicon.svg">
 <style>
   :root{
     --blue:#1d4ed8; --blue-dark:#1e40af; --bg:#f4f6fb; --card:#fff;
@@ -198,9 +216,154 @@
     @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
   }
   @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+  /* ─── landing ─── */
+  .pubnav{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--line);
+    display:flex;align-items:center;justify-content:space-between;padding:14px 22px;z-index:20}
+  .pubnav .logo2{display:flex;align-items:center;gap:9px;font-weight:800;font-size:19px;color:var(--ink);
+    text-decoration:none}
+  .pubnav .logo2 i{width:28px;height:28px;border-radius:8px;background:var(--blue);display:grid;
+    place-items:center;font-style:normal}
+  .pubnav .logo2 i svg{width:16px;height:16px}
+  .pubnav .logo2 span{color:var(--blue)}
+  .pubnav .actions{display:flex;gap:14px;align-items:center}
+  .pubnav .actions a.link{color:var(--ink);text-decoration:none;font-weight:700;font-size:14.5px}
+
+  .hero{max-width:880px;margin:0 auto;padding:64px 24px 40px;text-align:center}
+  .hero h1{margin:0 0 16px;font-size:44px;font-weight:800;letter-spacing:-1px;line-height:1.14}
+  .hero p.sub3{margin:0 auto 30px;max-width:560px;color:var(--muted);font-size:17px;line-height:1.6}
+  .hero .cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:14px}
+  .hero .cta .btn{padding:14px 24px;font-size:15px;border-radius:11px}
+  .hero .fine{color:var(--muted);font-size:13.5px;margin:0}
+  @media(max-width:520px){.hero h1{font-size:32px}}
+
+  .how{max-width:980px;margin:24px auto 0;padding:40px 24px;display:grid;
+    grid-template-columns:1fr 1fr;gap:22px}
+  @media(max-width:760px){.how{grid-template-columns:1fr}}
+  .how .col{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px 24px}
+  .how .col h3{margin:0 0 4px;font-size:19px;font-weight:800}
+  .how .col p.sub2{margin:0 0 18px;color:var(--muted);font-size:14px}
+  .how ol{margin:0;padding:0;list-style:none;display:grid;gap:14px}
+  .how ol li{display:flex;gap:12px;align-items:flex-start;font-size:14.5px;line-height:1.5}
+  .how ol b.step{flex:none;width:26px;height:26px;border-radius:50%;background:#eff4ff;color:var(--blue);
+    display:grid;place-items:center;font-size:13px;font-weight:800}
+  .how ol span b{display:block;color:var(--ink);font-weight:700;margin-bottom:1px}
+  .how ol span{color:var(--muted)}
+
+  .feat{max-width:980px;margin:0 auto;padding:16px 24px 56px}
+  .feat h2{text-align:center;margin:0 0 30px;font-size:27px;font-weight:800;letter-spacing:-.4px}
+  .feat .grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px}
+  .feat .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 18px}
+  .feat .card i{width:38px;height:38px;border-radius:10px;background:#eff4ff;display:grid;
+    place-items:center;margin-bottom:12px;font-style:normal}
+  .feat .card i svg{width:19px;height:19px;stroke:var(--blue);fill:none;stroke-width:1.8;
+    stroke-linecap:round;stroke-linejoin:round}
+  .feat .card h3{margin:0 0 5px;font-size:15.5px}
+  .feat .card p{margin:0;color:var(--muted);font-size:13.5px;line-height:1.5}
+
+  .pubfoot{border-top:1px solid var(--line);padding:26px 24px;text-align:center;color:var(--muted);
+    font-size:13.5px}
+  .pubfoot .flinks{margin-bottom:8px}
+  .pubfoot .flinks a{color:var(--muted);text-decoration:none;margin:0 8px;font-weight:600}
+  .pubfoot .flinks a:hover{color:var(--ink)}
+
+  .legalpage{max-width:640px;margin:0 auto;padding:48px 22px 60px}
 </style>
 </head>
 <body>
+
+<!-- ═══════════ LANDING ═══════════ -->
+<div id="landing" class="hide">
+  <nav class="pubnav">
+    <a class="logo2" href="#landing">
+      <i><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linejoin="round">
+        <path d="M12 2.6 20.4 7v10L12 21.4 3.6 17V7z"/><path d="M3.6 7 12 11.6 20.4 7M12 11.6v9.8"/></svg></i>
+      Cube <span>3</span>
+    </a>
+    <div class="actions">
+      <a class="link" href="#signin">Sign in</a>
+      <button class="btn" data-go="signup">Get started</button>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <h1>Influencer campaigns,<br>without the chaos.</h1>
+    <p class="sub3">Cube3 connects brands with creators for paid collaborations — post a brief, review pitches, and message each other, all in one place.</p>
+    <div class="cta">
+      <button class="btn" data-go="signup" data-role="creator">Join as a Creator</button>
+      <button class="btn ghost" data-go="signup" data-role="brand">Join as a Brand</button>
+    </div>
+    <p class="fine">Free to join · No credit card required</p>
+  </section>
+
+  <section class="how" aria-label="How Cube3 works">
+    <div class="col">
+      <h3>For creators</h3>
+      <p class="sub2">Get discovered and get paid.</p>
+      <ol>
+        <li><b class="step">1</b><span><b>Build your profile</b>Add your niche, socials, follower counts, and rates.</span></li>
+        <li><b class="step">2</b><span><b>Browse open campaigns</b>Filter by category, platform, and budget.</span></li>
+        <li><b class="step">3</b><span><b>Apply & chat</b>Pitch your rate, message the brand, and close the deal.</span></li>
+      </ol>
+    </div>
+    <div class="col">
+      <h3>For brands</h3>
+      <p class="sub2">Find the right creators, faster.</p>
+      <ol>
+        <li><b class="step">1</b><span><b>Post a campaign</b>Describe the brief, budget, and deadline.</span></li>
+        <li><b class="step">2</b><span><b>Review applications</b>Compare pitches, rates, and portfolios.</span></li>
+        <li><b class="step">3</b><span><b>Message & collaborate</b>Chat directly with the creators you accept.</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="feat">
+    <h2>Everything in one place</h2>
+    <div class="grid4">
+      <div class="card">
+        <i><svg viewBox="0 0 24 24"><path d="m3 11 18-8-8 18-2-8z"/></svg></i>
+        <h3>Campaigns</h3>
+        <p>Post or browse open briefs with budget, category, and deadline all up front.</p>
+      </div>
+      <div class="card">
+        <i><svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 14h6M9 17h4"/></svg></i>
+        <h3>Applications</h3>
+        <p>Track every pitch — pending, accepted, or declined — in one list.</p>
+      </div>
+      <div class="card">
+        <i><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L3 21l1.9-6.4A8 8 0 1 1 21 12z"/></svg></i>
+        <h3>Messaging</h3>
+        <p>Talk directly once you're matched — no email back-and-forth.</p>
+      </div>
+      <div class="card">
+        <i><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M17 11.5a3 3 0 1 0-1.6-5.5M18 20a5.6 5.6 0 0 0-2.2-4.4"/></svg></i>
+        <h3>Profiles</h3>
+        <p>Showcase your rates, reach, and portfolio — or your brand and industry.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="pubfoot">
+    <div class="flinks">
+      <a href="#signin">Sign in</a><a href="#signup">Sign up</a>
+      <a href="#terms">Terms</a><a href="#privacy">Privacy</a>
+    </div>
+    © <span id="fyear"></span> Cube3.
+  </footer>
+</div>
+
+<!-- ═══════════ PUBLIC LEGAL (logged out) ═══════════ -->
+<div id="public-legal" class="hide">
+  <nav class="pubnav">
+    <a class="logo2" href="#landing">
+      <i><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linejoin="round">
+        <path d="M12 2.6 20.4 7v10L12 21.4 3.6 17V7z"/><path d="M3.6 7 12 11.6 20.4 7M12 11.6v9.8"/></svg></i>
+      Cube <span>3</span>
+    </a>
+    <div class="actions"><a class="link" href="#signin">Sign in</a></div>
+  </nav>
+  <div class="legalpage" id="legal-body"></div>
+</div>
 
 <!-- ═══════════ AUTH ═══════════ -->
 <div id="auth" class="hide">
@@ -263,7 +426,7 @@
         <div class="msg" id="np-msg"></div>
       </div>
     </div>
-    <div class="foot"><a href="#terms">Terms</a>·<a href="#privacy">Privacy</a></div>
+    <div class="foot"><a href="#landing">← Home</a>·<a href="#terms">Terms</a>·<a href="#privacy">Privacy</a></div>
   </div>
 </div>
 
@@ -396,14 +559,34 @@ async function boot(){
   else showAuth();
 }
 
+const PUBLIC_LEGAL = { terms:1, privacy:1 };
+
 function showAuth(force){
   $("app").classList.add("hide");
-  $("auth").classList.remove("hide");
   document.body.classList.remove("menu");
-  const key = force || location.hash.replace("#","") || "signin";
-  const id  = AUTH_PANES[key] || AUTH_PANES.signin;
-  document.querySelectorAll(".pane").forEach(p => p.classList.toggle("on", p.id === id));
-  document.querySelectorAll(".msg").forEach(m => m.className = "msg");
+  const key = force || location.hash.replace("#","") || "landing";
+
+  if(PUBLIC_LEGAL[key]){
+    $("landing").classList.add("hide");
+    $("auth").classList.add("hide");
+    renderPublicLegal(key);
+    $("public-legal").classList.remove("hide");
+    return;
+  }
+  $("public-legal").classList.add("hide");
+
+  if(AUTH_PANES[key]){
+    $("landing").classList.add("hide");
+    $("auth").classList.remove("hide");
+    const id = AUTH_PANES[key];
+    document.querySelectorAll(".pane").forEach(p => p.classList.toggle("on", p.id === id));
+    document.querySelectorAll(".msg").forEach(m => m.className = "msg");
+    return;
+  }
+
+  // default: landing page
+  $("auth").classList.add("hide");
+  $("landing").classList.remove("hide");
 }
 
 async function enterApp(){
@@ -1377,48 +1560,142 @@ async function markAllRead(){
   routeApp();
 }
 
-/* ═══════════ legal ═══════════ */
-function legal(which){
+/* ═══════════ legal ═══════════
+   legalHTML() is shared by the in-app page (signed in) and the public
+   page (signed out) so the two copies of this text can't drift apart. */
+function legalHTML(which, backHref, backLabel){
   const terms = which === "terms";
-  $("view").innerHTML = `
+  return `
     <h2>${terms ? "Terms of Service" : "Privacy Policy"}</h2>
     <p class="lede">Last updated ${when(new Date())}</p>
     <div class="panel">
       <div class="note err" style="display:block">
-        <b>Placeholder — replace before launch</b>
-        This is scaffolding so the links resolve. Have a lawyer write the real
-        text; a marketplace handling payments and personal data needs terms that
-        actually cover it.
+        <b>Draft — have a lawyer review before launch</b>
+        This covers the essentials but isn't a substitute for legal advice.
+        Anything in [brackets] below is a placeholder — fill in your real
+        details before this goes live.
       </div>
       ${terms ? `
-        <h3>Using Cube3</h3>
-        <p class="sub2">Cube3 connects brands with creators. You're responsible for
-        what you post and for honouring agreements you make through the platform.</p>
-        <h3>Accounts</h3>
-        <p class="sub2">Keep your login details secure. You must be old enough to
-        enter contracts in your country.</p>
-        <h3>Payments</h3>
-        <p class="sub2">Rates are agreed between brand and creator. Describe here
-        who holds funds, when they're released, and how disputes are handled.</p>
-        <h3>Ending your account</h3>
-        <p class="sub2">You can stop using Cube3 at any time. We may suspend
-        accounts that breach these terms.</p>
+        <h3>1. Acceptance of these Terms</h3>
+        <p class="sub2">By creating an account or using Cube3 you agree to these
+        Terms and our Privacy Policy. If you don't agree, please don't use the
+        platform.</p>
+        <h3>2. What Cube3 is</h3>
+        <p class="sub2">Cube3 connects brands with content creators for influencer
+        campaigns. We provide the space to post briefs, apply, message, and manage
+        applications — we're not a party to any agreement a brand and creator
+        reach with each other.</p>
+        <h3>3. Eligibility</h3>
+        <p class="sub2">You must be at least 18, or have a parent or legal
+        guardian's consent, and able to form a binding contract under Indian law.</p>
+        <h3>4. Your account</h3>
+        <p class="sub2">You're responsible for the accuracy of what you provide,
+        for keeping your login confidential, and for all activity under your
+        account.</p>
+        <h3>5. Creator and brand roles</h3>
+        <p class="sub2">Creators may browse and apply to open campaigns; brands
+        may post campaigns and review applications. Misrepresenting your identity,
+        follower counts, or reach breaches these Terms.</p>
+        <h3>6. Campaigns and applications</h3>
+        <p class="sub2">Brands are responsible for the accuracy of their briefs —
+        budget, deadline, requirements. Creators are responsible for the accuracy
+        of pitches, proposed rates, and portfolio links.</p>
+        <h3>7. Payments</h3>
+        <p class="sub2">Cube3 doesn't process, hold, or guarantee payments. Rates
+        are agreed directly between brand and creator and paid directly between
+        them, outside the platform. We're not responsible for non-payment or
+        disputes about deliverables. [Rewrite this if you later add in-platform
+        payments or escrow.]</p>
+        <h3>8. Content you post</h3>
+        <p class="sub2">You keep ownership of what you post. By posting it, you
+        give Cube3 a licence to display it to other users so the platform can
+        work. Don't post anything you don't have the right to share.</p>
+        <h3>9. Prohibited conduct</h3>
+        <p class="sub2">Don't use Cube3 to harass or defraud other users, post
+        false or infringing content, dodge fees you owe someone through the
+        platform, or access accounts or data that aren't yours.</p>
+        <h3>10. Suspension and termination</h3>
+        <p class="sub2">You can close your account at any time. We may suspend or
+        terminate accounts that breach these Terms.</p>
+        <h3>11. Disclaimers and liability</h3>
+        <p class="sub2">Cube3 is provided "as is" — we don't guarantee a campaign
+        results in a deal or that the platform is uninterrupted or error-free. To
+        the extent the law allows, we're not liable for indirect or consequential
+        damages from your use of Cube3.</p>
+        <h3>12. Governing law</h3>
+        <p class="sub2">These Terms are governed by the laws of India. Disputes
+        are subject to the courts of [your city/state]. [Fill in your registered
+        business location.]</p>
+        <h3>13. Grievance Officer</h3>
+        <p class="sub2">Per the IT Act, 2000 and rules made under it, our
+        Grievance Officer is: [name], [email], [address]. [Required for Indian
+        intermediaries — fill in before launch.]</p>
+        <h3>14. Changes to these Terms</h3>
+        <p class="sub2">We may update these Terms; we'll update the date above
+        when we do. Continued use after a change means you accept it.</p>
       ` : `
-        <h3>What we collect</h3>
-        <p class="sub2">Your name, email, profile details, and the campaigns,
-        applications and messages you create.</p>
-        <h3>Why</h3>
-        <p class="sub2">To run the platform: matching brands with creators,
-        delivering messages, and sending account emails.</p>
-        <h3>Who sees it</h3>
-        <p class="sub2">Your profile is visible to other signed-in users.
-        Messages are visible only to the two sides of a conversation.</p>
-        <h3>Your rights</h3>
-        <p class="sub2">You can edit your profile at any time and request deletion
-        of your account. Add your contact address for such requests here.</p>
+        <h3>1. Scope</h3>
+        <p class="sub2">This explains how Cube3 collects, uses, and protects your
+        personal data, in line with India's Digital Personal Data Protection Act,
+        2023.</p>
+        <h3>2. What we collect</h3>
+        <p class="sub2">Account details (name, email, password); profile details
+        (bio, photo, role, and — for creators — handle, category, social links,
+        follower counts, rates; for brands — company, industry, website);
+        campaigns, applications, and messages you create; and basic usage data.</p>
+        <h3>3. How we use it</h3>
+        <p class="sub2">To run your account, match brands with creators, show your
+        profile to other users, deliver messages and notifications, send
+        account emails, and keep the platform secure.</p>
+        <h3>4. Who we share it with</h3>
+        <p class="sub2">We don't sell your data. We share it with other users as
+        needed for the platform to work (your profile is visible to signed-in
+        users; a brand sees a creator's application) and with service providers
+        who process data for us — currently Supabase for database, auth, and
+        storage. [List any others you add, e.g. email or analytics providers.]
+        We may disclose data if required by law.</p>
+        <h3>5. Where your data is stored</h3>
+        <p class="sub2">Your data is stored with our infrastructure provider,
+        Supabase. [State the hosting region — this matters for India's
+        data-localisation rules.]</p>
+        <h3>6. Data retention</h3>
+        <p class="sub2">We keep your data while your account is active, and for a
+        reasonable period after deletion for legal and operational needs, after
+        which it's deleted or anonymised.</p>
+        <h3>7. Your rights</h3>
+        <p class="sub2">Edit your profile any time from Settings. Request a copy
+        of your data, a correction, or account deletion by contacting
+        [privacy contact email]. Under the DPDP Act you can also nominate someone
+        to exercise these rights on your behalf.</p>
+        <h3>8. Children's privacy</h3>
+        <p class="sub2">Cube3 isn't intended for anyone under 18. If you believe a
+        minor has an account, contact us and we'll remove it.</p>
+        <h3>9. Cookies</h3>
+        <p class="sub2">[Describe what you actually use — e.g. only the essential
+        cookie Supabase Auth sets to keep you signed in, or disclose any
+        analytics cookies here.]</p>
+        <h3>10. Security</h3>
+        <p class="sub2">We use measures including database row-level security to
+        protect your data, but no system is completely secure — use a strong,
+        unique password.</p>
+        <h3>11. Grievance / Data Protection contact</h3>
+        <p class="sub2">For privacy questions or to exercise your rights, contact
+        [name], [email], [address]. [Required — fill in before launch.]</p>
+        <h3>12. Changes to this policy</h3>
+        <p class="sub2">We may update this policy; we'll update the date above
+        when we do.</p>
       `}
-      <a class="btn ghost" href="#dashboard" style="margin-top:8px">Back</a>
+      <a class="btn ghost" href="${backHref}" style="margin-top:8px">${backLabel}</a>
     </div>`;
+}
+
+function legal(which){
+  $("view").innerHTML = legalHTML(which, "#dashboard", "Back");
+}
+
+function renderPublicLegal(which){
+  const body = $("legal-body");
+  if(body) body.innerHTML = legalHTML(which, "#landing", "← Back to home");
 }
 
 /* ═══════════ auth actions ═══════════ */
@@ -1510,7 +1787,15 @@ document.addEventListener("click", e => {
   }
 
   const go = e.target.closest("[data-go]");
-  if(go){ location.hash = go.dataset.go; return; }
+  if(go){
+    if(go.dataset.role){
+      role = go.dataset.role;
+      document.querySelectorAll(".role").forEach(x =>
+        x.setAttribute("aria-pressed", String(x.dataset.role === role)));
+    }
+    location.hash = go.dataset.go;
+    return;
+  }
 
   if(e.target.closest("[data-toggle-menu]")){ document.body.classList.toggle("menu"); return; }
   if(e.target.closest("[data-close-menu]")){  document.body.classList.remove("menu"); return; }
@@ -1614,7 +1899,11 @@ sb.auth.onAuthStateChange((evt) => {
   if(evt === "SIGNED_OUT"){ me = null; profile = null; showAuth("signin"); }
 });
 
+const fy = $("fyear");
+if(fy) fy.textContent = new Date().getFullYear();
+
 boot();
 </script>
 </body>
 </html>
+    
