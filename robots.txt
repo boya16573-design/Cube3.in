@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://cube3.in/sitemap.xml
