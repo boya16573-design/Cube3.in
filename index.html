@@ -3,102 +3,115 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cube3 — Connect Brands with Creators</title>
+<title>Cube3 — Influencer Campaigns Marketplace</title>
 <meta name="description" content="Cube3 is where brands post influencer campaigns and creators find paid collaborations. Post a brief, browse open briefs, apply, and message — all in one place. Free to join.">
-<meta name="theme-color" content="#1d4ed8">
+<meta name="theme-color" content="#5b4fe0">
 <link rel="canonical" href="https://cube3.in/">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 
 <!-- Open Graph -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Cube3">
-<meta property="og:title" content="Cube3 — Connect Brands with Creators">
+<meta property="og:title" content="Cube3 — Influencer Campaigns Marketplace">
 <meta property="og:description" content="Post a campaign or apply as a creator. Cube3 connects brands and creators for paid collaborations — campaigns, applications, and messaging in one place.">
 <meta property="og:url" content="https://cube3.in/">
 <meta property="og:image" content="https://cube3.in/favicon.svg">
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Cube3 — Connect Brands with Creators">
+<meta name="twitter:title" content="Cube3 — Influencer Campaigns Marketplace">
 <meta name="twitter:description" content="Post a campaign or apply as a creator. Cube3 connects brands and creators for paid collaborations.">
 <meta name="twitter:image" content="https://cube3.in/favicon.svg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
 <style>
   :root{
-    --blue:#1d4ed8; --blue-dark:#1e40af; --bg:#f4f6fb; --card:#fff;
-    --ink:#0b1220; --muted:#6b7280; --line:#e5e7eb; --field:#eef2ff;
+    --brand:#5b4fe0; --brand-dark:#4636c6; --brand-light:#efedfe; --brand-line:#d9d4fb;
+    --mint:#1dbf73; --mint-dark:#169c5f; --mint-light:#e6faf1;
+    --bg:#f7f7fb; --card:#fff;
+    --ink:#0b1220; --muted:#6b7280; --line:#e7e7ef; --field:#f2f1fa;
     --err-bg:#fef2f2; --err-line:#fecaca; --err-ink:#b91c1c;
-    --ok-bg:#f0fdf4; --ok-line:#bbf7d0; --ok-ink:#15803d;
+    --ok-bg:#e6faf1; --ok-line:#b9f0d3; --ok-ink:#0f7a4d;
     --warn-bg:#fffbeb; --warn-line:#fde68a; --warn-ink:#b45309;
-    --side:232px; --top:56px;
+    --side:236px; --top:60px;
+    --r-card:16px; --r-field:10px; --r-btn:9px;
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--ink);
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+    font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  h1,h2,h3,.brand h1,.logo,.logo2{font-family:"Sora","Inter",sans-serif}
   .hide{display:none !important}
 
   /* ─── controls ─── */
   label{display:block;font-weight:700;font-size:14px;margin-bottom:7px}
   .field{position:relative;margin-bottom:16px}
-  input,textarea,select{width:100%;padding:14px 15px;font-size:16px;border:1px solid transparent;
-    background:var(--field);border-radius:11px;outline:none;color:var(--ink);
+  input,textarea,select{width:100%;padding:13px 15px;font-size:15.5px;border:1.5px solid transparent;
+    background:var(--field);border-radius:var(--r-field);outline:none;color:var(--ink);
     font-family:inherit;transition:border-color .15s,background .15s}
   textarea{min-height:96px;resize:vertical;line-height:1.5}
   input::placeholder,textarea::placeholder{color:#9aa3b2}
-  input:focus,textarea:focus,select:focus{border-color:var(--blue);background:#fff}
-  input:focus-visible,textarea:focus-visible{box-shadow:0 0 0 3px rgba(29,78,216,.18)}
+  input:focus,textarea:focus,select:focus{border-color:var(--brand);background:#fff}
+  input:focus-visible,textarea:focus-visible{box-shadow:0 0 0 3px var(--brand-line)}
   .pw input{padding-right:52px}
   .peek{position:absolute;right:6px;top:50%;transform:translateY(-50%);
     width:40px;height:40px;border:0;background:transparent;cursor:pointer;
     display:grid;place-items:center;border-radius:9px;color:var(--muted)}
   .peek:hover{color:var(--ink);background:rgba(15,23,42,.05)}
-  .peek:focus-visible{outline:2px solid var(--blue);outline-offset:1px}
+  .peek:focus-visible{outline:2px solid var(--brand);outline-offset:1px}
   .peek svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.9;
     stroke-linecap:round;stroke-linejoin:round}
   button.primary{width:100%;padding:15px;font-size:16px;font-weight:700;color:#fff;
-    background:var(--blue);border:0;border-radius:11px;cursor:pointer;
-    transition:background .15s,transform .06s}
-  button.primary:hover{background:var(--blue-dark)}
+    background:var(--mint);border:0;border-radius:var(--r-btn);cursor:pointer;
+    transition:background .15s,transform .06s;font-family:inherit}
+  button.primary:hover{background:var(--mint-dark)}
   button.primary:active{transform:translateY(1px)}
   button.primary:disabled{opacity:.6;cursor:not-allowed}
-  .btn{padding:11px 16px;font-size:14.5px;font-weight:700;border:0;border-radius:10px;
-    background:var(--blue);color:#fff;cursor:pointer;text-decoration:none;
-    display:inline-block;font-family:inherit}
-  .btn:hover{background:var(--blue-dark)}
+  .btn{padding:11px 17px;font-size:14.5px;font-weight:700;border:0;border-radius:999px;
+    background:var(--brand);color:#fff;cursor:pointer;text-decoration:none;
+    display:inline-block;font-family:inherit;transition:background .15s,transform .06s}
+  .btn:hover{background:var(--brand-dark)}
+  .btn:active{transform:translateY(1px)}
   .btn:disabled{opacity:.6;cursor:not-allowed}
-  .btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
-  .btn.ghost:hover{background:#f1f4f9}
-  .btn.danger{background:#fff;color:var(--err-ink);border:1px solid var(--err-line)}
+  .btn.mint{background:var(--mint)}
+  .btn.mint:hover{background:var(--mint-dark)}
+  .btn.ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
+  .btn.ghost:hover{background:#f4f4f8;border-color:#d7d7e2}
+  .btn.danger{background:#fff;color:var(--err-ink);border:1.5px solid var(--err-line)}
   .btn.danger:hover{background:var(--err-bg)}
-  .btn.sm{padding:8px 12px;font-size:13.5px;border-radius:9px}
+  .btn.sm{padding:8px 13px;font-size:13.5px;border-radius:999px}
   .msg{margin-top:16px;padding:14px 15px;border-radius:11px;font-size:14.5px;
     font-family:ui-monospace,SFMono-Regular,Menlo,monospace;display:none}
   .msg.err{display:block;background:var(--err-bg);border:1px solid var(--err-line);color:var(--err-ink)}
   .msg.ok{display:block;background:var(--ok-bg);border:1px solid var(--ok-line);color:var(--ok-ink)}
 
   /* ─── auth ─── */
-  #auth{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+  #auth{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;
+    background:radial-gradient(1100px 480px at 50% -12%, var(--brand-light), var(--bg) 62%)}
   #auth .wrap{width:100%;max-width:420px}
   .brand{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:28px}
-  .brand .mk{width:52px;height:52px;border-radius:13px;background:var(--blue);display:grid;place-items:center}
+  .brand .mk{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,var(--brand),var(--brand-dark));display:grid;place-items:center}
   .brand .mk svg{width:28px;height:28px}
-  .brand h1{margin:0;font-size:34px;font-weight:800;letter-spacing:-.5px}
-  .brand h1 span{color:var(--blue)}
-  .card{background:var(--card);border-radius:18px;padding:28px 24px 24px;
-    box-shadow:0 1px 2px rgba(16,24,40,.05),0 12px 32px rgba(16,24,40,.07)}
-  .card h2{margin:0 0 4px;font-size:26px;font-weight:800;letter-spacing:-.3px}
+  .brand h1{margin:0;font-size:32px;font-weight:800;letter-spacing:-.5px}
+  .brand h1 span{color:var(--mint)}
+  .card{background:var(--card);border-radius:20px;padding:28px 24px 24px;
+    box-shadow:0 1px 2px rgba(16,24,40,.05),0 20px 44px rgba(29,25,90,.09)}
+  .card h2{margin:0 0 4px;font-size:25px;font-weight:800;letter-spacing:-.3px}
   .card .sub{margin:0 0 22px;color:var(--muted);font-size:15px}
   .roles{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
   .role{padding:14px;text-align:center;font-size:15px;font-weight:700;cursor:pointer;
-    border:1.5px solid #d9dee8;background:#fff;border-radius:11px;color:var(--ink);
+    border:1.5px solid #dcdce6;background:#fff;border-radius:12px;color:var(--ink);
     font-family:inherit;transition:border-color .15s,background .15s,color .15s}
-  .role[aria-pressed="true"]{border-color:var(--blue);background:#eff4ff;color:var(--blue)}
+  .role[aria-pressed="true"]{border-color:var(--brand);background:var(--brand-light);color:var(--brand)}
   .hint{font-size:13px;color:var(--muted);margin:-8px 0 16px}
   .links{margin-top:20px;text-align:center;font-size:15px}
-  .links a{color:var(--blue);text-decoration:none;font-weight:700;cursor:pointer}
+  .links a{color:var(--brand);text-decoration:none;font-weight:700;cursor:pointer}
   .links a:hover{text-decoration:underline}
   .links .row{margin-top:10px;color:var(--muted);font-weight:400}
   .legal{margin-top:18px;text-align:center;font-size:14px;color:var(--muted);line-height:1.5}
-  .legal a{color:var(--blue);text-decoration:none}
+  .legal a{color:var(--brand);text-decoration:none}
   .foot{margin-top:22px;text-align:center;font-size:14px;color:var(--muted)}
   .foot a{color:var(--muted);text-decoration:none;margin:0 6px}
   .pane{display:none}
@@ -107,34 +120,34 @@
   /* ─── shell ─── */
   .topbar{position:fixed;top:0;left:0;right:0;height:var(--top);background:#fff;
     border-bottom:1px solid var(--line);display:flex;align-items:center;
-    justify-content:space-between;padding:0 16px;z-index:30}
-  .topbar .title{font-weight:700;font-size:15px}
+    justify-content:space-between;padding:0 18px;z-index:30}
+  .topbar .title{font-weight:800;font-size:15px;font-family:"Sora",sans-serif}
   .burger{border:0;background:transparent;font-size:20px;cursor:pointer;padding:6px;
     display:none;color:var(--ink)}
   .who{display:flex;align-items:center;gap:10px}
   .who .name{text-align:right;line-height:1.25}
   .who .name b{display:block;font-size:13.5px}
   .who .name small{color:var(--muted);font-size:12px}
-  .avatar{width:32px;height:32px;border-radius:50%;background:var(--blue);color:#fff;
+  .avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--brand),var(--brand-dark));color:#fff;
     display:grid;place-items:center;font-weight:700;font-size:14px;overflow:hidden;flex:none}
   .avatar img{width:100%;height:100%;object-fit:cover}
   .side{position:fixed;top:0;bottom:0;left:0;width:var(--side);background:#fff;
     border-right:1px solid var(--line);padding:14px 12px;z-index:40;overflow-y:auto}
   .side .logo{display:flex;align-items:center;gap:9px;padding:6px 8px 18px;font-weight:800;font-size:19px}
-  .side .logo i{width:26px;height:26px;border-radius:7px;background:var(--blue);display:grid;
+  .side .logo i{width:27px;height:27px;border-radius:8px;background:linear-gradient(135deg,var(--brand),var(--brand-dark));display:grid;
     place-items:center;font-style:normal}
   .side .logo i svg{width:15px;height:15px}
-  .side .logo span{color:var(--blue)}
-  .nav a{display:flex;align-items:center;gap:10px;padding:10px 11px;border-radius:9px;
+  .side .logo span{color:var(--mint)}
+  .nav a{display:flex;align-items:center;gap:10px;padding:10px 11px;border-radius:10px;
     color:var(--ink);text-decoration:none;font-size:14.5px;font-weight:600;margin-bottom:2px}
-  .nav a:hover{background:#f1f4f9}
-  .nav a.on{background:var(--blue);color:#fff}
+  .nav a:hover{background:#f4f4f9}
+  .nav a.on{background:var(--brand);color:#fff}
   .nav .sep{height:1px;background:var(--line);margin:10px 4px}
   .nav svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;
     stroke-linecap:round;stroke-linejoin:round;flex:none}
-  .pip{margin-left:auto;background:#ef4444;color:#fff;font-size:11px;font-weight:800;
+  .pip{margin-left:auto;background:var(--mint);color:#fff;font-size:11px;font-weight:800;
     min-width:19px;height:19px;border-radius:999px;display:grid;place-items:center;padding:0 5px}
-  .nav a.on .pip{background:#fff;color:var(--blue)}
+  .nav a.on .pip{background:#fff;color:var(--brand)}
   main{margin-left:var(--side);padding:calc(var(--top) + 22px) 22px 60px}
   .scrim{display:none;position:fixed;inset:0;background:rgba(11,18,32,.42);z-index:35}
   @media(max-width:860px){
@@ -146,31 +159,58 @@
   }
 
   /* ─── content ─── */
-  main h2{margin:0 0 3px;font-size:23px;font-weight:800;letter-spacing:-.3px}
+  main h2{margin:0 0 3px;font-size:23px;font-weight:800;letter-spacing:-.3px;font-family:"Sora",sans-serif}
   .lede{margin:0 0 20px;color:var(--muted);font-size:14.5px}
   .bar{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap}
   .bar input,.bar select{flex:1;min-width:150px;padding:11px 13px;font-size:15px}
   .bar select{max-width:170px}
-  .grid{display:grid;gap:13px}
+  .grid{display:grid;gap:16px}
   .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:13px;margin-bottom:24px}
-  .item{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 17px}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);padding:18px;
+    border-top:3px solid var(--brand)}
+  .stat b{display:block;font-size:29px;font-weight:800;letter-spacing:-1px;line-height:1.1;font-family:"Sora",sans-serif}
+  .stat span{color:var(--muted);font-size:13.5px;font-weight:600}
+
+  /* gig-style marketplace card (campaigns / creators) */
+  .grid.gigs{grid-template-columns:repeat(auto-fill,minmax(268px,1fr))}
+  .gig{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);overflow:hidden;
+    display:flex;flex-direction:column;transition:box-shadow .15s,transform .15s}
+  .gig:hover{box-shadow:0 14px 30px rgba(20,20,50,.09);transform:translateY(-2px)}
+  .gig .banner{height:86px;position:relative;display:flex;align-items:flex-start;justify-content:space-between;
+    padding:11px 13px}
+  .gig .banner .chip{background:rgba(255,255,255,.92);color:#20204a;font-size:11.5px;font-weight:800;
+    padding:4px 10px;border-radius:999px}
+  .gig .banner .chip.budget{background:rgba(11,18,32,.34);color:#fff}
+  .gig .avatarwrap{margin:-24px 0 0 14px;position:relative;z-index:1}
+  .gig .avatarwrap .avatar{width:44px;height:44px;border:3px solid #fff;font-size:16px}
+  .gig .body{padding:12px 15px 15px;display:flex;flex-direction:column;gap:8px;flex:1}
+  .gig .seller{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);font-weight:600}
+  .gig h3{margin:0;font-size:16px;font-weight:700;line-height:1.35;font-family:"Inter",sans-serif}
+  .gig p.desc{margin:0;color:var(--muted);font-size:13.5px;line-height:1.5;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .gig p.req{background:#f7f7fb;border-radius:9px;padding:9px 11px;font-size:13px;margin:0}
+  .gig p.req b{color:var(--ink);display:block;margin-bottom:2px;font-size:12px;font-weight:700}
+  .gig .foot{margin-top:auto;padding-top:10px;border-top:1px solid var(--line);
+    display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .gig .foot .pricebox{line-height:1.15}
+  .gig .foot .pricebox small{display:block;color:var(--muted);font-size:11.5px;font-weight:600}
+  .gig .foot .pricebox b{font-size:17px;font-weight:800;font-family:"Sora",sans-serif}
+  .gig .actions{display:flex;gap:8px;flex-wrap:wrap;padding:0 15px 15px}
+
+  .item{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);padding:16px 17px}
   .item h3{margin:0 0 5px;font-size:16.5px;font-weight:700}
   .item p{margin:0 0 12px;color:var(--muted);font-size:14px;line-height:1.5}
-  .item p.req{background:#f7f9fc;border-radius:9px;padding:9px 11px;font-size:13.5px}
-  .item p.req b{color:var(--ink);display:block;margin-bottom:2px;font-size:12.5px;
-    text-transform:uppercase;letter-spacing:.4px}
+  .item p.req{background:#f7f7fb;border-radius:9px;padding:9px 11px;font-size:13.5px}
+  .item p.req b{color:var(--ink);display:block;margin-bottom:2px;font-size:12.5px;font-weight:700}
   .item p:last-child{margin-bottom:0}
-  .stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:17px}
-  .stat b{display:block;font-size:29px;font-weight:800;letter-spacing:-1px;line-height:1.1}
-  .stat span{color:var(--muted);font-size:13.5px;font-weight:600}
   .meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-  .tag{font-size:12.5px;font-weight:700;padding:4px 9px;border-radius:999px;
-    background:#eff4ff;color:var(--blue)}
-  .tag.grey{background:#f1f3f7;color:var(--muted)}
+  .tag{font-size:12.5px;font-weight:700;padding:4px 10px;border-radius:999px;
+    background:var(--brand-light);color:var(--brand)}
+  .tag.grey{background:#f1f1f6;color:var(--muted)}
   .tag.ok{background:var(--ok-bg);color:var(--ok-ink)}
   .tag.warn{background:var(--warn-bg);color:var(--warn-ink)}
   .tag.no{background:var(--err-bg);color:var(--err-ink)}
-  .pay{margin-left:auto;font-weight:800;font-size:15px}
+  .pay{margin-left:auto;font-weight:800;font-size:15px;font-family:"Sora",sans-serif}
   .row{display:flex;gap:12px;align-items:flex-start}
   .row .avatar{width:42px;height:42px;font-size:16px}
   .head{display:flex;align-items:center;gap:12px;margin-bottom:12px}
@@ -181,33 +221,33 @@
   .note.ok{display:block;background:var(--ok-bg);border:1px solid var(--ok-line);color:var(--ok-ink)}
   .note b{display:block;margin-bottom:4px}
   .note code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13.5px}
-  .empty{background:var(--card);border:1px dashed #cbd3e1;border-radius:14px;
+  .empty{background:var(--card);border:1.5px dashed #d7d7e6;border-radius:var(--r-card);
     padding:38px 22px;text-align:center}
   .empty h3{margin:0 0 6px;font-size:17px}
   .empty p{margin:0 0 16px;color:var(--muted);font-size:14.5px}
-  .skel{background:var(--card);border:1px solid var(--line);border-radius:14px;
+  .skel{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);
     padding:16px 17px;margin-bottom:13px}
-  .skel div{height:11px;border-radius:6px;background:#eef1f6;margin-bottom:9px}
+  .skel div{height:11px;border-radius:6px;background:#eef0f5;margin-bottom:9px}
   .skel div:nth-child(1){width:42%}
   .skel div:nth-child(2){width:88%}
   .skel div:nth-child(3){width:64%;margin-bottom:0}
-  .panel{background:var(--card);border:1px solid var(--line);border-radius:14px;
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);
     padding:20px 19px;margin-bottom:16px;max-width:620px}
-  .panel h3{margin:0 0 3px;font-size:17px}
+  .panel h3{margin:0 0 3px;font-size:17px;font-family:"Sora",sans-serif}
   .panel .sub2{margin:0 0 18px;color:var(--muted);font-size:14px}
   .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   @media(max-width:560px){.two{grid-template-columns:1fr}}
 
   /* thread */
-  .thread{background:var(--card);border:1px solid var(--line);border-radius:14px;
+  .thread{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);
     display:flex;flex-direction:column;height:min(66vh,540px);max-width:720px}
   .thread .top{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;
     align-items:center;gap:11px}
   .thread .body{flex:1;overflow-y:auto;padding:16px;display:flex;
-    flex-direction:column;gap:9px}
+    flex-direction:column;gap:9px;background:var(--bg)}
   .bub{max-width:76%;padding:10px 13px;border-radius:14px;font-size:14.5px;line-height:1.45;
-    background:#f1f3f7;align-self:flex-start;white-space:pre-wrap;word-break:break-word}
-  .bub.me{background:var(--blue);color:#fff;align-self:flex-end}
+    background:#fff;border:1px solid var(--line);align-self:flex-start;white-space:pre-wrap;word-break:break-word}
+  .bub.me{background:var(--brand);color:#fff;border-color:var(--brand);align-self:flex-end}
   .bub small{display:block;font-size:11px;opacity:.65;margin-top:4px}
   .thread .send{padding:12px;border-top:1px solid var(--line);display:flex;gap:9px}
   .thread .send input{flex:1;padding:12px 14px}
@@ -219,44 +259,60 @@
 
   /* ─── landing ─── */
   .pubnav{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--line);
-    display:flex;align-items:center;justify-content:space-between;padding:14px 22px;z-index:20}
+    display:flex;align-items:center;justify-content:space-between;padding:14px 26px;z-index:20}
   .pubnav .logo2{display:flex;align-items:center;gap:9px;font-weight:800;font-size:19px;color:var(--ink);
     text-decoration:none}
-  .pubnav .logo2 i{width:28px;height:28px;border-radius:8px;background:var(--blue);display:grid;
+  .pubnav .logo2 i{width:28px;height:28px;border-radius:9px;background:linear-gradient(135deg,var(--brand),var(--brand-dark));display:grid;
     place-items:center;font-style:normal}
   .pubnav .logo2 i svg{width:16px;height:16px}
-  .pubnav .logo2 span{color:var(--blue)}
-  .pubnav .actions{display:flex;gap:14px;align-items:center}
+  .pubnav .logo2 span{color:var(--mint)}
+  .pubnav .actions{display:flex;gap:16px;align-items:center}
   .pubnav .actions a.link{color:var(--ink);text-decoration:none;font-weight:700;font-size:14.5px}
 
-  .hero{max-width:880px;margin:0 auto;padding:64px 24px 40px;text-align:center}
-  .hero h1{margin:0 0 16px;font-size:44px;font-weight:800;letter-spacing:-1px;line-height:1.14}
+  .hero{background:linear-gradient(180deg,var(--brand-light) 0%, var(--bg) 100%)}
+  .hero-inner{max-width:920px;margin:0 auto;padding:68px 24px 40px;text-align:center}
+  .hero h1{margin:0 0 16px;font-size:45px;font-weight:800;letter-spacing:-1.2px;line-height:1.12;
+    font-family:"Sora",sans-serif}
   .hero p.sub3{margin:0 auto 30px;max-width:560px;color:var(--muted);font-size:17px;line-height:1.6}
-  .hero .cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:14px}
-  .hero .cta .btn{padding:14px 24px;font-size:15px;border-radius:11px}
-  .hero .fine{color:var(--muted);font-size:13.5px;margin:0}
+  .hero .cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:22px}
+  .hero .cta .btn{padding:14px 26px;font-size:15px;border-radius:999px}
+  .hero .fine{color:var(--muted);font-size:13.5px;margin:0 0 26px}
+  .chiprow{display:flex;gap:9px;justify-content:center;flex-wrap:wrap}
+  .chiprow button{border:1.5px solid var(--line);background:#fff;color:var(--ink);font-weight:600;
+    font-size:13.5px;padding:8px 15px;border-radius:999px;cursor:pointer;font-family:inherit;
+    transition:border-color .15s,color .15s}
+  .chiprow button:hover{border-color:var(--brand);color:var(--brand)}
   @media(max-width:520px){.hero h1{font-size:32px}}
 
-  .how{max-width:980px;margin:24px auto 0;padding:40px 24px;display:grid;
+  .strip{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:#fff}
+  .strip-inner{max-width:920px;margin:0 auto;padding:26px 24px;display:grid;
+    grid-template-columns:repeat(4,1fr);gap:18px;text-align:center}
+  .strip-inner b{display:block;font-size:24px;font-weight:800;font-family:"Sora",sans-serif}
+  .strip-inner span{color:var(--muted);font-size:13px}
+  @media(max-width:640px){.strip-inner{grid-template-columns:repeat(2,1fr)}}
+
+  .how{max-width:980px;margin:0 auto;padding:52px 24px 20px;display:grid;
     grid-template-columns:1fr 1fr;gap:22px}
   @media(max-width:760px){.how{grid-template-columns:1fr}}
-  .how .col{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px 24px}
-  .how .col h3{margin:0 0 4px;font-size:19px;font-weight:800}
+  .how .col{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px 24px}
+  .how .col h3{margin:0 0 4px;font-size:19px;font-weight:800;font-family:"Sora",sans-serif}
   .how .col p.sub2{margin:0 0 18px;color:var(--muted);font-size:14px}
   .how ol{margin:0;padding:0;list-style:none;display:grid;gap:14px}
   .how ol li{display:flex;gap:12px;align-items:flex-start;font-size:14.5px;line-height:1.5}
-  .how ol b.step{flex:none;width:26px;height:26px;border-radius:50%;background:#eff4ff;color:var(--blue);
+  .how ol b.step{flex:none;width:26px;height:26px;border-radius:50%;background:var(--brand-light);color:var(--brand);
     display:grid;place-items:center;font-size:13px;font-weight:800}
+  .how .col.creator ol b.step{background:var(--mint-light);color:var(--mint-dark)}
   .how ol span b{display:block;color:var(--ink);font-weight:700;margin-bottom:1px}
   .how ol span{color:var(--muted)}
 
   .feat{max-width:980px;margin:0 auto;padding:16px 24px 56px}
-  .feat h2{text-align:center;margin:0 0 30px;font-size:27px;font-weight:800;letter-spacing:-.4px}
+  .feat h2{text-align:center;margin:0 0 30px;font-size:27px;font-weight:800;letter-spacing:-.4px;
+    font-family:"Sora",sans-serif}
   .feat .grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px}
-  .feat .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 18px}
-  .feat .card i{width:38px;height:38px;border-radius:10px;background:#eff4ff;display:grid;
+  .feat .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 18px}
+  .feat .card i{width:38px;height:38px;border-radius:11px;background:var(--brand-light);display:grid;
     place-items:center;margin-bottom:12px;font-style:normal}
-  .feat .card i svg{width:19px;height:19px;stroke:var(--blue);fill:none;stroke-width:1.8;
+  .feat .card i svg{width:19px;height:19px;stroke:var(--brand);fill:none;stroke-width:1.8;
     stroke-linecap:round;stroke-linejoin:round}
   .feat .card h3{margin:0 0 5px;font-size:15.5px}
   .feat .card p{margin:0;color:var(--muted);font-size:13.5px;line-height:1.5}
@@ -268,6 +324,31 @@
   .pubfoot .flinks a:hover{color:var(--ink)}
 
   .legalpage{max-width:640px;margin:0 auto;padding:48px 22px 60px}
+
+  /* ─── message attachments ─── */
+  .attachbtn{width:44px;height:44px;border-radius:10px;border:1.5px solid var(--line);background:#fff;
+    display:grid;place-items:center;cursor:pointer;color:var(--muted);flex:none;padding:0}
+  .attachbtn:hover{border-color:var(--brand);color:var(--brand)}
+  .attachbtn svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.8;
+    stroke-linecap:round;stroke-linejoin:round}
+  .bub img,.bub video{max-width:230px;max-height:260px;border-radius:10px;display:block;margin-top:4px;
+    background:#00000010}
+  .uploading{font-size:12.5px;color:var(--muted);padding:6px 2px;align-self:flex-start}
+
+  /* ─── creator showcase ─── */
+  .catrow{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+  .catrow button{border:1.5px solid var(--line);background:#fff;padding:7px 15px;border-radius:999px;
+    font-size:13.5px;font-weight:700;color:var(--ink);cursor:pointer;font-family:inherit;
+    transition:border-color .15s,background .15s,color .15s}
+  .catrow button.on{background:var(--brand);border-color:var(--brand);color:#fff}
+  .catrow button:hover:not(.on){border-color:var(--brand)}
+  .socialgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin:2px 0}
+  .social{display:flex;align-items:center;gap:7px;font-size:12.5px;padding:7px 9px;border-radius:10px;
+    background:#f7f7fb;color:var(--ink);text-decoration:none;font-weight:600;line-height:1.2}
+  .social:hover{background:var(--brand-light);color:var(--brand)}
+  .social svg{width:14px;height:14px;flex:none;stroke-width:1.8}
+  .social .n{display:block;font-weight:800;font-size:13px}
+  .social .l{display:block;color:var(--muted);font-size:10.5px;font-weight:600}
 </style>
 </head>
 <body>
@@ -282,22 +363,41 @@
     </a>
     <div class="actions">
       <a class="link" href="#signin">Sign in</a>
-      <button class="btn" data-go="signup">Get started</button>
+      <button class="btn mint" data-go="signup">Get started</button>
     </div>
   </nav>
 
   <section class="hero">
-    <h1>Influencer campaigns,<br>without the chaos.</h1>
-    <p class="sub3">Cube3 connects brands with creators for paid collaborations — post a brief, review pitches, and message each other, all in one place.</p>
-    <div class="cta">
-      <button class="btn" data-go="signup" data-role="creator">Join as a Creator</button>
-      <button class="btn ghost" data-go="signup" data-role="brand">Join as a Brand</button>
+    <div class="hero-inner">
+      <h1>Book real creators for your next campaign</h1>
+      <p class="sub3">Cube3 connects brands with creators for paid collaborations — post a brief, review pitches, and message each other, all in one place.</p>
+      <div class="cta">
+        <button class="btn mint" data-go="signup" data-role="creator">Join as a creator</button>
+        <button class="btn ghost" data-go="signup" data-role="brand">Post a campaign</button>
+      </div>
+      <p class="fine">Free to join · No credit card required</p>
+      <div class="chiprow" aria-label="Popular categories">
+        <button type="button" data-go="signup" data-role="creator">Beauty</button>
+        <button type="button" data-go="signup" data-role="creator">Fashion</button>
+        <button type="button" data-go="signup" data-role="creator">Tech</button>
+        <button type="button" data-go="signup" data-role="creator">Gaming</button>
+        <button type="button" data-go="signup" data-role="creator">Fitness</button>
+        <button type="button" data-go="signup" data-role="creator">Food</button>
+      </div>
     </div>
-    <p class="fine">Free to join · No credit card required</p>
+  </section>
+
+  <section class="strip" aria-label="Cube3 in numbers">
+    <div class="strip-inner">
+      <div><b>Free</b><span>to join, both sides</span></div>
+      <div><b>1:1</b><span>direct messaging</span></div>
+      <div><b>All niches</b><span>beauty to gaming to tech</span></div>
+      <div><b>Your rate</b><span>you set the price</span></div>
+    </div>
   </section>
 
   <section class="how" aria-label="How Cube3 works">
-    <div class="col">
+    <div class="col creator">
       <h3>For creators</h3>
       <p class="sub2">Get discovered and get paid.</p>
       <ol>
@@ -490,6 +590,19 @@ const num   = n => n == null ? "—" : Number(n) >= 1000
               : String(n);
 const initial = s => ((String(s ?? "").trim()[0]) || "?").toUpperCase();
 
+/* Deterministic marketplace-card banner gradient, picked from a small
+   curated palette so cards feel varied without being random on repaint. */
+const GRADIENTS = [
+  ["#7c6ef0","#5b4fe0"], ["#22c58b","#0ea968"], ["#fb923c","#ea580c"],
+  ["#38bdf8","#0284c7"], ["#f472b6","#db2777"], ["#facc15","#ca8a04"]
+];
+function gradientFor(seed){
+  let h = 0;
+  for(const c of String(seed || "x")) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+  const [a,b] = GRADIENTS[h % GRADIENTS.length];
+  return `linear-gradient(135deg, ${a}, ${b})`;
+}
+
 /* User-supplied links (portfolio_url, instagram_url, avatar_url …) go into
    href/src attributes. esc() stops attribute break-out but NOT a hostile
    scheme — href="javascript:…" still executes on click. Allow http/https only. */
@@ -502,6 +615,21 @@ const safeUrl = u => {
   }catch{ return ""; }
 };
 const by = (arr, key) => Object.fromEntries((arr||[]).map(o => [o[key], o]));
+
+/* Messages can carry a photo or video instead of (or alongside) text.
+   Files go to this public Storage bucket; see the setup note in the reply
+   for the bucket + column migration this relies on. */
+const MEDIA_BUCKET = "message-media";
+const MAX_ATTACH_MB = 25;
+
+const SOCIAL_ICONS = {
+  instagram:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="3.6"/><circle cx="17.2" cy="6.8" r="1"/></svg>',
+  youtube:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2.5" y="5.5" width="19" height="13" rx="3.5"/><path d="M10.5 9.5v5l4.3-2.5z" fill="currentColor" stroke="none"/></svg>',
+  tiktok:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 3v11.2a3.3 3.3 0 1 1-3.3-3.3"/><path d="M14 3c.4 2.6 2.2 4.4 4.8 4.7"/></svg>',
+  x:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 4l16 16M20 4 4 20"/></svg>',
+  facebook:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 21v-7h2.4l.4-3H14V9.2c0-.9.3-1.5 1.6-1.5H17V5.1c-.3 0-1.2-.1-2.3-.1-2.3 0-3.9 1.4-3.9 3.9V11H8.5v3H11v7z"/></svg>',
+  portfolio:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>'
+};
 
 const AUTH_PANES = { signin:"p-signin", signup:"p-signup", forgot:"p-forgot", reset:"p-reset" };
 const PAGES = {
@@ -809,7 +937,7 @@ async function pageCampaigns(){
     <p class="lede">${brand ? "Briefs you've posted." : "Browse open briefs and apply."}</p>
     <div class="bar">
       <input id="q" type="search" placeholder="Search campaigns…" autocomplete="off">
-      ${brand ? `<button class="btn" data-act="new-campaign">+ New campaign</button>` : ""}
+      ${brand ? `<button class="btn mint" data-act="new-campaign">+ New campaign</button>` : ""}
       <button class="btn ghost" data-act="refresh-campaigns">Refresh</button>
     </div>
     <div id="list"></div>`;
@@ -916,34 +1044,40 @@ function paintCampaigns(rows){
   if(!rows.length){
     list.innerHTML = `<div class="empty"><h3>${brand ? "No campaigns yet" : "No open campaigns"}</h3>
       <p>${brand ? "Post your first brief and creators can start applying." : "Nothing matches right now. Check back soon."}</p>
-      ${brand ? `<button class="btn" data-act="new-campaign">+ New campaign</button>` : ""}</div>`;
+      ${brand ? `<button class="btn mint" data-act="new-campaign">+ New campaign</button>` : ""}</div>`;
     return;
   }
 
-  list.innerHTML = `<div class="grid">` + rows.map(c => {
+  list.innerHTML = `<div class="grid gigs">` + rows.map(c => {
     const done = cache.applied?.has(c.id);
     const st = (c.status || "").toLowerCase();
-    return `<article class="item">
-      <h3>${esc(c.title)}</h3>
-      <p>${esc(c.description)}</p>
-      ${c.requirements ? `<p class="req"><b>Requirements</b>${esc(c.requirements)}</p>` : ""}
-      <div class="meta">
-        ${brand ? `<span class="tag ${STATUS_TAG[st]||"grey"}">${esc(c.status||"—")}</span>` : ""}
-        ${c.category ? `<span class="tag">${esc(c.category)}</span>` : ""}
-        ${c.platform ? `<span class="tag grey">${esc(c.platform)}</span>` : ""}
-        ${c.location ? `<span class="tag grey">${esc(c.location)}</span>` : ""}
-        <span class="tag grey">Closes ${when(c.deadline)}</span>
-        <span class="pay">${money(c.budget)}</span>
+    return `<article class="gig">
+      <div class="banner" style="background:${gradientFor(c.title + c.id)}">
+        ${c.category ? `<span class="chip">${esc(c.category)}</span>` : `<span></span>`}
+        <span class="chip budget">${money(c.budget)}</span>
       </div>
-      <div style="margin-top:13px;display:flex;gap:8px;flex-wrap:wrap">
-      ${brand
-        ? `<button class="btn sm ghost" data-editcamp="${esc(c.id)}">Edit</button>
-           <a class="btn sm ghost" href="#applications">See applicants</a>
-           ${st === "open"
-             ? `<button class="btn sm ghost" data-close="${esc(c.id)}">Close</button>`
-             : `<button class="btn sm ghost" data-open="${esc(c.id)}">Reopen</button>`}`
-        : (done ? `<span class="tag ok">Applied</span>`
-                : `<button class="btn sm" data-apply="${esc(c.id)}">Apply</button>`)}
+      <div class="body">
+        <h3>${esc(c.title)}</h3>
+        <p class="desc">${esc(c.description)}</p>
+        ${c.requirements ? `<p class="req"><b>Requirements</b>${esc(c.requirements)}</p>` : ""}
+        <div class="meta">
+          ${brand ? `<span class="tag ${STATUS_TAG[st]||"grey"}">${esc(c.status||"—")}</span>` : ""}
+          ${c.platform ? `<span class="tag grey">${esc(c.platform)}</span>` : ""}
+          ${c.location ? `<span class="tag grey">${esc(c.location)}</span>` : ""}
+        </div>
+        <div class="foot">
+          <div class="pricebox"><small>Closes ${when(c.deadline)}</small><b>${money(c.budget)}</b></div>
+          ${brand
+            ? `<div style="display:flex;gap:8px">
+                 <button class="btn sm ghost" data-editcamp="${esc(c.id)}">Edit</button>
+                 ${st === "open"
+                   ? `<button class="btn sm ghost" data-close="${esc(c.id)}">Close</button>`
+                   : `<button class="btn sm ghost" data-open="${esc(c.id)}">Reopen</button>`}
+               </div>`
+            : (done ? `<span class="tag ok">Applied</span>`
+                    : `<button class="btn sm mint" data-apply="${esc(c.id)}">Apply</button>`)}
+        </div>
+        ${brand ? `<a class="btn sm ghost" href="#applications" style="align-self:flex-start">See applicants</a>` : ""}
       </div>
     </article>`;
   }).join("") + `</div>`;
@@ -1074,7 +1208,7 @@ function paintApplications(rows){
     list.innerHTML = `<div class="empty">
       <h3>${brand ? "No applications yet" : "You haven't applied to anything"}</h3>
       <p>${brand ? "They'll show up here as creators apply." : "Browse open briefs and send your first pitch."}</p>
-      ${brand ? "" : `<a class="btn" href="#campaigns">Browse campaigns</a>`}</div>`;
+      ${brand ? "" : `<a class="btn mint" href="#campaigns">Browse campaigns</a>`}</div>`;
     return;
   }
 
@@ -1098,7 +1232,7 @@ function paintApplications(rows){
       </div>
       <div style="margin-top:13px;display:flex;gap:8px;flex-wrap:wrap">
         ${brand && st === "pending" ? `
-          <button class="btn sm" data-decide="accepted" data-id="${esc(a.id)}">Accept</button>
+          <button class="btn sm mint" data-decide="accepted" data-id="${esc(a.id)}">Accept</button>
           <button class="btn sm danger" data-decide="rejected" data-id="${esc(a.id)}">Decline</button>` : ""}
         ${["accepted","approved"].includes(st)
           ? `<a class="btn sm ghost" href="#messages">Open messages</a>` : ""}
@@ -1125,7 +1259,7 @@ async function decide(id, status){
 
 /* ═══════════ 4 · CREATORS ═══════════ */
 async function pageCreators(){
-  const { data, error } = await sb.from("creator_profiles").select("*").limit(60);
+  const { data, error } = await sb.from("creator_profiles").select("*").limit(120);
   if(error){ $("view").innerHTML = fail(error, "creators"); return; }
 
   const rows = data || [];
@@ -1138,13 +1272,41 @@ async function pageCreators(){
   }
 
   cache.creators = rows.map(r => ({ ...r, _p: people[r.id] || {} }));
+  cache.creatorCat = "";
+  cache.creatorSort = "reach";
+
+  const cats = [...new Set(cache.creators.map(c => c.category).filter(Boolean))].sort();
 
   $("view").innerHTML = `
     <h2>Creators</h2>
-    <p class="lede">Browse creators on Cube3.</p>
-    <div class="bar"><input id="q" type="search" placeholder="Search by name, handle or category…" autocomplete="off"></div>
+    <p class="lede">Every creator on Cube3, in one showcase — browse, compare reach, and reach out.</p>
+    <div class="bar">
+      <input id="q" type="search" placeholder="Search by name, handle or category…" autocomplete="off">
+      <select id="fsort">
+        <option value="reach">Sort: biggest reach</option>
+        <option value="new">Sort: newest</option>
+        <option value="rate">Sort: rate, low to high</option>
+      </select>
+    </div>
+    ${cats.length ? `<div class="catrow" id="catrow">
+      <button type="button" class="on" data-cat="">All categories</button>
+      ${cats.map(c => `<button type="button" data-cat="${esc(c)}">${esc(c)}</button>`).join("")}
+    </div>` : ""}
     <div id="list"></div>`;
   paintCreators(cache.creators);
+}
+
+function creatorReach(c){
+  return (Number(c.instagram_followers)||0) + (Number(c.youtube_subscribers)||0) +
+    (Number(c.tiktok_followers)||0) + (Number(c.x_followers)||0) + (Number(c.facebook_followers)||0);
+}
+
+function sortCreators(rows, mode){
+  const copy = [...rows];
+  if(mode === "new")  copy.sort((a,b) => new Date(b.created_at||0) - new Date(a.created_at||0));
+  else if(mode === "rate") copy.sort((a,b) => (a.rate_min ?? Infinity) - (b.rate_min ?? Infinity));
+  else copy.sort((a,b) => creatorReach(b) - creatorReach(a));
+  return copy;
 }
 
 function paintCreators(rows){
@@ -1152,41 +1314,61 @@ function paintCreators(rows){
   if(!list) return;
 
   if(!rows.length){
-    list.innerHTML = `<div class="empty"><h3>No creators yet</h3>
-      <p>Creator profiles will appear here as people join.</p></div>`;
+    list.innerHTML = `<div class="empty"><h3>No creators match</h3>
+      <p>Try a different search or category.</p></div>`;
     return;
   }
 
-  list.innerHTML = `<div class="grid">` + rows.map(c => {
+  list.innerHTML = `<div class="grid gigs">` + rows.map(c => {
     const name = c._p.full_name || c.handle || "Creator";
-    const reach = [
-      c.instagram_followers && `IG ${num(c.instagram_followers)}`,
-      c.youtube_subscribers && `YT ${num(c.youtube_subscribers)}`,
-      c.tiktok_followers    && `TikTok ${num(c.tiktok_followers)}`,
-      c.x_followers         && `X ${num(c.x_followers)}`
+
+    // One tile per platform they've filled in — followers/subscribers plus
+    // likes or views where that platform makes those the headline number.
+    const socials = [
+      c.instagram_url || c.instagram_followers ? {
+        icon:"instagram", url:c.instagram_url, n:num(c.instagram_followers), l:"Followers"
+      } : null,
+      c.youtube_url || c.youtube_subscribers || c.youtube_views ? {
+        icon:"youtube", url:c.youtube_url,
+        n:num(c.youtube_subscribers), l:"Subscribers",
+        extra: c.youtube_views ? `${num(c.youtube_views)} views` : null
+      } : null,
+      c.tiktok_url || c.tiktok_followers || c.tiktok_likes ? {
+        icon:"tiktok", url:c.tiktok_url,
+        n:num(c.tiktok_followers), l:"Followers",
+        extra: c.tiktok_likes ? `${num(c.tiktok_likes)} likes` : null
+      } : null,
+      c.x_url || c.x_followers ? {
+        icon:"x", url:c.x_url, n:num(c.x_followers), l:"Followers"
+      } : null,
+      c.facebook_url || c.facebook_followers ? {
+        icon:"facebook", url:c.facebook_url, n:num(c.facebook_followers), l:"Followers"
+      } : null
     ].filter(Boolean);
 
-    const links = [
-      ["Instagram", c.instagram_url], ["YouTube", c.youtube_url],
-      ["TikTok", c.tiktok_url], ["Portfolio", c.portfolio_url]
-    ].map(([t,u]) => [t, safeUrl(u)]).filter(([,u]) => u);
+    const portfolio = safeUrl(c.portfolio_url);
 
-    return `<article class="item">
-      <div class="head">
-        ${avatarHTML(c._p.avatar_url, name)}
-        <div><h3>${esc(name)}</h3>
-        <div class="sub2">${esc(c.handle ? "@" + c.handle : "")}${c.location ? " · " + esc(c.location) : ""}</div></div>
+    return `<article class="gig">
+      <div class="banner" style="background:${gradientFor(c.handle || name)}">
+        ${c.category ? `<span class="chip">${esc(c.category)}</span>` : `<span></span>`}
+        ${(c.rate_min || c.rate_max) ? `<span class="chip budget">${money(c.rate_min)}${c.rate_max ? "–" + money(c.rate_max).replace("₹","") : "+"}</span>` : `<span></span>`}
       </div>
-      ${(c.bio || c._p.bio) ? `<p>${esc(c.bio || c._p.bio)}</p>` : ""}
-      <div class="meta">
-        ${c.category ? `<span class="tag">${esc(c.category)}</span>` : ""}
-        ${reach.map(r => `<span class="tag grey">${esc(r)}</span>`).join("")}
-        ${c.engagement_rate ? `<span class="tag grey">${esc(c.engagement_rate)}% eng.</span>` : ""}
-        ${(c.rate_min || c.rate_max)
-          ? `<span class="pay">${money(c.rate_min)}${c.rate_max ? "–" + money(c.rate_max).replace("₹","") : ""}</span>` : ""}
+      <div class="avatarwrap">${avatarHTML(c._p.avatar_url, name)}</div>
+      <div class="body">
+        <div class="seller">
+          <span>${esc(name)}</span>
+          ${c.handle ? `<span>· @${esc(c.handle)}</span>` : ""}
+        </div>
+        ${(c.bio || c._p.bio) ? `<p class="desc">${esc(c.bio || c._p.bio)}</p>` : ""}
+        ${c.location ? `<div class="meta"><span class="tag grey">${esc(c.location)}</span></div>` : ""}
+        ${socials.length ? `<div class="socialgrid">` + socials.map(s => {
+          const inner = `${SOCIAL_ICONS[s.icon]}<span><span class="n">${s.n}</span><span class="l">${esc(s.l)}${s.extra ? " · " + esc(s.extra) : ""}</span></span>`;
+          return s.url
+            ? `<a class="social" href="${esc(safeUrl(s.url))}" target="_blank" rel="noopener noreferrer">${inner}</a>`
+            : `<span class="social">${inner}</span>`;
+        }).join("") + `</div>` : `<p class="desc" style="font-style:italic">No socials added yet.</p>`}
+        ${portfolio ? `<a class="tag" href="${esc(portfolio)}" target="_blank" rel="noopener noreferrer">${SOCIAL_ICONS.portfolio} Portfolio ↗</a>` : ""}
       </div>
-      ${links.length ? `<div class="meta" style="margin-top:11px">` + links.map(([t,u]) =>
-        `<a class="tag" href="${esc(u)}" target="_blank" rel="noopener noreferrer">${t} ↗</a>`).join("") + `</div>` : ""}
     </article>`;
   }).join("") + `</div>`;
 }
@@ -1222,7 +1404,7 @@ async function pageMessages(){
       <p class="lede">Conversations open once an application is in play.</p>
       <div class="empty"><h3>No conversations yet</h3>
         <p>${brand ? "Message a creator once they apply." : "Apply to a campaign to start talking."}</p>
-        <a class="btn" href="#campaigns">Browse campaigns</a></div>`;
+        <a class="btn mint" href="#campaigns">Browse campaigns</a></div>`;
     return;
   }
 
@@ -1285,8 +1467,12 @@ async function openThread(appId){
         <div class="sub2">${esc(t.campaign.title || "")}</div></div></div>
       <div class="body" id="thread-body"><div class="skel"><div></div><div></div><div></div></div></div>
       <div class="send">
+        <input type="file" id="m-file" accept="image/*,video/*" class="hide">
+        <button class="attachbtn" type="button" id="m-attach" aria-label="Attach a photo or video" data-app="${esc(t.id)}">
+          <svg viewBox="0 0 24 24"><path d="M4 16.5V7a3 3 0 0 1 3-3h4l1.5 2H17a3 3 0 0 1 3 3v7.5a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3z"/><circle cx="12" cy="12.5" r="3.4"/></svg>
+        </button>
         <input id="m-text" placeholder="Write a message…" autocomplete="off">
-        <button class="btn" id="m-go" data-app="${esc(t.id)}">Send</button>
+        <button class="btn mint" id="m-go" data-app="${esc(t.id)}">Send</button>
       </div>
     </div>`;
   $("m-go").dataset.label = "Send";
@@ -1318,7 +1504,7 @@ function watchThread(appId){
 
 async function loadThread(appId){
   const { data, error } = await sb.from("messages")
-    .select("id,sender_id,body,created_at").eq("application_id", appId)
+    .select("id,sender_id,body,created_at,attachment_url,attachment_type").eq("application_id", appId)
     .order("created_at",{ascending:true});
 
   const body = $("thread-body");
@@ -1328,8 +1514,15 @@ async function loadThread(appId){
 
   const rows = data || [];
   body.innerHTML = rows.length
-    ? rows.map(m => `<div class="bub ${m.sender_id === me.id ? "me" : ""}">${esc(m.body)}
-        <small>${clock(m.created_at)}</small></div>`).join("")
+    ? rows.map(m => {
+        const mine = m.sender_id === me.id;
+        const url = safeUrl(m.attachment_url);
+        const media = !url ? "" : m.attachment_type === "video"
+          ? `<video src="${esc(url)}" controls playsinline preload="metadata"></video>`
+          : `<img src="${esc(url)}" alt="Shared photo" loading="lazy">`;
+        return `<div class="bub ${mine ? "me" : ""}">${m.body ? esc(m.body) : ""}${media}
+          <small>${clock(m.created_at)}</small></div>`;
+      }).join("")
     : `<div class="empty" style="border:0;background:transparent"><p>No messages yet. Start the conversation.</p></div>`;
   body.scrollTop = body.scrollHeight;
 
@@ -1337,6 +1530,57 @@ async function loadThread(appId){
   await sb.from("messages").update({ read_at:new Date().toISOString() })
     .eq("application_id", appId).is("read_at", null).neq("sender_id", me.id);
   countUnread();
+}
+
+async function sendAttachment(appId, file){
+  const isImage = file.type.startsWith("image/");
+  const isVideo = file.type.startsWith("video/");
+  const body = $("thread-body");
+
+  if(!isImage && !isVideo){
+    body?.insertAdjacentHTML("beforeend",
+      `<div class="note err" style="display:block"><b>Not sent</b><code>Only photos and videos can be attached.</code></div>`);
+    return;
+  }
+  if(file.size > MAX_ATTACH_MB * 1024 * 1024){
+    body?.insertAdjacentHTML("beforeend",
+      `<div class="note err" style="display:block"><b>Not sent</b><code>Keep attachments under ${MAX_ATTACH_MB}MB.</code></div>`);
+    return;
+  }
+
+  const note = document.createElement("div");
+  note.className = "uploading";
+  note.textContent = "Uploading " + (isVideo ? "video" : "photo") + "…";
+  body?.appendChild(note);
+  if(body) body.scrollTop = body.scrollHeight;
+
+  const ext = (file.name.split(".").pop() || (isVideo ? "mp4" : "jpg")).toLowerCase().replace(/[^a-z0-9]/g,"") || "bin";
+  const path = `${appId}/${me.id}-${Date.now()}.${ext}`;
+
+  const { error: upErr } = await sb.storage.from(MEDIA_BUCKET).upload(path, file, { upsert:false, contentType:file.type });
+  if(upErr){
+    note.remove();
+    body?.insertAdjacentHTML("beforeend",
+      `<div class="note err" style="display:block"><b>Not sent</b><code>${esc(upErr.message)}</code></div>`);
+    return;
+  }
+
+  const { data:pub } = sb.storage.from(MEDIA_BUCKET).getPublicUrl(path);
+  const { error } = await sb.from("messages").insert({
+    application_id: appId,
+    sender_id: me.id,
+    body: "",
+    attachment_url: pub?.publicUrl || null,
+    attachment_type: isVideo ? "video" : "image"
+  });
+
+  note.remove();
+  if(error){
+    body?.insertAdjacentHTML("beforeend",
+      `<div class="note err" style="display:block"><b>Not sent</b><code>${esc(error.message)}</code></div>`);
+    return;
+  }
+  await loadThread(appId);
 }
 
 async function sendMessage(appId){
@@ -1419,17 +1663,40 @@ async function pageProfile(){
       <div class="field"><textarea id="cp-bio" placeholder="Your niche, style and audience.">${esc(e.bio || "")}</textarea></div>
       <label for="cp-location">Location</label>
       <div class="field"><input id="cp-location" value="${esc(e.location || "")}" placeholder="City"></div>
+      <p class="hint" style="margin-top:4px">Add every platform you're active on — brands see all of it on your card.</p>
       <div class="two">
         <div><label for="cp-ig">Instagram URL</label>
-          <div class="field"><input id="cp-ig" type="url" value="${esc(e.instagram_url || "")}" placeholder="https://"></div></div>
+          <div class="field"><input id="cp-ig" type="url" value="${esc(e.instagram_url || "")}" placeholder="https://instagram.com/you"></div></div>
         <div><label for="cp-igf">Instagram followers</label>
           <div class="field"><input id="cp-igf" type="number" inputmode="numeric" value="${esc(e.instagram_followers ?? "")}" placeholder="0"></div></div>
       </div>
       <div class="two">
         <div><label for="cp-yt">YouTube URL</label>
-          <div class="field"><input id="cp-yt" type="url" value="${esc(e.youtube_url || "")}" placeholder="https://"></div></div>
+          <div class="field"><input id="cp-yt" type="url" value="${esc(e.youtube_url || "")}" placeholder="https://youtube.com/@you"></div></div>
         <div><label for="cp-ytf">YouTube subscribers</label>
           <div class="field"><input id="cp-ytf" type="number" inputmode="numeric" value="${esc(e.youtube_subscribers ?? "")}" placeholder="0"></div></div>
+      </div>
+      <label for="cp-ytv">YouTube total views</label>
+      <div class="field"><input id="cp-ytv" type="number" inputmode="numeric" value="${esc(e.youtube_views ?? "")}" placeholder="0"></div>
+      <div class="two">
+        <div><label for="cp-tt">TikTok URL</label>
+          <div class="field"><input id="cp-tt" type="url" value="${esc(e.tiktok_url || "")}" placeholder="https://tiktok.com/@you"></div></div>
+        <div><label for="cp-ttf">TikTok followers</label>
+          <div class="field"><input id="cp-ttf" type="number" inputmode="numeric" value="${esc(e.tiktok_followers ?? "")}" placeholder="0"></div></div>
+      </div>
+      <label for="cp-ttl">TikTok total likes</label>
+      <div class="field"><input id="cp-ttl" type="number" inputmode="numeric" value="${esc(e.tiktok_likes ?? "")}" placeholder="0"></div>
+      <div class="two">
+        <div><label for="cp-x">X (Twitter) URL</label>
+          <div class="field"><input id="cp-x" type="url" value="${esc(e.x_url || "")}" placeholder="https://x.com/you"></div></div>
+        <div><label for="cp-xf">X followers</label>
+          <div class="field"><input id="cp-xf" type="number" inputmode="numeric" value="${esc(e.x_followers ?? "")}" placeholder="0"></div></div>
+      </div>
+      <div class="two">
+        <div><label for="cp-fb">Facebook URL</label>
+          <div class="field"><input id="cp-fb" type="url" value="${esc(e.facebook_url || "")}" placeholder="https://facebook.com/you"></div></div>
+        <div><label for="cp-fbf">Facebook followers</label>
+          <div class="field"><input id="cp-fbf" type="number" inputmode="numeric" value="${esc(e.facebook_followers ?? "")}" placeholder="0"></div></div>
       </div>
       <label for="cp-port">Portfolio URL</label>
       <div class="field"><input id="cp-port" type="url" value="${esc(e.portfolio_url || "")}" placeholder="https://"></div>
@@ -1492,6 +1759,14 @@ async function saveCreator(){
     instagram_followers: n("cp-igf"),
     youtube_url: $("cp-yt").value.trim() || null,
     youtube_subscribers: n("cp-ytf"),
+    youtube_views: n("cp-ytv"),
+    tiktok_url: $("cp-tt").value.trim() || null,
+    tiktok_followers: n("cp-ttf"),
+    tiktok_likes: n("cp-ttl"),
+    x_url: $("cp-x").value.trim() || null,
+    x_followers: n("cp-xf"),
+    facebook_url: $("cp-fb").value.trim() || null,
+    facebook_followers: n("cp-fbf"),
     portfolio_url: $("cp-port").value.trim() || null,
     rate_min: n("cp-min"),
     rate_max: n("cp-max")
@@ -1809,6 +2084,14 @@ document.addEventListener("click", e => {
   const thread = e.target.closest("[data-thread]");
   if(thread){ openThread(thread.dataset.thread); return; }
 
+  const catBtn = e.target.closest("[data-cat]");
+  if(catBtn){
+    cache.creatorCat = catBtn.dataset.cat;
+    document.querySelectorAll("#catrow button").forEach(b => b.classList.toggle("on", b === catBtn));
+    applyCreatorFilters();
+    return;
+  }
+
   const editCamp = e.target.closest("[data-editcamp]");
   if(editCamp){
     const c = (cache.campaigns||[]).find(x => String(x.id) === String(editCamp.dataset.editcamp));
@@ -1836,12 +2119,22 @@ document.addEventListener("click", e => {
   if(btn.id === "np-go") newPassword();
   if(btn.id === "ap-go") sendApplication(btn.dataset.campaign);
   if(btn.id === "m-go")  sendMessage(btn.dataset.app);
+  if(btn.id === "m-attach") $("m-file")?.click();
   if(btn.id === "pf-go") saveBasics();
   if(btn.id === "bp-go") saveBrand();
   if(btn.id === "cp-go") saveCreator();
   if(btn.id === "st-go") changePassword();
   if(btn.id === "cf-go") saveCampaign(btn.dataset.edit || null);
 });
+
+function applyCreatorFilters(){
+  const q = ($("q")?.value || "").trim().toLowerCase();
+  const hit = (...parts) => parts.filter(Boolean).join(" ").toLowerCase().includes(q);
+  let rows = (cache.creators || []).filter(c =>
+    (!q || hit(c._p.full_name, c.handle, c.category, c.bio, c.location)) &&
+    (!cache.creatorCat || c.category === cache.creatorCat));
+  paintCreators(sortCreators(rows, cache.creatorSort || "reach"));
+}
 
 document.addEventListener("input", e => {
   if(e.target.id !== "q" && e.target.id !== "fstatus") return;
@@ -1863,8 +2156,21 @@ document.addEventListener("input", e => {
       return okQ && okS;
     }));
   } else if(page === "creators"){
-    paintCreators((cache.creators||[]).filter(c =>
-      !q || hit(c._p.full_name, c.handle, c.category, c.bio, c.location)));
+    applyCreatorFilters();
+  }
+});
+
+document.addEventListener("change", e => {
+  if(e.target.id === "fsort"){
+    cache.creatorSort = e.target.value;
+    applyCreatorFilters();
+    return;
+  }
+  if(e.target.id === "m-file"){
+    const file = e.target.files?.[0];
+    const appId = $("m-attach")?.dataset.app;
+    e.target.value = "";   // allow picking the same file again later
+    if(file && appId) sendAttachment(appId, file);
   }
 });
 
@@ -1906,4 +2212,5 @@ boot();
 </script>
 </body>
 </html>
-    
+
+  
