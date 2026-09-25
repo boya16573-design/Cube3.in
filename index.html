@@ -554,6 +554,7 @@
     <div class="nav" id="nav">
       <a href="#dashboard"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Dashboard</a>
       <a href="#campaigns"><svg viewBox="0 0 24 24"><path d="m3 11 18-8-8 18-2-8z"/></svg>Campaigns</a>
+      <a href="#sponsors" data-creator-only><svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18"/><circle cx="12" cy="12" r="8"/></svg>Find Sponsors</a>
       <a href="#applications"><svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 14h6M9 17h4"/></svg>Applications</a>
       <a href="#creators"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M17 11.5a3 3 0 1 0-1.6-5.5M18 20a5.6 5.6 0 0 0-2.2-4.4"/></svg>Creators</a>
       <a href="#messages"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L3 21l1.9-6.4A8 8 0 1 1 21 12z"/></svg>Messages<span class="pip hide" id="pip-msg">0</span></a>
@@ -633,7 +634,7 @@ const SOCIAL_ICONS = {
 
 const AUTH_PANES = { signin:"p-signin", signup:"p-signup", forgot:"p-forgot", reset:"p-reset" };
 const PAGES = {
-  dashboard:"Dashboard", campaigns:"Campaigns", applications:"Applications",
+  dashboard:"Dashboard", campaigns:"Campaigns", sponsors:"Find Sponsors", applications:"Applications",
   creators:"Creators", messages:"Messages", profile:"Profile", settings:"Settings",
   terms:"Terms", privacy:"Privacy"
 };
@@ -753,6 +754,8 @@ function paintWho(){
   const safeAvatar = safeUrl(profile.avatar_url);
   $("who-avatar").innerHTML = safeAvatar
     ? `<img src="${esc(safeAvatar)}" alt="">` : esc(initial(name));
+  document.querySelectorAll("[data-creator-only]").forEach(el =>
+    el.classList.toggle("hide", isBrand()));
 }
 
 async function countUnread(){
@@ -805,6 +808,7 @@ async function routeApp(){
                     <div class="skel"><div></div><div></div><div></div></div>`;
   try{
     if(key === "campaigns")         await pageCampaigns();
+    else if(key === "sponsors")     await pageSponsors();
     else if(key === "applications") await pageApplications();
     else if(key === "creators")     await pageCreators();
     else if(key === "messages")     await pageMessages();
@@ -1139,6 +1143,204 @@ async function sendApplication(campaignId){
   show($("ap-msg"), "Application sent.", "ok");
   cache.applied?.add(campaignId);
   setTimeout(() => { location.hash = "applications"; }, 900);
+}
+
+/* ═══════════ 3 · FIND SPONSORS ═══════════
+   Creator-side sponsorship discovery. This intentionally uses the existing
+   campaigns + creator_profiles tables, so no database migration is required.
+   Match scores are transparent heuristics, not claims of guaranteed fit.
+══════════════════════════════════════════════════════════════════════════════ */
+
+function parseFollowersRequirement(text){
+  const m = String(text||"").toLowerCase().match(/(\\d[\\d,\\.]*)\\s*(k|m)?\\s*(?:followers|subscribers|subs)/);
+  if(!m) return null;
+  let n = Number(m[1].replace(/,/g,""));
+  if(m[2] === "k") n *= 1000;
+  if(m[2] === "m") n *= 1000000;
+  return Number.isFinite(n) ? n : null;
+}
+
+function sponsorMatch(c, p){
+  let score = 45;
+  const reasons = [];
+  const category = String(c.category||"").trim().toLowerCase();
+  const creatorCategory = String(p.category||"").trim().toLowerCase();
+  const platform = String(c.platform||"").trim().toLowerCase();
+  const req = String(c.requirements||"").toLowerCase();
+  const location = String(c.location||"").trim().toLowerCase();
+  const creatorLocation = String(p.location||"").trim().toLowerCase();
+
+  if(category && creatorCategory){
+    if(category === creatorCategory){ score += 22; reasons.push("Niche matches"); }
+    else if(category.includes(creatorCategory) || creatorCategory.includes(category)){
+      score += 12; reasons.push("Niche is closely related");
+    }
+  }
+
+  if(platform){
+    const platformData = platform.includes("youtube") ? p.youtube_subscribers :
+      platform.includes("instagram") ? p.instagram_followers :
+      platform.includes("tiktok") ? p.tiktok_followers :
+      platform.includes("facebook") ? p.facebook_followers :
+      platform === "x" || platform.includes("twitter") ? p.x_followers : null;
+    const hasPlatform = !!(platformData || p.youtube_url && platform.includes("youtube") ||
+      p.instagram_url && platform.includes("instagram") ||
+      p.tiktok_url && platform.includes("tiktok"));
+    if(hasPlatform){ score += 15; reasons.push(platform + " profile found"); }
+    else { score -= 5; reasons.push("Platform profile not added yet"); }
+  }
+
+  const required = parseFollowersRequirement(req);
+  if(required != null){
+    const reach = creatorReach(p);
+    if(reach >= required){ score += 10; reasons.push("Reach meets stated requirement"); }
+    else { score -= 10; reasons.push("Reach may be below stated requirement"); }
+  }
+
+  if(location && creatorLocation){
+    if(location === creatorLocation || location.includes(creatorLocation) || creatorLocation.includes(location)){
+      score += 5; reasons.push("Location matches");
+    }
+  }
+
+  const budget = Number(c.budget)||0;
+  const rateMin = Number(p.rate_min)||0;
+  if(budget && rateMin){
+    if(budget >= rateMin){ score += 8; reasons.push("Budget meets your listed minimum"); }
+    else { score -= 6; reasons.push("Budget is below your listed minimum"); }
+  }
+
+  score = Math.max(0, Math.min(99, Math.round(score)));
+  return { score, reasons };
+}
+
+async function pageSponsors(){
+  if(isBrand()){
+    $("view").innerHTML = `
+      <h2>Find Sponsors</h2>
+      <p class="lede">This discovery area is for creators. As a brand, use Campaigns to publish a sponsorship brief.</p>
+      <div class="empty"><h3>You're signed in as a brand</h3>
+        <p>Create a campaign and creators can discover it here.</p>
+        <a class="btn mint" href="#campaigns">Create a campaign</a></div>`;
+    return;
+  }
+
+  const [{ data:campaigns, error:e1 }, { data:creator, error:e2 }] = await Promise.all([
+    sb.from("campaigns").select("*").eq("status","open").order("created_at",{ascending:false}).limit(100),
+    sb.from("creator_profiles").select("*").eq("id",me.id).maybeSingle()
+  ]);
+
+  if(e1){ $("view").innerHTML = fail(e1,"sponsorships"); return; }
+  if(e2){ $("view").innerHTML = fail(e2,"creator profile"); return; }
+
+  const mine = creator || {};
+  const { data:apps } = await sb.from("campaign_applications")
+    .select("campaign_id").eq("creator_id",me.id);
+  const applied = new Set((apps||[]).map(a => String(a.campaign_id)));
+
+  cache.sponsors = (campaigns||[]).map(c => {
+    const m = sponsorMatch(c,mine);
+    return {...c,_match:m};
+  }).sort((a,b) => b._match.score - a._match.score);
+
+  cache.applied = applied;
+
+  $("view").innerHTML = `
+    <h2>Find Sponsors</h2>
+    <p class="lede">Discover open brand sponsorships that fit your creator profile.</p>
+    <div class="note ok" style="display:block;margin-bottom:16px">
+      <b>How matching works</b>
+      We compare your profile with each brief's niche, platform, stated reach requirements,
+      location and budget. The percentage is a matching signal, not a guarantee of selection.
+    </div>
+    <div class="bar">
+      <input id="sponsor-q" type="search" placeholder="Search sponsors, niches or campaigns…" autocomplete="off">
+      <select id="sponsor-sort">
+        <option value="match">Best profile match</option>
+        <option value="new">Newest</option>
+        <option value="budget">Highest budget</option>
+      </select>
+      <a class="btn ghost" href="#profile">Improve my profile</a>
+    </div>
+    <div id="sponsor-list"></div>`;
+  paintSponsors(cache.sponsors);
+}
+
+function paintSponsors(rows){
+  const list = $("sponsor-list");
+  if(!list) return;
+
+  if(!rows.length){
+    list.innerHTML = `<div class="empty"><h3>No sponsorships found</h3>
+      <p>Try another search or check back as brands post new briefs.</p></div>`;
+    return;
+  }
+
+  list.innerHTML = `<div class="grid gigs">` + rows.map(c => {
+    const m = c._match || {score:0,reasons:[]};
+    const done = cache.applied?.has(String(c.id));
+    const reasons = m.reasons.slice(0,2).join(" · ");
+    return `<article class="gig">
+      <div class="banner" style="background:${gradientFor(c.title + c.id)}">
+        <span class="chip">${esc(c.category || "Sponsorship")}</span>
+        <span class="chip budget">Match ${m.score}%</span>
+      </div>
+      <div class="body">
+        <h3>${esc(c.title)}</h3>
+        <p class="desc">${esc(c.description || "")}</p>
+        ${c.requirements ? `<p class="req"><b>Requirements</b>${esc(c.requirements)}</p>` : ""}
+        <div class="meta">
+          ${c.platform ? `<span class="tag">${esc(c.platform)}</span>` : ""}
+          ${c.location ? `<span class="tag grey">${esc(c.location)}</span>` : ""}
+          <span class="tag ok">${esc(reasons || "Open to creator applications")}</span>
+        </div>
+        <div class="foot">
+          <div class="pricebox"><small>Closes ${when(c.deadline)}</small><b>${money(c.budget)}</b></div>
+          ${done ? `<span class="tag ok">Applied</span>` : `<button class="btn sm mint" data-sponsor="${esc(c.id)}">View & apply</button>`}
+        </div>
+      </div>
+    </article>`;
+  }).join("") + `</div>`;
+}
+
+function openSponsor(id){
+  const c = (cache.sponsors||[]).find(x => String(x.id) === String(id));
+  if(!c) return;
+
+  const m = c._match || {score:0,reasons:[]};
+  const already = cache.applied?.has(String(c.id));
+
+  $("view").innerHTML = `
+    <a class="btn ghost sm" href="#sponsors" style="margin-bottom:16px">← Back to sponsors</a>
+    <h2>${esc(c.title)}</h2>
+    <p class="lede">${money(c.budget)} · ${esc(c.platform || "Any platform")} · Match ${m.score}%</p>
+
+    <div class="panel" style="max-width:760px">
+      <div class="meta" style="margin-bottom:15px">
+        <span class="tag">${esc(c.category || "Sponsorship")}</span>
+        ${c.location ? `<span class="tag grey">${esc(c.location)}</span>` : ""}
+        <span class="tag ok">Open</span>
+      </div>
+      <h3>About this sponsorship</h3>
+      <p class="sub2" style="white-space:pre-wrap">${esc(c.description || "No description provided.")}</p>
+
+      ${c.requirements ? `<h3>What the brand is looking for</h3>
+        <p class="sub2" style="white-space:pre-wrap">${esc(c.requirements)}</p>` : ""}
+
+      <h3>Your match</h3>
+      <p class="sub2">${m.score}% based on your current Cube3 profile.</p>
+      ${m.reasons.length ? `<div class="meta" style="margin-bottom:18px">${m.reasons.map(r=>`<span class="tag grey">${esc(r)}</span>`).join("")}</div>` : ""}
+
+      <div class="meta" style="margin-bottom:18px">
+        <span class="tag grey">Deadline: ${when(c.deadline)}</span>
+        <span class="tag grey">Budget: ${money(c.budget)}</span>
+      </div>
+
+      ${already
+        ? `<div class="note ok" style="display:block"><b>You've already applied.</b>
+             <a class="btn ghost sm" href="#applications">View your application</a></div>`
+        : `<button class="btn mint" data-apply="${esc(c.id)}">Apply to this sponsorship</button>`}
+    </div>`;
 }
 
 /* ═══════════ 3 · APPLICATIONS ═══════════ */
@@ -2075,6 +2277,9 @@ document.addEventListener("click", e => {
   if(e.target.closest("[data-toggle-menu]")){ document.body.classList.toggle("menu"); return; }
   if(e.target.closest("[data-close-menu]")){  document.body.classList.remove("menu"); return; }
 
+  const sponsor = e.target.closest("[data-sponsor]");
+  if(sponsor){ openSponsor(sponsor.dataset.sponsor); return; }
+
   const apply = e.target.closest("[data-apply]");
   if(apply){ openApply(apply.dataset.apply); return; }
 
@@ -2137,6 +2342,13 @@ function applyCreatorFilters(){
 }
 
 document.addEventListener("input", e => {
+  if(e.target.id === "sponsor-q"){
+    const q = e.target.value.trim().toLowerCase();
+    const hit = (...parts) => parts.filter(Boolean).join(" ").toLowerCase().includes(q);
+    paintSponsors((cache.sponsors||[]).filter(c =>
+      !q || hit(c.title,c.description,c.category,c.platform,c.location,c.requirements)));
+    return;
+  }
   if(e.target.id !== "q" && e.target.id !== "fstatus") return;
   const q  = ($("q")?.value || "").trim().toLowerCase();
   const st = ($("fstatus")?.value || "").toLowerCase();
@@ -2161,6 +2373,15 @@ document.addEventListener("input", e => {
 });
 
 document.addEventListener("change", e => {
+  if(e.target.id === "sponsor-sort"){
+    const mode = e.target.value;
+    const rows = [...(cache.sponsors||[])];
+    if(mode === "new") rows.sort((a,b) => new Date(b.created_at||0) - new Date(a.created_at||0));
+    else if(mode === "budget") rows.sort((a,b) => (Number(b.budget)||0) - (Number(a.budget)||0));
+    else rows.sort((a,b) => (b._match?.score||0) - (a._match?.score||0));
+    paintSponsors(rows);
+    return;
+  }
   if(e.target.id === "fsort"){
     cache.creatorSort = e.target.value;
     applyCreatorFilters();
