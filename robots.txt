@@ -1,4 +1,15 @@
+# https://www.robotstxt.org/robotstxt.html
 User-agent: *
 Allow: /
+Disallow: /dashboard
+Disallow: /profile
+Disallow: /onboarding
+Disallow: /signin
+Disallow: /campaigns/new
+Disallow: /inbox
+Disallow: /collab/
+Disallow: /notifications
+Disallow: /admin
+
 
 Sitemap: https://cube3.in/sitemap.xml
