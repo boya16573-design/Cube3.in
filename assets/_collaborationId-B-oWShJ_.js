@@ -1,0 +1,7 @@
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/_collaborationId-DUH1Zd6i.js","assets/button-BKP2MwRw.js","assets/app-shell-GoO9XvM6.js","assets/use_paginated_query-CmHnku-B.js","assets/dropdown-menu-D0WYJVdO.js","assets/dist-DFw2Gqjt.js","assets/dist-Dxs9K5-d.js","assets/dist-DIbNEpwj.js","assets/dialog-P9E-Q0K0.js","assets/x-CskuAKXe.js","assets/dist-Dd8Fivrx.js","assets/dist-DjEhWnUB.js","assets/external-link-r8XcJ03L.js","assets/report-dialog-Da0j6I8b.js","assets/dist-Dfgjbbc_.js","assets/textarea-CLFmgltT.js","assets/plus-BzcJQXl5.js","assets/triangle-alert-BxrMt5YS.js","assets/cube3-xqG2XCU7.js","assets/money-B2xGNqWK.js","assets/label-DdaoZkXu.js","assets/input-BQJAkDLz.js","assets/apply-helpers-AlRB4UGk.js","assets/info-D99mXMow.js","assets/sparkles-CLlQowi6.js","assets/collab-status-D7ibcmqR.js","assets/check-DfHdiYc8.js"])))=>i.map(i=>d[i]);
+import { n as lazyRouteComponent, r as createFileRoute, t as __vitePreload } from "./preload-helper-DLkEpAoA.js";
+//#region src/routes/collab/$collaborationId.tsx
+var $$splitComponentImporter = () => __vitePreload(() => import("./_collaborationId-DUH1Zd6i.js"), __vite__mapDeps([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26]));
+var Route = createFileRoute("/collab/$collaborationId")({ component: lazyRouteComponent($$splitComponentImporter, "component") });
+//#endregion
+export { Route as t };

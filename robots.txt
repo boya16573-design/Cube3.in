@@ -13,3 +13,7 @@ Disallow: /admin
 
 
 Sitemap: https://cube3.in/sitemap.xml
+Disallow: /event-deals/
+Disallow: /event-sponsors
+Disallow: /events/new
+Disallow: /events/edit/
