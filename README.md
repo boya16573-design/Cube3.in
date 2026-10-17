@@ -80,3 +80,10 @@ Open it with the **Measurement Lab** button in the header. Everything runs in th
 **Tests**: `node tests/run.js` (3D maths and photo geometry) and `node tests/meas.test.js` (measurement, tracking, calibration). They use synthetic ground truth (known homographies, known cameras, known motion).
 
 **Limits**: planar measurement only (points off the reference plane read wrong); no 3D reconstruction, relighting, occlusion-aware compositing or multi-view photogrammetry; corner placement for calibration is semi-manual (you mark the four outer corners, the rest are predicted and snapped); no tangential distortion; frame rate may be assumed when the browser cannot measure it; no OpenCV.js (the algorithms are our own, with the same published methods).
+
+## Reality Engine (v32)
+Open it with the **Reality Engine** tab. Unit-aware calculator, eight physics models (projectile, collision, pendulum, orbit, waves, heat, special relativity, quantum levels), Monte Carlo input uncertainty, least-squares trajectory fit against observations (including Video Lab tracks), a validation suite, plain-language question parsing, and JSON/CSV/Markdown/PNG export. Results are labelled exact under assumptions, numerical approximation, empirical estimate, or unvalidated prediction.
+
+**Tests**: `node tests/units.test.js`, `node tests/phys.test.js`, `node tests/nlq.test.js`.
+
+**Not implemented**: rigid-body contact, N-body orbits, field solvers, fluids, stress, general relativity, multi-view 3D reconstruction, workers/GPU, Three.js. Fit standard errors cover scatter only, not calibration error.

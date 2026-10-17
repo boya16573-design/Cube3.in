@@ -361,6 +361,7 @@ body.phone .tg-meth{background:#2a2250;color:#cdbfff}body.phone .tg-exact{backgr
   </div>
   <div class="topacts">
     <button id="guideBtn" class="btn" type="button" title="A one-minute guide: measure, build, combine">Guide</button>
+    <button id="rlBtn" class="btn" type="button" title="Reality Engine: unit-aware calculator, physics models, uncertainty and model-versus-measurement comparison">Reality Engine</button>
     <button id="m3Btn" class="btn" type="button" title="Math3D: build 3D shapes from real equations, measure, animate and export">3D Lab</button>
     <button id="labBtn" class="btn" type="button" title="Measure photos and videos with real maths and honest uncertainty">Photo &amp; Video Lab</button>
     <button id="projects" class="btn" type="button">Projects</button>
@@ -5310,6 +5311,424 @@ function bohr(n) { const c = V0('cLight'), al = V0('alpha'), a0 = V0('bohrR'); r
 function V0(id) { return BY[id].v; }
 function fmt(c) { const x = c.v, s = Math.abs(x) >= 1e5 || Math.abs(x) < 1e-3 ? x.toExponential(10).replace(/\.?0+e/, 'e') : String(+x.toPrecision(13)); return s; }
 root.CONSTS = { LIST, BY, checks, goldenAngle, bohr, fmt, PHI };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+/* Units and dimensional analysis. A safe recursive-descent parser: nothing is ever evaluated as JavaScript.
+   Every quantity is stored in SI base units with a 7-number dimension vector [length, mass, time, current, temperature, amount, luminous intensity]. */
+(function (root) {
+'use strict';
+const Z = [0, 0, 0, 0, 0, 0, 0];
+const D = (l, m, t, i, k, n, j) => [l || 0, m || 0, t || 0, i || 0, k || 0, n || 0, j || 0];
+const dimAdd = (a, b) => a.map((v, i) => v + b[i]), dimSub = (a, b) => a.map((v, i) => v - b[i]), dimMul = (a, k) => a.map((v) => v * k);
+const dimEq = (a, b) => a.every((v, i) => Math.abs(v - b[i]) < 1e-9), dimZero = (a) => a.every((v) => Math.abs(v) < 1e-9);
+/* exact table (checked before any prefix splitting) */
+const U = {};
+const def = (names, f, d, o) => names.split(' ').forEach((n) => { U[n] = Object.assign({ f, d }, o || {}); });
+/* SI base and derived: these accept SI prefixes */
+const PREF = { Y: 1e24, Z: 1e21, E: 1e18, P: 1e15, T: 1e12, G: 1e9, M: 1e6, k: 1e3, m: 1e-3, c: 1e-2, d: 1e-1, u: 1e-6, 'µ': 1e-6, n: 1e-9, p: 1e-12, f: 1e-15, a: 1e-18 };
+const PFX = {};
+def('m metre meter', 1, D(1)); PFX.m = 1;
+def('g gram', 1e-3, D(0, 1)); PFX.g = 1;
+def('s sec second', 1, D(0, 0, 1)); PFX.s = 1;
+def('A amp ampere', 1, D(0, 0, 0, 1)); PFX.A = 1;
+def('K kelvin', 1, D(0, 0, 0, 0, 1)); PFX.K = 1;
+def('mol', 1, D(0, 0, 0, 0, 0, 1)); PFX.mol = 1;
+def('cd', 1, D(0, 0, 0, 0, 0, 0, 1)); PFX.cd = 1;
+def('N newton', 1, D(1, 1, -2)); PFX.N = 1;
+def('J joule', 1, D(2, 1, -2)); PFX.J = 1;
+def('W watt', 1, D(2, 1, -3)); PFX.W = 1;
+def('Pa pascal', 1, D(-1, 1, -2)); PFX.Pa = 1;
+def('Hz hertz', 1, D(0, 0, -1)); PFX.Hz = 1;
+def('C coulomb', 1, D(0, 0, 1, 1)); PFX.C = 1;
+def('V volt', 1, D(2, 1, -3, -1)); PFX.V = 1;
+def('F farad', 1, D(-2, -1, 4, 2)); PFX.F = 1;
+def('T tesla', 1, D(0, 1, -2, -1)); PFX.T = 1;
+def('ohm Ω Ohm', 1, D(2, 1, -3, -2)); PFX.ohm = 1; PFX['Ω'] = 1;
+def('eV', 1.602176634e-19, D(2, 1, -2)); PFX.eV = 1;
+def('L l liter litre', 1e-3, D(3)); PFX.L = 1; PFX.l = 1;
+def('W·h Wh', 3600, D(2, 1, -2));
+/* non-prefixing units */
+def('min minute', 60, D(0, 0, 1)); def('h hr hour', 3600, D(0, 0, 1)); def('d day', 86400, D(0, 0, 1)); def('yr year', 365.25 * 86400, D(0, 0, 1));
+def('in inch', 0.0254, D(1)); def('ft foot feet', 0.3048, D(1)); def('yd yard', 0.9144, D(1)); def('mi mile', 1609.344, D(1)); def('nmi', 1852, D(1));
+def('AU au', 149597870700, D(1)); def('ly', 9460730472580800, D(1));
+def('lb lbs pound', 0.45359237, D(0, 1)); def('oz ounce', 0.028349523125, D(0, 1)); def('t tonne', 1000, D(0, 1));
+def('bar', 1e5, D(-1, 1, -2)); def('atm', 101325, D(-1, 1, -2)); def('psi', 6894.757293168, D(-1, 1, -2)); def('mmHg torr', 133.322387415, D(-1, 1, -2));
+def('mph', 0.44704, D(1, 0, -1)); def('kn knot knots', 1852 / 3600, D(1, 0, -1));
+def('rad radian', 1, Z); def('deg degree degrees °', Math.PI / 180, Z); def('rev turn', 2 * Math.PI, Z);
+def('lbf', 4.4482216152605, D(1, 1, -2));
+def('degC °C celsius', 1, D(0, 0, 0, 0, 1), { off: 273.15 }); def('degF °F fahrenheit', 5 / 9, D(0, 0, 0, 0, 1), { off: 255.3722222222222 });
+def('percent %', 0.01, Z);
+function lookup(name) {
+  if (U[name]) return U[name];
+  for (let i = 1; i <= 1 && i < name.length; i++) { const p = name[0], rest = name.slice(1); if (PREF[p] !== undefined && PFX[rest] && U[rest]) return { f: U[rest].f * PREF[p], d: U[rest].d }; }
+  if (name.length > 2 && name.startsWith('da')) return null;
+  return null;
+}
+const SUP = { '²': '^2', '³': '^3', '⁻¹': '^-1', '⁻²': '^-2', '⁻³': '^-3', '¹': '^1', '⁴': '^4', '·': '*', '×': '*', '−': '-' };
+const norm = (s) => String(s).replace(/⁻[¹²³]|[²³¹⁴·×−]/g, (m) => SUP[m] || m).replace(/\s+/g, ' ').trim();
+
+/* unit expression: left-to-right * and /, ^ integer power, parentheses */
+function parseUnit(str) {
+  const s = norm(str); let i = 0; const err = (m) => { throw new Error(m); };
+  const ws = () => { while (s[i] === ' ') i++; };
+  function atom() {
+    ws();
+    if (s[i] === '(') { i++; const v = expr(); ws(); if (s[i] !== ')') err('Missing ")" in the unit "' + str + '"'); i++; return v; }
+    if (s[i] === '1' && !/[0-9.]/.test(s[i + 1] || '')) { i++; return { f: 1, d: Z.slice() }; }
+    const m = /^[A-Za-zµΩ°%][A-Za-z0-9µΩ°%]*/.exec(s.slice(i)); if (!m) err('Cannot read the unit "' + str + '" at "' + s.slice(i, i + 6) + '"');
+    let name = m[0]; /* a trailing digit belongs to the exponent only if no unit has it; units here never end in digits */
+    name = name.replace(/[0-9]+$/, '');
+    i += name.length; const u = lookup(name); if (!u) err('Unknown unit "' + name + '"');
+    return { f: u.f, d: u.d.slice(), off: u.off, name };
+  }
+  function term() {
+    let a = atom(); ws();
+    if (s[i] === '^') { i++; ws(); const m = /^[+-]?[0-9]+(\.[0-9]+)?/.exec(s.slice(i)); if (!m) err('Missing exponent in "' + str + '"'); i += m[0].length; const p = +m[0]; a = { f: Math.pow(a.f, p), d: dimMul(a.d, p), off: undefined, comp: true }; }
+    return a;
+  }
+  function expr() {
+    let a = term(); ws();
+    while (s[i] === '*' || s[i] === '/' || (s[i] && s[i] !== ')' && /[A-Za-zµΩ°%(]/.test(s[i]))) {
+      let op = '*'; if (s[i] === '*' || s[i] === '/') { op = s[i]; i++; }
+      const b = term(); if (a.off || b.off) err('Temperature units like °C can only be used alone, not combined with other units');
+      a = op === '*' ? { f: a.f * b.f, d: dimAdd(a.d, b.d) } : { f: a.f / b.f, d: dimSub(a.d, b.d) }; ws();
+    }
+    return a;
+  }
+  ws(); const r = expr(); ws(); if (i < s.length) err('Cannot read "' + s.slice(i) + '" in the unit "' + str + '"');
+  return { f: r.f, d: r.d, off: r.off };
+}
+function parseQuantity(str, expect) {
+  const s = norm(str); const m = /^\s*([+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?)\s*(.*)$/.exec(s);
+  if (!m) throw new Error('Expected a number, like 20 or 9.81 m/s^2, but found "' + str + '"');
+  const num = +m[1], ustr = m[2].trim();
+  if (!ustr) { if (expect) return { v: num, d: expect.d.slice(), assumed: true, unit: expect.unit, text: num + ' ' + expect.unit }; return { v: num, d: Z.slice(), assumed: false, unit: '', text: String(num) }; }
+  const u = parseUnit(ustr); const v = u.off !== undefined ? num * u.f + u.off : num * u.f;
+  if (expect && !dimEq(u.d, expect.d)) throw new Error('"' + str + '" has dimension ' + dimName(u.d) + ', but a ' + dimName(expect.d) + ' is needed here');
+  return { v, d: u.d, assumed: false, unit: ustr, text: num + ' ' + ustr };
+}
+function fromSI(v, ustr) { const u = parseUnit(ustr); return u.off !== undefined ? (v - u.off) / u.f : v / u.f; }
+function convert(value, from, to) { const a = parseUnit(from), b = parseUnit(to); if (!dimEq(a.d, b.d)) throw new Error('Cannot convert ' + from + ' (' + dimName(a.d) + ') to ' + to + ' (' + dimName(b.d) + ')'); const si = a.off !== undefined ? value * a.f + a.off : value * a.f; return b.off !== undefined ? (si - b.off) / b.f : si / b.f; }
+const NAMED = [
+  ['dimensionless', Z], ['length', D(1)], ['mass', D(0, 1)], ['time', D(0, 0, 1)], ['current', D(0, 0, 0, 1)], ['temperature', D(0, 0, 0, 0, 1)], ['amount', D(0, 0, 0, 0, 0, 1)],
+  ['area', D(2)], ['volume', D(3)], ['velocity', D(1, 0, -1)], ['acceleration', D(1, 0, -2)], ['force', D(1, 1, -2)], ['energy', D(2, 1, -2)], ['power', D(2, 1, -3)], ['pressure', D(-1, 1, -2)],
+  ['frequency', D(0, 0, -1)], ['charge', D(0, 0, 1, 1)], ['voltage', D(2, 1, -3, -1)], ['capacitance', D(-2, -1, 4, 2)], ['magnetic field', D(0, 1, -2, -1)], ['resistance', D(2, 1, -3, -2)],
+  ['momentum', D(1, 1, -1)], ['angular momentum', D(2, 1, -1)], ['density', D(-3, 1)], ['moment of inertia', D(2, 1)], ['electric field', D(1, 1, -3, -1)],
+];
+const SYM = [['N', D(1, 1, -2)], ['J', D(2, 1, -2)], ['W', D(2, 1, -3)], ['Pa', D(-1, 1, -2)], ['Hz', D(0, 0, -1)], ['C', D(0, 0, 1, 1)], ['V', D(2, 1, -3, -1)], ['F', D(-2, -1, 4, 2)], ['T', D(0, 1, -2, -1)], ['Ω', D(2, 1, -3, -2)]];
+function dimName(d) { for (const [n, v] of NAMED) if (dimEq(d, v)) return n; return dimStr(d); }
+const BASE = ['m', 'kg', 's', 'A', 'K', 'mol', 'cd'], SUPS = { '-': '⁻', 0: '⁰', 1: '¹', 2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷', 8: '⁸', 9: '⁹', '.': '·' };
+const sup = (p) => (Math.abs(p - 1) < 1e-9 ? '' : String(+p.toFixed(3)).split('').map((c) => SUPS[c] || c).join(''));
+function dimStr(d) { const n = d.map((p, i) => [p, i]).filter(([p]) => Math.abs(p) > 1e-9).map(([p, i]) => BASE[i] + sup(p)); return n.length ? n.join('·') : '1'; }
+function unitOf(d) { for (const [s, v] of SYM) if (dimEq(d, v)) return s; return dimStr(d); }
+function tokenize(src) {
+  const s = norm(src), out = []; let i = 0;
+  while (i < s.length) {
+    const c = s[i];
+    if (c === ' ') { i++; continue; }
+    let m = /^(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?/.exec(s.slice(i)); if (m) { out.push({ k: 'num', v: +m[0] }); i += m[0].length; continue; }
+    m = /^[A-Za-zµΩ°%][A-Za-z0-9_µΩ°%]*/.exec(s.slice(i)); if (m) { out.push({ k: 'id', v: m[0] }); i += m[0].length; continue; }
+    if ('+-*/^(),'.includes(c)) { out.push({ k: c }); i++; continue; }
+    throw new Error('Unexpected "' + c + '"');
+  }
+  return out;
+}
+function constQuantity(id) { const C = root.CONSTS; if (!C || !C.BY[id]) return null; const c = C.BY[id]; let d = Z.slice(), f = 1; if (c.unit) { try { const u = parseUnit(c.unit); d = u.d; f = u.f; } catch (e) { return null; } } return { v: c.v * f, d, name: id }; }
+function calc(src) {
+  let text = String(src).trim(), target = null; const mm = /\s+in\s+(.+)$/i.exec(text); if (mm) { target = mm[1].trim(); text = text.slice(0, mm.index); }
+  const T = tokenize(text); let p = 0; const peek = () => T[p], nxt = () => T[p++]; const fail = (m) => { throw new Error(m); };
+  const Q = (v, d) => ({ v, d: d || Z.slice() });
+  const FN = { sin: Math.sin, cos: Math.cos, tan: Math.tan, asin: Math.asin, acos: Math.acos, atan: Math.atan, exp: Math.exp, ln: Math.log, log: Math.log10, sqrt: Math.sqrt, abs: Math.abs, sinh: Math.sinh, cosh: Math.cosh, tanh: Math.tanh };
+  function expr() { let a = term(); while (peek() && (peek().k === '+' || peek().k === '-')) { const op = nxt().k, b = term(); if (!dimEq(a.d, b.d)) fail('Cannot ' + (op === '+' ? 'add' : 'subtract') + ' ' + dimName(a.d) + ' and ' + dimName(b.d) + ': the units do not match'); a = Q(op === '+' ? a.v + b.v : a.v - b.v, a.d); } return a; }
+  function term() { let a = juxt(); for (;;) { const t = peek(); if (t && (t.k === '*' || t.k === '/')) { nxt(); const b = juxt(); a = t.k === '*' ? Q(a.v * b.v, dimAdd(a.d, b.d)) : Q(a.v / b.v, dimSub(a.d, b.d)); } else break; } return a; }
+  function juxt() { let a = unary(); for (;;) { const t = peek(); if (t && (t.k === 'num' || t.k === 'id' || t.k === '(')) { const b = power(); a = Q(a.v * b.v, dimAdd(a.d, b.d)); } else break; } return a; }
+  function unary() { const t = peek(); if (t && t.k === '-') { nxt(); const a = unary(); return Q(-a.v, a.d); } if (t && t.k === '+') { nxt(); return unary(); } return power(); }
+  function power() { const a = atom(); if (peek() && peek().k === '^') { nxt(); const e = unary(); if (!dimZero(e.d)) fail('An exponent must be a plain number'); if (!dimZero(a.d) && !Number.isInteger(e.v) && Math.abs(e.v * 2 - Math.round(e.v * 2)) > 1e-9) fail('Fractional powers of quantities with units are only supported as halves'); return Q(Math.pow(a.v, e.v), dimMul(a.d, e.v)); } return a; }
+  function atom() {
+    const t = nxt(); if (!t) fail('The expression ends too early');
+    if (t.k === 'num') return Q(t.v);
+    if (t.k === '(') { const v = expr(); if (!peek() || nxt().k !== ')') fail('Missing ")"'); return v; }
+    if (t.k === 'id') {
+      const id = t.v;
+      if (FN[id] && peek() && peek().k === '(') { nxt(); const a = expr(); if (!peek() || nxt().k !== ')') fail('Missing ")" after ' + id); if (id === 'sqrt') return Q(Math.sqrt(a.v), dimMul(a.d, 0.5)); if (id === 'abs') return Q(Math.abs(a.v), a.d); if (!dimZero(a.d)) fail(id + '() needs a plain number or an angle, but got ' + dimName(a.d)); return Q(FN[id](a.v)); }
+      if (id === 'pi') return Q(Math.PI); if (id === 'e' && !lookup('e')) return Q(Math.E);
+      const cq = constQuantity(id); if (cq && !lookup(id)) return Q(cq.v, cq.d);
+      let u; try { u = parseUnit(id); } catch (e) { fail('Unknown name "' + id + '". Use a unit (m, kg, s, N…), a constant (pi, phi, alpha, cLight…) or a function like sqrt()'); }
+      if (u.off !== undefined) fail('Write temperatures as a number then the unit, such as 25 degC, not inside a formula');
+      return Q(u.f, u.d);
+    }
+    fail('Unexpected "' + t.k + '"');
+  }
+  const r = expr(); if (p < T.length) fail('Cannot read the expression near "' + (T[p].v !== undefined ? T[p].v : T[p].k) + '"');
+  const out = { ok: true, v: r.v, d: r.d, dim: dimName(r.d), si: unitOf(r.d) };
+  if (target) { const u = parseUnit(target); if (!dimEq(u.d, r.d)) fail('Cannot express ' + dimName(r.d) + ' in ' + target + ' (' + dimName(u.d) + ')'); out.target = target; out.vt = u.off !== undefined ? (r.v - u.off) / u.f : r.v / u.f; }
+  return out;
+}
+function fmtNum(v, sig) { if (!isFinite(v)) return String(v); if (v === 0) return '0'; const a = Math.abs(v), s = sig || 6; return a >= 1e6 || a < 1e-3 ? v.toExponential(s - 1).replace(/\.?0+e/, 'e').replace('e+', '×10^').replace('e-', '×10^-').replace('e', '×10^') : String(+v.toPrecision(s)); }
+function fmtQ(v, d, sig) { const u = unitOf(d); return fmtNum(v, sig) + (dimZero(d) ? '' : ' ' + u); }
+const sigfig = (v, u, k) => { if (!isFinite(v) || v === 0) return String(v); if (!(u > 0)) return fmtNum(v, k || 6); const digs = Math.max(0, 1 - Math.floor(Math.log10(u))); return (digs > 12 ? v.toExponential(2) : v.toFixed(Math.min(12, digs))) + ' ± ' + (digs > 12 ? u.toExponential(1) : u.toFixed(Math.min(12, digs))); };
+root.UNITS = { Z, D, dimAdd, dimSub, dimEq, dimZero, parseUnit, parseQuantity, fromSI, convert, dimName, dimStr, unitOf, calc, fmtNum, fmtQ, sigfig, table: U, lookup };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+/* Physics modules. Every module: {id,title,inputs,run(v)->result}. v holds SI values. Each result lists equations,
+   assumptions, method, limits and tagged outputs: 'exact' (exact under the stated assumptions), 'numerical' (approximation with an
+   error estimate), 'empirical' (fitted or estimated). Nothing here is evaluated from user text; inputs are numbers already checked by UNITS. */
+(function (root) {
+'use strict';
+const G0 = 9.80665, GN = 6.6743e-11, C0 = 299792458, HB = 1.054571817e-34, ME = 9.1093837015e-31, QE = 1.602176634e-19;
+const D = (...a) => root.UNITS.D(...a);
+const O = (name, v, unit, tag, note) => ({ name, v, unit, tag, note: note || '' });
+const I = (id, label, unit, def, extra) => Object.assign({ id, label, unit, def }, extra || {});
+/* seeded PRNG + normal */
+function rng(seed) { let s = seed >>> 0 || 1; return () => { s ^= s << 13; s >>>= 0; s ^= s >>> 17; s ^= s << 5; s >>>= 0; return s / 4294967296; }; }
+function gauss(r) { let u = 0, v = 0; while (!u) u = r(); v = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+function rk4(f, y, t, h) { const k1 = f(t, y), k2 = f(t + h / 2, y.map((a, i) => a + h / 2 * k1[i])), k3 = f(t + h / 2, y.map((a, i) => a + h / 2 * k2[i])), k4 = f(t + h, y.map((a, i) => a + h * k3[i])); return y.map((a, i) => a + h / 6 * (k1[i] + 2 * k2[i] + 2 * k3[i] + k4[i])); }
+/* ---------- projectile ---------- */
+function projAnalytic(v) { const th = v.angle, vx = v.speed * Math.cos(th), vy = v.speed * Math.sin(th), g = v.g, h0 = v.h0 || 0; const disc = vy * vy + 2 * g * h0; const T = (vy + Math.sqrt(disc)) / g; return { vx, vy, T, R: vx * T, H: h0 + vy * vy / (2 * g), tTop: Math.max(vy / g, 0), vImp: Math.sqrt(vx * vx + disc) }; }
+function projNumeric(v, h) {
+  const k = v.drag > 0 ? 0.5 * 1.225 * v.cd * v.area / v.mass : 0; /* a_drag = -k|v|v */
+  const f = (t, y) => { const sp = Math.hypot(y[2], y[3]); return [y[2], y[3], -k * sp * y[2], -v.g - k * sp * y[3]]; };
+  let y = [0, v.h0 || 0, v.speed * Math.cos(v.angle), v.speed * Math.sin(v.angle)], t = 0, pts = [[0, y[0], y[1]]], Hm = y[1];
+  for (let n = 0; n < 2e6; n++) { const yn = rk4(f, y, t, h); if (yn[1] < 0) { let tau = h * y[1] / (y[1] - yn[1]), z = yn; for (let k = 0; k < 6; k++) { z = rk4(f, y, t, tau); tau -= z[1] / z[3]; } z = rk4(f, y, t, tau); const ti = t + tau; pts.push([ti, z[0], 0]); return { R: z[0], T: ti, H: Hm, vImp: Math.hypot(z[2], z[3]), pts }; } y = yn; t += h; if (y[1] > Hm) Hm = y[1]; if (n % Math.max(1, Math.round(0.02 / h)) === 0) pts.push([t, y[0], y[1]]); }
+  throw new Error('The projectile never lands within the simulation limit');
+}
+const projectile = {
+  id: 'projectile', title: 'Projectile motion', group: 'Classical mechanics',
+  inputs: [I('speed', 'Launch speed', 'm/s', 20, { dim: D(1, 0, -1), min: 0 }), I('angle', 'Launch angle', 'deg', 45, { dim: D(), min: 0, max: Math.PI / 2 * 0.999999 }), I('h0', 'Launch height', 'm', 0, { dim: D(1), min: 0 }), I('g', 'Gravity', 'm/s^2', G0, { dim: D(1, 0, -2), min: 1e-6, note: 'standard gravity' }),
+    I('drag', 'Air drag (0 = off, 1 = on)', '', 0, { dim: D(), min: 0, max: 1 }), I('cd', 'Drag coefficient', '', 0.47, { dim: D(), min: 0 }), I('area', 'Cross-section area', 'm^2', 0.0042, { dim: D(2), min: 0 }), I('mass', 'Mass', 'kg', 0.43, { dim: D(0, 1), min: 1e-12 })],
+  validate(v) { if (v.speed < 0) return 'Speed cannot be negative'; if (v.g <= 0) return 'Gravity must be positive'; if (v.angle < 0 || v.angle >= Math.PI / 2) return 'The angle must be between 0 and 90 degrees'; return null; },
+  run(v) {
+    const A = projAnalytic(v), res = { equations: ['x(t) = v₀cosθ · t', 'y(t) = h₀ + v₀sinθ · t − ½ g t²', 'T = (v₀sinθ + √(v₀²sin²θ + 2 g h₀)) / g', 'Range R = v₀cosθ · T'], method: '', outputs: [], series: [], assumptions: [] };
+    res.assumptions = ['Uniform gravitational field, flat ground at y = 0', 'Point mass, no wind, no spin', v.drag > 0 ? 'Quadratic air drag F = ½ρ C_d A v², ρ = 1.225 kg/m³ (sea-level air, assumed)' : 'No air resistance (a strong simplification: real balls fall short of this range)'];
+    if (!(v.drag > 0)) {
+      res.tag = 'exact'; res.method = 'Closed-form solution of the equations of motion (exact under the stated assumptions)';
+      res.outputs = [O('Flight time', A.T, 's', 'exact'), O('Range', A.R, 'm', 'exact'), O('Maximum height', A.H, 'm', 'exact'), O('Impact speed', A.vImp, 'm/s', 'exact'), O('Time to apex', A.tTop, 's', 'exact')];
+      const n = 80; for (let i = 0; i <= n; i++) { const t = A.T * i / n; res.series.push([t, A.vx * t, (v.h0 || 0) + A.vy * t - 0.5 * v.g * t * t]); }
+      res.errorEstimate = 0;
+    } else {
+      const h = Math.min(A.T / 400, 0.002) || 0.001; const a = projNumeric(v, h), b = projNumeric(v, h / 2);
+      res.tag = 'numerical'; res.method = 'Fourth-order Runge–Kutta, step ' + h.toExponential(2) + ' s; error estimated by comparing with half the step'; res.equations.push('m dv/dt = −m g ŷ − ½ρ C_d A |v| v');
+      const err = Math.abs(b.R - a.R) / 15; res.errorEstimate = err;
+      res.outputs = [O('Flight time', b.T, 's', 'numerical', '± ' + (Math.abs(b.T - a.T) / 15).toExponential(1)), O('Range', b.R, 'm', 'numerical', '± ' + err.toExponential(1) + ' m (numerical error only)'), O('Maximum height', b.H, 'm', 'numerical'), O('Impact speed', b.vImp, 'm/s', 'numerical'), O('Range without drag', A.R, 'm', 'exact', 'for comparison')];
+      res.series = b.pts; res.assumptions.push('Drag law is an empirical model; C_d for a real ball varies with speed (Reynolds number)');
+    }
+    res.limits = 'Ignores wind, spin (Magnus force), air-density change with height, Earth rotation and curvature.';
+    res.reference = A; return res;
+  }
+};
+/* ---------- collision & rotation ---------- */
+const collision = {
+  id: 'collision', title: '1-D collision', group: 'Classical mechanics',
+  inputs: [I('m1', 'Mass 1', 'kg', 2, { dim: D(0, 1), min: 1e-12 }), I('v1', 'Velocity 1', 'm/s', 3, { dim: D(1, 0, -1) }), I('m2', 'Mass 2', 'kg', 1, { dim: D(0, 1), min: 1e-12 }), I('v2', 'Velocity 2', 'm/s', 0, { dim: D(1, 0, -1) }), I('e', 'Restitution (1 elastic, 0 sticks)', '', 1, { dim: D(), min: 0, max: 1 })],
+  run(v) {
+    const M = v.m1 + v.m2, p = v.m1 * v.v1 + v.m2 * v.v2, u1 = (p + v.m2 * v.e * (v.v2 - v.v1)) / M, u2 = (p + v.m1 * v.e * (v.v1 - v.v2)) / M;
+    const K0 = 0.5 * v.m1 * v.v1 ** 2 + 0.5 * v.m2 * v.v2 ** 2, K1 = 0.5 * v.m1 * u1 ** 2 + 0.5 * v.m2 * u2 ** 2;
+    return { tag: 'exact', method: 'Conservation of momentum with Newton restitution law', equations: ['m₁v₁ + m₂v₂ = m₁u₁ + m₂u₂', 'u₂ − u₁ = −e (v₂ − v₁)'], assumptions: ['Frictionless, collinear, instantaneous contact', 'Restitution e is a given parameter, not predicted'], limits: 'Does not model deformation, spin, or off-centre impacts.',
+      outputs: [O('Final velocity 1', u1, 'm/s', 'exact'), O('Final velocity 2', u2, 'm/s', 'exact'), O('Momentum before', p, 'kg·m/s', 'exact'), O('Momentum after', v.m1 * u1 + v.m2 * u2, 'kg·m/s', 'exact'), O('Kinetic energy before', K0, 'J', 'exact'), O('Kinetic energy after', K1, 'J', 'exact'), O('Energy lost', K0 - K1, 'J', 'exact')], series: [] };
+  }
+};
+function agm(a, b) { for (let i = 0; i < 40; i++) { const t = (a + b) / 2; b = Math.sqrt(a * b); a = t; } return a; }
+const pendulum = {
+  id: 'pendulum', title: 'Pendulum (rotation, torque)', group: 'Classical mechanics',
+  inputs: [I('L', 'Length', 'm', 1, { dim: D(1), min: 1e-6 }), I('theta0', 'Release angle', 'deg', 30, { dim: D(), min: 0, max: Math.PI * 0.999 }), I('g', 'Gravity', 'm/s^2', G0, { dim: D(1, 0, -2), min: 1e-6 })],
+  run(v) {
+    const T0 = 2 * Math.PI * Math.sqrt(v.L / v.g), Tex = T0 / agm(1, Math.cos(v.theta0 / 2));
+    const T = Tex, h = T / 4000, f = (t, y) => [y[1], -v.g / v.L * Math.sin(y[0])]; let y = [v.theta0, 0], t = 0, series = [], cross = 0, last = y[0];
+    const e0 = (y) => 0.5 * v.L * v.L * y[1] * y[1] - v.g * v.L * Math.cos(y[0]); const E0 = e0(y); let drift = 0;
+    for (let n = 0; n < 4000 * 3; n++) { const yn = rk4(f, y, t, h); if (last > 0 && yn[0] <= 0 && !cross) cross = t + h * last / (last - yn[0]); last = yn[0]; y = yn; t += h; drift = Math.max(drift, Math.abs(e0(y) - E0)); if (n % 40 === 0) series.push([t, y[0]]); }
+    return { tag: 'exact', method: 'Exact period from the arithmetic–geometric mean; motion integrated with RK4 (energy drift reported)', equations: ['θ″ = −(g/L) sin θ', 'T = 4√(L/g) K(sin(θ₀/2)) = 2π√(L/g) / AGM(1, cos(θ₀/2))', 'Small-angle: T ≈ 2π√(L/g)'], assumptions: ['Point bob on a massless rigid rod, no friction or drag'], limits: 'The small-angle formula is wrong by about ' + (100 * (Tex / T0 - 1)).toFixed(2) + ' % at this angle.',
+      outputs: [O('Exact period', Tex, 's', 'exact'), O('Small-angle period', T0, 's', 'exact', 'approximation of the exact value'), O('Period from simulation (quarter × 4)', cross * 4, 's', 'numerical', 'agrees with the exact value'), O('Peak angular acceleration', Math.sin(v.theta0) * v.g / v.L, 'rad/s^2', 'exact', 'torque per unit moment of inertia, at release'), O('Max energy drift (per unit mass)', drift, 'J/kg', 'numerical')], series, errorEstimate: Math.abs(cross * 4 - Tex) };
+  }
+};
+/* ---------- orbit ---------- */
+const orbit = {
+  id: 'orbit', title: 'Two-body orbit / escape velocity', group: 'Astronomy',
+  inputs: [I('M', 'Central mass', 'kg', 5.972e24, { dim: D(0, 1), min: 1 }), I('r0', 'Starting distance from centre', 'm', 6.771e6, { dim: D(1), min: 1 }), I('vt', 'Tangential speed', 'm/s', 7670, { dim: D(1, 0, -1), min: 0 }), I('rBody', 'Body radius (impact test)', 'm', 6.371e6, { dim: D(1), min: 0 })],
+  run(v) {
+    const mu = GN * v.M, E = v.vt * v.vt / 2 - mu / v.r0, vesc = Math.sqrt(2 * mu / v.r0), vc = Math.sqrt(mu / v.r0), L = v.r0 * v.vt;
+    const out = [O('Circular speed here', vc, 'm/s', 'exact'), O('Escape speed here', vesc, 'm/s', 'exact'), O('Specific orbital energy', E, 'J/kg', 'exact'), O('Gravitational potential', -mu / v.r0, 'J/kg', 'exact')]; let a = null, ecc = null, T = null;
+    if (E < 0) { a = -mu / (2 * E); ecc = Math.sqrt(Math.max(0, 1 + 2 * E * L * L / (mu * mu))); T = 2 * Math.PI * Math.sqrt(a ** 3 / mu); out.push(O('Semi-major axis', a, 'm', 'exact'), O('Eccentricity', ecc, '', 'exact'), O('Period', T, 's', 'exact'), O('Periapsis distance', a * (1 - ecc), 'm', 'exact'), O('Apoapsis distance', a * (1 + ecc), 'm', 'exact')); } else out.push(O('Orbit type', E === 0 ? 'parabolic' : 'hyperbolic (unbound)', '', 'exact'));
+    const series = []; let drift = null, hit = a !== null && v.rBody > 0 && a * (1 - ecc) < v.rBody;
+    if (T) { /* velocity-Verlet check over one period */
+      const N = 20000, h = T / N; let x = v.r0, y = 0, vx = 0, vy = v.vt; const acc = (x, y) => { const r = Math.hypot(x, y); return [-mu * x / r ** 3, -mu * y / r ** 3]; }; let ax = acc(x, y); const E0 = E; let md = 0;
+      for (let n = 0; n < N; n++) { vx += ax[0] * h / 2; vy += ax[1] * h / 2; x += vx * h; y += vy * h; ax = acc(x, y); vx += ax[0] * h / 2; vy += ax[1] * h / 2; const En = (vx * vx + vy * vy) / 2 - mu / Math.hypot(x, y); md = Math.max(md, Math.abs(En - E0) / Math.abs(E0)); if (n % 100 === 0) series.push([n * h, x, y]); }
+      drift = md; out.push(O('Energy drift over one period (numerical check)', md, '(relative)', 'numerical'));
+    }
+    return { tag: 'exact', method: 'Closed-form Kepler two-body solution; numerical velocity-Verlet integration as a check', equations: ['v_esc = √(2GM/r)', 'ε = v²/2 − GM/r', 'a = −GM/(2ε), T = 2π√(a³/GM)', 'e = √(1 + 2εL²/(GM)²)'], assumptions: ['Point masses, the central body is much heavier than the orbiter', 'No atmosphere, no thrust, no third body'], limits: 'Ignores oblateness (J2), drag, and other bodies: real satellite orbits drift. ' + (hit ? 'WARNING: periapsis is below the body surface: this orbit hits the body.' : ''), outputs: out, series, errorEstimate: drift };
+  }
+};
+/* ---------- waves ---------- */
+const waves = {
+  id: 'waves', title: 'Waves: interference and strings', group: 'Waves and fields',
+  inputs: [I('f', 'Frequency', 'Hz', 440, { dim: D(0, 0, -1), min: 1e-9 }), I('c', 'Wave speed', 'm/s', 343, { dim: D(1, 0, -1), min: 1e-9, note: 'sound in air near 20 °C (assumed)' }), I('d', 'Source separation', 'm', 1, { dim: D(1), min: 0 }), I('Lstr', 'String / pipe length', 'm', 0.65, { dim: D(1), min: 1e-9 }), I('f2', 'Second frequency (beats)', 'Hz', 444, { dim: D(0, 0, -1), min: 0 })],
+  run(v) {
+    const lam = v.c / v.f, k = 2 * Math.PI / lam, series = []; for (let i = 0; i <= 200; i++) { const x = (i / 200) * 4 * lam, y = Math.sin(k * x), y2 = Math.sin(k * (x - v.d)); series.push([x, y + y2, 0]); }
+    const nodes = []; for (let n = 0; n < 4; n++) nodes.push(+(((n + 0.5) * lam / 2 + 0 - 0).toFixed(6)));
+    return { tag: 'exact', method: 'Closed-form linear wave superposition', equations: ['λ = c / f,  k = 2π/λ', 'Two equal sources: path difference Δ = d, destructive if Δ = (n+½)λ', 'String fixed at both ends: fₙ = n c / (2L)', 'Beat frequency = |f₁ − f₂|'], assumptions: ['Linear, non-dispersive medium', 'Equal-amplitude point sources on a line', 'Speed supplied by the user (it depends on temperature, tension, medium)'], limits: 'No damping, reflection or dispersion modelled.',
+      outputs: [O('Wavelength', lam, 'm', 'exact'), O('Wavenumber', k, 'rad/m', 'exact'), O('Period', 1 / v.f, 's', 'exact'), O('Path difference in wavelengths', v.d / lam, '', 'exact'), O('Interference at separation d', Math.abs(Math.cos(Math.PI * v.d / lam)), '(relative amplitude, 1 = constructive, 0 = destructive)', 'exact'), O('Fundamental of string/pipe', v.c / (2 * v.Lstr), 'Hz', 'exact'), O('Second harmonic', v.c / v.Lstr, 'Hz', 'exact'), O('Beat frequency', Math.abs(v.f - v.f2), 'Hz', 'exact')], series };
+  }
+};
+/* ---------- heat diffusion ---------- */
+function heat1D(alpha, L, T0, tEnd, N, safety) {
+  const dx = L / N, dtMax = dx * dx / (2 * alpha), dt = dtMax * (safety || 0.4), steps = Math.max(1, Math.ceil(tEnd / dt)), h = tEnd / steps; const r = alpha * h / (dx * dx);
+  let u = new Float64Array(N + 1); for (let i = 1; i < N; i++) u[i] = T0 * Math.sin(Math.PI * i * dx / L); let w = new Float64Array(N + 1);
+  for (let s = 0; s < steps; s++) { for (let i = 1; i < N; i++) w[i] = u[i] + r * (u[i - 1] - 2 * u[i] + u[i + 1]); const t = u; u = w; w = t; }
+  return { u, dx, r, steps };
+}
+const heat = {
+  id: 'heat', title: 'Heat conduction in a rod', group: 'Waves and fields',
+  inputs: [I('alpha', 'Thermal diffusivity', 'm^2/s', 1.11e-4, { dim: D(2, 0, -1), min: 1e-15, note: 'copper ≈ 1.11e-4' }), I('L', 'Rod length', 'm', 0.5, { dim: D(1), min: 1e-6 }), I('T0', 'Initial peak temperature rise', 'K', 100, { dim: D(0, 0, 0, 0, 1) }), I('t', 'Elapsed time', 's', 300, { dim: D(0, 0, 1), min: 0 })],
+  run(v) {
+    const N = 50, a = heat1D(v.alpha, v.L, v.T0, v.t, N), b = heat1D(v.alpha, v.L, v.T0, v.t, N * 2), decay = Math.exp(-v.alpha * Math.PI * Math.PI * v.t / (v.L * v.L)), exact = v.T0 * decay;
+    const mid = a.u[N / 2], mid2 = b.u[N], series = []; for (let i = 0; i <= N; i++) series.push([i * a.dx, a.u[i], v.T0 * decay * Math.sin(Math.PI * i * a.dx / v.L)]);
+    return { tag: 'numerical', method: 'Explicit finite differences (FTCS), r = ' + a.r.toFixed(3) + ' ≤ 0.5 for stability; compared with the exact sine-mode solution and a grid refined 2×', equations: ['∂T/∂t = α ∂²T/∂x²', 'T(0,t) = T(L,t) = 0 (ends held at ambient)', 'Exact for this start: T(x,t) = T₀ sin(πx/L) exp(−απ²t/L²)'], assumptions: ['One-dimensional rod, uniform material, constant α', 'Ends kept at ambient temperature, no side losses'], limits: 'No convection, radiation or temperature-dependent properties.',
+      outputs: [O('Midpoint temperature rise (numerical)', mid, 'K', 'numerical'), O('Midpoint temperature rise (exact)', exact, 'K', 'exact'), O('Numerical error (coarse grid)', Math.abs(mid - exact), 'K', 'numerical'), O('Numerical error (fine grid)', Math.abs(mid2 - exact), 'K', 'numerical', 'should be smaller'), O('Decay time constant', v.L * v.L / (v.alpha * Math.PI * Math.PI), 's', 'exact')], series, errorEstimate: Math.abs(mid - exact) };
+  }
+};
+/* ---------- relativity & quantum ---------- */
+const relativity = {
+  id: 'relativity', title: 'Special relativity', group: 'Advanced science',
+  inputs: [I('v', 'Speed', 'm/s', 2.5e8, { dim: D(1, 0, -1), min: 0 }), I('m', 'Rest mass', 'kg', ME, { dim: D(0, 1), min: 0 }), I('tau', 'Proper time', 's', 1, { dim: D(0, 0, 1), min: 0 })],
+  validate(v) { return v.v >= C0 ? 'A massive object cannot reach or exceed the speed of light' : null; },
+  run(v) { const b = v.v / C0, g = 1 / Math.sqrt(1 - b * b), E = g * v.m * C0 * C0, K = (g * g * b * b / (g + 1)) * v.m * C0 * C0, Kn = 0.5 * v.m * v.v * v.v;
+    return { tag: 'exact', method: 'Closed-form special relativity', equations: ['β = v/c,  γ = 1/√(1−β²)', 'E = γmc²,  K = (γ−1)mc²', 'Δt = γ τ'], assumptions: ['Inertial frames, flat spacetime (no gravity)'], limits: 'General relativity (gravity) is NOT included. Classical K = ½mv² is shown for comparison and is wrong at high speed.',
+      outputs: [O('β = v/c', b, '', 'exact'), O('Lorentz factor γ', g, '', 'exact'), O('Dilated time', g * v.tau, 's', 'exact'), O('Total energy', E, 'J', 'exact'), O('Relativistic kinetic energy', K, 'J', 'exact'), O('Classical ½mv² (inaccurate)', Kn, 'J', 'exact', 'ratio classical/relativistic = ' + (Kn / K).toFixed(4)), O('Momentum', g * v.m * v.v, 'kg·m/s', 'exact')], series: [] }; }
+};
+const quantum = {
+  id: 'quantum', title: 'Quantum: particle in a box / hydrogen', group: 'Advanced science',
+  inputs: [I('Lb', 'Box width', 'm', 1e-9, { dim: D(1), min: 1e-15 }), I('n', 'Level n', '', 1, { dim: D(), min: 1 }), I('nh', 'Hydrogen level', '', 2, { dim: D(), min: 1 })],
+  run(v) { const n = Math.round(v.n), nh = Math.round(v.nh), En = (k) => k * k * Math.PI * Math.PI * HB * HB / (2 * ME * v.Lb * v.Lb), Eh = (k) => -13.605693122994 * QE / (k * k), E21 = Eh(nh + 1) - Eh(nh), Eg = En(n + 1) - En(n);
+    const series = []; for (let i = 0; i <= 100; i++) { const x = i / 100 * v.Lb; series.push([x, Math.sin(n * Math.PI * x / v.Lb) ** 2]); }
+    return { tag: 'exact', method: 'Closed-form eigenvalues of the Schrödinger equation', equations: ['Box: Eₙ = n²π²ħ² / (2mL²)', 'Hydrogen: Eₙ = −13.6057 eV / n² (non-relativistic, no fine structure)'], assumptions: ['Electron in an infinite square well', 'Hydrogen: point nucleus, no spin–orbit or Lamb shift'], limits: 'Real quantum wells have finite depth; hydrogen fine structure is ~10⁻⁵ of these energies and is omitted.',
+      outputs: [O('Box energy level n', En(n), 'J', 'exact'), O('Box energy level n (eV)', En(n) / QE, 'eV', 'exact'), O('Transition n → n+1 wavelength', 6.62607015e-34 * C0 / Eg, 'm', 'exact'), O('Hydrogen level n energy', Eh(nh) / QE, 'eV', 'exact'), O('Hydrogen n → n+1 photon wavelength', 6.62607015e-34 * C0 / E21, 'm', 'exact', 'compare: Balmer-α 656.3 nm needs n=2→3')], series }; }
+};
+const MODULES = [projectile, collision, pendulum, orbit, waves, heat, relativity, quantum];
+const BY = {}; MODULES.forEach((m) => { BY[m.id] = m; });
+/* build SI inputs from strings with unit check; reports defaults used */
+function readInputs(mod, raw) {
+  const U = root.UNITS, v = {}, defaults = [], errors = [];
+  for (const p of mod.inputs) {
+    const has = raw && raw[p.id] !== undefined && raw[p.id] !== '';
+    try {
+      const unitStr = p.unit || ''; const expect = { d: p.dim.slice(), unit: unitStr };
+      if (!has) { const q = U.parseQuantity(p.def + ' ' + unitStr, expect); v[p.id] = q.v; if (!(mod.id === 'projectile' && ['cd', 'area', 'mass'].includes(p.id) && !(raw && +raw.drag > 0))) defaults.push(p.label + ' = ' + p.def + (unitStr ? ' ' + unitStr : '')); }
+      else { const q = unitStr ? U.parseQuantity(String(raw[p.id]), expect) : { v: +raw[p.id], assumed: false }; if (!isFinite(q.v)) throw new Error('not a number'); v[p.id] = q.v; if (q.assumed) defaults.push(p.label + ': no unit given, assumed ' + unitStr); }
+      if (p.min !== undefined && v[p.id] < p.min) errors.push(p.label + ' must be at least ' + p.min);
+      if (p.max !== undefined && v[p.id] > p.max) errors.push(p.label + ' must be at most ' + (+p.max.toPrecision(6)));
+    } catch (e) { errors.push(p.label + ': ' + e.message); }
+  }
+  if (!errors.length && mod.validate) { const m = mod.validate(v); if (m) errors.push(m); }
+  return { v, defaults, errors };
+}
+function solve(id, raw) { const mod = BY[id]; if (!mod) throw new Error('Unknown model ' + id); const r = readInputs(mod, raw); if (r.errors.length) return { ok: false, errors: r.errors }; const res = mod.run(r.v); res.ok = true; res.defaults = r.defaults; res.inputs = r.v; res.id = id; res.title = mod.title; return res; }
+/* Monte-Carlo uncertainty: sig = {id: sigmaSI}. */
+function propagate(id, v, sig, N, seed) {
+  const mod = BY[id], r = rng(seed || 12345), names = null; const cols = {}; let n = 0;
+  for (let k = 0; k < (N || 400); k++) { const w = Object.assign({}, v); for (const key in sig) w[key] = v[key] + sig[key] * gauss(r); let res; try { if (mod.validate && mod.validate(w)) continue; res = mod.run(w); } catch (e) { continue; } res.outputs.forEach((o) => { if (typeof o.v === 'number') (cols[o.name] = cols[o.name] || []).push(o.v); }); n++; }
+  const out = {}; for (const k in cols) { const a = cols[k], m = a.reduce((s, x) => s + x, 0) / a.length, sd = Math.sqrt(a.reduce((s, x) => s + (x - m) ** 2, 0) / Math.max(1, a.length - 1)); out[k] = { mean: m, sd, n: a.length }; }
+  return { n, out };
+}
+/* ---------- fitting & comparison ---------- */
+function solveLin(A, b) { const n = b.length; const M = A.map((r, i) => r.concat([b[i]])); for (let c = 0; c < n; c++) { let p = c; for (let r = c + 1; r < n; r++) if (Math.abs(M[r][c]) > Math.abs(M[p][c])) p = r; if (Math.abs(M[p][c]) < 1e-300) throw new Error('Singular system: the observations do not constrain the parameters'); [M[c], M[p]] = [M[p], M[c]]; for (let r = 0; r < n; r++) if (r !== c) { const f = M[r][c] / M[c][c]; for (let k = c; k <= n; k++) M[r][k] -= f * M[c][k]; } } return M.map((r, i) => r[n] / r[i]); }
+function invert(A) { const n = A.length; return A[0].map((_, j) => solveLin(A, A.map((_, i) => (i === j ? 1 : 0)))).map((col, j) => col).reduce((m, col, j) => { col.forEach((v, i) => { (m[i] = m[i] || [])[j] = v; }); return m; }, []); }
+function polyFit(ts, ys, deg, sigma) {
+  const n = ts.length, m = deg + 1; if (n <= m) throw new Error('Need more than ' + m + ' points for a degree-' + deg + ' fit (have ' + n + ')');
+  const t0 = ts.reduce((a, b) => a + b, 0) / n; const X = ts.map((t) => { const r = []; for (let k = 0; k < m; k++) r.push(Math.pow(t - t0, k)); return r; });
+  const AtA = Array.from({ length: m }, (_, i) => Array.from({ length: m }, (_, j) => X.reduce((s, r) => s + r[i] * r[j], 0))), Aty = Array.from({ length: m }, (_, i) => X.reduce((s, r, k) => s + r[i] * ys[k], 0));
+  const c = solveLin(AtA, Aty), res = ys.map((y, k) => y - X[k].reduce((s, x, i) => s + x * c[i], 0)), ss = res.reduce((s, r) => s + r * r, 0), dof = n - m, s2 = ss / dof, cov = invert(AtA).map((r) => r.map((x) => x * s2));
+  return { c, t0, res, rms: Math.sqrt(ss / n), s: Math.sqrt(s2), dof, cov, se: cov.map((r, i) => Math.sqrt(Math.max(0, r[i]))) };
+}
+/* expand polynomial about t0 to powers of t: used only for second-order coefficient (acceleration) which does not depend on t0 */
+function fitTrajectory(S, opt) {
+  /* S: [{t,x,y}] SI. y up. Model: x = x0 + vx t ; y = y0 + vy t − ½ g t². */
+  const t = S.map((s) => s.t), fx = polyFit(t, S.map((s) => s.x), 1), fy = polyFit(t, S.map((s) => s.y), 2);
+  const gFit = -2 * fy.c[2], gSE = 2 * fy.se[2], vx = fx.c[1], vxSE = fx.se[1];
+  const vyAt0 = fy.c[1] + 2 * fy.c[2] * (0 - fy.t0), speed = Math.hypot(vx, vyAt0), ang = Math.atan2(vyAt0, vx);
+  const ref = opt && opt.g !== undefined ? opt.g : G0, z = (gFit - ref) / (gSE || NaN);
+  const resid = S.map((s, k) => ({ t: s.t, rx: fx.res[k], ry: fy.res[k] }));
+  return { n: S.length, vx, vxSE, vy0: vyAt0, speed, angle: ang, g: gFit, gSE, gRef: ref, gZ: z, rmsX: fx.rms, rmsY: fy.rms, resid, consistent: Math.abs(z) < 3,
+    tag: 'empirical', method: 'Linear least squares: x(t) is a line, y(t) a parabola; standard errors from the covariance matrix scaled by the residual variance (assumes independent Gaussian noise of equal size)',
+    caveat: 'Standard errors reflect scatter about the model only. Calibration error (scale, perspective, lens) is NOT included unless added separately.' };
+}
+function compare(pred, obs) { /* arrays of numbers with same length */ const n = Math.min(pred.length, obs.length); let ss = 0, mx = 0; for (let i = 0; i < n; i++) { const d = obs[i] - pred[i]; ss += d * d; mx = Math.max(mx, Math.abs(d)); } return { n, rms: Math.sqrt(ss / n), max: mx }; }
+/* ---------- validation suite ---------- */
+function validate() {
+  const out = [], add = (name, got, ref, tol, note) => { const err = Math.abs(got - ref) / Math.max(Math.abs(ref), 1e-300); out.push({ name, got, ref, relErr: err, tol, pass: err <= tol, note: note || '' }); };
+  const P = solve('projectile', { speed: '20 m/s', angle: '45 deg', h0: '0 m' }), R = P.outputs.find((o) => o.name === 'Range').v; add('Projectile range v²sin2θ/g', R, 400 / G0, 1e-12);
+  const Pd = solve('projectile', { speed: '20 m/s', angle: '45 deg', drag: '1', cd: '0', area: '0.004', mass: '0.4' }); add('RK4 with zero drag reproduces the closed form', Pd.outputs.find((o) => o.name === 'Range').v, R, 1e-6);
+  const mk = (h) => projNumeric({ speed: 30, angle: 0.8, h0: 0, g: G0, drag: 1, cd: 0.47, area: 0.01, mass: 0.2 }, h).R, r1 = mk(0.02), r2 = mk(0.01), r3 = mk(0.005), order = Math.log2(Math.abs(r1 - r2) / Math.abs(r2 - r3)); out.push({ name: 'RK4 convergence order (expect ≈ 4)', got: order, ref: 4, relErr: Math.abs(order - 4) / 4, tol: 0.2, pass: Math.abs(order - 4) < 0.8, note: 'step halving' });
+  const Or = solve('orbit', {}); add('Earth escape speed at 400 km altitude (11.0 km/s)', Or.outputs.find((o) => o.name === 'Escape speed here').v, Math.sqrt(2 * GN * 5.972e24 / 6.771e6), 1e-12);
+  const dr = Or.outputs.find((o) => o.name.startsWith('Energy drift')).v; out.push({ name: 'Orbit energy drift over one period < 1e-6', got: dr, ref: 0, relErr: dr, tol: 1e-6, pass: dr < 1e-6, note: 'velocity Verlet' });
+  const iss = solve('orbit', { M: '5.972e24 kg', r0: '6.771e6 m', vt: String(Math.sqrt(GN * 5.972e24 / 6.771e6)) + ' m/s' }); add('Circular orbit period at 400 km altitude (≈ 92.4 min)', iss.outputs.find((o) => o.name === 'Period').v, 2 * Math.PI * Math.sqrt(6.771e6 ** 3 / (GN * 5.972e24)), 1e-9); out[out.length - 1].note = 'about 5543 s, matches published ISS ≈ 92.9 min within 1 % because ISS altitude varies';
+  const Pn = solve('pendulum', { L: '1 m', theta0: '10 deg' }); add('Pendulum period vs small-angle at 10°', Pn.outputs[0].v, Pn.outputs[1].v, 0.003, 'difference should be about 0.19 %'); add('Pendulum simulation vs exact period', Pn.outputs[2].v, Pn.outputs[0].v, 1e-3);
+  const H = solve('heat', {}); const ex = H.outputs.find((o) => o.name === 'Midpoint temperature rise (exact)').v; add('Heat equation numerical midpoint vs exact', H.outputs[0].v, ex, 5e-3);
+  const e1 = H.outputs[2].v, e2 = H.outputs[3].v; out.push({ name: 'Heat: refining the grid reduces the error', got: e2, ref: e1, relErr: e2 / (e1 || 1), tol: 1, pass: e2 <= e1 + 1e-15 });
+  const Rl = solve('relativity', { v: '2.5e8 m/s', m: '1 kg' }); add('Relativistic γ at 2.5e8 m/s', Rl.outputs[1].v, 1 / Math.sqrt(1 - (2.5e8 / C0) ** 2), 1e-12);
+  const lowv = solve('relativity', { v: '1000 m/s', m: '1 kg' }); add('Relativity reduces to ½mv² at low speed', lowv.outputs[4].v, lowv.outputs[5].v, 1e-6);
+  const q = solve('quantum', { Lb: '1e-9 m', n: '1' }); add('Electron in 1 nm box ground state (0.376 eV)', q.outputs[1].v, 0.37606, 2e-3);
+  const hb = solve('quantum', { nh: '2' }); add('Hydrogen Balmer-α wavelength 656.1 nm (vacuum, no fine structure)', hb.outputs[4].v, 656.112e-9, 1e-3);
+  const w = solve('waves', { f: '440 Hz', c: '343 m/s' }); add('Wavelength of 440 Hz in air', w.outputs[0].v, 343 / 440, 1e-12);
+  const cl = solve('collision', { e: '1' }); add('Elastic collision conserves kinetic energy', cl.outputs[5].v, cl.outputs[4].v, 1e-12);
+  /* fit recovery */
+  const r = rng(7), S = []; for (let i = 0; i < 40; i++) { const t = i * 0.025; S.push({ t, x: 1 + 8 * t + 0.002 * gauss(r), y: 2 + 9 * t - 0.5 * G0 * t * t + 0.002 * gauss(r) }); }
+  const f = fitTrajectory(S); out.push({ name: 'Fit recovers g = 9.80665 within 3 standard errors from noisy synthetic data', got: f.g, ref: G0, relErr: Math.abs(f.g - G0) / G0, tol: 0.05, pass: Math.abs(f.g - G0) < 3 * f.gSE, note: 'g = ' + f.g.toFixed(3) + ' ± ' + f.gSE.toFixed(3) });
+  return out;
+}
+root.PHYS = { MODULES, BY, solve, readInputs, propagate, fitTrajectory, polyFit, compare, validate, heat1D, projAnalytic, projNumeric, rk4, rng, gauss, G0 };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+/* Plain-language question -> structured calculation. This file never computes a physical result. It only (1) picks a model,
+   (2) pulls numbers WITH their units out of the text, (3) reports what is missing. PHYS.solve produces every number. */
+(function (root) {
+'use strict';
+const U = () => root.UNITS;
+const MODELS = [
+  ['projectile', /\b(ball|throw|thrown|throws|projectile|launch|launched|cannon|kick|kicked|trajectory|shot|fired|arrow|stone)\b/i],
+  ['pendulum', /\b(pendulum|swing|swings)\b/i],
+  ['orbit', /\b(orbit|orbits|orbiting|satellite|escape (velocity|speed)|circular speed)\b/i],
+  ['collision', /\b(collide|collides|collision|crash|crashes|bump)\b/i],
+  ['relativity', /\b(relativ\w*|time dilation|lorentz|speed of light|near light|lightspeed)\b/i],
+  ['quantum', /\b(quantum|particle in a box|hydrogen|energy level|electron in)\b/i],
+  ['heat', /\b(heat|conduct\w*|thermal|rod|diffus\w*)\b/i],
+  ['waves', /\b(wave|waves|wavelength|sound|beat|beats|interfer\w*|string|vibrat\w*|frequency)\b/i],
+];
+const SLOTS = {
+  projectile: [{ id: 'speed', kind: 'velocity', kw: /speed|velocity|at|with/i, req: true }, { id: 'angle', kind: 'angle', req: true }, { id: 'h0', kind: 'length', kw: /height|tall|cliff|from|off|above|roof|building|high/i }, { id: 'mass', kind: 'mass' }],
+  pendulum: [{ id: 'L', kind: 'length', req: true }, { id: 'theta0', kind: 'angle' }],
+  orbit: [{ id: 'r0', kind: 'length', kw: /distance|radius|centre|center|altitude|orbit/i }, { id: 'vt', kind: 'velocity' }, { id: 'M', kind: 'mass' }],
+  collision: [{ id: 'm1', kind: 'mass', req: true }, { id: 'm2', kind: 'mass', req: true }, { id: 'v1', kind: 'velocity', req: true }, { id: 'v2', kind: 'velocity' }],
+  relativity: [{ id: 'v', kind: 'velocity', req: true }, { id: 'm', kind: 'mass' }, { id: 'tau', kind: 'time' }],
+  quantum: [{ id: 'Lb', kind: 'length' }, { id: 'n', kind: 'count' }],
+  heat: [{ id: 'L', kind: 'length' }, { id: 't', kind: 'time' }, { id: 'T0', kind: 'temp' }],
+  waves: [{ id: 'f', kind: 'freq' }, { id: 'c', kind: 'velocity' }, { id: 'd', kind: 'length' }],
+};
+function kindOf(unitStr) { const u = U(); let p; try { p = u.parseUnit(unitStr); } catch (e) { return null; } const d = p.d; const same = (x) => u.dimEq(d, x);
+  if (same(u.D(1, 0, -1))) return 'velocity'; if (same(u.D(1))) return 'length'; if (same(u.D(0, 1))) return 'mass'; if (same(u.D(0, 0, 1))) return 'time'; if (same(u.D(0, 0, -1))) return 'freq'; if (same(u.D(0, 0, 0, 0, 1))) return 'temp';
+  if (u.dimZero(d) && /^(deg|degree|degrees|°|rad|radian|radians)$/i.test(unitStr.trim())) return 'angle'; return null; }
+function parse(text) {
+  const t = String(text || ''), found = [], notes = [];
+  /* "0.8c" or "80% of the speed of light" */
+  let m; const reC = /(\d*\.?\d+)\s*c\b(?![a-z])/g; while ((m = reC.exec(t))) found.push({ idx: m.index, kind: 'velocity', value: (+m[1] * 299792458) + ' m/s', text: m[0] });
+  const rePct = /(\d*\.?\d+)\s*%\s*(?:of\s+)?(?:the\s+)?speed of light/gi; while ((m = rePct.exec(t))) found.push({ idx: m.index, kind: 'velocity', value: (+m[1] / 100 * 299792458) + ' m/s', text: m[0] });
+  const re = /([-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?)\s*(°C|°F|°|[A-Za-zµΩ]+(?:\s*[\/·*]\s*[A-Za-z]+(?:\^?-?\d)?)?(?:\^-?\d)?)/g;
+  while ((m = re.exec(t))) { if (found.some((f) => Math.abs(f.idx - m.index) < 3)) continue; let us = m[2].replace(/\s+/g, ''); if (/^(degrees?|deg|°)$/i.test(us)) us = 'deg'; const k = kindOf(us); if (k) found.push({ idx: m.index, kind: k, value: m[1] + ' ' + us, text: m[0].trim() }); }
+  /* a bare level number: "n = 2" or "level 3" */
+  const rn = /(?:\bn\s*=\s*|\blevel\s+|\bstate\s+)(\d+)/gi; while ((m = rn.exec(t))) found.push({ idx: m.index, kind: 'count', value: m[1], text: m[0] });
+  found.sort((a, b) => a.idx - b.idx);
+  let model = null; for (const [id, rx] of MODELS) if (rx.test(t)) { model = id; break; }
+  if (!model) return { ok: false, reason: 'I could not tell which physical model fits. Supported: projectile motion, pendulum, orbit and escape speed, collisions, waves and sound, heat conduction, special relativity, quantum energy levels. Try for example: "A ball is thrown at 20 m/s at 40 degrees".' };
+  const slots = SLOTS[model], raw = {}, used = new Set(), understood = [];
+  const near = (f, rx) => rx && rx.test(t.slice(Math.max(0, f.idx - 28), f.idx + f.text.length + 4));
+  /* keyword slots first, then order */
+  for (const f of found) { const cand = slots.filter((s) => s.kind === f.kind && !raw[s.id]); if (!cand.length) continue; let s = cand.find((c) => near(f, c.kw)); if (!s) s = cand.find((c) => !c.kw) || cand[0]; if (cand.length > 1 && f.kind === 'length' && model === 'projectile') s = cand.find((c) => c.id === 'h0'); raw[s.id] = f.value; used.add(f); understood.push({ slot: s.id, text: f.text, value: f.value }); }
+  const unmatched = found.filter((f) => !used.has(f)).map((f) => f.text);
+  const missing = slots.filter((s) => s.req && !raw[s.id]).map((s) => s.id);
+  const P = root.PHYS && root.PHYS.BY[model];
+  const label = {}; if (P) P.inputs.forEach((i) => { label[i.id] = i.label; });
+  return { ok: true, model, raw, understood, unmatched, missing, missingLabels: missing.map((id) => label[id] || id), text: t };
+}
+function answer(text) { const q = parse(text); if (!q.ok) return q; if (q.missing.length) { q.ok = false; q.reason = 'I need ' + q.missingLabels.join(' and ') + ' to answer this. I will not guess a measurement for you.'; return q; } const r = root.PHYS.solve(q.model, q.raw); q.result = r; if (!r.ok) { q.ok = false; q.reason = r.errors.join('; '); } return q; }
+root.NLQ = { parse, answer, MODELS };
 })(typeof window !== 'undefined' ? window : globalThis);
 
 </script>
@@ -11375,7 +11794,7 @@ const lab = document.createElement('div'); lab.id = 'lab'; lab.hidden = true; la
 lab.innerHTML = `
 <header class="lb-top">
   <div class="lb-brand"><i></i><span>Scientific Reality Editor</span></div>
-  <nav class="lb-hub" id="lbHub" role="tablist" aria-label="Workspaces"><button role="tab" data-hub="design" aria-selected="false">Design</button><button role="tab" data-hub="photo" aria-selected="true">Photo Lab</button><button role="tab" data-hub="video" aria-selected="false">Video Lab</button><button role="tab" data-hub="calib" aria-selected="false">Calibration</button><button role="tab" data-hub="3d" aria-selected="false">3D Lab</button><button role="tab" data-hub="const" aria-selected="false">Constants</button></nav>
+  <nav class="lb-hub" id="lbHub" role="tablist" aria-label="Workspaces"><button role="tab" data-hub="design" aria-selected="false">Design</button><button role="tab" data-hub="photo" aria-selected="true">Photo Lab</button><button role="tab" data-hub="video" aria-selected="false">Video Lab</button><button role="tab" data-hub="calib" aria-selected="false">Calibration</button><button role="tab" data-hub="3d" aria-selected="false">3D Lab</button><button role="tab" data-hub="const" aria-selected="false">Constants</button><button role="tab" data-hub="reality" aria-selected="false">Reality Engine</button></nav>
   <button type="button" id="lbOpen" title="Open a photo or video file">Open</button>
   <button type="button" data-guide title="Open the quick guide">Guide</button>
   <button type="button" id="lbFromDesign" title="Use the photo selected in the design">From design</button>
@@ -11819,7 +12238,7 @@ function markStrip() { const el = $('#lbStrip'); if (!el.classList.contains('on'
 
 /* ------------------------------------------------------------------ workspace tabs (Photo Lab / Video Lab / Calibration / 3D Lab) */
 function setHub(h, quiet) {
-  if (h === '3d' || h === 'design' || h === 'const') { if (window.HUB) window.HUB.go(h); else closeLab(); return; }
+  if (h === '3d' || h === 'design' || h === 'const' || h === 'reality') { if (window.HUB) window.HUB.go(h); else closeLab(); return; }
   S.hub = h; $$('#lbHub button').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.hub === h))); $('#lbFile').accept = h === 'video' ? 'video/*' : h === 'photo' ? 'image/*' : 'image/*,video/*';
   const pane = { photo: 'res', video: 'trk', calib: 'cal' }[h]; const tb = $$('.lb-tabs button').find((b) => b.dataset.pane === pane); if (tb) tb.click();
   if (!quiet && h === 'video' && S.src && S.src.kind !== 'video') toast('Open a video file to use the Video Lab. Photos can be measured in the Photo Lab.');
@@ -11871,7 +12290,16 @@ $('#lbClose').onclick = closeLab;
 document.addEventListener('click', (e) => { if (e.target.closest('#labBtn') || e.target.closest('[data-openlab]')) openLab(); });
 new ResizeObserver(() => { if (!lab.hidden) { const had = W; resize(); if (!had) fitView(); } }).observe($('#lbStage'));
 (function () { const b = document.getElementById('labBtn'); const mq = window.matchMedia('(max-width:760px)'); const f = () => { if (b) b.textContent = mq.matches ? 'Lab' : 'Photo & Video Lab'; }; f(); (mq.addEventListener ? mq.addEventListener('change', f) : mq.addListener(f)); })();
-window.MLAB = { setHub, open: openLab, close: closeLab, state: S, setSource, readFile, setTool, exportData, trackCSV, runTrack, addTrack, detectGrid, CV, renderPanes, makeItem, addItem, lab };
+/* Tracked points as time/position observations for the Reality Engine. Metres only when a calibrated plane exists; otherwise pixels (scale unknown). */
+function trackObservations(i) {
+  const t = S.tracks[i || 0]; if (!t) return { ok: false, reason: 'No tracked point yet. In the Video Lab, open a video, add a track point and run tracking.' };
+  const good = t.samples.filter((s) => s.ok !== false && isFinite(s.x) && isFinite(s.y)); if (good.length < 4) return { ok: false, reason: 'Only ' + good.length + ' usable tracked frames. At least 4 are needed (10 or more is better).' };
+  const pl = planeObj(); let samples, unit, scaled = false;
+  if (pl && X.LEN[pl.unit]) { const k = X.LEN[pl.unit]; samples = good.map((s) => { const q = X.applyH(pl.H, ptsForGeometry([[s.x, s.y]])[0]); return { t: s.t - good[0].t, x: q[0] * k, y: q[1] * k }; }); unit = 'm'; scaled = true; }
+  else samples = good.map((s) => ({ t: s.t - good[0].t, x: s.x, y: -s.y })), unit = 'px';
+  return { ok: true, name: t.name, samples, unit, scaled, source: scaled ? 'Calibrated plane (' + pl.unit + ' converted to metres). Assumes the motion lies in that plane.' : 'Pixels: no calibrated plane, so absolute size and speed are unknown.', fps: S.fps || null };
+}
+window.MLAB = { trackObservations, setHub, open: openLab, close: closeLab, state: S, setSource, readFile, setTool, exportData, trackCSV, runTrack, addTrack, detectGrid, CV, renderPanes, makeItem, addItem, lab };
 })();
 
 </script>
@@ -11954,7 +12382,7 @@ root.innerHTML = `
 <header class="hd">
   <div><div class="logo">Math<b>3D</b></div><div class="sub">Create 3D Objects • Visualize Real Mathematics • Edit • Animate</div></div>
   <span class="sub">Powered by real math</span>
-  <nav class="ws" id="m3Ws" role="tablist" aria-label="Workspaces"><button role="tab" data-ws="design">Design</button><button role="tab" data-ws="photo">Photo Lab</button><button role="tab" data-ws="video">Video Lab</button><button role="tab" data-ws="calib">Calibration</button><button role="tab" data-ws="3d" aria-selected="true">3D Lab</button><button role="tab" data-ws="const">Constants</button></nav>
+  <nav class="ws" id="m3Ws" role="tablist" aria-label="Workspaces"><button role="tab" data-ws="design">Design</button><button role="tab" data-ws="photo">Photo Lab</button><button role="tab" data-ws="video">Video Lab</button><button role="tab" data-ws="calib">Calibration</button><button role="tab" data-ws="3d" aria-selected="true">3D Lab</button><button role="tab" data-ws="const">Constants</button><button role="tab" data-ws="reality">Reality Engine</button></nav>
   <nav class="pills" role="tablist" aria-label="Views">
     <button role="tab" data-view="3d" aria-selected="true">3D</button><button role="tab" data-view="anim" aria-selected="false">Animation</button><button role="tab" data-view="edit" aria-selected="false">Editor</button><button role="tab" data-view="math" aria-selected="false">Math</button><button role="tab" data-view="exp" aria-selected="false">Export</button>
   </nav>
@@ -12345,6 +12773,8 @@ function useMeasured(metres, unc, id) {
 }
 const HUB = { go(n) {
   if (n === 'design') { close(); if (window.MLAB) window.MLAB.close(); return; }
+  if (n === 'reality') { close(); if (window.MLAB) window.MLAB.close(); if (window.REAL) window.REAL.open(); return; }
+  if (window.REAL) window.REAL.close();
   if (n === '3d' || n === 'const') { if (window.MLAB) window.MLAB.close(); open(); setView(n === 'const' ? 'const' : '3d'); return; }
   close(); if (window.MLAB) { window.MLAB.open(); window.MLAB.setHub(n); }
 } };
@@ -12411,6 +12841,287 @@ g.addEventListener('keydown', (e) => { if (e.key === 'Escape') { close(); e.stop
 /* offer once, only to a real first-time visitor (never during automated tests) */
 if (!navigator.webdriver && !seen()) setTimeout(() => { if (g.hidden && !seen()) nudge.hidden = false; }, 1500);
 window.GUIDE = { open, close, go };
+})();
+
+</script>
+<script>
+/* Reality Engine workspace: unit-aware calculator, physics models with documented equations and assumptions,
+   uncertainty, model-versus-measurement fitting, validation suite, 3D/2D views and project export.
+   Every number shown comes from UNITS / PHYS / NLQ. Nothing is typed in by hand. */
+(function () {
+'use strict';
+const U = window.UNITS, P = window.PHYS, Q = window.NLQ, MCU = window.MCU;
+const $ = (s, r) => (r || document).querySelector(s), $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const toast = (m) => { try { MCU.toast(m); } catch (e) { /* ignore */ } };
+const fmt = (v) => (typeof v === 'number' ? U.fmtNum(v, 6) : String(v));
+const TAG = { exact: ['Exact under assumptions', 'ex'], numerical: ['Numerical approximation', 'nu'], empirical: ['Empirical estimate', 'em'], unvalidated: ['Unvalidated prediction', 'un'] };
+const css = `
+#rl{position:fixed;inset:0;z-index:2147483000;background:#070b14;color:#d5def0;font:14px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;overflow:auto;--bg:#070b14;--pn:#0f1626;--ln:#1f2a44;--ac:#3b82f6;--ac2:#22d3ee;--ok:#34d399;--wr:#fbbf24;--bad:#f87171;--mut:#8b9bbd}
+#rl[hidden]{display:none}#rl *{box-sizing:border-box}
+#rl .hd{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid var(--ln);position:sticky;top:0;background:#070b14ee;backdrop-filter:blur(6px);z-index:5;flex-wrap:wrap}
+#rl .logo{font-weight:800;font-size:20px;letter-spacing:.2px}#rl .logo b{color:var(--ac2)}#rl .sub{color:var(--mut);font-size:12px}
+#rl nav.ws{display:flex;gap:4px;flex-wrap:wrap;margin-left:auto}#rl nav.ws button{background:transparent;border:1px solid var(--ln);color:#b8c6e4;border-radius:8px;padding:6px 10px;cursor:pointer;font:inherit;font-size:13px}
+#rl nav.ws button[aria-selected=true]{background:var(--ac);border-color:var(--ac);color:#fff}
+#rl .x{background:#1a2440;border:1px solid var(--ln);color:#fff;border-radius:8px;padding:6px 12px;cursor:pointer;font:inherit}
+#rl .wrap{display:grid;grid-template-columns:minmax(0,420px) minmax(0,1fr);gap:12px;padding:12px 16px 40px;max-width:1500px;margin:0 auto}
+@media (max-width:900px){#rl .wrap{grid-template-columns:minmax(0,1fr);padding:10px 10px 40px}}
+#rl section{background:var(--pn);border:1px solid var(--ln);border-radius:12px;padding:12px 14px;margin-bottom:12px;min-width:0}
+#rl h2{margin:0 0 8px;font-size:12px;letter-spacing:.9px;text-transform:uppercase;color:var(--ac2);font-weight:700}
+#rl h3{margin:10px 0 4px;font-size:13px;color:#e5ecff;text-transform:none;letter-spacing:0}
+#rl label{display:block;font-size:12px;color:var(--mut);margin:6px 0 2px}
+#rl input,#rl select,#rl textarea{width:100%;background:#0a1020;border:1px solid var(--ln);border-radius:8px;color:#e8eefc;padding:8px 10px;font:inherit;min-height:38px}
+#rl textarea{resize:vertical;min-height:70px}
+#rl input:focus,#rl select:focus,#rl textarea:focus,#rl button:focus-visible{outline:2px solid var(--ac2);outline-offset:1px}
+#rl .btn{background:var(--ac);border:0;color:#fff;border-radius:8px;padding:9px 14px;cursor:pointer;font:inherit;font-weight:600;min-height:38px}
+#rl .btn.g{background:#1a2440;border:1px solid var(--ln);font-weight:500}#rl .btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+#rl .row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}#rl .row3{display:grid;grid-template-columns:1fr 70px;gap:8px;align-items:end}
+#rl .tag{display:inline-block;border-radius:999px;padding:1px 9px;font-size:11px;font-weight:700;border:1px solid}
+#rl .tag.ex{color:#34d399;border-color:#065f46;background:#06281f}#rl .tag.nu{color:#60a5fa;border-color:#1e3a8a;background:#0a1a3d}#rl .tag.em{color:#fbbf24;border-color:#713f12;background:#2b1d06}#rl .tag.un{color:#f87171;border-color:#7f1d1d;background:#2a0f14}
+#rl table{width:100%;border-collapse:collapse;font-size:13px}#rl td,#rl th{padding:5px 6px;border-bottom:1px solid #16203a;text-align:left;vertical-align:top}#rl td.v{text-align:right;font-family:ui-monospace,Menlo,monospace;white-space:nowrap}
+#rl .msg{border-radius:8px;padding:8px 10px;margin-top:8px;font-size:13px}#rl .msg.bad{background:#2a0f14;border:1px solid #7f1d1d;color:#fecaca}#rl .msg.warn{background:#2b1d06;border:1px solid #713f12;color:#fde68a}#rl .msg.ok{background:#06281f;border:1px solid #065f46;color:#a7f3d0}#rl .msg.info{background:#0a1a3d;border:1px solid #1e3a8a;color:#bfdbfe}
+#rl ul{margin:4px 0 0 18px;padding:0}#rl li{margin:2px 0}#rl code,#rl .eq{font-family:ui-monospace,Menlo,monospace;font-size:12.5px;color:#cbe3ff}
+#rl .eq{display:block;background:#0a1020;border:1px solid var(--ln);border-radius:6px;padding:4px 8px;margin:3px 0}
+#rl canvas{width:100%;background:#080d1a;border:1px solid var(--ln);border-radius:8px;display:block;touch-action:none}
+#rl .big{font:700 22px ui-monospace,Menlo,monospace;color:#fff;word-break:break-all}
+#rl details summary{cursor:pointer;color:#b8c6e4;margin:6px 0}#rl .mut{color:var(--mut);font-size:12px}
+@media (max-width:640px){#rl td.v{white-space:normal;word-break:break-word}#rl td,#rl th{padding:4px 3px;font-size:12px}#rl .big{font-size:18px}#rl .hd{padding:8px 10px}#rl nav.ws{margin-left:0;width:100%}}
+#rl .st li b{display:inline-block;min-width:112px}
+`;
+const st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
+const root = document.createElement('div'); root.id = 'rl'; root.hidden = true; root.setAttribute('role', 'dialog'); root.setAttribute('aria-modal', 'true'); root.setAttribute('aria-label', 'Math3D Reality Engine');
+const groups = {}; P.MODULES.forEach((m) => { (groups[m.group] = groups[m.group] || []).push(m); });
+root.innerHTML = `
+<header class="hd"><div><div class="logo">Math<b>3D</b> Reality Engine</div><div class="sub">Measure, model, calculate and compare. Every number comes from the equations shown.</div></div>
+<nav class="ws" id="rlWs" role="tablist" aria-label="Workspaces"><button role="tab" data-ws="design">Design</button><button role="tab" data-ws="photo">Photo Lab</button><button role="tab" data-ws="video">Video Lab</button><button role="tab" data-ws="calib">Calibration</button><button role="tab" data-ws="3d">3D Lab</button><button role="tab" data-ws="const">Constants</button><button role="tab" data-ws="reality" aria-selected="true">Reality Engine</button></nav>
+<button class="x" id="rlClose" type="button">Close</button></header>
+<main class="wrap">
+<div id="rlL">
+ <section aria-labelledby="rlAskH"><h2 id="rlAskH">Ask in plain language</h2>
+  <label for="rlAsk">Describe a problem. I pick a model, read your numbers and units, and the engine calculates. I will not invent measurements.</label>
+  <textarea id="rlAsk" placeholder="A ball is thrown at 20 m/s at 40 degrees from a 2 m high wall"></textarea>
+  <div class="btns"><button class="btn" id="rlAskGo" type="button">Calculate</button><button class="btn g" data-ex="A ball is thrown at 20 m/s at 40 degrees from a 2 m high wall">Example: ball</button><button class="btn g" data-ex="A 1.5 m pendulum is released at 60 degrees">Example: pendulum</button><button class="btn g" data-ex="Time dilation for a particle at 0.9c over 1 s">Example: relativity</button></div>
+  <div id="rlAskOut" aria-live="polite"></div></section>
+ <section aria-labelledby="rlCalcH"><h2 id="rlCalcH">Unit-aware calculator</h2>
+  <label for="rlCalc">Type a formula with units. Add "in unit" to convert. Constants: pi, phi, alpha, cLight, gGrav…</label>
+  <div class="row3"><input id="rlCalc" autocomplete="off" spellcheck="false" value="0.5 * 2 kg * (3 m/s)^2 in J"><button class="btn" id="rlCalcGo" type="button">=</button></div>
+  <div id="rlCalcOut" aria-live="polite"></div></section>
+ <section aria-labelledby="rlModH"><h2 id="rlModH">Physics model</h2>
+  <label for="rlModel">Model</label><select id="rlModel">${Object.keys(groups).map((g) => `<optgroup label="${g}">${groups[g].map((m) => `<option value="${m.id}">${m.title}</option>`).join('')}</optgroup>`).join('')}</select>
+  <div id="rlInputs"></div>
+  <details><summary>Input uncertainty (optional, for Monte Carlo)</summary><div class="mut">Enter one standard deviation with units for any input. The engine re-runs the model 400 times with random draws (fixed seed, so repeatable).</div><div id="rlSig"></div></details>
+  <div class="btns"><button class="btn" id="rlRun" type="button">Calculate</button><button class="btn g" id="rlReset" type="button">Reset to defaults</button></div>
+  <div id="rlErr"></div></section>
+ <section aria-labelledby="rlCmpH"><h2 id="rlCmpH">Compare with measurements</h2>
+  <div class="mut">Fits a projectile (line in x, parabola in y) to observed positions and compares the result with the model and with standard gravity.</div>
+  <div class="btns"><button class="btn g" id="rlObsLab" type="button">Use tracked point from Video Lab</button><button class="btn g" id="rlObsDemo" type="button">Load SYNTHETIC demo data</button></div>
+  <label for="rlObs">Or paste observations: time, x, y (metres, y upward), one per line</label><textarea id="rlObs" placeholder="0, 0, 2&#10;0.1, 1.5, 2.6&#10;0.2, 3.0, 3.1"></textarea>
+  <div class="btns"><button class="btn" id="rlFit" type="button">Fit and compare</button></div><div id="rlFitOut" aria-live="polite"></div></section>
+</div>
+<div id="rlR">
+ <section aria-labelledby="rlResH"><h2 id="rlResH">Result</h2><div id="rlRes"><div class="mut">Choose a model and press Calculate, or ask a question.</div></div></section>
+ <section aria-labelledby="rlVizH"><h2 id="rlVizH">Visualization</h2><div class="mut" id="rlVizNote"></div>
+  <canvas id="rlPlot" width="900" height="420" aria-label="Plot of the calculated result"></canvas>
+  <div id="rlViz3" hidden><h3>3D view (drag to rotate, wheel or pinch to zoom)</h3><canvas id="rl3d" width="900" height="420" aria-label="Interactive 3D view"></canvas></div></section>
+ <section aria-labelledby="rlValH"><h2 id="rlValH">Validation against known solutions</h2>
+  <div class="mut">Compares the engine with closed-form results and published values, and checks that numerical error shrinks as it should.</div>
+  <div class="btns"><button class="btn g" id="rlVal" type="button">Run validation suite</button></div><div id="rlValOut"></div></section>
+ <section aria-labelledby="rlExpH"><h2 id="rlExpH">Project and export</h2>
+  <div class="btns"><button class="btn g" id="rlSaveLS" type="button">Save in this browser</button><button class="btn g" id="rlLoadLS" type="button">Load saved</button><button class="btn g" id="rlExJson" type="button">Project (.json)</button><button class="btn g" id="rlExCsv" type="button">Data (.csv)</button><button class="btn g" id="rlExRep" type="button">Report (.md)</button><button class="btn g" id="rlExPng" type="button">Plot (.png)</button><button class="btn g" id="rlImp" type="button">Open project…</button><input type="file" id="rlImpF" accept=".json,application/json" hidden></div></section>
+ <section aria-labelledby="rlStH"><h2 id="rlStH">What is complete, approximate, experimental, not implemented</h2><div id="rlStatus"></div></section>
+</div></main>`;
+document.body.appendChild(root);
+const A = { model: 'projectile', res: null, fit: null, obs: [], sig: null, ask: '', valRun: null, view: { yaw: -0.7, pit: 0.4, z: 1 } };
+const mod = () => P.BY[A.model];
+/* ---------------- inputs ---------------- */
+function buildInputs(vals) {
+  const m = mod(); $('#rlInputs').innerHTML = m.inputs.map((i) => `<label for="rli-${i.id}">${esc(i.label)}${i.note ? ' <span class="mut">(' + esc(i.note) + ')</span>' : ''}</label><input id="rli-${i.id}" data-id="${i.id}" inputmode="decimal" autocomplete="off" placeholder="${i.def}${i.unit ? ' ' + i.unit : ''}" value="${vals && vals[i.id] !== undefined ? esc(vals[i.id]) : ''}">`).join('');
+  $('#rlSig').innerHTML = m.inputs.filter((i) => i.min !== 0 || true).map((i) => `<label for="rls-${i.id}">± ${esc(i.label)}</label><input id="rls-${i.id}" data-sid="${i.id}" inputmode="decimal" placeholder="e.g. 0.5 ${i.unit || ''}">`).join('');
+  $$('#rlInputs input').forEach((e) => e.addEventListener('keydown', (k) => { if (k.key === 'Enter') run(); }));
+}
+const readRaw = () => { const raw = {}; $$('#rlInputs input').forEach((e) => { if (e.value.trim()) raw[e.dataset.id] = e.value.trim(); }); return raw; };
+function readSig() { const sig = {}, errs = []; const m = mod(); m.inputs.forEach((i) => { const e = $('#rls-' + i.id); if (!e || !e.value.trim()) return; try { const q = U.parseQuantity(e.value.trim(), { d: i.dim.slice(), unit: i.unit || '' }); if (q.v < 0) throw new Error('must not be negative'); if (q.v > 0) sig[i.id] = q.v; } catch (er) { errs.push('Uncertainty of ' + i.label + ': ' + er.message); } }); return { sig, errs }; }
+/* ---------------- result rendering ---------------- */
+function tagHTML(t) { const x = TAG[t] || TAG.unvalidated; return `<span class="tag ${x[1]}">${x[0]}</span>`; }
+function showResult(res, mc) {
+  A.res = res; const R = $('#rlRes');
+  if (!res.ok) { R.innerHTML = '<div class="msg bad"><b>Cannot calculate yet.</b><ul>' + res.errors.map((e) => '<li>' + esc(e) + '</li>').join('') + '</ul></div>'; return; }
+  const m = P.BY[res.id]; let banner = '';
+  if (res.id === 'projectile' && res.inputs.drag > 0) banner = '<div class="msg warn"><b>Unvalidated prediction.</b> The drag coefficient, area, mass and air density are assumed values, not measurements of your object. The numerical solver is accurate; the physical drag model is not verified for your ball.</div>';
+  const rows = res.outputs.map((o) => { const mcv = mc && mc.out[o.name]; return `<tr><td>${esc(o.name)}${o.note ? '<div class="mut">' + esc(o.note) + '</div>' : ''}</td><td class="v">${typeof o.v === 'number' ? fmt(o.v) : esc(o.v)} <span class="mut">${esc(o.unit)}</span>${mcv ? '<div class="mut">Monte Carlo: ' + esc(U.sigfig(mcv.mean, mcv.sd)) + ' (1σ, n=' + mcv.n + ')</div>' : ''}</td><td>${tagHTML(o.tag)}</td></tr>`; }).join('');
+  const v = A.valRun; const vtxt = v ? (v.every((r) => r.pass) ? `Validation suite: ${v.length}/${v.length} checks passed in this session.` : `Validation suite: ${v.filter((r) => r.pass).length}/${v.length} passed; see failures below.`) : 'Validation suite not yet run in this session.';
+  R.innerHTML = `<div>${tagHTML(res.tag)} <b>${esc(res.title)}</b></div>${banner}
+  ${res.defaults.length ? '<div class="msg info"><b>Defaults used (you did not give these):</b><ul>' + res.defaults.map((d) => '<li>' + esc(d) + '</li>').join('') + '</ul>Change any value on the left to replace the default.</div>' : ''}
+  <table aria-label="Results"><thead><tr><th>Quantity</th><th style="text-align:right">Value</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table>
+  ${mc ? `<div class="mut">Monte Carlo propagates only the input uncertainties you entered, assuming independent normal errors. It does not include model error.</div>` : ''}
+  ${res.errorEstimate !== undefined && res.errorEstimate !== null ? `<div class="mut">Numerical error estimate for the main result: ${fmt(res.errorEstimate)}</div>` : ''}
+  <div class="mut">Digits shown are display precision (6 significant), not measurement accuracy.</div>
+  <details open><summary>Governing equations</summary>${res.equations.map((e) => '<span class="eq">' + esc(e) + '</span>').join('')}</details>
+  <details open><summary>Assumptions</summary><ul>${res.assumptions.map((a) => '<li>' + esc(a) + '</li>').join('')}</ul></details>
+  <details><summary>Numerical method</summary><div>${esc(res.method)}</div></details>
+  <details><summary>Limits of this model</summary><div>${esc(res.limits || '')}</div></details>
+  <details><summary>Inputs in SI units</summary><div class="eq">${m.inputs.map((i) => esc(i.id) + ' = ' + fmt(res.inputs[i.id])).join('<br>')}</div></details>
+  <div class="mut">${esc(vtxt)}</div>`;
+  draw();
+}
+function run(noScroll) {
+  const raw = readRaw(); const { sig, errs } = readSig(); $('#rlErr').innerHTML = errs.length ? '<div class="msg bad">' + errs.map(esc).join('<br>') + '</div>' : '';
+  const res = P.solve(A.model, raw); let mc = null;
+  if (res.ok && Object.keys(sig).length) { try { mc = P.propagate(A.model, res.inputs, sig, 400, 12345); } catch (e) { mc = null; } }
+  A.sig = sig; showResult(res, mc); return res;
+}
+/* ---------------- plots ---------------- */
+const COL = { a: '#22d3ee', b: '#fbbf24', c: '#f87171', g: '#334155', t: '#8b9bbd' };
+function plot2D(cv, curves, xl, yl, equal) {
+  const c = cv.getContext('2d'), W = cv.width, H = cv.height; c.clearRect(0, 0, W, H); c.fillStyle = '#080d1a'; c.fillRect(0, 0, W, H);
+  const all = curves.flatMap((k) => k.pts).filter((p) => isFinite(p[0]) && isFinite(p[1])); if (!all.length) return;
+  let x0 = Math.min(...all.map((p) => p[0])), x1 = Math.max(...all.map((p) => p[0])), y0 = Math.min(...all.map((p) => p[1])), y1 = Math.max(...all.map((p) => p[1]));
+  if (x1 === x0) { x1 += 1; x0 -= 1; } if (y1 === y0) { y1 += 1; y0 -= 1; }
+  const L = 70, Rr = 16, T = 16, B = 46, pw = W - L - Rr, ph = H - T - B; let sx = pw / (x1 - x0), sy = ph / (y1 - y0);
+  if (equal) { const s = Math.min(sx, sy); sx = sy = s; }
+  const X = (v) => L + (v - x0) * sx, Y = (v) => T + ph - (v - y0) * sy; c.font = '12px system-ui'; c.fillStyle = COL.t; c.strokeStyle = COL.g; c.lineWidth = 1;
+  const tk = (a, b, n) => { const st = (b - a) / n, mag = Math.pow(10, Math.floor(Math.log10(st))), f = st / mag, s = (f < 1.5 ? 1 : f < 3.5 ? 2 : f < 7.5 ? 5 : 10) * mag, o = []; for (let v = Math.ceil(a / s) * s; v <= b + s * 1e-9; v += s) o.push(+v.toPrecision(10)); return o; };
+  tk(x0, x1, 6).forEach((v) => { c.beginPath(); c.moveTo(X(v), T); c.lineTo(X(v), T + ph); c.stroke(); c.textAlign = 'center'; c.fillText(U.fmtNum(v, 3), X(v), T + ph + 16); });
+  tk(y0, y1, 5).forEach((v) => { c.beginPath(); c.moveTo(L, Y(v)); c.lineTo(L + pw, Y(v)); c.stroke(); c.textAlign = 'right'; c.fillText(U.fmtNum(v, 3), L - 6, Y(v) + 4); });
+  c.textAlign = 'center'; c.fillStyle = '#b8c6e4'; c.fillText(xl, L + pw / 2, H - 8); c.save(); c.translate(14, T + ph / 2); c.rotate(-Math.PI / 2); c.fillText(yl, 0, 0); c.restore();
+  curves.forEach((k, i) => { c.strokeStyle = k.color; c.fillStyle = k.color; c.lineWidth = 2; if (k.dots) { k.pts.forEach((p) => { c.beginPath(); c.arc(X(p[0]), Y(p[1]), 3.2, 0, 7); c.fill(); }); } else { c.beginPath(); k.pts.forEach((p, j) => { j ? c.lineTo(X(p[0]), Y(p[1])) : c.moveTo(X(p[0]), Y(p[1])); }); c.stroke(); } c.textAlign = 'left'; c.fillRect(L + 8, T + 8 + i * 16, 12, 3); c.fillStyle = '#d5def0'; c.fillText(k.label, L + 26, T + 14 + i * 16); });
+}
+function curvesFor() {
+  const r = A.res, id = A.model; const cur = []; if (!r || !r.ok || !r.series || !r.series.length) return { cur, xl: '', yl: '', equal: false, note: '' };
+  const s = r.series; let xl = '', yl = '', equal = false, note = 'Plotted from the calculated model (not a drawing).';
+  if (id === 'projectile' || id === 'orbit') { cur.push({ pts: s.map((p) => [p[1], p[2]]), color: COL.a, label: id === 'orbit' ? 'orbit (numerical check)' : 'model trajectory' }); xl = 'x (m)'; yl = id === 'orbit' ? 'y (m)' : 'height (m)'; equal = true; }
+  else if (id === 'pendulum') { cur.push({ pts: s, color: COL.a, label: 'θ(t) (RK4)' }); xl = 'time (s)'; yl = 'angle (rad)'; }
+  else if (id === 'heat') { cur.push({ pts: s.map((p) => [p[0], p[1]]), color: COL.a, label: 'numerical' }, { pts: s.map((p) => [p[0], p[2]]), color: COL.b, label: 'exact' }); xl = 'position (m)'; yl = 'temperature rise (K)'; }
+  else if (id === 'waves') { cur.push({ pts: s.map((p) => [p[0], p[1]]), color: COL.a, label: 'sum of two sources (snapshot)' }); xl = 'distance (m)'; yl = 'relative displacement'; }
+  else if (id === 'quantum') { cur.push({ pts: s, color: COL.a, label: '|ψ|² shape (unnormalised)' }); xl = 'position (m)'; yl = 'relative probability density'; }
+  if (A.fit && (id === 'projectile') && A.obs.length) {
+    const f = A.fit, o = A.obs, t0 = o[0].t; cur.push({ pts: o.map((p) => [p.x - o[0].x, p.y - 0]), color: COL.c, label: 'observations (x shifted to start at 0)', dots: true });
+  }
+  return { cur, xl, yl, equal, note: id === 'orbit' ? 'Orbit drawn from the numerical velocity-Verlet check, one full period.' : note };
+}
+function draw() {
+  const { cur, xl, yl, equal, note } = curvesFor(); $('#rlVizNote').textContent = note;
+  if (!cur.length) { const c = $('#rlPlot').getContext('2d'); c.clearRect(0, 0, 900, 420); c.fillStyle = '#080d1a'; c.fillRect(0, 0, 900, 420); } else plot2D($('#rlPlot'), cur, xl, yl, equal);
+  const has3 = A.res && A.res.ok && (A.model === 'projectile' || A.model === 'orbit'); $('#rlViz3').hidden = !has3; if (has3) draw3();
+}
+function draw3() {
+  const cv = $('#rl3d'), c = cv.getContext('2d'), W = cv.width, H = cv.height; c.fillStyle = '#080d1a'; c.fillRect(0, 0, W, H); const r = A.res, s = r.series, orbit = A.model === 'orbit';
+  const P3 = s.map((p) => (orbit ? [p[1], 0, p[2]] : [p[1], p[2], 0])); const obs = A.obs.length && !orbit ? A.obs.map((p) => [p.x - A.obs[0].x, p.y, 0]) : [];
+  const all = P3.concat(obs).concat([[0, 0, 0]]); const mn = [0, 1, 2].map((i) => Math.min(...all.map((p) => p[i]))), mx = [0, 1, 2].map((i) => Math.max(...all.map((p) => p[i])));
+  const ext = Math.max(mx[0] - mn[0], mx[1] - mn[1], mx[2] - mn[2], 1e-9), cen = [0, 1, 2].map((i) => (mn[i] + mx[i]) / 2); const k = Math.min(W, H) * 0.62 / ext * A.view.z, cy = Math.cos(A.view.yaw), sy = Math.sin(A.view.yaw), cp = Math.cos(A.view.pit), sp = Math.sin(A.view.pit);
+  const pr = (p) => { const x = p[0] - cen[0], y = p[1] - cen[1], z = p[2] - cen[2]; const x1 = x * cy - z * sy, z1 = x * sy + z * cy; const y2 = y * cp - z1 * sp, z2 = y * sp + z1 * cp; const d = 1 + z2 * k * 0.0006; return [W / 2 + x1 * k / d, H / 2 - y2 * k / d]; };
+  c.strokeStyle = '#1e2a47'; c.lineWidth = 1; const gy = orbit ? 0 : mn[1], n = 8, gx0 = orbit ? mn[0] : mn[0], gx1 = mx[0], gz0 = orbit ? mn[2] : -ext / 2, gz1 = orbit ? mx[2] : ext / 2;
+  for (let i = 0; i <= n; i++) { const a = gx0 + (gx1 - gx0) * i / n, b = gz0 + (gz1 - gz0) * i / n; let p = pr([a, gy, gz0]), q = pr([a, gy, gz1]); c.beginPath(); c.moveTo(p[0], p[1]); c.lineTo(q[0], q[1]); c.stroke(); p = pr([gx0, gy, b]); q = pr([gx1, gy, b]); c.beginPath(); c.moveTo(p[0], p[1]); c.lineTo(q[0], q[1]); c.stroke(); }
+  const ax = (a, b, col, lab) => { const p = pr(a), q = pr(b); c.strokeStyle = col; c.lineWidth = 2; c.beginPath(); c.moveTo(p[0], p[1]); c.lineTo(q[0], q[1]); c.stroke(); c.fillStyle = col; c.font = '12px system-ui'; c.fillText(lab, q[0] + 4, q[1] - 4); };
+  const o = [orbit ? 0 : mn[0], orbit ? 0 : 0, 0], L = ext * 0.25; ax(o, [o[0] + L, o[1], o[2]], '#f87171', 'x ' + U.fmtNum(L, 3) + ' m'); ax(o, [o[0], o[1] + L, o[2]], '#34d399', 'up'); if (orbit) ax(o, [o[0], o[1], o[2] + L], '#60a5fa', 'y');
+  c.strokeStyle = COL.a; c.lineWidth = 2.5; c.beginPath(); P3.forEach((p, i) => { const q = pr(p); i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1]); }); c.stroke();
+  c.fillStyle = COL.c; obs.forEach((p) => { const q = pr(p); c.beginPath(); c.arc(q[0], q[1], 3, 0, 7); c.fill(); });
+  if (orbit) { const rb = r.inputs.rBody; if (rb > 0) { c.strokeStyle = '#475569'; c.beginPath(); for (let i = 0; i <= 64; i++) { const a = i / 64 * 2 * Math.PI, q = pr([rb * Math.cos(a), 0, rb * Math.sin(a)]); i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1]); } c.stroke(); c.fillStyle = '#8b9bbd'; c.fillText('central body surface', W / 2 - 50, 20); } }
+  c.fillStyle = '#8b9bbd'; c.fillText('Scale: the longest side of the box is ' + U.fmtNum(ext, 4) + ' m. Real coordinates in metres.', 10, H - 8);
+}
+(function bind3d() { const cv = $('#rl3d'); const pts = new Map(); let d0 = 0;
+  cv.addEventListener('pointerdown', (e) => { cv.setPointerCapture(e.pointerId); pts.set(e.pointerId, [e.clientX, e.clientY]); });
+  cv.addEventListener('pointermove', (e) => { if (!pts.has(e.pointerId)) return; const o = pts.get(e.pointerId); if (pts.size === 1) { A.view.yaw += (e.clientX - o[0]) * 0.01; A.view.pit = Math.max(-1.5, Math.min(1.5, A.view.pit + (e.clientY - o[1]) * 0.01)); } pts.set(e.pointerId, [e.clientX, e.clientY]); if (pts.size === 2) { const v = [...pts.values()], d = Math.hypot(v[0][0] - v[1][0], v[0][1] - v[1][1]); if (d0) A.view.z = Math.max(0.3, Math.min(6, A.view.z * d / d0)); d0 = d; } draw3(); });
+  const up = (e) => { pts.delete(e.pointerId); d0 = 0; }; cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
+  cv.addEventListener('wheel', (e) => { e.preventDefault(); A.view.z = Math.max(0.3, Math.min(6, A.view.z * (e.deltaY < 0 ? 1.1 : 0.9))); draw3(); }, { passive: false }); })();
+/* ---------------- ask ---------------- */
+function applyRaw(model, raw) { A.model = model; $('#rlModel').value = model; buildInputs(raw); }
+function ask() {
+  const t = $('#rlAsk').value.trim(); A.ask = t; const out = $('#rlAskOut'); if (!t) { out.innerHTML = '<div class="msg warn">Type a question first.</div>'; return; }
+  const q = Q.parse(t); if (!q.ok) { out.innerHTML = '<div class="msg warn">' + esc(q.reason) + '</div>'; return; }
+  applyRaw(q.model, q.raw);
+  const u = q.understood.map((x) => '<li><code>' + esc(x.text) + '</code> → ' + esc(P.BY[q.model].inputs.find((i) => i.id === x.slot).label) + '</li>').join('');
+  let html = '<div class="msg info"><b>Model chosen:</b> ' + esc(P.BY[q.model].title) + (u ? '<br><b>I read:</b><ul>' + u + '</ul>' : '') + (q.unmatched.length ? '<br>Numbers I could not place: ' + esc(q.unmatched.join(', ')) : '') + '</div>';
+  if (q.missing.length) { html += '<div class="msg bad"><b>Missing:</b> ' + esc(q.missingLabels.join(' and ')) + '. I will not guess a measurement; fill it in on the left, then press Calculate.</div>'; out.innerHTML = html; showResult({ ok: false, errors: ['Missing: ' + q.missingLabels.join(', ')] }); return; }
+  out.innerHTML = html; run();
+}
+/* ---------------- calculator ---------------- */
+function calcGo() { const out = $('#rlCalcOut'); try { const r = U.calc($('#rlCalc').value); const shown = r.target ? U.fmtNum(r.vt, 8) + ' ' + r.target : U.fmtNum(r.v, 8) + (U.dimZero(r.d) ? '' : ' ' + r.si);
+  out.innerHTML = '<div class="big" style="margin-top:8px">= ' + esc(shown) + '</div><div class="mut">Dimension: ' + esc(r.dim) + '. SI value: ' + esc(U.fmtNum(r.v, 10)) + ' ' + esc(U.dimZero(r.d) ? '' : r.si) + '. Exact arithmetic on double-precision numbers; constants use CODATA 2018/2019 values from the Constants tab.</div>'; }
+  catch (e) { out.innerHTML = '<div class="msg bad">' + esc(e.message) + '</div>'; } }
+/* ---------------- observations & fitting ---------------- */
+function parseObs(txt) { const rows = []; txt.split(/\n+/).forEach((ln) => { const p = ln.trim().split(/[,;\t ]+/).map(Number); if (p.length >= 3 && p.slice(0, 3).every(isFinite)) rows.push({ t: p[0], x: p[1], y: p[2] }); }); return rows; }
+function fitGo() {
+  const out = $('#rlFitOut'); let rows = A.obsUnit === 'px' && A.obs.length ? A.obs : parseObs($('#rlObs').value); if (A.obsUnit !== 'px') A.obs = rows;
+  if (rows.length < 5) { out.innerHTML = '<div class="msg bad">Need at least 5 observations (time, x, y). Found ' + rows.length + '.</div>'; return; }
+  let fit; try { fit = P.fitTrajectory(rows); } catch (e) { out.innerHTML = '<div class="msg bad">' + esc(e.message) + '</div>'; return; }
+  A.fit = fit; const px = A.obsUnit === 'px'; let html = ''; const tb = [];
+  if (fit.g < 0 && !px) html += '<div class="msg warn">The fitted curve opens upward (negative gravity). Check that y points up, or flip the sign of y.</div>';
+  const row = (n, v, se, u, tag) => tb.push(`<tr><td>${n}</td><td class="v">${esc(se ? U.sigfig(v, se) : fmt(v))} <span class="mut">${u}</span></td><td>${tagHTML(tag)}</td></tr>`);
+  if (!px) { row('Horizontal speed vₓ', fit.vx, fit.vxSE, 'm/s', 'empirical'); row('Launch speed (at first sample)', fit.speed, null, 'm/s', 'empirical'); row('Launch angle', fit.angle * 180 / Math.PI, null, 'deg', 'empirical'); row('Fitted gravity g', fit.g, fit.gSE, 'm/s²', 'empirical'); }
+  else { const sc = fit.g / P.G0; row('Fitted acceleration', fit.g, fit.gSE, 'px/s²', 'empirical'); row('Scale IF only gravity acts (assumption)', sc, fit.gSE / P.G0, 'px per m', 'unvalidated'); row('Launch speed under that assumption', fit.speed / sc, null, 'm/s', 'unvalidated'); }
+  row('RMS residual x', fit.rmsX, null, px ? 'px' : 'm', 'empirical'); row('RMS residual y', fit.rmsY, null, px ? 'px' : 'm', 'empirical');
+  html += `<table aria-label="Fit results"><tbody>${tb.join('')}</tbody></table><div class="mut">${fit.n} observations. ${esc(fit.method)}.</div>`;
+  const notes = [];
+  if (!px) { const z = fit.gZ; notes.push(Math.abs(z) < 3 ? `Fitted g = ${fit.g.toFixed(3)} ± ${fit.gSE.toFixed(3)} m/s² is consistent with standard gravity ${P.G0} m/s² (${z.toFixed(1)} standard errors apart). Consistency does not prove the calibration is right.` : `Fitted g = ${fit.g.toFixed(3)} ± ${fit.gSE.toFixed(3)} m/s² differs from ${P.G0} m/s² by ${Math.abs(z).toFixed(1)} standard errors. Likely causes, most probable first: wrong length scale in the calibration (g scales with it), wrong frame rate, camera not square-on to the plane of motion, lens distortion, air drag, tracking drift.`); }
+  notes.push(fit.caveat);
+  const r = A.res; if (r && r.ok && A.model === 'projectile') { const I = r.inputs; const pred = rows.map((o) => { const tt = o.t - rows[0].t; return (rows[0].y) + I.speed * Math.sin(I.angle) * tt - 0.5 * I.g * tt * tt; }); const cmp = P.compare(pred, rows.map((o) => o.y)); const sp = Math.hypot(fit.vx, fit.vy0);
+    notes.push(`Model vs observation: the model entered on the left (${fmt(I.speed)} m/s at ${(I.angle * 180 / Math.PI).toFixed(1)}°), started at the first observed height, differs from the observed heights by RMS ${fmt(cmp.rms)} m (largest ${fmt(cmp.max)} m). Measured launch speed ${fmt(sp)} m/s at ${(fit.angle * 180 / Math.PI).toFixed(1)}°. This compares vertical motion only and ignores drag.`); }
+  notes.push('To improve this: include a reference length of known size in the same plane as the motion; confirm the true frame rate; track more frames; film square-on with the camera far away and zoomed in; remove lens distortion.');
+  html += '<div class="msg info"><ul>' + notes.map((n) => '<li>' + esc(n) + '</li>').join('') + '</ul></div>';
+  const rp = fit.resid; html += '<details><summary>Residuals by sample</summary><div class="eq">' + rp.slice(0, 60).map((q) => 't=' + q.t.toFixed(3) + '  dx=' + q.rx.toExponential(2) + '  dy=' + q.ry.toExponential(2)).join('<br>') + '</div></details>';
+  out.innerHTML = html;
+  if (A.model === 'projectile' && A.res && A.res.ok) {
+    const cur = curvesFor(); const o = rows, tt = o.map((p) => p.t - o[0].t); const fitPts = tt.map((t, i) => [o[i].x - o[0].x, fit.rmsY * 0 + (o[0].y + fit.vy0 * t + 0.5 * -fit.g * t * t)]); cur.cur.push({ pts: fitPts, color: COL.b, label: 'fitted curve' }); plot2D($('#rlPlot'), cur.cur, cur.xl, cur.yl, true);
+  }
+}
+function labObs() {
+  if (!window.MLAB || !MLAB.trackObservations) { toast('Video Lab is not available.'); return; }
+  const o = MLAB.trackObservations(0); const out = $('#rlFitOut'); if (!o.ok) { out.innerHTML = '<div class="msg warn">' + esc(o.reason) + '</div>'; return; }
+  A.obsUnit = o.unit; let rows = o.samples;
+  if (o.unit === 'm') { const g = P.polyFit(rows.map((r) => r.t), rows.map((r) => r.y), 2); if (g.c[2] > 0) { rows = rows.map((r) => ({ t: r.t, x: r.x, y: -r.y })); } }
+  A.obs = rows; A.obsUnit = o.unit; $('#rlObs').value = rows.map((r) => [r.t, r.x, r.y].map((v) => +v.toPrecision(7)).join(', ')).join('\n');
+  out.innerHTML = '<div class="msg info">Loaded ' + rows.length + ' tracked frames. ' + esc(o.source) + (o.unit === 'm' ? ' Vertical sign chosen so the parabola opens downward (gravity down); this orientation choice is an assumption.' : '') + '</div>'; if (o.unit === 'px') A.obsUnit = 'px'; fitGo();
+}
+function demoObs() {
+  const r = P.rng(2024), n = 36, rows = []; for (let i = 0; i < n; i++) { const t = i / 30; rows.push({ t: +t.toFixed(4), x: +(0.4 + 6.2 * t + 0.004 * P.gauss(r)).toFixed(5), y: +(1.1 + 7.4 * t - 0.5 * P.G0 * t * t + 0.004 * P.gauss(r)).toFixed(5) }); }
+  A.ask = ''; A.obsUnit = 'm'; A.obs = rows; $('#rlObs').value = rows.map((q) => [q.t, q.x, q.y].join(', ')).join('\n'); $('#rlFitOut').innerHTML = '<div class="msg warn"><b>SYNTHETIC data.</b> Generated by this page from a known parabola (6.2 m/s horizontal, 7.4 m/s vertical, g = 9.80665) plus 4 mm of random noise at 30 frames/s. It demonstrates the fitting; it is not an experiment.</div>'; applyRaw('projectile', { speed: '9.65 m/s', angle: '50.0 deg', h0: '1.1 m' }); run(); fitGo();
+}
+/* ---------------- validation ---------------- */
+function validate() { const out = $('#rlValOut'); let v; try { v = P.validate(); } catch (e) { out.innerHTML = '<div class="msg bad">' + esc(e.message) + '</div>'; return; } A.valRun = v; const ok = v.filter((r) => r.pass).length;
+  out.innerHTML = `<div class="msg ${ok === v.length ? 'ok' : 'bad'}"><b>${ok} of ${v.length} checks passed.</b></div><table aria-label="Validation results"><thead><tr><th>Check</th><th>Engine</th><th>Reference</th><th>Result</th></tr></thead><tbody>${v.map((r) => `<tr><td>${esc(r.name)}${r.note ? '<div class="mut">' + esc(r.note) + '</div>' : ''}</td><td class="v">${fmt(r.got)}</td><td class="v">${fmt(r.ref)}</td><td>${r.pass ? '✔ pass' : '✘ FAIL'}<div class="mut">rel. diff ${r.relErr.toExponential(1)}</div></td></tr>`).join('')}</tbody></table><div class="mut">References are closed-form solutions or published constants. A passing check shows the code matches that reference, not that a real object behaves that way.</div>`; return v; }
+/* ---------------- export / project ---------------- */
+const project = () => ({ app: 'Math3D Reality Engine', version: 1, saved: new Date().toISOString(), model: A.model, inputsRaw: readRaw(), question: A.ask, observations: A.obs, obsUnit: A.obsUnit || 'm', result: A.res && A.res.ok ? { title: A.res.title, tag: A.res.tag, method: A.res.method, equations: A.res.equations, assumptions: A.res.assumptions, limits: A.res.limits, defaultsUsed: A.res.defaults, inputsSI: A.res.inputs, outputs: A.res.outputs } : null, fit: A.fit ? { n: A.fit.n, vx: A.fit.vx, vxSE: A.fit.vxSE, speed: A.fit.speed, angle_rad: A.fit.angle, g: A.fit.g, gSE: A.fit.gSE, rmsX: A.fit.rmsX, rmsY: A.fit.rmsY } : null });
+const save = (txt, name, type) => { const b = new Blob([txt], { type }); MCU.saveFile(b, name); };
+function loadProject(p) { if (!p || p.app !== 'Math3D Reality Engine' || !P.BY[p.model]) throw new Error('This is not a Reality Engine project file.'); A.ask = p.question || ''; $('#rlAsk').value = A.ask; applyRaw(p.model, p.inputsRaw || {}); A.obs = p.observations || []; A.obsUnit = p.obsUnit || 'm'; $('#rlObs').value = A.obs.map((r) => [r.t, r.x, r.y].join(', ')).join('\n'); A.fit = null; run(); if (A.obs.length >= 5) fitGo(); }
+function report() {
+  const r = A.res; if (!r || !r.ok) return null; const L = ['# ' + r.title + ' (Math3D Reality Engine report)', '', 'Generated: ' + new Date().toISOString(), '', '**Result status:** ' + (TAG[r.tag] || TAG.unvalidated)[0], '', A.ask ? '**Question:** ' + A.ask + '\n' : '', '## Results', '', '| Quantity | Value | Status |', '|---|---|---|'];
+  r.outputs.forEach((o) => L.push(`| ${o.name} | ${typeof o.v === 'number' ? fmt(o.v) : o.v} ${o.unit} | ${(TAG[o.tag] || TAG.unvalidated)[0]} |`));
+  L.push('', '## Governing equations', '', ...r.equations.map((e) => '- `' + e + '`'), '', '## Assumptions', '', ...r.assumptions.map((a) => '- ' + a), '', '## Method', '', r.method, '', '## Limits', '', r.limits || '', '');
+  if (r.defaults.length) L.push('## Defaults used (not supplied by the user)', '', ...r.defaults.map((d) => '- ' + d), '');
+  L.push('## Inputs (SI)', '', ...P.BY[r.id].inputs.map((i) => `- ${i.label}: ${fmt(r.inputs[i.id])}`), '');
+  if (A.fit) L.push('## Comparison with measurements', '', `${A.fit.n} observations. Fitted g = ${A.fit.g.toFixed(4)} ± ${A.fit.gSE.toFixed(4)} (standard gravity ${P.G0}). Launch speed ${fmt(A.fit.speed)}, angle ${(A.fit.angle * 180 / Math.PI).toFixed(2)} deg. RMS residuals x ${fmt(A.fit.rmsX)}, y ${fmt(A.fit.rmsY)}. ${A.fit.caveat}`, '');
+  if (A.valRun) L.push('## Validation suite', '', `${A.valRun.filter((x) => x.pass).length}/${A.valRun.length} checks passed.`, '');
+  L.push('---', 'Digits are display precision, not accuracy. Standard errors cover scatter only, not calibration or model error.'); return L.join('\n');
+}
+function csv() { const r = A.res; if (!r || !r.ok || !r.series.length) return null; const hdr = { projectile: 't_s,x_m,y_m', orbit: 't_s,x_m,y_m', pendulum: 't_s,theta_rad', heat: 'x_m,T_numerical_K,T_exact_K', waves: 'x_m,displacement,unused', quantum: 'x_m,relative_density' }[r.id] || 'a,b,c'; let t = hdr + '\n' + r.series.map((p) => p.join(',')).join('\n'); if (A.obs.length) t += '\n\n# observations (' + (A.obsUnit || 'm') + ')\nt,x,y\n' + A.obs.map((o) => [o.t, o.x, o.y].join(',')).join('\n'); return t; }
+/* ---------------- status ---------------- */
+$('#rlStatus').innerHTML = `<ul class="st">
+<li><b style="color:#34d399">Complete</b> Unit-aware calculator with dimension checks; projectile (closed form and RK4 drag), 1-D collision, pendulum, two-body orbit and escape speed, wave superposition and string harmonics, 1-D heat conduction, special relativity, particle in a box and hydrogen levels; Monte Carlo input uncertainty; least-squares trajectory fit with standard errors; validation suite; plain-language parsing of these eight models; JSON, CSV, Markdown and PNG export.</li>
+<li><b style="color:#60a5fa">Approximate</b> Drag uses an assumed coefficient; heat is explicit finite differences in 1-D; orbits ignore other bodies and oblateness; fit errors cover scatter only, not calibration.</li>
+<li><b style="color:#fbbf24">Experimental</b> Using calibrated tracks as observations (assumes the motion lies in the calibrated plane); pixel-only fits with an assumed g.</li>
+<li><b style="color:#f87171">Not implemented</b> Rigid-body multi-contact simulation, N-body orbits, electric and magnetic field solvers, fluid dynamics, stress and deformation, general relativity, multi-electron quantum, true multi-view 3D reconstruction, background workers or GPU acceleration, Three.js (a built-in software renderer is used).</li></ul>`;
+/* ---------------- wiring ---------------- */
+$('#rlModel').onchange = () => { A.model = $('#rlModel').value; A.ask = ''; A.res = null; A.fit = null; buildInputs(); $('#rlRes').innerHTML = '<div class="mut">Press Calculate.</div>'; draw(); };
+$('#rlRun').onclick = () => run(); $('#rlReset').onclick = () => { buildInputs(); run(); };
+$('#rlAskGo').onclick = ask; $('#rlAsk').addEventListener('keydown', (e) => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) ask(); });
+$$('[data-ex]', root).forEach((b) => { b.onclick = () => { $('#rlAsk').value = b.dataset.ex; ask(); }; });
+$('#rlCalcGo').onclick = calcGo; $('#rlCalc').addEventListener('keydown', (e) => { if (e.key === 'Enter') calcGo(); });
+$('#rlFit').onclick = () => { A.obsUnit = 'm'; fitGo(); }; $('#rlObsLab').onclick = labObs; $('#rlObsDemo').onclick = demoObs; $('#rlVal').onclick = () => { validate(); if (A.res && A.res.ok) showResult(A.res); };
+$('#rlObs').addEventListener('input', () => { A.obsUnit = 'm'; });
+$('#rlExJson').onclick = () => save(JSON.stringify(project(), null, 2), 'reality-project.json', 'application/json');
+$('#rlExCsv').onclick = () => { const t = csv(); t ? save(t, 'reality-data.csv', 'text/csv') : toast('Calculate something first.'); };
+$('#rlExRep').onclick = () => { const t = report(); t ? save(t, 'reality-report.md', 'text/markdown') : toast('Calculate something first.'); };
+$('#rlExPng').onclick = () => { $('#rlPlot').toBlob((b) => b && MCU.saveFile(b, 'reality-plot.png')); };
+$('#rlSaveLS').onclick = () => { try { localStorage.setItem('mc-reality-v1', JSON.stringify(project())); toast('Saved in this browser.'); } catch (e) { toast('This browser blocked saving. Use Project (.json) instead.'); } };
+$('#rlLoadLS').onclick = () => { try { const t = localStorage.getItem('mc-reality-v1'); if (!t) { toast('Nothing saved yet.'); return; } loadProject(JSON.parse(t)); } catch (e) { toast('Could not load: ' + e.message); } };
+$('#rlImp').onclick = () => $('#rlImpF').click(); $('#rlImpF').onchange = async (e) => { const f = e.target.files[0]; e.target.value = ''; if (!f) return; try { loadProject(JSON.parse(await f.text())); } catch (er) { toast('Could not open: ' + er.message); } };
+$('#rlWs').onclick = (e) => { const b = e.target.closest('[data-ws]'); if (!b || b.dataset.ws === 'reality') return; close(); if (window.HUB) window.HUB.go(b.dataset.ws); };
+function open() { root.hidden = false; document.body.style.overflow = 'hidden'; if (!A.init) { A.init = true; buildInputs(); calcGo(); try { validate(); } catch (e) { /* ignore */ } run(); } setTimeout(() => $('#rlClose').focus(), 0); }
+function close() { root.hidden = true; document.body.style.overflow = ''; }
+$('#rlClose').onclick = close; root.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !e.defaultPrevented && document.activeElement && document.activeElement.tagName !== 'TEXTAREA') close(); });
+document.addEventListener('click', (e) => { if (e.target.closest('#rlBtn') || e.target.closest('[data-openreality]')) open(); });
+window.REAL = { open, close, state: A, run, ask, calc: calcGo, validate, fit: fitGo, project, report, csv, loadProject, setModel: (m, raw) => applyRaw(m, raw || {}) };
 })();
 
 </script>
