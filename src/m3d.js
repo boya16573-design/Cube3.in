@@ -16,6 +16,7 @@ function rotX(d) { const c = Math.cos(d), s = Math.sin(d); return [1, 0, 0, 0, 0
 function rotY(d) { const c = Math.cos(d), s = Math.sin(d); return [c, 0, s, 0, 0, 1, 0, 0, -s, 0, c, 0, 0, 0, 0, 1]; }
 function rotZ(d) { const c = Math.cos(d), s = Math.sin(d); return [c, -s, 0, 0, s, c, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]; }
 function perspective(fovY, aspect, near, far) { const f = 1 / Math.tan(fovY / 2); return [f / aspect, 0, 0, 0, 0, f, 0, 0, 0, 0, (far + near) / (near - far), 2 * far * near / (near - far), 0, 0, -1, 0]; }
+function orthographic(h, aspect, near, far) { const w = h * aspect; return [1 / w, 0, 0, 0, 0, 1 / h, 0, 0, 0, 0, -2 / (far - near), -(far + near) / (far - near), 0, 0, 0, 1]; }
 function lookAt(eye, tgt, up) {
   let f = [tgt[0] - eye[0], tgt[1] - eye[1], tgt[2] - eye[2]]; const fl = Math.hypot(f[0], f[1], f[2]) || 1; f = f.map((v) => v / fl);
   let s = [f[1] * up[2] - f[2] * up[1], f[2] * up[0] - f[0] * up[2], f[0] * up[1] - f[1] * up[0]]; const sl = Math.hypot(s[0], s[1], s[2]) || 1; s = s.map((v) => v / sl);
@@ -28,7 +29,7 @@ function modelMatrix(tr) { const d = Math.PI / 180; return mul(translate(tr.tx, 
 function cameraMatrices(cam, aspect) {
   const d = Math.PI / 180, yaw = cam.yaw * d, pit = cam.pitch * d, cp = Math.cos(pit);
   const eye = [cam.tx + cam.dist * cp * Math.cos(yaw), cam.ty + cam.dist * cp * Math.sin(yaw), cam.tz + cam.dist * Math.sin(pit)];
-  const view = lookAt(eye, [cam.tx, cam.ty, cam.tz], [0, 0, 1]), proj = perspective(cam.fov * d, aspect, Math.max(0.01, cam.dist * 0.02), cam.dist * 40 + 100);
+  const view = lookAt(eye, [cam.tx, cam.ty, cam.tz], [0, 0, 1]), proj = cam.ortho ? orthographic(cam.dist * Math.tan(cam.fov * d / 2), aspect, -cam.dist * 40 - 100, cam.dist * 40 + 100) : perspective(cam.fov * d, aspect, Math.max(0.01, cam.dist * 0.02), cam.dist * 40 + 100);
   return { eye, view, proj, vp: mul(proj, view) };
 }
 
@@ -158,6 +159,6 @@ function projectAll(mesh, M, cam, W, H) {
   return { s: out, ve, view, proj, vp, MV };
 }
 
-root.M3D = { ident, mul, translate, scale, rotX, rotY, rotZ, perspective, lookAt, apply, det3, modelMatrix, cameraMatrices, PRESETS, VARS, defaults, validate, buildMesh, exactFor, projectAll, TAU };
+root.M3D = { ident, mul, translate, scale, rotX, rotY, rotZ, perspective, orthographic, lookAt, apply, det3, modelMatrix, cameraMatrices, PRESETS, VARS, defaults, validate, buildMesh, exactFor, projectAll, TAU };
 if (typeof module !== 'undefined') module.exports = root.M3D;
 })(typeof window !== 'undefined' ? window : globalThis);
