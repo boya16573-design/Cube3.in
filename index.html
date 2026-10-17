@@ -77,6 +77,7 @@ h1{margin:0;font:italic 500 28px/1.1 var(--f-display);color:var(--ink);letter-sp
 .capbody sub{font:400 .7em var(--f-data)}
 .qverdict{margin:0 0 8px;padding:8px 10px;border-radius:8px;font-weight:600;font-size:13.5px}
 .qverdict.good{background:#e8f7ef;color:#14663f;border:1px solid #9bd7b8}
+.rhist{width:100%;height:44px;color:var(--ink,#334);margin:2px 0 8px;background:rgba(127,127,127,.08);border-radius:6px}
 .qverdict.bad{background:#fdecee;color:var(--danger);border:1px solid var(--danger)}
 .qrow{display:grid;grid-template-columns:22px 1fr;gap:6px;margin-bottom:8px}
 .qi{font-weight:700;color:#14663f;font-size:15px}
@@ -266,6 +267,77 @@ input[type=range]:focus-visible{outline:2px solid var(--accent);outline-offset:3
 @media (max-width:520px){.pname{width:100px}.topacts{gap:4px}.topacts .btn{padding:6px 9px}}
 .mgk .shp{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:62px}.mgk .shp i{font-style:normal;font-size:22px;line-height:1}
 .howsec details{background:var(--soft,#f4f6fb);border:1px solid var(--line,#dfe3ec);border-radius:12px;padding:10px 12px}.howsec summary{cursor:pointer;font-size:14px}.howsec p{font-size:13px;line-height:1.5;margin:8px 0 0}
+
+/* ---- Phone editor: a full-screen editor like the video apps (preview, transport, timeline, tool row, bottom tabs that open a sheet) ---- */
+.mathtab,.sheetbar{display:none}
+body.phone{--soft:#1c1e25;--bg:#000;--panel:#14151a;--ink:#f3f4f6;--muted:#9aa0ab;--line:#2b2d35;--stage:#000;color-scheme:dark;height:100vh;height:100dvh;overflow:hidden;display:flex;flex-direction:column;padding:0}
+body.phone::before{display:none}
+body.phone .top{margin:0;padding:calc(env(safe-area-inset-top,0px) + 6px) 10px 6px;flex:0 0 auto;flex-wrap:nowrap;gap:6px;max-width:none;width:100%}
+html:has(body.phone){background:#000}body.phone .top{background:#000}body.phone #undo,body.phone #redo{font-size:0;min-width:40px;padding:6px 8px}body.phone #undo::before{content:"\21B6";font-size:20px}body.phone #redo::before{content:"\21B7";font-size:20px}body.phone .pname{min-width:60px}body.phone .toast{top:calc(env(safe-area-inset-top,0px) + 64px);bottom:auto}body.phone .qverdict.bad{background:#3a1519}body.phone .qverdict.good{background:#12301f;color:#7be0a8}body.phone .qrow.warn{background:#2a1417}body.phone .brand div{display:none}body.phone .mark{width:30px;height:20px}
+body.phone .topacts{flex:1;min-width:0;gap:6px;justify-content:flex-end;flex-wrap:nowrap}
+body.phone .pname{flex:1;min-width:0;width:auto;background:transparent;border-color:transparent;font-weight:700;font-size:15px;color:var(--ink)}
+body.phone .topacts .btn{padding:7px 10px;min-height:38px;background:#1e2027;border-color:#2b2d35;color:var(--ink);flex:0 0 auto}
+body.phone #export{background:#fff;color:#000;border-color:#fff;font-weight:700;border-radius:12px}
+body.phone #export::after{content:" \203A"}
+body.phone .layout{flex:1;min-height:0;display:flex;flex-direction:column;gap:0;max-width:none;margin:0}
+body.phone .stagecol{flex:1;min-height:0;display:flex;flex-direction:column}
+body.phone .stickytop{position:static;flex:1;min-height:0;display:flex;flex-direction:column;padding:0;background:#000}
+body.phone .stagebox{flex:1;min-height:0;align-items:center;background:#000}
+body.phone .stage{box-shadow:none;background:#000}
+body.phone .transport{flex:0 0 auto;margin:0;padding:6px 10px;gap:8px}
+body.phone .transport .btn{background:transparent;border-color:transparent;color:#fff;min-width:40px;font-size:20px}
+body.phone .toolstrip{flex:0 0 auto;margin:0;padding:6px 6px;border-top:1px solid var(--line);background:#0c0d10}
+body.phone .pages{flex:0 0 auto;max-height:64px;overflow-x:auto;padding:2px 8px}
+body.phone .doodlebar{flex:0 0 auto}
+body.phone #tlwrap{flex:0 0 auto;margin:0;border:0;border-radius:0;background:#0c0d10;border-top:1px solid var(--line)}
+body.phone #tlwrap>summary{display:none}
+body.phone #timeline{max-height:21vh;overflow:auto}
+body.phone #mathbar{display:none}
+body.phone.showMath #mathbar{display:block;position:fixed;left:0;right:0;bottom:56px;max-height:50dvh;overflow:auto;margin:0;padding:10px 14px;z-index:20;background:#fff;color:#000;border-radius:16px 16px 0 0;box-shadow:0 -8px 24px rgba(0,0,0,.5)}
+body.phone .panel{position:fixed;left:0;right:0;bottom:0;z-index:25;border:0;border-radius:16px 16px 0 0;overflow:hidden;box-shadow:0 -8px 24px rgba(0,0,0,.5);background:var(--panel)}
+body.phone .panel .tabs{background:#0c0d10;border-bottom:0;border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);grid-template-columns:repeat(6,1fr)}
+body.phone .tab{padding:8px 2px;font-size:12.5px;border-bottom:0;border-top:3px solid transparent;color:var(--muted)}
+body.phone .tab[aria-selected=true]{color:#fff}
+body.phone .panel:not(.open) [role=tabpanel],body.phone .panel:not(.open) .sheetbar{display:none}
+body.phone .panel.open .sheetbar{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;font-weight:700;font-size:13px;color:var(--muted);order:-1}
+body.phone .panel.open [role=tabpanel]{max-height:42dvh;overflow:auto;-webkit-overflow-scrolling:touch}
+body.phone .panel{display:flex;flex-direction:column}
+body.phone .panel .tabs{order:2}
+body.phone .layout{padding-bottom:calc(52px + env(safe-area-inset-bottom,0px))}
+body.phone .mathtab{display:block}
+body.phone .chip,body.phone .btn{color:var(--ink)}
+body.phone .caption .captitle{color:#000}
+
+/* fixed centre playhead */
+#tlPH{display:none}
+body.phone #tlPH{display:block;position:absolute;left:50%;top:0;bottom:0;width:2px;margin-left:-1px;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.5);pointer-events:none;z-index:4}
+body.phone #tlwrap{position:relative}
+body.phone #timeline{overflow-x:auto;overflow-y:auto;max-height:22vh;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+body.phone #timeline::-webkit-scrollbar{display:none}
+body.phone .tlbody{width:max-content;min-width:100%;padding-inline:50vw;--pps:70px}
+body.phone .tllab{display:none}
+body.phone .tlrow{height:30px;gap:0}
+body.phone .tltrack{flex:none;width:calc(var(--dur) * var(--pps));height:24px}
+body.phone .tltrack.ruler{pointer-events:none;height:22px}
+body.phone .tlbody>.ph,body.phone .tlbody .ph{display:none}
+body.phone .bar{touch-action:none}
+body.phone .tltrack.ruler span{font-size:10px}
+/* keyboard tool bar */
+#kbBar{position:fixed;left:0;right:0;bottom:0;z-index:60;background:#14151a;border-top:1px solid #2b2d35;color:#f3f4f6;padding:8px 8px calc(6px + env(safe-area-inset-bottom,0px))}
+#kbBar[hidden]{display:none}
+.kbrow{display:flex;gap:8px;align-items:center;margin-bottom:6px}
+#kbText{flex:1;min-width:0;font:600 16px/1.2 var(--f-body);color:#fff;background:#23252d;border:1px solid #343743;border-radius:12px;padding:10px 12px}
+.kbdone{border:0;border-radius:12px;background:#fff;color:#000;font-weight:700;padding:10px 14px;min-height:42px}
+.kbopts{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 8px;align-items:center;scrollbar-width:none}
+.kbopts .kbo{flex:0 0 auto;border:1px solid #343743;background:#1e2027;color:#fff;border-radius:999px;padding:8px 14px;font-size:14px;min-height:38px}
+.kbopts .kbo[aria-pressed=true]{background:#fff;color:#000}
+.kbopts .sw{flex:0 0 auto;width:34px;height:34px}
+.kbopts input[type=range]{flex:1;min-width:0}.kbval{font:500 12px var(--f-data);color:#9aa0ab;min-width:52px;text-align:right}
+.kbtools{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.kbt{flex:1 0 auto;min-width:54px;display:flex;flex-direction:column;align-items:center;gap:2px;border:0;background:transparent;color:#cfd2d9;font-size:11px;padding:6px 4px;border-radius:10px}
+.kbt i{font-style:normal;font-size:19px;line-height:1.1}
+.kbt[aria-pressed=true]{background:#2a2d37;color:#fff}
+body.kbOpen .panel,body.kbOpen #mathbar{display:none!important}
 </style>
 </head>
 <body>
@@ -300,15 +372,17 @@ input[type=range]:focus-visible{outline:2px solid var(--accent);outline-offset:3
     <div class="pages" id="pages" role="group" aria-label="Pages"></div>
     </div>
     <section class="caption" id="mathbar" aria-label="The math on this page"><h2 class="captitle">The math on this page</h2><div id="mathBody" class="capbody"></div></section>
-    <details class="tlwrap" id="tlwrap"><summary>Timeline</summary><div id="timeline"></div></details>
+    <details class="tlwrap" id="tlwrap"><summary>Timeline</summary><div id="timeline"></div><div id="tlPH" aria-hidden="true"></div></details>
   </section>
 
   <aside class="panel" aria-label="Tools">
+    <div class="sheetbar"><span id="sheetTitle">Edit</span><button type="button" class="btn sm" id="sheetClose">Close &#10005;</button></div>
     <div class="tabs" role="tablist">
       <button class="tab" role="tab" id="tabb-start" data-tab="start" aria-selected="false" type="button">Start</button>
       <button class="tab" role="tab" id="tabb-add" data-tab="add" aria-selected="false" type="button">Add</button>
       <button class="tab" role="tab" id="tabb-edit" data-tab="edit" aria-selected="true" type="button">Edit</button>
       <button class="tab" role="tab" id="tabb-layers" data-tab="layers" aria-selected="false" type="button">Layers</button>
+      <button class="tab mathtab" id="mathTab" type="button">Math</button>
       <button class="tab" role="tab" id="tabb-check" data-tab="check" aria-selected="false" type="button">Check <span id="chkBadge" class="badge good">✓</span></button>
     </div>
     <div id="tab-start" role="tabpanel" hidden>
@@ -5300,7 +5374,7 @@ function makeSample() {
   return c;
 }
 
-root.FS.photo = { EFFECTS, ORDER, TUNE_BASIC, TUNE_MORE, TUNE_ALL, TUNE_LOOKS, tuneDefaults, fxDefaults, fxRandom, photoDefaults, cropDefaults, CROP_SLIDERS, ASPECTS, buildBase, process, resample, compare, histogram, autoLevels, tuneEquations, makeSample, snapP };
+root.FS.photo = { EFFECTS, ORDER, TUNE_BASIC, TUNE_MORE, TUNE_ALL, TUNE_LOOKS, tuneDefaults, fxDefaults, fxRandom, photoDefaults, cropDefaults, CROP_SLIDERS, ASPECTS, buildBase, process, resample, compare, S2L, lin2s, histogram, autoLevels, tuneEquations, makeSample, snapP };
 })(typeof window !== 'undefined' ? window : globalThis);
 
 </script>
@@ -6512,6 +6586,156 @@ function exportError(L, t, P, exLong) {
   const bsm = (fw === a.width && fh === a.height) ? Bf : PH.resample(Bf, 0, 0, fw, fh, a.width, a.height);
   const r = PH.compare(a, bsm); r.fw = fw; r.fh = fh; return r;
 }
+/* ---------- Realism advisor: how close is this picture to the statistics of a real photograph? ---------- */
+/* Every number is measured in linear light on the current look. The "typical range" values are rules of thumb for ordinary photos, not laws:
+   a moody night shot or a golden sunset can break them on purpose, and the advisor says so. */
+function realismReport(L, t, P) {
+  const m = MEDIA[L.src]; if (!m) return null;
+  const long = 400, a = L.w / L.h; let pw, ph;
+  if (a >= 1) { pw = long; ph = Math.max(8, Math.round(long / a)); } else { ph = long; pw = Math.max(8, Math.round(long * a)); }
+  let src = m.el, sw = m.w, sh = m.h;
+  if (m.kind === 'video' && !(m.el.readyState >= 2)) { src = m.thumb; sw = m.thumb.width; sh = m.thumb.height; }
+  const r = coverRect(sw, sh, pw / ph, L.crop), B = mk(pw, ph); B.getContext('2d').drawImage(src, r[0], r[1], r[2], r[3], 0, 0, pw, ph);
+  let out = B;
+  if (!isPlainPhoto(L.photo)) { out = mk(pw, ph); PH.process(out, B, { tune: L.photo.tune, fx: L.photo.fx, fxp: { [L.photo.fx]: fxParamsAt(L, t) } }, L.photo.pal, L.photo.bg); }
+  const d = out.getContext('2d').getImageData(0, 0, pw, ph).data, N = pw * ph, S2L = PH.S2L, lin2s = PH.lin2s;
+  const Yl = new Float32Array(N), Ys = new Uint8Array(N), hist = new Float32Array(64), hy = new Uint32Array(256);
+  let sumLn = 0, mR = 0, mG = 0, mB = 0, nMid = 0, sS = 0, nS = 0, clipS = 0, nV = 0;
+  for (let i = 0, k = 0; k < N; i += 4, k++) {
+    const R = S2L[d[i]], G = S2L[d[i + 1]], Bl = S2L[d[i + 2]], y = 0.2126 * R + 0.7152 * G + 0.0722 * Bl; Yl[k] = y;
+    const ys = Math.round(lin2s(y)); Ys[k] = ys; hy[ys]++; hist[ys >> 2] += 1; sumLn += Math.log(y + 1e-4);
+    if (y > 0.02 && y < 0.8) { mR += R; mG += G; mB += Bl; nMid++; }
+    const mx = Math.max(d[i], d[i + 1], d[i + 2]), mn = Math.min(d[i], d[i + 1], d[i + 2]);
+    if (mx > 26) { const s = (mx - mn) / mx; sS += s; nS++; if (s > 0.95 && mx > 50) clipS++; }
+    nV++;
+  }
+  for (let k = 0; k < 64; k++) hist[k] /= N;
+  const pct = (p) => { let c = 0; const tg = p * N; for (let v = 0; v < 256; v++) { c += hy[v]; if (c >= tg) return v; } return 255; };
+  const lo = pct(0.005), hi = pct(0.995), yLo = Math.max(S2L[lo], 1 / 4096), yHi = Math.max(S2L[hi], yLo * 1.0001), stopsRange = Math.log2(yHi / yLo);
+  const Lg = Math.exp(sumLn / N), stops = Math.log2(0.18 / Lg);
+  const items = [], add = (o) => items.push(o);
+  /* 1. exposure: a camera meters the scene so that its log-average luminance is 18% grey */
+  const okE = Math.abs(stops) <= 0.7;
+  add({ id: 'r_exposure', label: 'Exposure (how much light)', ok: okE, tip: false,
+    math: 'Y<sub>lin</sub> = 0.2126 R + 0.7152 G + 0.0722 B (linear light);  average brightness L<sub>g</sub> = ' + fn('exp') + '( mean( ' + fn('ln') + ' Y<sub>lin</sub> ) ) = ' + b(n2(Lg, 3)) + ';  correction = ' + fn('log₂') + '( 0.18 ÷ L<sub>g</sub> ) = ' + b((stops >= 0 ? '+' : '') + n2(stops, 2) + ' stops'),
+    range: 'typical: within ±0.7 stops of 0.18 (middle grey)', why: okE ? 'Light level looks like a normal photo.' : (stops > 0 ? 'Darker than most real photos. Fine for a night mood, but detail may be lost.' : 'Brighter than most real photos. Highlights may look washed out.'),
+    fix: okE ? null : { id: 'r_exposure', label: (stops > 0 ? 'Brighten' : 'Darken') + ' by ' + n2(Math.abs(stops), 1) + ' stops', stops } });
+  /* 2. tonal range: a real scene has a true black and a true white */
+  const okR = lo <= 18 && hi >= 225;
+  add({ id: 'r_range', label: 'Tonal range (blacks and whites)', ok: okR, tip: false,
+    math: 'black point = 0.5th percentile of Y = ' + b(lo + ' ÷ 255') + ',  white point = 99.5th percentile = ' + b(hi + ' ÷ 255') + ';  range = ' + fn('log₂') + '( Y<sub>white</sub> ÷ Y<sub>black</sub> ) = ' + b(n2(stopsRange, 1) + ' stops'),
+    range: 'typical: black point below 18 and white point above 225', why: okR ? 'The picture reaches true black and true white, so it has depth.' : (lo > 18 && hi < 225 ? 'No true black and no true white: it looks flat or hazy.' : lo > 18 ? 'No true black: the shadows look faded.' : 'No true white: the highlights look dull.'),
+    fix: okR ? null : { id: 'r_range', label: 'Stretch to full range', lo, hi } });
+  /* 3. colour cast: averaged over a whole scene, light is close to neutral ( gray-world assumption ) */
+  const Rm = mR / Math.max(1, nMid), Gm = mG / Math.max(1, nMid), Bm = mB / Math.max(1, nMid), cast = Math.max(Math.abs(Math.log2(Rm / Gm)), Math.abs(Math.log2(Bm / Gm))), rb = Math.log2(Rm / Bm);
+  const okC = Math.abs(rb) <= 0.45;
+  add({ id: 'r_cast', label: 'Colour balance (tint)', ok: okC, tip: false,
+    math: 'mean linear R : G : B over mid-tones = ' + b(n2(Rm / Gm, 2) + ' : 1 : ' + n2(Bm / Gm, 2)) + ';  cast = max | ' + fn('log₂') + '( R ÷ G ) |, | ' + fn('log₂') + '( B ÷ G ) | = ' + b(n2(cast, 2) + ' stops') + ';  warm-cool = ' + fn('log₂') + '( R ÷ B ) = ' + b(n2(rb, 2)),
+    range: 'typical: warm-cool balance within ±0.45 stops (gray-world rule: a scene averages near neutral; big skies or fields can break it)', why: okC ? 'No strong tint.' : 'Tinted ' + (rb > 0.2 ? 'warm (orange)' : rb < -0.2 ? 'cool (blue)' : 'green or magenta') + '. Sunsets and neon are tinted on purpose, so skip this if it is the mood you want.',
+    fix: okC ? null : { id: 'r_cast', label: 'Neutralize the ' + (rb > 0 ? 'warm' : 'cool') + ' tint', Rm, Bm, rb } });
+  /* 4. saturation: photographs are less colourful than most edited pictures */
+  const meanS = nS ? sS / nS : 0, clipPct = nS ? clipS / nS * 100 : 0, okS = meanS <= 0.55 && clipPct <= 6;
+  add({ id: 'r_sat', label: 'Colour strength (saturation)', ok: okS && meanS >= 0.1, tip: false,
+    math: 'S = ( max − min ) ÷ max for each colour pixel;  mean S = ' + b(n2(meanS, 2)) + ',  pixels with S above 0.95 = ' + b(n2(clipPct, 1) + '%'),
+    range: 'typical: mean S between 0.10 and 0.55, and under 6% fully saturated pixels', why: meanS > 0.55 || clipPct > 6 ? 'More colourful than most real photos: it looks over-processed, and bright colours may lose detail.' : meanS < 0.1 ? 'Almost no colour: it looks faded or black and white. Fine if intended.' : 'Colour strength looks natural.',
+    fix: (meanS > 0.55 || clipPct > 6) ? { id: 'r_sat', label: 'Lower colour strength to natural', f: Math.min(0.92, Math.max(0.5, Math.min(0.45 / Math.max(meanS, 0.01), clipPct > 6 ? 0.85 : 1))) } : (meanS < 0.1 && meanS > 0.01 ? { id: 'r_sat', label: 'Add a little colour', f: Math.min(2, 0.22 / meanS) } : null) });
+  /* 5. sharpening halos */
+  let lapV = 0, lapN = 0;
+  for (let y = 1; y < ph - 1; y++) for (let x = 1; x < pw - 1; x++) { const k = y * pw + x, lap = Ys[k - 1] + Ys[k + 1] + Ys[k - pw] + Ys[k + pw] - 4 * Ys[k]; lapV += lap * lap; lapN++; }
+  const sharp = lapV / Math.max(1, lapN), okH = sharp <= 1800 || L.photo.tune.sharp < 5;
+  add({ id: 'r_sharp', label: 'Over-sharpening (halos)', ok: okH, tip: false,
+    math: 'Var( ∇²Y ) = ' + b(n2(sharp, 0)) + ' at 400 px wide;  unsharp mask strength now ' + b(n2(L.photo.tune.sharp / 100 * 1.6, 2)),
+    range: 'typical: under about 1800 at this size', why: okH ? 'Edges look like a real lens, not like a sharpening filter.' : 'So much edge contrast that bright outlines (halos) may show around objects.',
+    fix: okH ? null : { id: 'r_sharp', label: 'Reduce sharpening' } });
+  /* 6. lens falloff (a tip, not a problem) */
+  let cS = 0, cN = 0, eS = 0, eN = 0; const cx = pw / 2, cy = ph / 2, mr = Math.hypot(cx, cy);
+  for (let y = 0; y < ph; y += 2) for (let x = 0; x < pw; x += 2) { const q = Math.hypot(x - cx, y - cy) / mr; if (q < 0.3) { cS += Yl[y * pw + x]; cN++; } else if (q > 0.85) { eS += Yl[y * pw + x]; eN++; } }
+  const ratio = cN && eN && cS > 0 ? (eS / eN) / (cS / cN) : 1, flat = ratio > 0.98 && ratio < 1.06 && L.photo.tune.vig < 5;
+  add({ id: 'r_vig', label: 'Lens falloff (tip)', ok: true, tip: true,
+    math: 'corner brightness ÷ centre brightness = ' + b(n2(ratio, 2)) + ';  a real lens follows about ' + fn('cos') + '<sup>4</sup>( θ ), so the corners are usually 5 to 40% darker',
+    range: 'typical: 0.6 to 0.95', why: flat ? 'The lighting is perfectly flat from centre to corner, which real lenses rarely do. A little falloff adds realism.' : 'Brightness falls toward the corners, or you added it already.',
+    fix: flat ? { id: 'r_vig', label: 'Add natural lens falloff' } : null });
+  const bad = items.filter((i) => !i.ok), tips = items.filter((i) => i.tip && i.fix);
+  return { items, bad, tips, hist, lo, hi, stops, Lg, meanS, verdict: bad.length ? bad.length + ' of ' + items.filter((i) => !i.tip).length + ' checks are outside the typical range for a real photo' : 'All ' + items.filter((i) => !i.tip).length + ' checks are inside the typical range for a real photo' };
+}
+function realismApply(L, fx) { /* the edit that moves one measured number toward its typical range; the photo lab settings it changes are all visible in the Edit tab */
+  const tn = L.photo.tune, cl = (v, a, c) => Math.max(a, Math.min(c, v));
+  if (fx.id === 'r_exposure') { const nb = tn.bright + fx.stops * 100 / 1.2; tn.bright = cl(Math.round(nb), -100, 100); if (Math.abs(nb) > 100) tn.gamma = cl(+(tn.gamma * (1 + 0.5 * fx.stops)).toFixed(2), 0.5, 2); }
+  else if (fx.id === 'r_range') { const span = tn.white - tn.black; tn.black = cl(Math.round(tn.black + 0.9 * fx.lo * span / 255), 0, 120); tn.white = cl(Math.round(tn.white - 0.9 * (255 - fx.hi) * span / 255), 60, 255); }
+  else if (fx.id === 'r_cast') { const goal = Math.sign(fx.rb) * 0.3, move = goal - fx.rb; tn.warm = cl(Math.round(tn.warm + move * 135), -100, 100); }
+  else if (fx.id === 'r_sat') tn.sat = cl(Math.round(((1 + tn.sat / 100) * fx.f - 1) * 100), -100, 100);
+  else if (fx.id === 'r_sharp') tn.sharp = Math.max(0, tn.sharp - 30);
+  else if (fx.id === 'r_vig') tn.vig = 20;
+}
+
+/* Apply a suggestion, then measure again and repeat until the measured number is inside its range (the edits interact, so one open-loop step is not enough). */
+function realismSolve(L, t, P, ids) {
+  const order = ['r_range', 'r_exposure', 'r_cast', 'r_sat', 'r_sharp', 'r_vig'], list = (ids && ids.length ? order.filter((i) => ids.indexOf(i) >= 0) : order);
+  for (let pass = 0; pass < 6; pass++) {
+    let changed = false;
+    for (const id of list) {
+      const q = realismReport(L, t, P); if (!q) return null;
+      const it = q.items.find((i) => i.id === id); if (!it || !it.fix) continue;
+      if (id === 'r_vig' && pass > 0) continue;
+      realismApply(L, it.fix); changed = true;
+    }
+    if (!changed) break;
+  }
+  return realismReport(L, t, P);
+}
+
+/* ---------- Redraw the picture from a real formula: a sum of cosine waves (the 2-D discrete cosine transform) ----------
+   The coefficients are measured from the photo, then the picture is painted by evaluating the formula at every pixel.
+   Nothing is stored except the formula's numbers, so what is shown below the picture really is the picture's recipe. */
+function dctFit(L, K, outLong) {
+  const m = MEDIA[L.src]; if (!m) return null;
+  const a = L.w / L.h, SL = 192; let N, M; // N columns, M rows of the measuring grid
+  if (a >= 1) { N = SL; M = Math.max(8, Math.round(SL / a)); } else { M = SL; N = Math.max(8, Math.round(SL * a)); }
+  const src = m.kind === 'video' && !(m.el.readyState >= 2) ? m.thumb : m.el, sw = src === m.thumb ? m.thumb.width : m.w, sh = src === m.thumb ? m.thumb.height : m.h;
+  const r = coverRect(sw, sh, N / M, L.crop), G = mk(N, M); G.getContext('2d').drawImage(src, r[0], r[1], r[2], r[3], 0, 0, N, M);
+  const gd = G.getContext('2d').getImageData(0, 0, N, M).data;
+  K = Math.min(K, N, M);
+  const cx = [], cy = [];
+  for (let u = 0; u < K; u++) { const row = new Float64Array(N), s = Math.sqrt((u ? 2 : 1) / N); for (let n = 0; n < N; n++) row[n] = s * Math.cos(Math.PI * (2 * n + 1) * u / (2 * N)); cx.push(row); }
+  for (let v = 0; v < K; v++) { const row = new Float64Array(M), s = Math.sqrt((v ? 2 : 1) / M); for (let n = 0; n < M; n++) row[n] = s * Math.cos(Math.PI * (2 * n + 1) * v / (2 * M)); cy.push(row); }
+  const A = [[], [], []];
+  for (let ch = 0; ch < 3; ch++) {
+    const tmp = new Float64Array(M * K); // along x first
+    for (let y = 0; y < M; y++) for (let u = 0; u < K; u++) { let s = 0; for (let x = 0; x < N; x++) s += (gd[(y * N + x) * 4 + ch] - 128) * cx[u][x]; tmp[y * K + u] = s; }
+    const co = new Float64Array(K * K); // co[v*K+u]
+    for (let v = 0; v < K; v++) for (let u = 0; u < K; u++) { let s = 0; for (let y = 0; y < M; y++) s += tmp[y * K + u] * cy[v][y]; co[v * K + u] = s; }
+    A[ch] = co;
+  }
+  /* continuous form: value(s,t) = 128 + sum a(u,v) * cos(pi u s) * cos(pi v t), with s,t in 0..1; fold the orthonormal scale into a(u,v) */
+  const a2 = A.map((co) => { const o = new Float64Array(K * K); for (let v = 0; v < K; v++) for (let u = 0; u < K; u++) o[v * K + u] = co[v * K + u] * Math.sqrt((u ? 2 : 1) / N) * Math.sqrt((v ? 2 : 1) / M); return o; });
+  let Wo, Ho; if (a >= 1) { Wo = outLong; Ho = Math.max(8, Math.round(outLong / a)); } else { Ho = outLong; Wo = Math.max(8, Math.round(outLong * a)); }
+  const bx = [], by = [];
+  for (let u = 0; u < K; u++) { const row = new Float64Array(Wo); for (let i = 0; i < Wo; i++) row[i] = Math.cos(Math.PI * u * (i + 0.5) / Wo); bx.push(row); }
+  for (let v = 0; v < K; v++) { const row = new Float64Array(Ho); for (let i = 0; i < Ho; i++) row[i] = Math.cos(Math.PI * v * (i + 0.5) / Ho); by.push(row); }
+  const out = mk(Wo, Ho), od = out.getContext('2d').createImageData(Wo, Ho), px = od.data;
+  for (let ch = 0; ch < 3; ch++) {
+    const co = a2[ch], tmp = new Float64Array(K * Wo);
+    for (let v = 0; v < K; v++) for (let u = 0; u < K; u++) { const c = co[v * K + u]; if (c === 0) continue; const bu = bx[u], tv = v * Wo; for (let i = 0; i < Wo; i++) tmp[tv + i] += c * bu[i]; }
+    const acc = new Float64Array(Wo);
+    for (let y = 0; y < Ho; y++) { acc.fill(0); for (let v = 0; v < K; v++) { const w2 = by[v][y], tv = v * Wo; for (let i = 0; i < Wo; i++) acc[i] += w2 * tmp[tv + i]; } const base = y * Wo * 4 + ch; for (let i = 0; i < Wo; i++) { const val = 128 + acc[i]; px[base + i * 4] = val < 0 ? 0 : val > 255 ? 255 : val; } }
+  }
+  for (let i = 3; i < px.length; i += 4) px[i] = 255;
+  out.getContext('2d').putImageData(od, 0, 0);
+  /* honest error: compare with the original at the same size */
+  const O = mk(Wo, Ho); O.getContext('2d').drawImage(src, r[0], r[1], r[2], r[3], 0, 0, Wo, Ho);
+  const cmp = PH.compare(O, out);
+  const terms = []; for (let ch = 0; ch < 3; ch++) for (let i = 0; i < K * K; i++) terms.push({ ch, u: i % K, v: (i / K) | 0, a: a2[ch][i] });
+  const top = [0, 1, 2].map((ch) => terms.filter((t2) => t2.ch === ch).sort((p, q) => Math.abs(q.a) - Math.abs(p.a)).slice(0, 4));
+  return { canvas: out, K, N, M, Wo, Ho, psnr: cmp ? cmp.psnr : null, top, srcW: sw, srcH: sh };
+}
+function dctLines(info) {
+  const f = (x) => (x < 0 ? '−' : '') + Math.abs(x).toFixed(1), nm = ['R', 'G', 'B'], K = info.K, lines = [];
+  lines.push('The above picture is a converted version of a ' + info.srcW + ' × ' + info.srcH + ' image. For m = 1, 2, …, ' + info.Wo + ' and n = 1, 2, …, ' + info.Ho + ', the colour of the pixel in column m and row n is rgb( R, G, B ), where  s = ( m − ½ ) ÷ ' + info.Wo + ',  t = ( n − ½ ) ÷ ' + info.Ho + ',  and');
+  for (let ch = 0; ch < 3; ch++) lines.push(nm[ch] + '( s, t ) = min( 255, max( 0, 128 + Σ[u=0→' + (K - 1) + '] Σ[v=0→' + (K - 1) + '] a' + nm[ch] + '(u,v) · cos( π u s ) · cos( π v t ) ) ),   with ' + info.top[ch].map((t2) => 'a' + nm[ch] + '(' + t2.u + ',' + t2.v + ') = ' + f(t2.a)).join(', ') + ' and ' + (K * K - 4) + ' more numbers measured from the photo');
+  lines.push('Each number a(u,v) = how much of the cosine wave of frequency (u, v) is in the photo ( the 2-D discrete cosine transform ). ' + K + ' × ' + K + ' = ' + (K * K) + ' waves per colour. Difference from the original: PSNR = ' + (info.psnr && isFinite(info.psnr) ? info.psnr.toFixed(1) : '∞') + ' dB.');
+  return lines;
+}
+
 function qualityReport(L, t, P) {
   const m = MEDIA[L.src]; if (!m) return null;
   const long = 360, a = L.w / L.h; let pw, ph;
@@ -6925,7 +7149,7 @@ function sceneEquations(L, t) {
   return o;
 }
 
-root.MC = { multiPreset, MULTI_PRESETS, exportError, newScene, sceneRender, sceneEquations, sceneSun, hhmm, S_PRESETS, BLENDS, MASKS, dominantColors, qualityReport, layerEquations, pageEquations, uid, PRESETS, FONTS, SWATCHES, GRADIENTS, TEMPLATES, IN_OPTS, OUT_OPTS, LOOP_OPTS, MEDIA, STROKE_ONLY,
+root.MC = { realismReport, realismApply, realismSolve, dctFit, dctLines, multiPreset, MULTI_PRESETS, exportError, newScene, sceneRender, sceneEquations, sceneSun, hhmm, S_PRESETS, BLENDS, MASKS, dominantColors, qualityReport, layerEquations, pageEquations, uid, PRESETS, FONTS, SWATCHES, GRADIENTS, TEMPLATES, IN_OPTS, OUT_OPTS, LOOP_OPTS, MEDIA, STROKE_ONLY,
   fontOf, fontCss, addImage, addVideo, newText, newShape, newMedia, newMath, newGraph, newDoodle, speechSegments, timeLines, viewLayer, newAudio, addAudio, layerGain, designFlaws, layerBox, textInk, kfAt, kfMotion, newKeyframe, kfSorted, graphData, graphEquations, layerLabel, layoutText, refitText,
   animState, motionEquations, fxParamsAt, layerEnd, isVisible, toLocal, fromLocal, hitTest, renderFrame, syncVideos,
   newProject, fitMedia, fromTemplate, isPlainPhoto, coverRect, clamp };
@@ -7215,7 +7439,8 @@ function mediaHTML(L) {
     }
     fxh += eqbox(() => [].concat(E.eq(Object.assign(PH.fxDefaults(fx), ph.fxp[fx]))), 'The math behind this effect');
   }
-  h += acc('fx', 'Math effects', fxh, true);
+  h += acc('realism', '\u2728 Realism check: is it like a real photo?', '<div id="rBody" class="qbody"><p class="fine">Measuring…</p></div>', true);
+  h += acc('fx', 'Math effects', fxh, false);
   const looks = PH.TUNE_LOOKS.map((lk) => ({ label: lk.name, tip: 'Apply the ' + lk.name + ' look', run: () => { Object.assign(ph.tune, PH.tuneDefaults(), lk.v); U.redraw(false); U.commit(); buildEdit(); } }));
   let ch = chips(looks) + '<div class="chips">' + btn('✨ Auto-enhance', () => U.autoEnhance(L), 'chip', 'Stretch the lights and darks to fill the full range') + btn('Reset', () => { Object.assign(ph.tune, PH.tuneDefaults()); U.redraw(false); U.commit(); buildEdit(); }, 'chip') + '</div>';
   ch += paramControls(PH.TUNE_BASIC, () => ph.tune);
@@ -7461,15 +7686,16 @@ function buildTimeline() {
   if (!P.layers.length) { box.innerHTML = '<p class="fine">Layers appear here as bars. Drag a bar to change when it shows.</p>'; return; }
   const ticks = []; const step = P.dur <= 8 ? 1 : P.dur <= 16 ? 2 : 5;
   for (let s = 0; s <= P.dur + 1e-6; s += step) ticks.push('<span style="left:' + (s / P.dur * 100) + '%">' + s + '</span>');
-  box.innerHTML = '<div class="tlbody" id="tlbody"><div class="tlrow tlrule"><span class="tllab"></span><div class="tltrack ruler">' + ticks.join('') + '</div></div>' +
+  box.innerHTML = '<div class="tlbody" id="tlbody" style="--dur:' + P.dur + '"><div class="tlrow tlrule"><span class="tllab"></span><div class="tltrack ruler">' + ticks.join('') + '</div></div>' +
     P.layers.slice().reverse().map((L) => {
       const e = MC.layerEnd(L, P.dur), l = L.t0 / P.dur * 100, w = Math.max(1.5, (e - L.t0) / P.dur * 100);
       return '<div class="tlrow' + (L.id === U.sel ? ' on' : '') + '" data-tid="' + L.id + '"><span class="tllab">' + esc(MC.layerLabel(L)) + '</span><div class="tltrack"><div class="bar t-' + L.type + '" data-bar="' + L.id + '" style="left:' + l + '%;width:' + w + '%" title="Drag to move. Drag the ends to trim."></div></div></div>';
     }).join('') + '<div class="tlrow tladd"><span class="tllab">Audio</span><div class="tltrack"><button type="button" class="addaud" data-ts="audio">+ Add audio</button><button type="button" class="addaud" data-ts="voice">🎙 Voice</button></div></div><div class="ph" id="ph"></div></div>';
   setPlayhead();
 }
-function setPlayhead() {
+function setPlayhead(fromScroll) {
   const P = U.project, b = $('#tlbody'); if (b) b.style.setProperty('--f', String(clamp(U.t / P.dur, 0, 1)));
+  if (U.tlSync && !arguments[0]) U.tlSync();
 }
 
 /* ---------- Start and Add tabs ---------- */
@@ -7545,6 +7771,7 @@ function autoFix(L) {
   U.toast(after.bad.length < before.bad.length ? 'Fixed ' + (before.bad.length - after.bad.length) + ' of ' + before.bad.length + ' problems. ' + (after.ok ? 'All tests pass now.' : after.bad.length + ' left (see below).') : 'Nothing more could be fixed automatically.');
 }
 function refreshQuality() {
+  refreshRealism();
   const el = $('#qBody'), L = U.selLayer(); if (!el || !L || !L.src || (L.type !== 'image' && L.type !== 'video')) return;
   let q; try { q = MC.qualityReport(L, U.t, U.project); } catch (e) { return; }
   if (!q) return; LASTQ[L.id] = q; lastMath = ''; refreshMath();
@@ -7564,6 +7791,28 @@ function refreshQuality() {
     hold.addEventListener('pointerdown', on); hold.addEventListener('pointerup', off); hold.addEventListener('pointerleave', off); hold.addEventListener('pointercancel', off); }
 }
 let qT = 0; const LASTQ = {};
+function refreshRealism() {
+  const el = $('#rBody'), L = U.selLayer(); if (!el || !L || !L.src || (L.type !== 'image' && L.type !== 'video')) return;
+  let q; try { q = MC.realismReport(L, U.t, U.project); } catch (e) { el.innerHTML = '<p class="fine">Could not measure: ' + e.message + '</p>'; return; }
+  if (!q) return; LASTR[L.id] = q;
+  const fixes = q.items.filter((i) => i.fix);
+  const run = (id) => () => { MC.realismSolve(L, U.t, U.project, [id]); U.redraw(false); U.commit(); buildEdit(); };
+  let svg = '<svg viewBox="0 0 128 34" class="rhist" role="img" aria-label="Brightness histogram"><title>Brightness histogram, dark on the left</title>'; const mx = Math.max.apply(null, Array.from(q.hist));
+  for (let i = 0; i < 64; i++) svg += '<rect x="' + (i * 2) + '" y="' + (32 - 30 * Math.sqrt(q.hist[i] / mx)).toFixed(1) + '" width="1.6" height="' + (30 * Math.sqrt(q.hist[i] / mx)).toFixed(1) + '" fill="currentColor" opacity=".55"/>';
+  svg += '<line x1="' + (q.lo / 2) + '" x2="' + (q.lo / 2) + '" y1="0" y2="34" stroke="#e0457b" stroke-width=".6"/><line x1="' + (q.hi / 2) + '" x2="' + (q.hi / 2) + '" y1="0" y2="34" stroke="#e0457b" stroke-width=".6"/></svg>';
+  const score = q.items.filter((i) => !i.tip && i.ok).length, tot = q.items.filter((i) => !i.tip).length;
+  let h = '<p class="qverdict ' + (q.bad.length ? 'bad' : 'good') + '">' + (q.bad.length ? '\u2716 ' : '\u2713 ') + score + ' of ' + tot + ' checks match a real photo. ' + (q.bad.length ? 'Tap a suggestion to move it closer.' : 'Nothing to fix.') + '</p>' + svg;
+  h += q.items.map((i) => { const f = i.fix; return '<div class="qrow ' + (i.ok ? (i.tip && f ? 'ok amber' : 'ok') : 'warn') + '"><span class="qi" aria-hidden="true">' + (i.ok ? (i.tip && f ? '!' : '\u2713') : '\u2716') + '</span><div><b class="ql">' + i.label + '</b><div class="eqs plain"><p>' + i.math + '</p><p class="fine">' + i.range + '. ' + i.why + '</p></div>' + (f ? '<div class="chips tight" data-rfix="' + i.id + '"></div>' : '') + '</div></div>'; }).join('');
+  if (fixes.length > 1) h += '<div class="chips" id="rAllWrap"></div>';
+  h += '<div class="chips" id="rBelowWrap"></div>';
+  h += '<p class="fine">Matching these averages makes a picture look like a typical photograph. It cannot add real detail that the camera never captured, and a night shot or sunset may break these rules on purpose, so you decide.</p>';
+  el.innerHTML = h;
+  fixes.forEach((i) => { const c = el.querySelector('[data-rfix="' + i.id + '"]'); if (c) c.appendChild(btnEl(i.fix.label, run(i.id), 'chip')); });
+  const bw = $('#rBelowWrap'); if (bw) bw.appendChild(btnEl('\u222B Paint it from a real formula + show it below', () => U.mathPicture(L), 'primary')); if (bw && L.mathPic) bw.appendChild(btnEl('Back to the original photo', () => { L.src = L.mathPic.orig; L.mathPic = null; U.redraw(false); U.commit(); buildEdit(); }, 'chip')); if (bw) bw.appendChild(btnEl('\ud83d\udcd0 Show the math under the picture', () => U.mathBelow(L), 'chip'));
+  const aw = $('#rAllWrap'); if (aw) aw.appendChild(btnEl('\u2728 Apply all ' + fixes.length + ' suggestions', () => { const a = MC.realismSolve(L, U.t, U.project); U.redraw(false); U.commit(); buildEdit(); U.toast(a && a.bad.length ? 'Applied. ' + a.bad.length + ' still outside the range; the numbers below show why.' : 'Applied. Every check is now inside the range of a real photo.'); }, 'primary'));
+}
+const LASTR = {};
+function btnEl(label, fn, cls) { const b2 = document.createElement('button'); b2.type = 'button'; b2.className = 'btn sm ' + (cls || ''); b2.textContent = label; b2.addEventListener('click', fn); return b2; }
 
 /* ---------- flaw finder panel ---------- */
 let FL = [], flT = 0, FLACT = {};
@@ -7662,7 +7911,7 @@ function init() {
   setTimeout(paintThumbs, 60);
 }
 
-return { openSection, init, FLAWS: () => FL, refreshFlawsNow, refreshQualitySoon, refreshMath, buildEdit, buildLayers, buildTimeline, setPlayhead, sync, refreshEqs, refreshThumbsSoon, markColors, buildStart };
+return { openSection, refreshRealism, realism: (id) => LASTR[id], init, FLAWS: () => FL, refreshFlawsNow, refreshQualitySoon, refreshMath, buildEdit, buildLayers, buildTimeline, setPlayhead, sync, refreshEqs, refreshThumbsSoon, markColors, buildStart };
 };
 })(typeof window !== 'undefined' ? window : globalThis);
 
@@ -7712,8 +7961,8 @@ function redo() { if (!hist.redo.length) return; hist.undo.push(hist.cur); resto
 /* ---------- stage size and painting ---------- */
 function fitStage() {
   const P = U.project, box = $('#stagebox'), wide = window.innerWidth >= 960;
-  const availW = Math.max(120, box.clientWidth - 20);
-  const availH = wide ? Math.max(260, window.innerHeight - 296) : Math.max(170, window.innerHeight * 0.36);
+  const availW = Math.max(120, box.clientWidth - (document.body.classList.contains('phone') ? 8 : 20));
+  const isPh = document.body.classList.contains('phone'), availH = wide ? Math.max(260, window.innerHeight - 296) : isPh ? Math.max(120, box.clientHeight - 16) : Math.max(170, window.innerHeight * 0.36);
   const s = Math.min(availW / P.W, availH / P.H);
   const cw = Math.max(40, Math.round(P.W * s)), ch = Math.max(40, Math.round(P.H * s));
   stage.style.width = cw + 'px'; stage.style.height = ch + 'px';
@@ -7905,14 +8154,21 @@ ov.addEventListener('pointerup', endDrag);
 ov.addEventListener('pointercancel', endDrag);
 ov.addEventListener('dblclick', (e) => {
   const L = U.selLayer();
-  if (L && L.type === 'text') { U.setTab('edit'); const tb = $('#textBox'); if (tb) { tb.focus(); tb.select(); } }
+  if (L && L.type === 'text') { if (document.body.classList.contains('phone')) { U.sheet(false); U.kbOpen(L, ''); return; } U.setTab('edit'); const tb = $('#textBox'); if (tb) { tb.focus(); tb.select(); } }
 });
 
 /* ---------- selection, tabs ---------- */
+/* phone editor shell: the tab bar sits at the bottom and opens a sheet */
+const phoneMq = window.matchMedia ? window.matchMedia('(max-width:760px)') : { matches: false };
+function applyPhone() { document.body.classList.toggle('phone', !!phoneMq.matches); const tl = document.getElementById('tlwrap'); if (tl && phoneMq.matches) tl.open = true; setTimeout(fitStage, 50); }
+if (phoneMq.addEventListener) phoneMq.addEventListener('change', applyPhone);
+U.sheet = function (open) { const p = $('.panel'); if (p) p.classList.toggle('open', !!open); if (open) document.body.classList.remove('showMath'); setTimeout(fitStage, 30); };
 U.setTab = function (name) {
   $$('.tab').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.tab === name)));
   if (name === 'check' && U.P) U.P.refreshFlawsNow();
   ['start', 'add', 'edit', 'layers', 'check'].forEach((n) => { $('#tab-' + n).hidden = n !== name; });
+  const st = $('#sheetTitle'); if (st) st.textContent = { start: 'Start', add: 'Add', edit: 'Edit', layers: 'Layers', check: 'Check' }[name] || '';
+  if (document.body.classList.contains('phone') && U.sheetReady) U.sheet(true);
 };
 U.select = function (id, fromCanvas) {
   U.sel = id;
@@ -7933,7 +8189,7 @@ U.addText = function (kind) {
   const P = U.project, u = sizeU();
   const cfg = { Heading: { text: 'Add a heading', size: 120 * u, bold: true }, Subheading: { text: 'Add a subheading', size: 64 * u, bold: true }, Body: { text: 'Add a little bit of body text', size: 40 * u, bold: false } }[kind];
   const L = MC.newText(Object.assign({ w: P.W * 0.8, x: P.W * 0.1, y: 0 }, cfg, { color: lightBg() ? '#12161e' : '#ffffff' }));
-  L.y = (P.H - L.h) / 2; U.addLayer(L); U.toast(kind + ' added. Drag it into place.');
+  L.y = (P.H - L.h) / 2; U.addLayer(L); if (document.body.classList.contains('phone')) { U.sheet(false); setTimeout(() => U.kbOpen(L, ''), 60); } else U.toast(kind + ' added. Drag it into place.');
 };
 function lightBg() {
   const c = U.project.bg.c1; if (!/^#[0-9a-f]{6}$/i.test(c)) return false;
@@ -8077,7 +8333,8 @@ U.loadFiles = async function (files, targetId) {
         const L = MC.newMedia(kind, { src: mid }); MC.fitMedia(L, mw, mh, P.W, P.H, false); U.addLayer(L);
         if (kind === 'video') { const m = MC.MEDIA[mid]; if (!P.layers.some((q) => q !== L && q.type === 'video') && m.dur > P.dur) { P.dur = Math.min(30, Math.ceil(m.dur)); U.commit(); U.P.buildEdit(); U.P.buildTimeline(); updateTime(); } }
       }
-      if (kind === 'video') U.toast('Video added. Press play to see it move.'); else U.toast('Photo added. Try the effects in Edit.');
+      if (kind === 'video') U.toast('Video added. Press play to see it move.');
+      else { U.toast('Photo added. Measuring how close it is to a real photo…'); setTimeout(() => { try { const Lm = U.project.layers.find((q) => q.src === mid); if (!Lm) return; U.setTab('edit'); U.P.openSection('realism'); const r = MC.realismReport(Lm, U.t, U.project); if (r) U.toast(r.bad.length ? 'Realism check: ' + r.bad.length + ' suggestion' + (r.bad.length > 1 ? 's' : '') + ' to look more like a real photo. See Edit.' : 'Realism check: this already matches a real photo.'); } catch (e) { /* the check is advice only */ } }, 400); }
     } catch (err) { U.toast('Could not open ' + f.name + '. Try a JPG, PNG, MP4 or WebM file.'); }
   }
 };
@@ -8111,6 +8368,35 @@ U.autoEnhance = function (L) {
   const r = MC.coverRect(sw, sh, b.width / b.height, L.crop); b.getContext('2d').drawImage(src, r[0], r[1], r[2], r[3], 0, 0, b.width, b.height);
   const al = PH.autoLevels(b); Object.assign(L.photo.tune, { black: al.black, white: al.white, gamma: al.gamma });
   U.redraw(false); U.commit(); U.P.buildEdit(); U.toast('Enhanced: levels set from the picture itself');
+};
+/* Put the picture on top and its real maths underneath, like a printed figure with its caption. It is part of the page, so it is exported with the picture. */
+U.mathPicture = function (L) { /* repaint the photo from its cosine formula, then show the formula under it */
+  const m = MC.MEDIA[L.src]; if (!m) return; U.toast('Measuring the photo and painting it from the formula…');
+  setTimeout(() => {
+    try {
+      const orig = L.mathPic ? L.mathPic.orig : L.src, info = MC.dctFit(L.mathPic ? Object.assign({}, L, { src: orig, crop: { zoom: 1, px: 0, py: 0 } }) : L, 48, Math.min(960, Math.max(m.w, m.h)));
+      if (!info) return; const mid = MC.addImage(info.canvas); L.src = mid; L.crop = { zoom: 1, px: 0, py: 0 };
+      const keep = { K: info.K, Wo: info.Wo, Ho: info.Ho, psnr: info.psnr, top: info.top, srcW: info.srcW, srcH: info.srcH, N: info.N, M: info.M };
+      L.mathPic = { orig, info: keep };
+      U.redraw(false); U.mathBelow(L); U.toast('Done. This picture is painted from the formula below it (PSNR ' + (info.psnr && isFinite(info.psnr) ? info.psnr.toFixed(1) : '\u221E') + ' dB against your photo).');
+    } catch (e) { U.toast('Could not do that: ' + e.message); }
+  }, 60);
+};
+U.mathBelow = function (L) {
+  const P = U.project, m = L && MC.MEDIA[L.src]; if (!m) return;
+  P.layers.filter((q) => q.mathFor === L.id).forEach((q) => { P.layers.splice(P.layers.indexOf(q), 1); });
+  const plain = (s) => String(s).replace(/<sub>/g, '').replace(/<\/sub>/g, '').replace(/<sup>/g, '^').replace(/<\/sup>/g, '').replace(/<[^>]*>/g, '').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim();
+  const ph = Math.min(P.W * m.h / m.w, P.H * 0.6), fh = Math.round(ph);
+  L.x = 0; L.y = 0; L.w = P.W; L.h = fh; L.crop = { zoom: 1, px: 0, py: 0 };
+  let lines = []; if (L.mathPic) lines = MC.dctLines(L.mathPic.info); else try { lines = MC.layerEquations(L, U.t, P).map(plain).filter((s) => s && !/^(position|blend|crop)\b/i.test(s)); } catch (e) { /* none */ }
+  if (!L.mathPic) try { const r = MC.realismReport(L, U.t, P); if (r) r.items.filter((i) => !i.tip).forEach((i) => lines.push(plain(i.math))); } catch (e) { /* none */ }
+  if (!lines.length) lines.push('out( x, y ) = photo( x, y )');
+  const y0 = fh, ph2 = P.H - fh, pad = Math.round(P.W * 0.03);
+  const bg = MC.newShape({ kind: 'rect', fill: '#ffffff', fill2: null, radius: 0, strokeW: 0, x: 0, y: y0, w: P.W, h: ph2, name: 'Math panel', mathFor: L.id });
+  const tx = MC.newText({ text: 'The math behind this picture\n' + lines.join('\n'), font: 'Playfair Display', bold: false, color: '#111111', align: 'left', shadow: 0, outline: 0, lineH: 1.18, x: pad, y: y0 + pad, w: P.W - 2 * pad, size: 40, name: 'Math caption', mathFor: L.id });
+  let s = 40; for (let i = 0; i < 40; i++) { tx.size = s; MC.refitText(tx); if (tx.h <= ph2 - 2 * pad || s <= 8) break; s -= 1; }
+  P.layers.push(bg); P.layers.push(tx); U.redraw(false); U.commit(); U.P.buildEdit(); U.P.buildLayers(); U.P.buildTimeline();
+  U.toast('Math added under the picture. Edit the text if you want to shorten it.');
 };
 window.addEventListener('dragover', (e) => { if (e.dataTransfer && Array.from(e.dataTransfer.types || []).includes('Files')) { e.preventDefault(); stage.classList.add('drag'); } });
 window.addEventListener('dragleave', (e) => { if (!e.relatedTarget) stage.classList.remove('drag'); });
@@ -8587,6 +8873,17 @@ $('#addFrame').addEventListener('click', () => U.addFrame());
 $('#addSample').addEventListener('click', () => { const P = U.project, m = MC.MEDIA[U.sampleId()], L = MC.newMedia('image', { src: U.sampleId() }); MC.fitMedia(L, m.w, m.h, P.W, P.H, false); U.addLayer(L); });
 $('#file').addEventListener('change', (e) => { const f = e.target.files; const tid = fileTarget; fileTarget = null; if (f && f.length) U.loadFiles(f, tid); });
 
+/* phone: the timeline slides under a fixed centre playhead; scrolling it is scrubbing */
+(function () {
+  const tl = $('#timeline'); let prog = 0;
+  const trackW = () => { const t = tl.querySelector('.tltrack'); return t ? t.offsetWidth : 0; };
+  U.tlSync = function () { if (!document.body.classList.contains('phone')) return; const w = trackW(); if (!w) return; const x = Math.round(U.t / U.project.dur * w); if (Math.abs(tl.scrollLeft - x) > 1) { prog = Date.now(); tl.scrollLeft = x; } };
+  tl.addEventListener('scroll', () => {
+    if (!document.body.classList.contains('phone') || Date.now() - prog < 120) return; const w = trackW(); if (!w) return;
+    if (U.playing) U.pause && U.pause();
+    U.t = clamp(tl.scrollLeft / w, 0, 1) * U.project.dur; prog = 0; MC.syncVideos(U.project, U.t, false); const s = $('#scrub'); if (s) s.value = U.t; $('#time').textContent = U.t.toFixed(1) + ' / ' + U.project.dur.toFixed(1) + ' s'; U.P.setPlayhead(true); U.redraw(true); U.schedFinal();
+  }, { passive: true });
+})();
 /* timeline bars: drag to move, drag the ends to trim; drag the ruler to scrub */
 let tdrag = null;
 $('#timeline').addEventListener('pointerdown', (e) => {
@@ -8787,6 +9084,7 @@ function ts(id) {
     case 'barclose': hideBar(); buildStrip(); return;
   }
   if (!L) return;
+  if (document.body.classList.contains('phone') && L.type === 'text' && (id === 'edit' || id === 'style')) { U.sheet(false); U.kbOpen(L, id === 'style' ? 'font' : ''); return; }
   switch (id) {
     case 'copy': copyLayer(L); return;
     case 'dup': U.dupLayer(L); return;
@@ -9084,6 +9382,63 @@ async function importProjectFile(file) {
 }
 $('#projOpenFile').addEventListener('click', () => $('#projFile').click());
 $('#projFile').addEventListener('change', (e) => { const f = e.target.files[0]; e.target.value = ''; if (f) importProjectFile(f); });
+
+/* ----- keyboard tool bar for text (phone): the text box, then Aa Color Align Size Shadow Animate, right above the keyboard ----- */
+let kbL = null, kbMode = '';
+function kbEl() {
+  let b = $('#kbBar'); if (b) return b;
+  b = document.createElement('div'); b.id = 'kbBar'; b.hidden = true;
+  b.innerHTML = '<div class="kbrow"><input id="kbText" type="text" autocomplete="off" aria-label="Text" enterkeyhint="done"><button type="button" class="kbdone" id="kbDone">Done</button></div><div class="kbopts" id="kbOpts" hidden></div><div class="kbtools" id="kbTools" role="toolbar" aria-label="Text tools"></div>';
+  document.body.appendChild(b); return b;
+}
+const KB_TOOLS = [['font', 'Aa', 'Font'], ['color', '●', 'Color'], ['align', '≡', 'Align'], ['size', 'A↕', 'Size'], ['bold', 'B', 'Bold'], ['shadow', '◐', 'Shadow'], ['anim', '✦', 'Animate'], ['hl', '▭', 'Highlight']];
+function kbPlace() {
+  const b = $('#kbBar'); if (!b || b.hidden) return; const vv = window.visualViewport;
+  const bottom = vv ? Math.max(0, window.innerHeight - (vv.height + vv.offsetTop)) : 0; b.style.bottom = bottom + 'px';
+}
+function kbTools() {
+  const L = kbL; if (!L) return;
+  $('#kbTools').innerHTML = KB_TOOLS.map((t) => '<button type="button" class="kbt" data-kb="' + t[0] + '" aria-pressed="' + (kbMode === t[0] || (t[0] === 'bold' && L.bold) || (t[0] === 'hl' && !!L.hl)) + '"><i aria-hidden="true">' + t[1] + '</i>' + t[2] + '</button>').join('');
+}
+function kbOpts() {
+  const L = kbL, box = $('#kbOpts'); if (!L || !kbMode || kbMode === 'bold' || kbMode === 'hl') { box.hidden = true; box.innerHTML = ''; return; }
+  const draw = (fin) => { MC.refitText(L); U.redraw(!fin); if (fin) U.commit(); };
+  let h = '';
+  if (kbMode === 'font') h = MC.FONTS.map((f) => '<button type="button" class="kbo" data-v="' + f.id + '" aria-pressed="' + (L.font === f.id) + '" style="font-family:\'' + f.id + '\',' + f.fb + '">' + f.id + '</button>').join('');
+  else if (kbMode === 'color') h = MC.SWATCHES.map((c) => '<button type="button" class="sw" data-v="' + c + '" style="--c:' + c + '" aria-label="Color ' + c + '" aria-pressed="' + (L.color === c) + '"></button>').join('');
+  else if (kbMode === 'align') h = [['left', 'Left'], ['center', 'Center'], ['right', 'Right']].map((a) => '<button type="button" class="kbo" data-v="' + a[0] + '" aria-pressed="' + (L.align === a[0]) + '">' + a[1] + '</button>').join('');
+  else if (kbMode === 'size') h = '<input type="range" id="kbRange" min="12" max="400" step="1" value="' + Math.round(L.size) + '" aria-label="Size"><span class="kbval">' + Math.round(L.size) + ' px</span>';
+  else if (kbMode === 'shadow') h = '<input type="range" id="kbRange" min="0" max="100" step="1" value="' + Math.round(L.shadow) + '" aria-label="Shadow"><span class="kbval">' + Math.round(L.shadow) + '%</span>';
+  else if (kbMode === 'anim') h = MC.IN_OPTS.map((o) => '<button type="button" class="kbo" data-v="' + o[0] + '" aria-pressed="' + (L.in === o[0]) + '">' + o[1] + '</button>').join('');
+  box.innerHTML = h; box.hidden = false;
+  $$('#kbOpts [data-v]').forEach((x) => x.addEventListener('click', () => {
+    const v = x.dataset.v;
+    if (kbMode === 'font') L.font = v; else if (kbMode === 'color') { L.color = v; L.grad = null; } else if (kbMode === 'align') L.align = v; else if (kbMode === 'anim') { L.in = v; draw(true); kbOpts(); if (v !== 'none') U.previewMotion(L); return; }
+    draw(true); kbOpts();
+  }));
+  const r = $('#kbRange'); if (r) { r.addEventListener('input', () => { const v = +r.value; if (kbMode === 'size') L.size = v; else L.shadow = v; r.nextElementSibling.textContent = Math.round(v) + (kbMode === 'size' ? ' px' : '%'); draw(false); }); r.addEventListener('change', () => draw(true)); }
+}
+U.kbOpen = function (L, mode) {
+  if (!L || L.type !== 'text') return; kbL = L; kbMode = mode || ''; const b = kbEl(); b.hidden = false; document.body.classList.add('kbOpen');
+  const inp = $('#kbText'); inp.value = L.text; kbTools(); kbOpts(); kbPlace();
+  inp.oninput = () => { L.text = inp.value; MC.refitText(L); U.redraw(true); U.schedFinal(); };
+  inp.onchange = () => { U.commit(); };
+  inp.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); U.kbClose(); } };
+  if (!mode) setTimeout(() => { inp.focus(); inp.select(); }, 30);
+};
+U.kbClose = function () {
+  const b = $('#kbBar'); if (!b || b.hidden) return; b.hidden = true; document.body.classList.remove('kbOpen'); const i = $('#kbText'); if (i) i.blur();
+  if (kbL) { MC.refitText(kbL); U.redraw(false); U.commit(); U.P.buildEdit(); U.P.buildLayers(); U.P.buildTimeline(); } kbL = null; kbMode = '';
+};
+document.addEventListener('click', (e) => {
+  if (e.target.id === 'kbDone') { U.kbClose(); return; }
+  const t = e.target.closest('#kbTools [data-kb]'); if (!t || !kbL) return; const k = t.dataset.kb, L = kbL;
+  if (k === 'bold') { L.bold = !L.bold; MC.refitText(L); U.redraw(false); U.commit(); kbMode = ''; }
+  else if (k === 'hl') { L.hl = L.hl ? null : '#ffd23f'; if (L.hl && L.color.toLowerCase() === '#ffffff') L.color = '#12161e'; U.redraw(false); U.commit(); kbMode = ''; }
+  else { kbMode = kbMode === k ? '' : k; if (kbMode) { const i = $('#kbText'); if (i) i.blur(); } }
+  kbTools(); kbOpts();
+});
+if (window.visualViewport) { window.visualViewport.addEventListener('resize', kbPlace); window.visualViewport.addEventListener('scroll', kbPlace); }
 U.exportProject = exportProject; U.importProjectFile = importProjectFile;
 U.edits = { init() { baseline = JSON.stringify(U.project); countProjects(); buildStrip(); }, ts, buildStrip, addKf, copyLayer, pasteLayer, saveNow, openProject, newProject, openProjects, curId: () => curId, stopDoodle };
 })();
@@ -9101,6 +9456,11 @@ $('#tlwrap').open = window.innerWidth >= 960;
 U.P.init();
 U.setTab('start');
 hist.cur = JSON.stringify(U.project); U.edits.init();
+applyPhone(); U.sheet(document.body.classList.contains('phone')); U.sheetReady = true;
+$$('.tab:not(.mathtab)').forEach((b) => b.addEventListener('click', () => { if (b._wasOpen) setTimeout(() => U.sheet(false), 0); }, false));
+$$('.tab:not(.mathtab)').forEach((b) => b.addEventListener('pointerdown', () => { b._wasOpen = document.body.classList.contains('phone') && $('.panel').classList.contains('open') && b.getAttribute('aria-selected') === 'true'; }, true));
+$('#mathTab').addEventListener('click', () => { const on = !document.body.classList.contains('showMath'); U.sheet(false); document.body.classList.toggle('showMath', on); $('#mathTab').setAttribute('aria-selected', String(on)); });
+$('#sheetClose').addEventListener('click', () => U.sheet(false));
 fitStage(); updateTime(); markPresets(); fontsReady(); renderPages();
 U.redraw(false);
 })();
