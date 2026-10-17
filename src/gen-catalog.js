@@ -118,5 +118,32 @@ function influence(L, t, buildFn) {
   });
   return out;
 }
-G.CATALOG = CATALOG; G.CATS = CATS; G.METHODS = METHODS; G.SCHEMAS = SCHEMAS; G.MODE_NAMES = MODE_NAMES; G.fromCatalog = fromCatalog; G.fromBlank = fromBlank; G.match = match; G.influence = influence; G.measureOf = measureOf; G.BLANK = BLANK; G.UNSUPPORTED = UNSUPPORTED;
+
+/* ---------- equations as typeset-style lines (HTML with superscripts) and as plain text for drawing on the picture ---------- */
+const escH = (x) => String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+const EQV = ['x', 'y', 'z', 't', 'a', 'b', 'c', 'R', 'r', 'u', 'v', 'vx', 'vy', 'vz'];
+function pretty(src) { try { return root.MX.show(root.MX.compile(String(src), EQV).tree); } catch (e) { return escH(src); } }
+function eqLines(L) {
+  const P = pretty, n = (v) => (isFinite(+v) ? String(+(+v).toPrecision(5)) : escH(v)), o = [];
+  switch (L.mode) {
+    case 'implicit': o.push('F( x, y, z ) = ' + P(L.fimp), 'surface:  F( x, y, z ) = ' + n(L.lvl)); break;
+    case 'ode': { const six = (L.ode.eq || []).length === 6, nm = six ? ['dx/dt', 'dy/dt', 'dz/dt', 'dvx/dt', 'dvy/dt', 'dvz/dt'] : ['dx/dt', 'dy/dt', 'dz/dt']; nm.forEach((q, i) => o.push(q + ' = ' + P(L.ode.eq[i]))); if (L.ode.inv) o.push('conserved:  ' + P(L.ode.inv)); o.push('method: Runge–Kutta 4, step ' + n(L.ode.dt)); break; }
+    case 'field': o.push('P( x, y, z ) = ' + P(L.fld.P), 'Q( x, y, z ) = ' + P(L.fld.Q), 'R( x, y, z ) = ' + P(L.fld.R), 'lines:  dr/ds = ' + (L.fld.unit !== false ? 'F / |F|' : 'F')); break;
+    case 'curve': o.push('x( u ) = ' + P(L.crv.fx), 'y( u ) = ' + P(L.crv.fy), 'z( u ) = ' + P(L.crv.fz), 'u from ' + n(L.crv.umin) + ' to ' + n(L.crv.umax)); break;
+    case 'lsys': o.push('axiom:  ' + escH(L.ls.axiom), String(L.ls.rules).split(/\n|;/).filter(Boolean).map((q) => 'rule:  ' + escH(q.replace('=', ' → '))).join('\n'), 'turn angle ' + n(L.ls.angle) + '°, ' + n(L.ls.iter) + ' iterations'); break;
+    case 'ifs': o.push('p′ = A<sub>k</sub> p + t<sub>k</sub>,  k chosen at random,  ' + L.ifs.maps.length + ' maps'); break;
+    case 'lattice': { const T = G.LATTICES[L.lat]; o.push(T.name + ',  a = ' + n(L.gp.a)); if (T.pfEq) o.push('packing fraction = ' + T.pfEq + ' = ' + n(T.pf)); break; }
+    case 'molecule': o.push(G.MOLECULES[L.mol].name, G.MOLECULES[L.mol].ref); break;
+    case 'poly': { const T = G.POLY[L.poly]; o.push(T.name + ',  edge a = ' + n(L.gp.edge), T.eqA, T.eqV); break; }
+    case 'hyper': o.push('rotate x–w and z–w planes; ( x, y, z ) → ( x, y, z ) · d / ( d − w ),  d = ' + n(L.gp.d)); break;
+    case 'galaxy': o.push('θ = arm + twist · 1.2 · ln( 1 + r ) + scatter,   point = ( r cos θ, r sin θ, z )'); break;
+    default: if (L.fx !== undefined) o.push('x( u, v ) = ' + P(L.fx), 'y( u, v ) = ' + P(L.fy), 'z( u, v ) = ' + P(L.fz));
+  }
+  return o.join('\n').split('\n').filter(Boolean);
+}
+const SUP = { 0: '⁰', 1: '¹', 2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷', 8: '⁸', 9: '⁹', '-': '⁻' };
+function plain(html) { return String(html).replace(/<sup>(-?\d+)<\/sup>/g, (m, d) => d.split('').map((c) => SUP[c] || c).join('')).replace(/<sup>(.*?)<\/sup>/g, '^($1)').replace(/<sub>(.*?)<\/sub>/g, '_$1').replace(/<[^>]+>/g, '').replace(/&lt;/g, '<').replace(/&amp;/g, '&'); }
+const EQC = new Map();
+function eqPlain(L) { const k = JSON.stringify([L.mode, L.fimp, L.lvl, L.ode, L.fld, L.crv, L.ls, L.ifs, L.lat, L.mol, L.poly, L.hyper, L.fx, L.fy, L.fz, L.gp && L.gp.edge, L.gp && L.gp.a, L.gp && L.gp.d]); let r = EQC.get(k); if (!r) { try { r = eqLines(L).map(plain); } catch (e) { r = []; } EQC.set(k, r); if (EQC.size > 20) EQC.delete(EQC.keys().next().value); } return r; }
+G.eqLines = eqLines; G.eqPlain = eqPlain; G.plainEq = plain; G.CATALOG = CATALOG; G.CATS = CATS; G.METHODS = METHODS; G.SCHEMAS = SCHEMAS; G.MODE_NAMES = MODE_NAMES; G.fromCatalog = fromCatalog; G.fromBlank = fromBlank; G.match = match; G.influence = influence; G.measureOf = measureOf; G.BLANK = BLANK; G.UNSUPPORTED = UNSUPPORTED;
 })(typeof window !== 'undefined' ? window : globalThis);

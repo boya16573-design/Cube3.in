@@ -37,6 +37,8 @@ MIT. See [LICENSE](LICENSE). Bundled libraries are listed in [THIRD-PARTY.md](TH
 
 ## What's new
 
+- **Math3D workspaces**: one tab bar (Design, Photo Lab, Video Lab, Calibration, 3D Lab, Constants). The 3D Lab builds parametric surfaces from real equations with live area, volume, matrices, animation and MP4/WebM export. The Photo and Video Lab measure with honest uncertainty, rectangle tool, saturation and sharpness, vanishing-point perspective analysis and a video frame strip. A measured distance can become a 3D sphere, and a 3D view can be sent back to measure. A first-run guide explains the three steps.
+- **Real-world constants**: 27 constants (NIST CODATA 2022 or exact), usable by name in equations (`phi`, `alpha`, `cLight`, `gGrav`), with consistency checks that rebuild constants from each other, a golden nautilus and golden torus, a golden-angle sunflower and Bohr-model numbers.
 - **Equation explorer**: implicit surfaces, differential equations, field lines, fractals, crystals, molecules, polyhedra and 4D shapes from your own equations or 42 ready-made models, with section planes, materials, OBJ/STL/GLB/SVG export and a science report. See below.
 - **Measurement Lab**: distance, angle, area and circle tools, real units only from a flat reference with 95% intervals, perspective flattening, video point tracking, checkerboard camera calibration, 3D math lab with an error dashboard. See below.
 - **Realism check**: upload a photo and the page measures it in linear light (exposure, black and white points, colour balance, saturation, sharpening halos, lens falloff), shows the equations and numbers, and offers one-tap fixes.
