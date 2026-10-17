@@ -34,3 +34,11 @@ Anyone can propose changes. See [CONTRIBUTING.md](CONTRIBUTING.md).
 ## Licence
 
 MIT. See [LICENSE](LICENSE). Bundled libraries are listed in [THIRD-PARTY.md](THIRD-PARTY.md).
+
+## What's new
+
+- **Realism check**: upload a photo and the page measures it in linear light (exposure, black and white points, colour balance, saturation, sharpening halos, lens falloff), shows the equations and numbers, and offers one-tap fixes.
+- **Paint it from a real formula**: repaints a photo as a sum of cosine waves (a 2-D discrete cosine transform) and prints the formula, with the largest measured coefficients and the error in dB, under the picture.
+- **Show the math under the picture**: puts the photo on top and its equations in a panel below, exported with the picture.
+- **Phone editor layout**: full-screen dark editor with a fixed centre playhead, a bottom tool row and tabs, and a keyboard tool bar for text.
+- Frame-perfect video, linear-light colour maths, full-resolution Lanczos export, project files, ZIP export, multi-variable graphs and more scenes.
