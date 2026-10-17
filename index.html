@@ -342,6 +342,10 @@ body.kbOpen .panel,body.kbOpen #mathbar{display:none!important}
 .tg{display:inline-block;font:600 10.5px var(--f-body);padding:1px 7px;border-radius:999px;vertical-align:1px;white-space:nowrap}
 .tg-m{background:#d9f3e4;color:#14663f}.tg-e{background:#fdeccb;color:#8a5a00}.tg-a{background:#dfe6fb;color:#2b3f9e}.tg-u{background:#eee;color:#555}.tg-c{background:#d9f3e4;color:#14663f}
 body.phone .tg-m{background:#12301f;color:#7be0a8}body.phone .tg-e{background:#3a2c0c;color:#ffd27a}body.phone .tg-a{background:#1c2548;color:#a9bbff}body.phone .tg-u{background:#2a2c33;color:#bbb}
+.tg-meth{background:#e6e0fb;color:#3d2a8c}.tg-exact{background:#d9f3e4;color:#14663f}.tg-numerical{background:#dfe6fb;color:#2b3f9e}.tg-procedural{background:#fdeccb;color:#8a5a00}.tg-artistic{background:#fbe0ec;color:#8a1f55}
+body.phone .tg-meth{background:#2a2250;color:#cdbfff}body.phone .tg-exact{background:#12301f;color:#7be0a8}body.phone .tg-numerical{background:#1c2548;color:#a9bbff}body.phone .tg-procedural{background:#3a2c0c;color:#ffd27a}body.phone .tg-artistic{background:#3d1a2c;color:#ffb3d2}
+.chk{display:flex;gap:8px;align-items:center;font-size:13px;margin:9px 0;cursor:pointer}.chk input{width:18px;height:18px}
+.genres{margin:8px 0}.genres .gi{display:flex;gap:8px;align-items:flex-start;justify-content:space-between;border:1px solid var(--line,#e5e7ee);border-radius:10px;padding:8px 10px;margin:6px 0;font-size:12.5px}.genres .gi b{font-size:13px}.gcat summary{cursor:pointer;font-weight:600;padding:7px 0}.gcat .gl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.gcat .gl button{text-align:left;font-size:12.5px;padding:7px 9px;border:1px solid var(--line,#e5e7ee);border-radius:9px;background:transparent;color:inherit;cursor:pointer;min-height:44px}.gcat .gl button:hover{border-color:#6b4bd8}
 .solidview{border-radius:12px;overflow:hidden;background:#0f1117;margin:6px 0;line-height:0}.solidview canvas{display:block;width:100%;touch-action:none;cursor:grab}
 .g3{font-size:26px;line-height:1.1;display:block}
 .eqs.plain .mx{display:inline-block;font:12px/1.5 var(--f-data);white-space:nowrap;overflow-x:auto;max-width:100%}
@@ -429,7 +433,7 @@ body.phone .tg-m{background:#12301f;color:#7be0a8}body.phone .tg-e{background:#3
         <div class="mini sub">Look</div><div class="chips"><button type="button" class="chip" data-capst="bold" aria-pressed="true">Bold outline</button><button type="button" class="chip" data-capst="box" aria-pressed="false">Yellow box</button><button type="button" class="chip" data-capst="pop" aria-pressed="false">Soft shadow</button></div>
         <div class="chips"><button type="button" class="btn sm primary" data-capspeech="1">Time my lines to the speech in my video</button><button type="button" class="btn sm" data-capgo="1">Add every few seconds instead</button><button type="button" class="btn sm" id="capDict" data-capdict="1">🎤 Dictate with the microphone</button></div><p class="fine">“Time to speech” measures when someone is talking in your video or sound (from the real loudness, every 20 ms) and places each line there. You still supply the words. “Dictate” uses your browser’s speech recognition and the microphone, so it needs Chrome or Edge and an allowed microphone.</p></div>
       <div class="sec"><h2>Music</h2><div class="chips"><button type="button" class="btn sm primary" data-addmusic="1">Add a music or sound file</button></div><p class="fine">MP3, WAV, M4A or OGG. It is mixed into the exported video together with the video’s own sound.</p></div>
-      <div class="sec"><h2>3D math shapes</h2><div class="grid4" id="solidGrid"><button type="button" class="shp" data-addsolid="torus"><span class="g3">&#9711;</span><span>Torus</span></button><button type="button" class="shp" data-addsolid="sphere"><span class="g3">&#9679;</span><span>Sphere</span></button><button type="button" class="shp" data-addsolid="cylinder"><span class="g3">&#9647;</span><span>Cylinder</span></button><button type="button" class="shp" data-addsolid="mobius"><span class="g3">&#8734;</span><span>Möbius strip</span></button><button type="button" class="shp" data-addsolid="helicoid"><span class="g3">&#10227;</span><span>Helicoid</span></button><button type="button" class="shp" data-addsolid="ripple"><span class="g3">&#8767;</span><span>Rippling surface</span></button><button type="button" class="shp" data-addsolid="klein"><span class="g3">&#9856;</span><span>Klein bottle</span></button></div><p class="fine">Real 3D from your own equations x(u, v), y(u, v), z(u, v): orbit it, move it, measure it, and see exact error reports. Exact area and volume are shown only where the shape's formulas apply.</p></div>
+      <div class="sec"><h2>3D math shapes</h2><div class="grid4" id="solidGrid"><button type="button" class="shp" data-addsolid="torus"><span class="g3">&#9711;</span><span>Torus</span></button><button type="button" class="shp" data-addsolid="sphere"><span class="g3">&#9679;</span><span>Sphere</span></button><button type="button" class="shp" data-addsolid="cylinder"><span class="g3">&#9647;</span><span>Cylinder</span></button><button type="button" class="shp" data-addsolid="mobius"><span class="g3">&#8734;</span><span>Möbius strip</span></button><button type="button" class="shp" data-addsolid="helicoid"><span class="g3">&#10227;</span><span>Helicoid</span></button><button type="button" class="shp" data-addsolid="ripple"><span class="g3">&#8767;</span><span>Rippling surface</span></button><button type="button" class="shp" data-addsolid="klein"><span class="g3">&#9856;</span><span>Klein bottle</span></button></div><p class="fine">Real 3D from your own equations x(u, v), y(u, v), z(u, v): orbit it, move it, measure it, and see exact error reports. Exact area and volume are shown only where the shape's formulas apply.</p></div><div class="sec" id="genSec"><h2>Equation explorer</h2><p class="fine">Type any equation and watch it become a 3D model, or browse ready-made models in six categories. Every model says how it was made: <span class="tg tg-meth tg-exact">Exact</span> <span class="tg tg-meth tg-numerical">Numerical</span> <span class="tg tg-meth tg-procedural">Procedural</span> <span class="tg tg-meth tg-artistic">Artistic</span></p><div class="row"><input id="genDesc" type="search" class="txt" placeholder="Describe it: mountains, DNA, salt…" aria-label="Describe what you want to create" autocomplete="off"><button type="button" class="btn sm" id="genFind">Find</button></div><div id="genResult" class="genres" aria-live="polite"></div><div id="genCats"></div><h3 class="mini">Start from your own equations</h3><div class="chips"><button type="button" class="btn sm chip" data-addsolid="mode:implicit">Surface F(x,y,z) = level</button><button type="button" class="btn sm chip" data-addsolid="mode:ode">Differential equations</button><button type="button" class="btn sm chip" data-addsolid="mode:field">Vector field lines</button><button type="button" class="btn sm chip" data-addsolid="mode:curve">Parametric curve</button><button type="button" class="btn sm chip" data-addsolid="mode:lsys">L-system plant</button></div><div class="chips"><button type="button" class="btn sm chip" id="genOpen">Open a model file…</button><input type="file" id="genFile" accept=".json,application/json" hidden></div><p class="fine">Not included: reconstructing 3D shape from one photograph, fluid or finite-element simulation, ray-traced rendering, and anything needing a server. The editor tells you when a request falls outside what it can do reliably.</p></div>
       <div class="sec"><h2>Graphs and calculus</h2><div class="grid4" id="graphGrid"></div><p class="fine">Type any formula. You get the graph, its slope (derivative), the area under it (integral) and where it hits zero, all worked out live.</p></div>
       <div class="sec"><h2>Math art</h2><div class="grid4" id="mathGrid"></div><p class="fine">Each one is drawn from equations. Use it as a background or an accent, then change its numbers in Edit.</p></div>
     </div>
@@ -4118,6 +4122,7 @@ function rotX(d) { const c = Math.cos(d), s = Math.sin(d); return [1, 0, 0, 0, 0
 function rotY(d) { const c = Math.cos(d), s = Math.sin(d); return [c, 0, s, 0, 0, 1, 0, 0, -s, 0, c, 0, 0, 0, 0, 1]; }
 function rotZ(d) { const c = Math.cos(d), s = Math.sin(d); return [c, -s, 0, 0, s, c, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]; }
 function perspective(fovY, aspect, near, far) { const f = 1 / Math.tan(fovY / 2); return [f / aspect, 0, 0, 0, 0, f, 0, 0, 0, 0, (far + near) / (near - far), 2 * far * near / (near - far), 0, 0, -1, 0]; }
+function orthographic(h, aspect, near, far) { const w = h * aspect; return [1 / w, 0, 0, 0, 0, 1 / h, 0, 0, 0, 0, -2 / (far - near), -(far + near) / (far - near), 0, 0, 0, 1]; }
 function lookAt(eye, tgt, up) {
   let f = [tgt[0] - eye[0], tgt[1] - eye[1], tgt[2] - eye[2]]; const fl = Math.hypot(f[0], f[1], f[2]) || 1; f = f.map((v) => v / fl);
   let s = [f[1] * up[2] - f[2] * up[1], f[2] * up[0] - f[0] * up[2], f[0] * up[1] - f[1] * up[0]]; const sl = Math.hypot(s[0], s[1], s[2]) || 1; s = s.map((v) => v / sl);
@@ -4130,7 +4135,7 @@ function modelMatrix(tr) { const d = Math.PI / 180; return mul(translate(tr.tx, 
 function cameraMatrices(cam, aspect) {
   const d = Math.PI / 180, yaw = cam.yaw * d, pit = cam.pitch * d, cp = Math.cos(pit);
   const eye = [cam.tx + cam.dist * cp * Math.cos(yaw), cam.ty + cam.dist * cp * Math.sin(yaw), cam.tz + cam.dist * Math.sin(pit)];
-  const view = lookAt(eye, [cam.tx, cam.ty, cam.tz], [0, 0, 1]), proj = perspective(cam.fov * d, aspect, Math.max(0.01, cam.dist * 0.02), cam.dist * 40 + 100);
+  const view = lookAt(eye, [cam.tx, cam.ty, cam.tz], [0, 0, 1]), proj = cam.ortho ? orthographic(cam.dist * Math.tan(cam.fov * d / 2), aspect, -cam.dist * 40 - 100, cam.dist * 40 + 100) : perspective(cam.fov * d, aspect, Math.max(0.01, cam.dist * 0.02), cam.dist * 40 + 100);
   return { eye, view, proj, vp: mul(proj, view) };
 }
 
@@ -4260,7 +4265,7 @@ function projectAll(mesh, M, cam, W, H) {
   return { s: out, ve, view, proj, vp, MV };
 }
 
-root.M3D = { ident, mul, translate, scale, rotX, rotY, rotZ, perspective, lookAt, apply, det3, modelMatrix, cameraMatrices, PRESETS, VARS, defaults, validate, buildMesh, exactFor, projectAll, TAU };
+root.M3D = { ident, mul, translate, scale, rotX, rotY, rotZ, perspective, orthographic, lookAt, apply, det3, modelMatrix, cameraMatrices, PRESETS, VARS, defaults, validate, buildMesh, exactFor, projectAll, TAU };
 if (typeof module !== 'undefined') module.exports = root.M3D;
 })(typeof window !== 'undefined' ? window : globalThis);
 
@@ -4720,6 +4725,493 @@ function predictGrid(quad, cols, rows) {
 }
 
 root.MEAS = { refineCorner, predictGrid, KINDS, dist, angle, polygonArea, perimeter, isSimple, circleFrom3, fitCircle, LEN, convert, fitView, toScreen, toImage, zoomAt, cropToImage, rng, gauss, monteCarlo, distanceSd, inv3, applyH, solveLin, fitHomography, measure, exportCSV, exportJSON, rectify, checkQuad, toGrayFull, pyramid, track, eigSym, rodrigues, rotToVec, projectPt, calibrate, undistortPt };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+/* Universal generators: implicit surfaces (marching tetrahedra), ODE systems (RK4), 3D field lines, L-systems, IFS fractals,
+   crystal lattices, molecules, polyhedra, 4D projections, parametric curves, noise and special functions. Pure functions, no DOM.
+   Every generator returns a mesh-like object: { ok, kind: 'tri'|'lines'|'points'|'atoms', V, good, F|segs, stats, issues, info }.
+   Each result states its method honestly: exact | numerical | procedural | simulation | artistic. */
+(function (root) {
+'use strict';
+const MX = root.MX, TAU = Math.PI * 2, PHI = (1 + Math.sqrt(5)) / 2;
+const n2 = (v, d) => (isFinite(v) ? +(+v).toPrecision(d || 5) : v);
+
+/* ---------- noise and special functions, added to the safe expression engine (never JavaScript eval) ---------- */
+function h3(i, j, k) { let h = Math.imul(i | 0, 0x27d4eb2d) ^ Math.imul(j | 0, 0x165667b1) ^ Math.imul(k | 0, 0x9e3779b1); h = Math.imul(h ^ (h >>> 15), 0x85ebca6b); h ^= h >>> 13; h = Math.imul(h, 0xc2b2ae35); h ^= h >>> 16; return (h >>> 0) / 2147483648 - 1; }
+const fade = (t) => t * t * t * (t * (t * 6 - 15) + 10), lerp = (a, b, t) => a + (b - a) * t;
+function noise3(x, y, z) { const xi = Math.floor(x), yi = Math.floor(y), zi = Math.floor(z), u = fade(x - xi), v = fade(y - yi), w = fade(z - zi); return lerp(lerp(lerp(h3(xi, yi, zi), h3(xi + 1, yi, zi), u), lerp(h3(xi, yi + 1, zi), h3(xi + 1, yi + 1, zi), u), v), lerp(lerp(h3(xi, yi, zi + 1), h3(xi + 1, yi, zi + 1), u), lerp(h3(xi, yi + 1, zi + 1), h3(xi + 1, yi + 1, zi + 1), u), v), w); }
+const noise2 = (x, y) => noise3(x, y, 0.37);
+function fbm(x, y, o) { o = Math.max(1, Math.min(8, Math.round(o))); let s = 0, a = 1, f = 1, n = 0; for (let i = 0; i < o; i++) { s += a * noise3(x * f, y * f, i * 7.3); n += a; a *= 0.5; f *= 2; } return s / n; }
+function erf(x) { const s = Math.sign(x); x = Math.abs(x); const t = 1 / (1 + 0.3275911 * x); return s * (1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-x * x)); }
+if (MX && MX.FUNCS) Object.assign(MX.FUNCS, { noise: [2, noise2], noise3: [3, noise3], fbm: [3, fbm], erf: [1, erf], gauss: [1, (x) => Math.exp(-x * x / 2) / Math.sqrt(TAU)] });
+function rng(seed) { let s = (seed || 1) >>> 0; return () => { s = (s * 1664525 + 1013904223) >>> 0; return (s + 1) / 4294967297; }; }
+
+/* ---------- triangle mesh statistics (same quantities as the parametric builder) ---------- */
+function triStats(V, F) {
+  const nF = F.length / 3, nV = V.length / 3, lo = [Infinity, Infinity, Infinity], hi = [-Infinity, -Infinity, -Infinity], used = new Set(); let area = 0, vol = 0, degenerate = 0;
+  for (let f = 0; f < nF; f++) {
+    const a = F[f * 3], b = F[f * 3 + 1], c = F[f * 3 + 2]; used.add(a); used.add(b); used.add(c);
+    const ax = V[a * 3], ay = V[a * 3 + 1], az = V[a * 3 + 2], bx = V[b * 3], by = V[b * 3 + 1], bz = V[b * 3 + 2], cx = V[c * 3], cy = V[c * 3 + 1], cz = V[c * 3 + 2];
+    const ux = bx - ax, uy = by - ay, uz = bz - az, vx = cx - ax, vy = cy - ay, vz = cz - az, nx = uy * vz - uz * vy, ny = uz * vx - ux * vz, nz = ux * vy - uy * vx, l = Math.hypot(nx, ny, nz);
+    if (l < 1e-14) degenerate++; area += l / 2; vol += ax * (by * cz - bz * cy) - ay * (bx * cz - bz * cx) + az * (bx * cy - by * cx);
+  }
+  used.forEach((k) => { for (let q = 0; q < 3; q++) { const v = V[k * 3 + q]; if (v < lo[q]) lo[q] = v; if (v > hi[q]) hi[q] = v; } });
+  const edges = new Map(); const add = (a, b) => { if (a === b) return; const l = Math.min(a, b), h = Math.max(a, b), k = l * (nV + 1) + h, e = edges.get(k) || { n: 0, fw: 0 }; e.n++; if (a < b) e.fw++; edges.set(k, e); };
+  for (let f = 0; f < nF; f++) { add(F[f * 3], F[f * 3 + 1]); add(F[f * 3 + 1], F[f * 3 + 2]); add(F[f * 3 + 2], F[f * 3]); }
+  let boundary = 0, nonManifold = 0, orientBad = 0; edges.forEach((e) => { if (e.n === 1) boundary++; else if (e.n > 2) nonManifold++; else if (e.fw !== 1) orientBad++; });
+  const closed = boundary === 0 && nonManifold === 0 && nF > 0, orientable = orientBad === 0, chi = closed ? used.size - edges.size + nF : null;
+  let volume = null, volumeWhy = '';
+  if (!closed) volumeWhy = boundary ? 'the surface has an open edge (' + boundary + ' boundary edges), so it does not enclose a volume' : nonManifold ? 'three or more faces meet along an edge' : 'there are no faces'; else if (!orientable) volumeWhy = 'the faces are not consistently oriented (' + orientBad + ' edges disagree)'; else volume = Math.abs(vol / 6);
+  const diag = Math.hypot(hi[0] - lo[0], hi[1] - lo[1], hi[2] - lo[2]) || 1;
+  return { vertices: used.size, faces: nF, quads: nF / 2, bbox: { lo, hi, size: [hi[0] - lo[0], hi[1] - lo[1], hi[2] - lo[2]] }, diag, area, degenerate, folds: 0, welded: used.size, edges: edges.size, boundary, closed, orientable, nonManifold, chi, volume, volumeWhy };
+}
+function bboxOf(V, good) { const lo = [Infinity, Infinity, Infinity], hi = [-Infinity, -Infinity, -Infinity], n = V.length / 3; for (let k = 0; k < n; k++) { if (good && !good[k]) continue; for (let q = 0; q < 3; q++) { const v = V[k * 3 + q]; if (v < lo[q]) lo[q] = v; if (v > hi[q]) hi[q] = v; } } if (lo[0] === Infinity) { lo[0] = lo[1] = lo[2] = 0; hi[0] = hi[1] = hi[2] = 0; } return { lo, hi, size: [hi[0] - lo[0], hi[1] - lo[1], hi[2] - lo[2]], diag: Math.hypot(hi[0] - lo[0], hi[1] - lo[1], hi[2] - lo[2]) || 1 }; }
+const fail = (code, msg, region, fix) => ({ ok: false, issues: [{ sev: 'error', code, msg, region: region || 'whole model', fix: fix || '' }], stats: null });
+const compileAll = (srcs, vars, names) => { const out = [], issues = []; srcs.forEach((s, i) => { const nm = names ? names[i] : 'equation ' + (i + 1); if (typeof s !== 'string' || !s.trim()) { issues.push({ sev: 'error', code: 'empty-' + nm, msg: nm + ' is empty.', region: 'equation ' + nm, fix: 'Type a formula using ' + vars.join(', ') + '.' }); return; } try { out.push(MX.compile(s, vars)); } catch (e) { issues.push({ sev: 'error', code: 'parse-' + nm, msg: nm + ': ' + e.message, region: 'equation ' + nm, fix: 'Use only ' + vars.join(', ') + ', numbers, + - * / ^ and functions such as sin, cos, sqrt, exp, noise.' }); } }); return { fns: out, issues }; };
+
+/* ---------- implicit surface F(x, y, z) = level by marching tetrahedra ---------- */
+const IMPVARS = ['x', 'y', 'z', 't', 'a', 'b', 'c', 'R', 'r'];
+const TETS = [[0, 1, 3, 7], [0, 3, 2, 7], [0, 2, 6, 7], [0, 6, 4, 7], [0, 4, 5, 7], [0, 5, 1, 7]];
+function isosurface(f, box, n, level) {
+  const nx = n + 1, N = nx * nx * nx, dx = (box[1] - box[0]) / n, dy = (box[3] - box[2]) / n, dz = (box[5] - box[4]) / n, val = new Float64Array(N); let nan = 0, mn = Infinity, mx = -Infinity;
+  for (let k = 0; k <= n; k++) for (let j = 0; j <= n; j++) for (let i = 0; i <= n; i++) { const v = f(box[0] + i * dx, box[2] + j * dy, box[4] + k * dz); val[i + nx * (j + nx * k)] = v; if (isFinite(v)) { if (v < mn) mn = v; if (v > mx) mx = v; } else nan++; }
+  const P = [], F = [], map = new Map(); let skippedCells = 0;
+  const pos = (id) => { const i = id % nx, j = ((id / nx) | 0) % nx, k = (id / (nx * nx)) | 0; return [box[0] + i * dx, box[2] + j * dy, box[4] + k * dz]; };
+  const ev = (a, b) => { const lo = a < b ? a : b, hi = a < b ? b : a, key = lo * N + hi; let id = map.get(key); if (id !== undefined) return id; const fa = val[lo], fb = val[hi], t = (level - fa) / (fb - fa), pa = pos(lo), pb = pos(hi); id = P.length / 3; P.push(pa[0] + (pb[0] - pa[0]) * t, pa[1] + (pb[1] - pa[1]) * t, pa[2] + (pb[2] - pa[2]) * t); map.set(key, id); return id; };
+  for (let k = 0; k < n; k++) for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) {
+    const b0 = i + nx * (j + nx * k), c = [b0, b0 + 1, b0 + nx, b0 + 1 + nx, b0 + nx * nx, b0 + 1 + nx * nx, b0 + nx + nx * nx, b0 + 1 + nx + nx * nx];
+    let bad = false; for (let q = 0; q < 8; q++) if (!isFinite(val[c[q]])) { bad = true; break; } if (bad) { skippedCells++; continue; }
+    for (let t = 0; t < 6; t++) {
+      const w = [c[TETS[t][0]], c[TETS[t][1]], c[TETS[t][2]], c[TETS[t][3]]], s = w.map((id) => val[id] < level), cnt = s[0] + s[1] + s[2] + s[3]; if (cnt === 0 || cnt === 4) continue;
+      if (cnt === 1 || cnt === 3) { const lone = s.findIndex((v) => v === (cnt === 1)), oth = [0, 1, 2, 3].filter((q) => q !== lone); F.push(ev(w[lone], w[oth[0]]), ev(w[lone], w[oth[1]]), ev(w[lone], w[oth[2]])); }
+      else { const ins = [0, 1, 2, 3].filter((q) => s[q]), out = [0, 1, 2, 3].filter((q) => !s[q]), a = ins[0], b = ins[1], cc = out[0], d = out[1]; const e1 = ev(w[a], w[cc]), e2 = ev(w[a], w[d]), e3 = ev(w[b], w[d]), e4 = ev(w[b], w[cc]); F.push(e1, e2, e3, e1, e3, e4); }
+    }
+  }
+  /* orient every triangle toward increasing F (outward when the inside has F below the level) using the numerical gradient */
+  const h = 0.5 * Math.min(dx, dy, dz); let flipped = 0;
+  for (let q = 0; q < F.length; q += 3) {
+    const a = F[q] * 3, b = F[q + 1] * 3, c = F[q + 2] * 3, cx = (P[a] + P[b] + P[c]) / 3, cy = (P[a + 1] + P[b + 1] + P[c + 1]) / 3, cz = (P[a + 2] + P[b + 2] + P[c + 2]) / 3;
+    const gx = f(cx + h, cy, cz) - f(cx - h, cy, cz), gy = f(cx, cy + h, cz) - f(cx, cy - h, cz), gz = f(cx, cy, cz + h) - f(cx, cy, cz - h);
+    const ux = P[b] - P[a], uy = P[b + 1] - P[a + 1], uz = P[b + 2] - P[a + 2], vx = P[c] - P[a], vy = P[c + 1] - P[a + 1], vz = P[c + 2] - P[a + 2];
+    const d = (uy * vz - uz * vy) * gx + (uz * vx - ux * vz) * gy + (ux * vy - uy * vx) * gz; if (d < 0) { const t = F[q + 1]; F[q + 1] = F[q + 2]; F[q + 2] = t; flipped++; }
+  }
+  return { V: Float64Array.from(P), F: Uint32Array.from(F), min: mn, max: mx, nan, skippedCells, cells: n * n * n, h: Math.max(dx, dy, dz) };
+}
+function buildImplicit(L, t) {
+  const c = compileAll([L.fimp], IMPVARS, ['F(x, y, z)']); const issues = c.issues.slice(); if (!c.fns.length) return { ok: false, issues, stats: null };
+  const box = (L.box3 || [-2, 2, -2, 2, -2, 2]).map(Number), n = Math.max(8, Math.min(100, L.nvox | 0 || 48));
+  if (box.some((v) => !isFinite(v)) || !(box[1] > box[0] && box[3] > box[2] && box[5] > box[4])) return fail('box', 'The search box is not valid: each maximum must be larger than its minimum, and all six numbers must be finite.', 'search box', 'Enter xmin < xmax, ymin < ymax, zmin < zmax.');
+  const P = L.P || {}, fn = c.fns[0].fn, arg = [0, 0, 0, t || 0, P.a || 0, P.b || 0, P.c || 0, P.R || 0, P.r || 0], f = (x, y, z) => { arg[0] = x; arg[1] = y; arg[2] = z; return fn(arg); };
+  /* the level can be a fixed number or a fraction of the maximum of F in the box */
+  let level = Number(L.lvl); if (L.lvlAuto) { let mx = -Infinity; const m = 24, dxx = (box[1] - box[0]) / m, dyy = (box[3] - box[2]) / m, dzz = (box[5] - box[4]) / m; for (let k = 0; k <= m; k++) for (let j = 0; j <= m; j++) for (let i = 0; i <= m; i++) { const v = f(box[0] + i * dxx, box[2] + j * dyy, box[4] + k * dzz); if (isFinite(v) && v > mx) mx = v; } level = Number(L.lvlAuto) * mx; }
+  if (!isFinite(level)) return fail('level', 'The level value is not a finite number.', 'level', 'Enter a number.');
+  const iso = isosurface(f, box, n, level);
+  if (iso.nan) issues.push({ sev: iso.nan === (n + 1) ** 3 ? 'error' : 'warn', code: 'nonfinite', msg: iso.nan + ' of ' + (n + 1) ** 3 + ' grid points give a value that is not a finite number, so ' + iso.skippedCells + ' cells were skipped.', region: 'where the formula is undefined (division by zero, square root of a negative, logarithm of a non-positive number)', fix: 'Shrink the box away from the singularity or change the formula.' });
+  if (!iso.F.length) { issues.push({ sev: 'error', code: 'no-surface', msg: 'F never crosses the level ' + n2(level, 4) + ' inside the box: F ranges from ' + n2(iso.min, 4) + ' to ' + n2(iso.max, 4) + ', so there is no surface to draw.', region: 'search box', fix: 'Pick a level between ' + n2(iso.min, 3) + ' and ' + n2(iso.max, 3) + ' or enlarge the box.' }); return { ok: false, issues, stats: null }; }
+  const st = triStats(iso.V, iso.F), nV = iso.V.length / 3, good = new Uint8Array(nV).fill(1);
+  if (st.boundary) issues.push({ sev: 'warn', code: 'cut-by-box', msg: 'The surface runs into the edge of the search box (' + st.boundary + ' open edges), so it is cut off there.', region: 'faces of the search box', fix: 'Enlarge the box until the surface closes.' });
+  issues.push({ sev: 'info', code: 'sampling', msg: 'Marching tetrahedra on a ' + n + '³ grid, cell size ' + n2(iso.h, 3) + ' units: any feature thinner than about one cell can be missed, and edges are rounded by about one cell.', region: 'whole surface', fix: 'Raise the grid resolution to see finer detail.' });
+  return { ok: true, kind: 'tri', smooth: true, V: iso.V, F: iso.F, good, W: 0, H: 0, nu: 0, nv: 0, issues, stats: st, info: { method: 'numerical', level, fmin: iso.min, fmax: iso.max, grid: n, cell: iso.h } };
+}
+
+/* ---------- ODE systems: RK4 with a step-halving error report, optional conserved quantity ---------- */
+const ODEVARS = ['x', 'y', 'z', 'vx', 'vy', 'vz', 't', 'a', 'b', 'c', 'R', 'r'];
+function odeSetup(L) {
+  const O = L.ode || {}, eq = (O.eq || []).slice(), n = eq.length === 6 ? 6 : 3; const names = n === 6 ? ['dx/dt', 'dy/dt', 'dz/dt', 'dvx/dt', 'dvy/dt', 'dvz/dt'] : ['dx/dt', 'dy/dt', 'dz/dt']; const c = compileAll(eq.slice(0, n), ODEVARS, names);
+  let inv = null; if (O.inv && String(O.inv).trim()) { try { inv = MX.compile(O.inv, ODEVARS).fn; } catch (e) { c.issues.push({ sev: 'warn', code: 'parse-inv', msg: 'Conserved quantity: ' + e.message, region: 'conserved quantity', fix: 'Fix the formula or clear it.' }); } }
+  return { n, fns: c.fns.map((q) => q.fn), issues: c.issues, inv, O };
+}
+function rk4run(S, y0, t0, dt, steps, P, sample) {
+  const n = S.n, arg = [0, 0, 0, 0, 0, 0, 0, P.a || 0, P.b || 0, P.c || 0, P.R || 0, P.r || 0], y = y0.slice(), k1 = new Array(n), k2 = new Array(n), k3 = new Array(n), k4 = new Array(n), tmp = new Array(n);
+  const rhs = (yy, tt, out) => { arg[0] = yy[0]; arg[1] = yy[1]; arg[2] = yy[2]; arg[3] = n === 6 ? yy[3] : 0; arg[4] = n === 6 ? yy[4] : 0; arg[5] = n === 6 ? yy[5] : 0; arg[6] = tt; for (let i = 0; i < n; i++) out[i] = S.fns[i](arg); };
+  let t = t0; sample(0, t, y);
+  for (let s = 1; s <= steps; s++) {
+    rhs(y, t, k1); for (let i = 0; i < n; i++) tmp[i] = y[i] + dt / 2 * k1[i]; rhs(tmp, t + dt / 2, k2); for (let i = 0; i < n; i++) tmp[i] = y[i] + dt / 2 * k2[i]; rhs(tmp, t + dt / 2, k3); for (let i = 0; i < n; i++) tmp[i] = y[i] + dt * k3[i]; rhs(tmp, t + dt, k4);
+    for (let i = 0; i < n; i++) y[i] += dt / 6 * (k1[i] + 2 * k2[i] + 2 * k3[i] + k4[i]); t = t0 + s * dt;
+    let bad = false; for (let i = 0; i < n; i++) if (!isFinite(y[i]) || Math.abs(y[i]) > 1e7) bad = true; if (bad) return { stopped: s, t, y: y.slice() };
+    sample(s, t, y);
+  }
+  return { stopped: null, t, y: y.slice() };
+}
+function buildOde(L, tShift) {
+  const S = odeSetup(L), issues = S.issues.slice(); if (issues.some((i) => i.sev === 'error')) return { ok: false, issues, stats: null };
+  const O = S.O, P = L.P || {}, dt = Number(O.dt), steps = Math.max(10, Math.min(200000, O.steps | 0)), y0 = (O.y0 || [1, 1, 1]).slice(0, S.n).map(Number); while (y0.length < S.n) y0.push(0);
+  if (!(dt > 0) || !isFinite(dt)) return fail('dt', 'The time step must be a positive number.', 'step size', 'Try 0.005 to 0.02.'); if (y0.some((v) => !isFinite(v))) return fail('y0', 'An initial value is not a finite number.', 'initial conditions', 'Enter numbers.');
+  const stride = Math.max(1, Math.ceil(steps / 20000)), pts = [], times = [], I = []; const arg = [0, 0, 0, 0, 0, 0, 0, P.a || 0, P.b || 0, P.c || 0, P.R || 0, P.r || 0];
+  const invAt = (t, y) => { if (!S.inv) return NaN; arg[0] = y[0]; arg[1] = y[1]; arg[2] = y[2]; arg[3] = S.n === 6 ? y[3] : 0; arg[4] = S.n === 6 ? y[4] : 0; arg[5] = S.n === 6 ? y[5] : 0; arg[6] = t; return S.inv(arg); };
+  const r1 = rk4run(S, y0, 0, dt, steps, P, (s, t, y) => { if (s % stride === 0) { pts.push(y[0], y[1], y[2]); times.push(t); if (S.inv) I.push(invAt(t, y)); } });
+  if (r1.stopped !== null) issues.push({ sev: 'warn', code: 'blowup', msg: 'The solution grew beyond 10^7 or became non-finite at t = ' + n2(r1.t, 4) + ' (step ' + r1.stopped + '). Only the part before that is drawn.', region: 'after t = ' + n2(r1.t, 3), fix: 'Use a smaller time step, change the parameters or initial values, or accept that the system is unstable.' });
+  const npts = pts.length / 3; if (npts < 3) return { ok: false, issues, stats: null };
+  /* convergence: same span with dt/2, compare at the common sample times */
+  const half = [], steps2 = Math.min(400000, (r1.stopped !== null ? r1.stopped : steps) * 2), stride2 = stride * 2; rk4run(S, y0, 0, dt / 2, steps2, P, (s, t, y) => { if (s % stride2 === 0) half.push(y[0], y[1], y[2]); });
+  const bb = bboxOf(Float64Array.from(pts)), scale = bb.diag; let maxSep = 0, tTrust = times[npts - 1], found = false; const m = Math.min(npts, half.length / 3);
+  for (let k = 0; k < m; k++) { const s = Math.hypot(pts[k * 3] - half[k * 3], pts[k * 3 + 1] - half[k * 3 + 1], pts[k * 3 + 2] - half[k * 3 + 2]); if (s > maxSep) maxSep = s; if (!found && s > 1e-3 * scale) { found = true; tTrust = times[k]; } }
+  /* observed order on a short non-chaotic horizon: error ratio between dt, dt/2, dt/4 */
+  const T0 = Math.min(0.5, steps * dt * 0.2), runEnd = (h) => { let e = null; rk4run(S, y0, 0, h, Math.max(1, Math.round(T0 / h)), P, () => {}).y.forEach(() => {}); const q = rk4run(S, y0, 0, h, Math.max(1, Math.round(T0 / h)), P, () => {}); return q.y; };
+  let order = null; try { const hh = T0 / 40, a = runEnd(hh), b = runEnd(hh / 2), c3 = runEnd(hh / 4), e1 = Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]), e2 = Math.hypot(b[0] - c3[0], b[1] - c3[1], b[2] - c3[2]); if (e1 > 1e-14 && e2 > 1e-16) order = Math.log2(e1 / e2); } catch (e) { order = null; }
+  let drift = null; if (S.inv && I.length > 1 && isFinite(I[0])) { let m2 = 0; const ref = Math.max(Math.abs(I[0]), 1e-12); I.forEach((v) => { m2 = Math.max(m2, Math.abs(v - I[0])); }); drift = m2 / ref; }
+  if (found) issues.push({ sev: 'info', code: 'chaos', msg: 'Solutions with step ' + dt + ' and ' + dt / 2 + ' separate by more than 0.1% of the picture size after t = ' + n2(tTrust, 3) + '. For a chaotic system that is expected: the exact path cannot be trusted beyond that time, but the overall shape of the attractor is still meaningful.', region: 'after t = ' + n2(tTrust, 3), fix: 'This is a property of the equations, not an error. A smaller step delays it only slightly.' });
+  if (drift !== null && drift > 1e-3) issues.push({ sev: 'warn', code: 'drift', msg: 'The conserved quantity changed by ' + (drift * 100).toExponential(2) + '% of its starting value, so the numerical solution is losing accuracy.', region: 'whole trajectory', fix: 'Use a smaller time step.' });
+  const V = Float64Array.from(pts), segs = new Uint32Array((npts - 1) * 2); for (let k = 0; k + 1 < npts; k++) { segs[k * 2] = k; segs[k * 2 + 1] = k + 1; }
+  let len = 0; for (let k = 0; k + 1 < npts; k++) len += Math.hypot(pts[k * 3 + 3] - pts[k * 3], pts[k * 3 + 4] - pts[k * 3 + 1], pts[k * 3 + 5] - pts[k * 3 + 2]);
+  issues.push({ sev: 'info', code: 'method', msg: 'Classical Runge-Kutta 4 with a fixed step ' + dt + ' for ' + steps + ' steps (to t = ' + n2(steps * dt, 4) + ').' + (order !== null ? ' Observed order of accuracy ' + n2(order, 3) + ' (theory: 4).' : ''), region: 'whole trajectory', fix: '' });
+  return { ok: true, kind: 'lines', V, good: new Uint8Array(npts).fill(1), segs, times: Float64Array.from(times), issues, stats: { vertices: npts, segments: npts - 1, length: len, bbox: bb, diag: bb.diag, faces: 0, closed: false, volume: null, volumeWhy: 'a trajectory is a curve, not a closed surface', chi: null, area: 0, edges: npts - 1, boundary: 0, nonManifold: 0, orientable: true, degenerate: 0, folds: 0 }, info: { method: 'numerical', dt, steps, order, drift, tTrust: found ? tTrust : null, maxSep, final: r1.y } };
+}
+
+/* ---------- 3D field lines (streamlines) ---------- */
+function buildField(L, t) {
+  const F = L.fld || {}, c = compileAll([F.P, F.Q, F.R], IMPVARS, ['P(x, y, z)', 'Q(x, y, z)', 'R(x, y, z)']), issues = c.issues.slice(); if (issues.length) return { ok: false, issues, stats: null };
+  const PR = L.P || {}, fn = c.fns.map((q) => q.fn), arg = [0, 0, 0, t || 0, PR.a || 0, PR.b || 0, PR.c || 0, PR.R || 0, PR.r || 0], ds = Number(F.h) || 0.05, steps = Math.min(4000, F.steps | 0 || 400), bound = Number(F.bound) || 6, unit = F.unit !== false;
+  const vec = (x, y, z) => { arg[0] = x; arg[1] = y; arg[2] = z; return [fn[0](arg), fn[1](arg), fn[2](arg)]; };
+  const nrm = (v) => { if (!unit) return v; const l = Math.hypot(v[0], v[1], v[2]); return l > 0 ? [v[0] / l, v[1] / l, v[2] / l] : [NaN, NaN, NaN]; };
+  const seeds = []; const sd = F.seeds || { type: 'ring', n: 12, r: 1, cx: 0, cy: 0, cz: 0 };
+  if (sd.type === 'ring') for (let i = 0; i < sd.n; i++) { const a = TAU * i / sd.n; seeds.push([sd.cx + sd.r * Math.cos(a), sd.cy + sd.r * Math.sin(a), sd.cz]); }
+  else if (sd.type === 'sphere') for (let i = 0; i < sd.n; i++) { const z = 1 - 2 * (i + 0.5) / sd.n, rr = Math.sqrt(Math.max(0, 1 - z * z)), a = i * TAU / PHI; seeds.push([sd.cx + sd.r * rr * Math.cos(a), sd.cy + sd.r * rr * Math.sin(a), sd.cz + sd.r * z]); }
+  else if (sd.type === 'grid') { const m = Math.max(2, sd.n | 0); for (let k = 0; k < m; k++) for (let j = 0; j < m; j++) for (let i = 0; i < m; i++) seeds.push([sd.cx + sd.r * (2 * i / (m - 1) - 1), sd.cy + sd.r * (2 * j / (m - 1) - 1), sd.cz + sd.r * (2 * k / (m - 1) - 1)]); }
+  else for (let i = 0; i < sd.n; i++) seeds.push([sd.cx, sd.cy + sd.r * (2 * i / Math.max(1, sd.n - 1) - 1), sd.cz]);
+  if (seeds.length > 400) return fail('seeds', 'More than 400 seed points were requested.', 'seeds', 'Use fewer seed points.');
+  const P = [], segs = [], ends = { bound: 0, steps: 0, singular: 0, nonfinite: 0 }; let totalLen = 0;
+  const dirs = unit ? [1, -1] : [1];
+  seeds.forEach((s0) => {
+    dirs.forEach((dir) => {
+      let p = s0.slice(), prev = -1, reason = 'steps', pts = 0;
+      for (let k = 0; k < steps; k++) {
+        const k1 = nrm(vec(p[0], p[1], p[2])); if (!k1.every(isFinite)) { reason = 'singular'; break; }
+        const h = ds * dir, q2 = [p[0] + h / 2 * k1[0], p[1] + h / 2 * k1[1], p[2] + h / 2 * k1[2]], k2 = nrm(vec(q2[0], q2[1], q2[2])), q3 = [p[0] + h / 2 * k2[0], p[1] + h / 2 * k2[1], p[2] + h / 2 * k2[2]], k3 = nrm(vec(q3[0], q3[1], q3[2])), q4 = [p[0] + h * k3[0], p[1] + h * k3[1], p[2] + h * k3[2]], k4 = nrm(vec(q4[0], q4[1], q4[2]));
+        if (![k2, k3, k4].every((q) => q.every(isFinite))) { reason = 'singular'; break; }
+        const np = [p[0] + h / 6 * (k1[0] + 2 * k2[0] + 2 * k3[0] + k4[0]), p[1] + h / 6 * (k1[1] + 2 * k2[1] + 2 * k3[1] + k4[1]), p[2] + h / 6 * (k1[2] + 2 * k2[2] + 2 * k3[2] + k4[2])];
+        if (!np.every(isFinite)) { reason = 'nonfinite'; break; } if (Math.hypot(np[0], np[1], np[2]) > bound) { reason = 'bound'; break; }
+        const id = P.length / 3; if (prev < 0) { P.push(p[0], p[1], p[2]); prev = id; pts = 1; } P.push(np[0], np[1], np[2]); segs.push(prev, P.length / 3 - 1); prev = P.length / 3 - 1; totalLen += Math.hypot(np[0] - p[0], np[1] - p[1], np[2] - p[2]); p = np; pts++;
+      }
+      ends[reason]++;
+    });
+  });
+  if (!segs.length) return { ok: false, issues: issues.concat([{ sev: 'error', code: 'no-lines', msg: 'No field line could be traced: the field is zero, undefined or non-finite at every seed point.', region: 'seed points', fix: 'Move the seeds or change the field.' }]), stats: null };
+  const V = Float64Array.from(P), bb = bboxOf(V);
+  if (ends.singular) issues.push({ sev: 'info', code: 'singular', msg: ends.singular + ' lines stopped where the field is zero or undefined (a point source, sink or singular point).', region: 'near singular points of the field', fix: '' });
+  issues.push({ sev: 'info', code: 'method', msg: 'Lines follow dr/ds = ' + (unit ? 'F/|F|' : 'F') + ' with RK4, step ' + ds + ', up to ' + steps + ' steps in each direction' + (unit ? '. Line spacing says nothing about field strength (unit-speed tracing).' : '.'), region: 'whole field', fix: '' });
+  return { ok: true, kind: 'lines', V, good: new Uint8Array(V.length / 3).fill(1), segs: Uint32Array.from(segs), issues, stats: { vertices: V.length / 3, segments: segs.length / 2, length: totalLen, bbox: bb, diag: bb.diag, faces: 0, closed: false, volume: null, volumeWhy: 'field lines are curves', chi: null, area: 0, edges: segs.length / 2, boundary: 0, nonManifold: 0, orientable: true, degenerate: 0, folds: 0, lines: seeds.length * dirs.length }, info: { method: 'numerical', ends } };
+}
+
+/* ---------- L-system plant (3D turtle) ---------- */
+function buildLsys(L) {
+  const S = L.ls || {}, rules = {}; String(S.rules || '').split(/\n|;/).forEach((ln) => { const m = /^\s*([A-Za-z])\s*=\s*(\S.*)$/.exec(ln); if (m) rules[m[1]] = m[2].trim(); });
+  const iter = Math.max(0, Math.min(8, S.iter | 0)), issues = []; let s = String(S.axiom || 'F'); if (!/^[A-Za-z+\-&^\\/\[\]!|]+$/.test(s)) return fail('axiom', 'The axiom may only use letters and the symbols + - & ^ \\ / [ ] ! |.', 'axiom', 'Try F.');
+  for (let i = 0; i < iter; i++) { let o = ''; for (const ch of s) { o += rules[ch] !== undefined ? rules[ch] : ch; if (o.length > 400000) { issues.push({ sev: 'warn', code: 'too-long', msg: 'The string grew beyond 400,000 symbols, so growth stopped after ' + i + ' of ' + iter + ' iterations.', region: 'iterations', fix: 'Lower the iteration count.' }); i = iter; break; } } s = o; }
+  const ang = (Number(S.angle) || 25) * Math.PI / 180, len0 = (Number(S.len) || 1) * Math.pow(Number(S.scale) || 1, iter), shrink = Number(S.shrink) || 0.9;
+  const P = [], segs = [], lev = []; let pos = [0, 0, 0], H = [0, 0, 1], Lf = [-1, 0, 0], U = [0, 1, 0], len = len0; const stack = []; const rot = (a, b, ang2) => { const c = Math.cos(ang2), sn = Math.sin(ang2); const na = [a[0] * c + b[0] * sn, a[1] * c + b[1] * sn, a[2] * c + b[2] * sn], nb = [-a[0] * sn + b[0] * c, -a[1] * sn + b[1] * c, -a[2] * sn + b[2] * c]; return [na, nb]; };
+  let depth = 0, maxDepth = 0;
+  for (const ch of s) {
+    if (ch === 'F' || ch === 'G') { const np = [pos[0] + H[0] * len, pos[1] + H[1] * len, pos[2] + H[2] * len]; const a = P.length / 3; P.push(pos[0], pos[1], pos[2], np[0], np[1], np[2]); segs.push(a, a + 1); lev.push(depth); pos = np; if (P.length / 3 > 600000) { issues.push({ sev: 'warn', code: 'too-many', msg: 'Stopped at 300,000 branches.', region: 'whole plant', fix: 'Lower the iteration count.' }); break; } }
+    else if (ch === 'f') pos = [pos[0] + H[0] * len, pos[1] + H[1] * len, pos[2] + H[2] * len];
+    else if (ch === '+') [H, Lf] = rot(H, Lf, ang); else if (ch === '-') [H, Lf] = rot(H, Lf, -ang);
+    else if (ch === '&') [H, U] = rot(H, U, ang); else if (ch === '^') [H, U] = rot(H, U, -ang);
+    else if (ch === '\\') [Lf, U] = rot(Lf, U, ang); else if (ch === '/') [Lf, U] = rot(Lf, U, -ang);
+    else if (ch === '|') { H = H.map((v) => -v); Lf = Lf.map((v) => -v); }
+    else if (ch === '!') len *= shrink;
+    else if (ch === '[') { stack.push([pos.slice(), H.slice(), Lf.slice(), U.slice(), len, depth]); depth++; if (depth > maxDepth) maxDepth = depth; }
+    else if (ch === ']') { const q = stack.pop(); if (q) { pos = q[0]; H = q[1]; Lf = q[2]; U = q[3]; len = q[4]; depth = q[5]; } }
+  }
+  if (!segs.length) return fail('empty', 'The rules produced no drawing steps (no F in the final string).', 'rules', 'Include F in the axiom or rules.');
+  const V = Float64Array.from(P), bb = bboxOf(V);
+  issues.push({ sev: 'info', code: 'method', msg: 'L-system with ' + iter + ' iterations gives ' + s.length + ' symbols and ' + segs.length / 2 + ' branches, drawn by a 3D turtle with turn angle ' + n2(S.angle, 3) + '°. This is a procedural model of branching growth, not a simulation of how a real plant grows.', region: 'whole plant', fix: '' });
+  return { ok: true, kind: 'lines', V, good: new Uint8Array(V.length / 3).fill(1), segs: Uint32Array.from(segs), lev: Uint8Array.from(lev), maxLev: maxDepth, issues, stats: { vertices: V.length / 3, segments: segs.length / 2, length: segs.length / 2 * len0, bbox: bb, diag: bb.diag, faces: 0, closed: false, volume: null, volumeWhy: 'a plant skeleton is made of curves', chi: null, area: 0, edges: segs.length / 2, boundary: 0, nonManifold: 0, orientable: true, degenerate: 0, folds: 0 }, info: { method: 'procedural', symbols: s.length } };
+}
+
+/* ---------- IFS fractals (chaos game) ---------- */
+function buildIfs(L) {
+  const S = L.ifs || {}, maps = S.maps || []; if (!maps.length) return fail('maps', 'No maps are defined.', 'maps'); const n = Math.min(200000, Math.max(1000, L.gp && L.gp.n ? L.gp.n | 0 : 30000)), r = rng(5), issues = [];
+  const ps = maps.map((m) => (m.p !== undefined ? m.p : 1 / maps.length)), tot = ps.reduce((a, b) => a + b, 0), cum = []; let acc = 0; ps.forEach((p) => { acc += p / tot; cum.push(acc); });
+  let p = [0, 0, 0]; const V = new Float64Array(n * 3);
+  for (let i = -30; i < n; i++) { const u = r(); let k = 0; while (k < cum.length - 1 && u > cum[k]) k++; const m = maps[k].m; p = [m[0] * p[0] + m[1] * p[1] + m[2] * p[2] + m[9], m[3] * p[0] + m[4] * p[1] + m[5] * p[2] + m[10], m[6] * p[0] + m[7] * p[1] + m[8] * p[2] + m[11]]; if (i >= 0) { V[i * 3] = p[0]; V[i * 3 + 1] = p[1]; V[i * 3 + 2] = p[2]; } if (!p.every(isFinite)) return fail('diverge', 'The maps are not contractions: the points flew off to infinity.', 'maps', 'Scale factors must be smaller than 1 in size.'); }
+  const bb = bboxOf(V); let dim = null; const sc = maps.map((m) => Math.cbrt(Math.abs(m.m[0] * (m.m[4] * m.m[8] - m.m[5] * m.m[7]) - m.m[1] * (m.m[3] * m.m[8] - m.m[5] * m.m[6]) + m.m[2] * (m.m[3] * m.m[7] - m.m[4] * m.m[6])))); if (sc.every((s) => Math.abs(s - sc[0]) < 1e-9) && sc[0] > 0 && sc[0] < 1 && maps.length > 1) dim = Math.log(maps.length) / Math.log(1 / sc[0]);
+  issues.push({ sev: 'info', code: 'method', msg: 'Chaos game: ' + n + ' points from ' + maps.length + ' contracting affine maps chosen at random (fixed seed, so the picture is repeatable). ' + (dim !== null ? 'All maps scale by ' + n2(sc[0], 5) + ', so the similarity dimension is ln ' + maps.length + ' ÷ ln ' + n2(1 / sc[0], 5) + ' = ' + n2(dim, 5) + ' (exact for a self-similar set with no overlaps).' : 'The maps have different scales, so no single similarity dimension is given.') + ' The picture is a finite sample of the fractal, not the fractal itself.', region: 'whole set', fix: '' });
+  return { ok: true, kind: 'points', V, good: new Uint8Array(n).fill(1), issues, stats: { vertices: n, faces: 0, bbox: bb, diag: bb.diag, closed: false, volume: null, volumeWhy: 'a point set', chi: null, area: 0, edges: 0, boundary: 0, nonManifold: 0, orientable: true, degenerate: 0, folds: 0 }, info: { method: 'exact', dimension: dim, maps: maps.length } };
+}
+
+/* ---------- crystal lattices and molecules (atoms + bonds) ---------- */
+const ELEM = { H: { r: 31, color: '#f2f2f2' }, C: { r: 76, color: '#4a4f57' }, O: { r: 66, color: '#e5483b' }, N: { r: 71, color: '#3b6fe5' }, Na: { r: 166, color: '#9b6bff' }, Cl: { r: 102, color: '#33c46d' }, Fe: { r: 132, color: '#c97a3a' }, Cu: { r: 132, color: '#d8895a' }, Si: { r: 111, color: '#c9b49a' }, Au: { r: 144, color: '#f2c744' }, Xx: { r: 100, color: '#4f8cff' } };
+const LATTICES = { sc: { name: 'Simple cubic', basis: [['Xx', 0, 0, 0]], pf: Math.PI / 6, pfEq: 'π/6', cn: 6 }, bcc: { name: 'Body-centred cubic', basis: [['Xx', 0, 0, 0], ['Xx', .5, .5, .5]], pf: Math.PI * Math.sqrt(3) / 8, pfEq: 'π√3/8', cn: 8 }, fcc: { name: 'Face-centred cubic', basis: [['Xx', 0, 0, 0], ['Xx', .5, .5, 0], ['Xx', .5, 0, .5], ['Xx', 0, .5, .5]], pf: Math.PI / (3 * Math.sqrt(2)), pfEq: 'π/(3√2)', cn: 12 }, diamond: { name: 'Diamond cubic', basis: [['C', 0, 0, 0], ['C', .5, .5, 0], ['C', .5, 0, .5], ['C', 0, .5, .5], ['C', .25, .25, .25], ['C', .75, .75, .25], ['C', .75, .25, .75], ['C', .25, .75, .75]], pf: Math.PI * Math.sqrt(3) / 16, pfEq: 'π√3/16', cn: 4 }, nacl: { name: 'Rock salt (NaCl)', basis: [['Na', 0, 0, 0], ['Na', .5, .5, 0], ['Na', .5, 0, .5], ['Na', 0, .5, .5], ['Cl', .5, 0, 0], ['Cl', 0, .5, 0], ['Cl', 0, 0, .5], ['Cl', .5, .5, .5]], pf: null, cn: 6 } };
+function bondsFor(atoms, tol) { const n = atoms.length; let dmin = Infinity; for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) { const d = Math.hypot(atoms[i].x - atoms[j].x, atoms[i].y - atoms[j].y, atoms[i].z - atoms[j].z); if (d > 1e-9 && d < dmin) dmin = d; } const segs = []; if (!isFinite(dmin)) return { segs, dmin: 0 }; for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) { const d = Math.hypot(atoms[i].x - atoms[j].x, atoms[i].y - atoms[j].y, atoms[i].z - atoms[j].z); if (d < dmin * (1 + tol)) segs.push(i, j); } return { segs, dmin }; }
+function atomsMesh(atoms, segs, issues, info) { const n = atoms.length, V = new Float64Array(n * 3), rad = new Float32Array(n), col = []; let dmin = Infinity, rmax = 0; for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) { const d = Math.hypot(atoms[i].x - atoms[j].x, atoms[i].y - atoms[j].y, atoms[i].z - atoms[j].z); if (d > 1e-9 && d < dmin) dmin = d; } atoms.forEach((a) => { rmax = Math.max(rmax, (ELEM[a.el] || ELEM.Xx).r); }); const rs = isFinite(dmin) ? 0.3 * dmin / rmax : 1; atoms.forEach((a, i) => { V[i * 3] = a.x; V[i * 3 + 1] = a.y; V[i * 3 + 2] = a.z; const e = ELEM[a.el] || ELEM.Xx; rad[i] = (a.r || e.r) * rs; col.push(e.color); }); const bb = bboxOf(V); return { ok: true, kind: 'atoms', V, good: new Uint8Array(n).fill(1), segs: Uint32Array.from(segs), rad, col, els: atoms.map((a) => a.el), issues, stats: { vertices: n, segments: segs.length / 2, faces: 0, bbox: bb, diag: bb.diag, closed: false, volume: null, volumeWhy: 'a set of atoms', chi: null, area: 0, edges: segs.length / 2, boundary: 0, nonManifold: 0, orientable: true, degenerate: 0, folds: 0 }, info }; }
+function buildLattice(L) {
+  const g = L.gp || {}, T = LATTICES[L.lat || 'fcc']; if (!T) return fail('lattice', 'Unknown lattice type.', 'lattice'); const nx = Math.max(1, Math.min(6, g.nx | 0 || 2)), ny = Math.max(1, Math.min(6, g.ny | 0 || 2)), nz = Math.max(1, Math.min(6, g.nz | 0 || 2)), a = Number(g.a) || 1;
+  const atoms = []; for (let k = 0; k <= nz; k++) for (let j = 0; j <= ny; j++) for (let i = 0; i <= nx; i++) T.basis.forEach((b) => { const x = (i + b[1]) * a, y = (j + b[2]) * a, z = (k + b[3]) * a; if (x <= nx * a + 1e-9 && y <= ny * a + 1e-9 && z <= nz * a + 1e-9) atoms.push({ el: b[0], x, y, z }); });
+  if (atoms.length > 1500) return fail('too-many', atoms.length + ' atoms is too many to draw.', 'cells', 'Use fewer cells.');
+  const bd = bondsFor(atoms, 0.02), issues = [{ sev: 'info', code: 'method', msg: T.name + ' unit cell repeated ' + nx + ' × ' + ny + ' × ' + nz + ' times with lattice constant a = ' + a + '. Atom positions are exact lattice points; bonds join nearest neighbours (distance ' + n2(bd.dmin, 4) + ' = ' + n2(bd.dmin / a, 4) + ' a). Atoms are drawn smaller than touching spheres. Real crystals also have thermal motion, defects and surfaces that are not modelled.', region: 'whole crystal', fix: '' }];
+  return atomsMesh(atoms, bd.segs, issues, { method: 'exact', lattice: T.name, packingFraction: T.pf, packingEq: T.pfEq, coordination: T.cn, nearest: bd.dmin });
+}
+const MOLECULES = {
+  h2o: { name: 'Water, H₂O', ref: 'O–H 95.72 pm, H–O–H 104.52° (gas-phase equilibrium geometry)', build: () => { const d = 95.72, th = 104.52 * Math.PI / 360; return { atoms: [{ el: 'O', x: 0, y: 0, z: 0 }, { el: 'H', x: d * Math.sin(th), y: 0, z: d * Math.cos(th) }, { el: 'H', x: -d * Math.sin(th), y: 0, z: d * Math.cos(th) }], bonds: [0, 1, 0, 2] }; } },
+  ch4: { name: 'Methane, CH₄', ref: 'C–H 108.7 pm, tetrahedral angle 109.47°', build: () => { const d = 108.7, k = d / Math.sqrt(3); return { atoms: [{ el: 'C', x: 0, y: 0, z: 0 }, { el: 'H', x: k, y: k, z: k }, { el: 'H', x: k, y: -k, z: -k }, { el: 'H', x: -k, y: k, z: -k }, { el: 'H', x: -k, y: -k, z: k }], bonds: [0, 1, 0, 2, 0, 3, 0, 4] }; } },
+  co2: { name: 'Carbon dioxide, CO₂', ref: 'C=O 116.3 pm, linear 180°', build: () => ({ atoms: [{ el: 'C', x: 0, y: 0, z: 0 }, { el: 'O', x: 116.3, y: 0, z: 0 }, { el: 'O', x: -116.3, y: 0, z: 0 }], bonds: [0, 1, 0, 2] }) },
+  benzene: { name: 'Benzene, C₆H₆', ref: 'C–C 139.7 pm, C–H 108.4 pm, planar hexagon', build: () => { const atoms = [], bonds = [], rc = 139.7, rh = 139.7 + 108.4; for (let i = 0; i < 6; i++) { const a = i * Math.PI / 3; atoms.push({ el: 'C', x: rc * Math.cos(a), y: rc * Math.sin(a), z: 0 }); } for (let i = 0; i < 6; i++) { const a = i * Math.PI / 3; atoms.push({ el: 'H', x: rh * Math.cos(a), y: rh * Math.sin(a), z: 0 }); } for (let i = 0; i < 6; i++) { bonds.push(i, (i + 1) % 6, i, 6 + i); } return { atoms, bonds }; } },
+  nh3: { name: 'Ammonia, NH₃', ref: 'N–H 101.2 pm, H–N–H 106.7°', build: () => { const d = 101.2, th = 106.7 * Math.PI / 180, cosb = Math.cos(th), rr = d * Math.sqrt((1 - cosb) / 3 * 2 / 2 * 1), atoms = [{ el: 'N', x: 0, y: 0, z: 0 }]; const s = Math.sqrt((1 - cosb) / (3 * 0.5 * 3)); /* place three H on a cone with the right mutual angle */ const sinA = Math.sqrt((2 * (1 - cosb)) / 3), cosA = Math.sqrt(1 - sinA * sinA); for (let i = 0; i < 3; i++) { const a = i * TAU / 3; atoms.push({ el: 'H', x: d * sinA * Math.cos(a), y: d * sinA * Math.sin(a), z: -d * cosA }); } void rr; void s; return { atoms, bonds: [0, 1, 0, 2, 0, 3] }; } },
+};
+function buildMolecule(L) { const M = MOLECULES[L.mol || 'h2o']; if (!M) return fail('molecule', 'Unknown molecule.', 'molecule'); const b = M.build(); return atomsMesh(b.atoms, b.bonds, [{ sev: 'info', code: 'method', msg: M.name + ': atom positions from standard reference geometry (' + M.ref + '), in picometres. These are textbook equilibrium values, not a quantum-chemical calculation. Atom size is shown by covalent radius; drawing is simplified.', region: 'whole molecule', fix: '' }], { method: 'exact', ref: M.ref, molecule: M.name }); }
+
+/* ---------- polyhedra with exact formulas ---------- */
+function hullFaces(P) {
+  const n = P.length, faces = [], seen = new Set(), eps = 1e-7; const cen = [0, 1, 2].map((q) => P.reduce((s, p) => s + p[q], 0) / n);
+  for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) for (let k = j + 1; k < n; k++) {
+    const u = [P[j][0] - P[i][0], P[j][1] - P[i][1], P[j][2] - P[i][2]], v = [P[k][0] - P[i][0], P[k][1] - P[i][1], P[k][2] - P[i][2]]; let nn = [u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0]]; const l = Math.hypot(nn[0], nn[1], nn[2]); if (l < 1e-9) continue; nn = nn.map((x) => x / l); const d = nn[0] * P[i][0] + nn[1] * P[i][1] + nn[2] * P[i][2]; let pos = 0, neg = 0; const on = []; for (let m = 0; m < n; m++) { const s = nn[0] * P[m][0] + nn[1] * P[m][1] + nn[2] * P[m][2] - d; if (s > eps) pos++; else if (s < -eps) neg++; else on.push(m); } if (pos && neg) continue; const key = on.join(','); if (seen.has(key)) continue; seen.add(key);
+    const sign = d - (nn[0] * cen[0] + nn[1] * cen[1] + nn[2] * cen[2]) >= 0 ? 1 : -1, nrm = nn.map((x) => x * sign), c0 = [0, 1, 2].map((q) => on.reduce((s, m) => s + P[m][q], 0) / on.length);
+    let e1 = [P[on[0]][0] - c0[0], P[on[0]][1] - c0[1], P[on[0]][2] - c0[2]]; const el = Math.hypot(e1[0], e1[1], e1[2]); e1 = e1.map((x) => x / el); const e2 = [nrm[1] * e1[2] - nrm[2] * e1[1], nrm[2] * e1[0] - nrm[0] * e1[2], nrm[0] * e1[1] - nrm[1] * e1[0]];
+    const ord = on.map((m) => { const q = [P[m][0] - c0[0], P[m][1] - c0[1], P[m][2] - c0[2]]; return { m, a: Math.atan2(q[0] * e2[0] + q[1] * e2[1] + q[2] * e2[2], q[0] * e1[0] + q[1] * e1[1] + q[2] * e1[2]) }; }).sort((p, q) => p.a - q.a).map((o) => o.m); faces.push(ord);
+  }
+  return faces;
+}
+const POLY = {
+  tetra: { name: 'Tetrahedron', V: [[1, 1, 1], [1, -1, -1], [-1, 1, -1], [-1, -1, 1]], area: (a) => Math.sqrt(3) * a * a, vol: (a) => a ** 3 / (6 * Math.SQRT2), eqA: 'A = √3 a²', eqV: 'V = a³ ÷ (6√2)' },
+  cube: { name: 'Cube', V: (() => { const o = []; for (const x of [-1, 1]) for (const y of [-1, 1]) for (const z of [-1, 1]) o.push([x, y, z]); return o; })(), area: (a) => 6 * a * a, vol: (a) => a ** 3, eqA: 'A = 6a²', eqV: 'V = a³' },
+  octa: { name: 'Octahedron', V: [[1, 0, 0], [-1, 0, 0], [0, 1, 0], [0, -1, 0], [0, 0, 1], [0, 0, -1]], area: (a) => 2 * Math.sqrt(3) * a * a, vol: (a) => Math.SQRT2 / 3 * a ** 3, eqA: 'A = 2√3 a²', eqV: 'V = √2 a³ ÷ 3' },
+  icosa: { name: 'Icosahedron', V: (() => { const o = []; for (const s1 of [-1, 1]) for (const s2 of [-1, 1]) { o.push([0, s1, s2 * PHI], [s1, s2 * PHI, 0], [s2 * PHI, 0, s1]); } return o; })(), area: (a) => 5 * Math.sqrt(3) * a * a, vol: (a) => 5 * (3 + Math.sqrt(5)) / 12 * a ** 3, eqA: 'A = 5√3 a²', eqV: 'V = 5(3 + √5) a³ ÷ 12' },
+  dodeca: { name: 'Dodecahedron', V: (() => { const o = []; for (const x of [-1, 1]) for (const y of [-1, 1]) for (const z of [-1, 1]) o.push([x, y, z]); for (const s1 of [-1, 1]) for (const s2 of [-1, 1]) { o.push([0, s1 / PHI, s2 * PHI], [s1 / PHI, s2 * PHI, 0], [s2 * PHI, 0, s1 / PHI]); } return o; })(), area: (a) => 3 * Math.sqrt(25 + 10 * Math.sqrt(5)) * a * a, vol: (a) => (15 + 7 * Math.sqrt(5)) / 4 * a ** 3, eqA: 'A = 3√(25 + 10√5) a²', eqV: 'V = (15 + 7√5) a³ ÷ 4' },
+};
+function buildPoly(L) {
+  const T = POLY[L.poly || 'cube']; if (!T) return fail('poly', 'Unknown polyhedron.', 'polyhedron'); const a = Number((L.gp || {}).edge) || 1;
+  let e0 = Infinity; for (let i = 0; i < T.V.length; i++) for (let j = i + 1; j < T.V.length; j++) e0 = Math.min(e0, Math.hypot(T.V[i][0] - T.V[j][0], T.V[i][1] - T.V[j][1], T.V[i][2] - T.V[j][2])); const k = a / e0, P = T.V.map((p) => p.map((x) => x * k));
+  const faces = hullFaces(P), F = []; faces.forEach((f) => { for (let q = 1; q + 1 < f.length; q++) F.push(f[0], f[q], f[q + 1]); });
+  const V = Float64Array.from([].concat.apply([], P)), st = triStats(V, Uint32Array.from(F)), ea = T.area(a), ev = T.vol(a);
+  const edges = new Set(); faces.forEach((f) => { for (let q = 0; q < f.length; q++) { const x = f[q], y = f[(q + 1) % f.length]; edges.add(Math.min(x, y) + '-' + Math.max(x, y)); } }); const chi = P.length - edges.size + faces.length;
+  st.areaExact = ea; st.volumeExact = ev; st.chiPoly = chi; st.polyFaces = faces.length; st.polyEdges = edges.size;
+  return { ok: true, kind: 'tri', V, F: Uint32Array.from(F), good: new Uint8Array(P.length).fill(1), W: 0, H: 0, nu: 0, nv: 0, issues: [{ sev: 'info', code: 'method', msg: T.name + ' with edge length ' + a + ': ' + P.length + ' vertices, ' + edges.size + ' edges, ' + faces.length + ' faces, so V − E + F = ' + chi + ' (exactly 2 for any convex polyhedron). Faces found by an exact convex-hull test.', region: 'whole solid', fix: '' }], stats: st, info: { method: 'exact', name: T.name, exact: { area: ea, volume: ev, eqA: T.eqA, eqV: T.eqV } } };
+}
+
+/* ---------- 4D polytopes with rotation and projection ---------- */
+const HYPER = {
+  tesseract: { name: 'Tesseract (8-cell)', V: (() => { const o = []; for (let m = 0; m < 16; m++) o.push([m & 1 ? 1 : -1, m & 2 ? 1 : -1, m & 4 ? 1 : -1, m & 8 ? 1 : -1]); return o; })(), edgeLen: 2, facts: 'vertices 16, edges 32, square faces 24, cubic cells 8; V − E + F − C = 0' },
+  cell16: { name: '16-cell', V: (() => { const o = []; for (let i = 0; i < 4; i++) for (const s of [-1, 1]) { const v = [0, 0, 0, 0]; v[i] = s; o.push(v); } return o; })(), edgeLen: Math.SQRT2, facts: 'vertices 8, edges 24, triangular faces 32, tetrahedral cells 16; V − E + F − C = 0' },
+  cell24: { name: '24-cell', V: (() => { const o = []; for (let i = 0; i < 4; i++) for (let j = i + 1; j < 4; j++) for (const s of [-1, 1]) for (const t of [-1, 1]) { const v = [0, 0, 0, 0]; v[i] = s; v[j] = t; o.push(v); } return o; })(), edgeLen: Math.SQRT2, facts: 'vertices 24, edges 96, triangular faces 96, octahedral cells 24; V − E + F − C = 0' },
+};
+function buildHyper(L, t) {
+  const T = HYPER[L.hyper || 'tesseract']; if (!T) return fail('hyper', 'Unknown polytope.', 'polytope'); const g = L.gp || {}, w1 = Number(g.w1) || 0, w2 = Number(g.w2) || 0, ph1 = Number(g.p1) || 0, ph2 = Number(g.p2) || 0, d = Math.max(1.2, Number(g.d) || 3), ortho = !!g.ortho;
+  const a1 = w1 * (t || 0) + ph1, a2 = w2 * (t || 0) + ph2, c1 = Math.cos(a1), s1 = Math.sin(a1), c2 = Math.cos(a2), s2 = Math.sin(a2);
+  const R = T.V.map((v) => { let x = v[0], y = v[1], z = v[2], w = v[3]; const x2 = x * c1 - w * s1, w2b = x * s1 + w * c1; x = x2; w = w2b; const z2 = z * c2 - w * s2, w3 = z * s2 + w * c2; z = z2; w = w3; return [x, y, z, w]; });
+  const V = new Float64Array(R.length * 3); let behind = 0; R.forEach((v, i) => { const s = ortho ? 1 : d / (d - v[3]); if (!ortho && d - v[3] <= 1e-6) behind++; V[i * 3] = v[0] * s; V[i * 3 + 1] = v[1] * s; V[i * 3 + 2] = v[2] * s; });
+  const segs = [], tol = 1e-6; for (let i = 0; i < T.V.length; i++) for (let j = i + 1; j < T.V.length; j++) { let dd = 0; for (let q = 0; q < 4; q++) dd += (T.V[i][q] - T.V[j][q]) ** 2; if (Math.abs(Math.sqrt(dd) - T.edgeLen) < tol) segs.push(i, j); }
+  const bb = bboxOf(V), issues = [{ sev: 'info', code: 'method', msg: T.name + ': ' + T.facts + '. Rotation is exact: in the x–w plane by ' + n2(a1 * 180 / Math.PI, 4) + '° and in the z–w plane by ' + n2(a2 * 180 / Math.PI, 4) + '°. Projection to 3D is ' + (ortho ? 'orthographic (drop w)' : 'perspective from distance ' + d + ' along w') + '. A 4D object cannot be seen directly: this is a 3D shadow, and lengths in it are not 4D lengths.', region: 'whole figure', fix: '' }];
+  if (behind) issues.push({ sev: 'warn', code: 'behind', msg: behind + ' vertices are at or beyond the 4D camera, so they are projected incorrectly.', region: 'those vertices', fix: 'Raise the 4D camera distance.' });
+  return { ok: true, kind: 'lines', V, good: new Uint8Array(R.length).fill(1), segs: Uint32Array.from(segs), issues, stats: { vertices: R.length, segments: segs.length / 2, length: 0, bbox: bb, diag: bb.diag, faces: 0, closed: false, volume: null, volumeWhy: 'a wireframe', chi: null, area: 0, edges: segs.length / 2, boundary: 0, nonManifold: 0, orientable: true, degenerate: 0, folds: 0 }, info: { method: 'exact', facts: T.facts } };
+}
+
+/* ---------- parametric curves (with strands and rungs for helices) ---------- */
+function buildCurve(L, t) {
+  const C = L.crv || {}, c = compileAll([C.fx, C.fy, C.fz], ['u', 't', 'a', 'b', 'c', 'R', 'r'], ['x(u)', 'y(u)', 'z(u)']), issues = c.issues.slice(); if (issues.length) return { ok: false, issues, stats: null };
+  const P = L.P || {}, n = Math.max(8, Math.min(20000, C.n | 0 || 400)), u0 = Number(C.umin), u1 = Number(C.umax); if (!(isFinite(u0) && isFinite(u1) && u1 !== u0)) return fail('range', 'The parameter range is not valid.', 'u range', 'Give two different finite numbers.');
+  const strands = Math.max(1, Math.min(6, C.strands | 0 || 1)), arg = [0, t || 0, P.a || 0, P.b || 0, P.c || 0, P.R || 0, P.r || 0], pts = [], segs = []; let bad = 0;
+  for (let s = 0; s < strands; s++) { const ph = TAU * s / strands, cs = Math.cos(ph), sn = Math.sin(ph), base = pts.length / 3; for (let i = 0; i <= n; i++) { arg[0] = u0 + (u1 - u0) * i / n; const x = c.fns[0].fn(arg), y = c.fns[1].fn(arg), z = c.fns[2].fn(arg); if (![x, y, z].every((v) => isFinite(v) && Math.abs(v) < 1e9)) { bad++; pts.push(0, 0, 0); } else pts.push(x * cs - y * sn, x * sn + y * cs, z); if (i > 0) segs.push(base + i - 1, base + i); } }
+  if (bad) issues.push({ sev: 'warn', code: 'nonfinite', msg: bad + ' sample points are not finite numbers and were drawn at the origin.', region: 'where the formula is undefined', fix: 'Restrict the parameter range.' });
+  if (C.rungs && strands >= 2) { const step = Math.max(1, Math.round(n / (C.rungs | 0 || 20))); for (let i = 0; i <= n; i += step) segs.push(i, (n + 1) + i); }
+  const V = Float64Array.from(pts); let len = 0; for (let i = 0; i < n; i++) len += Math.hypot(pts[i * 3 + 3] - pts[i * 3], pts[i * 3 + 4] - pts[i * 3 + 1], pts[i * 3 + 5] - pts[i * 3 + 2]);
+  let len2 = 0; { const m2 = Math.max(4, n >> 1); let px = null; for (let i = 0; i <= m2; i++) { arg[0] = u0 + (u1 - u0) * i / m2; const q = [c.fns[0].fn(arg), c.fns[1].fn(arg), c.fns[2].fn(arg)]; if (px) len2 += Math.hypot(q[0] - px[0], q[1] - px[1], q[2] - px[2]); px = q; } }
+  const lenR = len + (len - len2) / 3; /* Richardson, polygon length error ~ h^2 */
+  const bb = bboxOf(V); issues.push({ sev: 'info', code: 'method', msg: 'Curve sampled at ' + n + ' points. Length by polyline ' + n2(len, 6) + ' (' + n2(len2, 6) + ' with half the points; extrapolated ' + n2(lenR, 6) + ').', region: 'whole curve', fix: 'Raise the number of points for a smoother curve.' });
+  return { ok: true, kind: 'lines', V, good: new Uint8Array(V.length / 3).fill(1), segs: Uint32Array.from(segs), issues, stats: { vertices: V.length / 3, segments: segs.length / 2, length: len * strands, bbox: bb, diag: bb.diag, faces: 0, closed: false, volume: null, volumeWhy: 'a curve', chi: null, area: 0, edges: segs.length / 2, boundary: 0, nonManifold: 0, orientable: true, degenerate: 0, folds: 0 }, info: { method: 'exact', length: len, lengthExtrapolated: lenR } };
+}
+
+/* ---------- point clouds: spiral galaxy (procedural) ---------- */
+function buildGalaxy(L) {
+  const g = L.gp || {}, n = Math.min(100000, Math.max(1000, g.n | 0 || 20000)), arms = Math.max(1, Math.min(8, g.arms | 0 || 2)), tw = Number(g.twist) || 3, R = Number(g.R) || 3, r = rng(11), V = new Float64Array(n * 3);
+  const gs = () => { let u = 0; for (let i = 0; i < 6; i++) u += r(); return (u - 3) / Math.sqrt(0.5); };
+  for (let i = 0; i < n; i++) { const rad = R * Math.pow(r(), 0.7), arm = Math.floor(r() * arms), th = arm * TAU / arms + tw * Math.log(1 + rad) * 1.2 + gs() * 0.12 * (1 + 0.3 / (rad + 0.2)); V[i * 3] = rad * Math.cos(th) + gs() * 0.05; V[i * 3 + 1] = rad * Math.sin(th) + gs() * 0.05; V[i * 3 + 2] = gs() * 0.06 * Math.exp(-rad / R); }
+  const bb = bboxOf(V); return { ok: true, kind: 'points', V, good: new Uint8Array(n).fill(1), issues: [{ sev: 'info', code: 'method', msg: 'Procedural galaxy: ' + n + ' points along ' + arms + ' logarithmic spiral arms with random scatter (fixed seed). It looks like a spiral galaxy; it is not a simulation of stars, gravity or dark matter, and the units are arbitrary.', region: 'whole cloud', fix: '' }], stats: { vertices: n, faces: 0, bbox: bb, diag: bb.diag, closed: false, volume: null, volumeWhy: 'a point cloud', chi: null, area: 0, edges: 0, boundary: 0, nonManifold: 0, orientable: true, degenerate: 0, folds: 0 }, info: { method: 'artistic' } };
+}
+
+/* ---------- dispatcher ---------- */
+function build(L, t) {
+  switch (L.mode) {
+    case 'implicit': return buildImplicit(L, t);
+    case 'ode': return buildOde(L, t);
+    case 'field': return buildField(L, t);
+    case 'lsys': return buildLsys(L);
+    case 'ifs': return buildIfs(L);
+    case 'lattice': return buildLattice(L);
+    case 'molecule': return buildMolecule(L);
+    case 'poly': return buildPoly(L);
+    case 'hyper': return buildHyper(L, t);
+    case 'curve': return buildCurve(L, t);
+    case 'galaxy': return buildGalaxy(L);
+    default: return null;
+  }
+}
+const usesT = (L) => { try { if (L.mode === 'hyper') { const g = L.gp || {}; return !!(g.w1 || g.w2); } if (L.mode === 'implicit') return MX.compile(L.fimp, IMPVARS).uses('t'); if (L.mode === 'field') return ['P', 'Q', 'R'].some((k) => MX.compile((L.fld || {})[k], IMPVARS).uses('t')); if (L.mode === 'curve') return ['fx', 'fy', 'fz'].some((k) => MX.compile((L.crv || {})[k], ['u', 't', 'a', 'b', 'c', 'R', 'r']).uses('t')); } catch (e) { return false; } return false; };
+
+/* ---------- exporters: world-space meshes in OBJ, STL, GLB, SVG ---------- */
+function worldMesh(mesh, M, apply) { const n = mesh.V.length / 3, W = new Float64Array(n * 3); for (let k = 0; k < n; k++) { const p = apply(M, mesh.V[k * 3], mesh.V[k * 3 + 1], mesh.V[k * 3 + 2]); W[k * 3] = p[0]; W[k * 3 + 1] = p[1]; W[k * 3 + 2] = p[2]; } return W; }
+function vertexNormals(W, F) { const n = W.length / 3, N = new Float64Array(n * 3); for (let f = 0; f < F.length; f += 3) { const a = F[f] * 3, b = F[f + 1] * 3, c = F[f + 2] * 3, ux = W[b] - W[a], uy = W[b + 1] - W[a + 1], uz = W[b + 2] - W[a + 2], vx = W[c] - W[a], vy = W[c + 1] - W[a + 1], vz = W[c + 2] - W[a + 2], nx = uy * vz - uz * vy, ny = uz * vx - ux * vz, nz = ux * vy - uy * vx; for (const k of [a, b, c]) { N[k] += nx; N[k + 1] += ny; N[k + 2] += nz; } } for (let k = 0; k < n; k++) { const l = Math.hypot(N[k * 3], N[k * 3 + 1], N[k * 3 + 2]) || 1; N[k * 3] /= l; N[k * 3 + 1] /= l; N[k * 3 + 2] /= l; } return N; }
+function validFaces(mesh) { const out = []; if (!mesh.F) return out; for (let f = 0; f < mesh.F.length; f += 3) { const a = mesh.F[f], b = mesh.F[f + 1], c = mesh.F[f + 2]; if (mesh.good[a] && mesh.good[b] && mesh.good[c]) out.push(a, b, c); } return out; }
+function toOBJ(mesh, W, name, meta) {
+  const L = ['# ' + (meta || 'Math Canvas model'), '# units: arbitrary model units (no real-world scale)', 'o ' + String(name || 'model').replace(/\s+/g, '_')]; const n = W.length / 3; for (let k = 0; k < n; k++) L.push('v ' + n2(W[k * 3], 8) + ' ' + n2(W[k * 3 + 1], 8) + ' ' + n2(W[k * 3 + 2], 8));
+  if (mesh.kind === 'tri') { const F = validFaces(mesh), N = vertexNormals(W, Uint32Array.from(F)); for (let k = 0; k < n; k++) L.push('vn ' + n2(N[k * 3], 6) + ' ' + n2(N[k * 3 + 1], 6) + ' ' + n2(N[k * 3 + 2], 6)); for (let f = 0; f < F.length; f += 3) L.push('f ' + (F[f] + 1) + '//' + (F[f] + 1) + ' ' + (F[f + 1] + 1) + '//' + (F[f + 1] + 1) + ' ' + (F[f + 2] + 1) + '//' + (F[f + 2] + 1)); }
+  else if (mesh.segs) for (let s = 0; s < mesh.segs.length; s += 2) L.push('l ' + (mesh.segs[s] + 1) + ' ' + (mesh.segs[s + 1] + 1));
+  else for (let k = 0; k < n; k++) L.push('p ' + (k + 1));
+  return L.join('\n') + '\n';
+}
+function toSTL(mesh, W, binary, name) {
+  if (mesh.kind !== 'tri') return null; const F = validFaces(mesh), nF = F.length / 3; const tri = (f) => { const a = F[f * 3] * 3, b = F[f * 3 + 1] * 3, c = F[f * 3 + 2] * 3, ux = W[b] - W[a], uy = W[b + 1] - W[a + 1], uz = W[b + 2] - W[a + 2], vx = W[c] - W[a], vy = W[c + 1] - W[a + 1], vz = W[c + 2] - W[a + 2]; let nx = uy * vz - uz * vy, ny = uz * vx - ux * vz, nz = ux * vy - uy * vx; const l = Math.hypot(nx, ny, nz) || 1; return { n: [nx / l, ny / l, nz / l], v: [[W[a], W[a + 1], W[a + 2]], [W[b], W[b + 1], W[b + 2]], [W[c], W[c + 1], W[c + 2]]] }; };
+  if (binary) { const buf = new ArrayBuffer(84 + nF * 50), dv = new DataView(buf); const head = 'Math Canvas STL (arbitrary units)'; for (let i = 0; i < head.length && i < 80; i++) dv.setUint8(i, head.charCodeAt(i)); dv.setUint32(80, nF, true); for (let f = 0; f < nF; f++) { const t = tri(f), o = 84 + f * 50; t.n.forEach((v, i) => dv.setFloat32(o + i * 4, v, true)); t.v.forEach((p, j) => p.forEach((v, i) => dv.setFloat32(o + 12 + j * 12 + i * 4, v, true))); dv.setUint16(o + 48, 0, true); } return buf; }
+  const L = ['solid ' + String(name || 'model').replace(/\s+/g, '_')]; for (let f = 0; f < nF; f++) { const t = tri(f); L.push(' facet normal ' + t.n.join(' '), '  outer loop'); t.v.forEach((p) => L.push('   vertex ' + p.join(' '))); L.push('  endloop', ' endfacet'); } L.push('endsolid'); return L.join('\n') + '\n';
+}
+function toGLB(mesh, W, name) {
+  const n = W.length / 3; let idx, mode, nrm = null; if (mesh.kind === 'tri') { const F = validFaces(mesh); idx = Uint32Array.from(F); mode = 4; nrm = vertexNormals(W, idx); } else if (mesh.segs) { idx = Uint32Array.from(mesh.segs); mode = 1; } else { idx = Uint32Array.from({ length: n }, (_, i) => i); mode = 0; }
+  const pos = new Float32Array(n * 3); for (let i = 0; i < pos.length; i++) pos[i] = W[i]; const nf = nrm ? Float32Array.from(nrm) : null; const lo = [Infinity, Infinity, Infinity], hi = [-Infinity, -Infinity, -Infinity]; for (let k = 0; k < n; k++) for (let q = 0; q < 3; q++) { const v = pos[k * 3 + q]; if (v < lo[q]) lo[q] = v; if (v > hi[q]) hi[q] = v; }
+  const pad = (len) => (4 - (len % 4)) % 4, bin = []; let off = 0; const views = [], acc = []; const push = (arr, target, comp, type, count, extra) => { const bytes = new Uint8Array(arr.buffer, arr.byteOffset, arr.byteLength); const p = pad(off); if (p) { bin.push(new Uint8Array(p)); off += p; } views.push({ buffer: 0, byteOffset: off, byteLength: bytes.length, target }); acc.push(Object.assign({ bufferView: views.length - 1, componentType: comp, count, type }, extra || {})); bin.push(bytes); off += bytes.length; return acc.length - 1; };
+  const aPos = push(pos, 34962, 5126, 'VEC3', n, { min: lo, max: hi }), aNrm = nf ? push(nf, 34962, 5126, 'VEC3', n) : -1, aIdx = push(idx, 34963, 5125, 'SCALAR', idx.length);
+  const prim = { attributes: Object.assign({ POSITION: aPos }, aNrm >= 0 ? { NORMAL: aNrm } : {}), indices: aIdx, mode };
+  const json = { asset: { version: '2.0', generator: 'Math Canvas' }, scene: 0, scenes: [{ nodes: [0] }], nodes: [{ mesh: 0, name: String(name || 'model') }], meshes: [{ primitives: [prim] }], buffers: [{ byteLength: off }], bufferViews: views, accessors: acc };
+  let js = JSON.stringify(json); js += ' '.repeat(pad(js.length)); const jb = new TextEncoder().encode(js), total = 12 + 8 + jb.length + 8 + off + pad(off), out = new Uint8Array(total), dv = new DataView(out.buffer); dv.setUint32(0, 0x46546C67, true); dv.setUint32(4, 2, true); dv.setUint32(8, total, true); dv.setUint32(12, jb.length, true); dv.setUint32(16, 0x4E4F534A, true); out.set(jb, 20); let o = 20 + jb.length; dv.setUint32(o, off + pad(off), true); dv.setUint32(o + 4, 0x004E4942, true); o += 8; bin.forEach((b) => { out.set(b, o); o += b.length; }); return out.buffer;
+}
+function toSVG(mesh, S, w, h, style, color) { /* S = projected screen array (x, y, depth, flag) per vertex; faces drawn far to near with flat shading */
+  const out = ['<?xml version="1.0" encoding="UTF-8"?>', '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + w + ' ' + h + '" width="' + w + '" height="' + h + '"><!-- Vector projection of the model for the current camera. Flat shading, painter\'s algorithm, no hidden-line removal for wireframes. -->'];
+  if (mesh.kind === 'tri') { const F = validFaces(mesh), idx = []; for (let f = 0; f < F.length; f += 3) if (S[F[f] * 4 + 3] === 1 && S[F[f + 1] * 4 + 3] === 1 && S[F[f + 2] * 4 + 3] === 1) idx.push(f); idx.sort((p, q) => (S[F[q] * 4 + 2] + S[F[q + 1] * 4 + 2] + S[F[q + 2] * 4 + 2]) - (S[F[p] * 4 + 2] + S[F[p + 1] * 4 + 2] + S[F[p + 2] * 4 + 2]));
+    idx.forEach((f) => { const a = F[f], b = F[f + 1], c = F[f + 2], ar = (S[b * 4] - S[a * 4]) * (S[c * 4 + 1] - S[a * 4 + 1]) - (S[b * 4 + 1] - S[a * 4 + 1]) * (S[c * 4] - S[a * 4]), sh = 0.45 + 0.55 * Math.min(1, Math.abs(ar) / 40), col = color.map((x) => Math.round(x * Math.min(1, sh)));
+      out.push('<polygon points="' + [a, b, c].map((k) => n2(S[k * 4], 6) + ',' + n2(S[k * 4 + 1], 6)).join(' ') + '" fill="' + (style === 'wire' ? 'none' : 'rgb(' + col.join(',') + ')') + '" stroke="' + (style === 'solid' ? 'rgb(' + col.join(',') + ')' : 'rgba(255,255,255,.55)') + '" stroke-width="0.5"/>'); }); }
+  else if (mesh.segs) { out.push('<g stroke="rgb(' + color.join(',') + ')" stroke-width="1.2" fill="none" stroke-linecap="round">'); for (let s = 0; s < mesh.segs.length; s += 2) { const a = mesh.segs[s], b = mesh.segs[s + 1]; if (S[a * 4 + 3] === 1 && S[b * 4 + 3] === 1) out.push('<line x1="' + n2(S[a * 4], 6) + '" y1="' + n2(S[a * 4 + 1], 6) + '" x2="' + n2(S[b * 4], 6) + '" y2="' + n2(S[b * 4 + 1], 6) + '"/>'); } out.push('</g>'); }
+  else { out.push('<g fill="rgb(' + color.join(',') + ')">'); const n = mesh.V.length / 3; for (let k = 0; k < n; k++) if (S[k * 4 + 3] === 1) out.push('<circle cx="' + n2(S[k * 4], 6) + '" cy="' + n2(S[k * 4 + 1], 6) + '" r="1"/>'); out.push('</g>'); }
+  out.push('</svg>'); return out.join('\n');
+}
+
+/* ---------- clipping (cross sections): triangles cut exactly by a plane ---------- */
+function clipTriangles(V, F, axis, pos, flip) { // keeps the side where sign*(coord - pos) >= 0; returns { V, F } with new vertices where edges cross the plane
+  const sg = flip ? -1 : 1, Vn = Array.from(V), Fn = [], cut = new Map(), d = (k) => sg * (V[k * 3 + axis] - pos);
+  const edgeV = (a, b) => { const lo = Math.min(a, b), hi = Math.max(a, b), key = lo * (V.length / 3 + 1) + hi; let id = cut.get(key); if (id !== undefined) return id; const da = d(lo), db = d(hi), t = da / (da - db); id = Vn.length / 3; Vn.push(V[lo * 3] + (V[hi * 3] - V[lo * 3]) * t, V[lo * 3 + 1] + (V[hi * 3 + 1] - V[lo * 3 + 1]) * t, V[lo * 3 + 2] + (V[hi * 3 + 2] - V[lo * 3 + 2]) * t); cut.set(key, id); return id; };
+  for (let f = 0; f < F.length; f += 3) {
+    const t = [F[f], F[f + 1], F[f + 2]], s = t.map((k) => d(k) >= 0), keep = s[0] + s[1] + s[2]; if (keep === 3) Fn.push(t[0], t[1], t[2]); else if (keep === 0) continue;
+    else if (keep === 1) { const i = s.findIndex(Boolean), a = t[i], b = t[(i + 1) % 3], c = t[(i + 2) % 3]; Fn.push(a, edgeV(a, b), edgeV(c, a)); }
+    else { const i = s.findIndex((v) => !v), a = t[i], b = t[(i + 1) % 3], c = t[(i + 2) % 3]; const p = edgeV(a, b), q = edgeV(c, a); Fn.push(p, b, c, p, c, q); }
+  }
+  const Vf = Float64Array.from(Vn), Ff = Uint32Array.from(Fn), onP = (k) => Math.abs(Vf[k * 3 + axis] - pos) < 1e-9 * (1 + Math.abs(pos)), cnt = new Map(), dirs = [];
+  const ax1 = (axis + 1) % 3, ax2 = (axis + 2) % 3;
+  for (let f = 0; f < Ff.length; f += 3) for (let q = 0; q < 3; q++) { const a = Ff[f + q], b = Ff[f + (q + 1) % 3]; if (onP(a) && onP(b)) { const key = Math.min(a, b) + ',' + Math.max(a, b); cnt.set(key, (cnt.get(key) || 0) + 1); dirs.push([a, b, key]); } }
+  let sa = 0, nseg = 0; const segs = []; dirs.forEach(([a, b, key]) => { if (cnt.get(key) === 1) { sa += Vf[a * 3 + ax1] * Vf[b * 3 + ax2] - Vf[b * 3 + ax1] * Vf[a * 3 + ax2]; nseg++; segs.push(a, b); } });
+  return { V: Vf, F: Ff, sectionArea: Math.abs(sa) / 2, sectionSegs: Uint32Array.from(segs), nSection: nseg };
+}
+
+root.GEN = { noise3, noise2, fbm, erf, rng, isosurface, triStats, bboxOf, buildImplicit, buildOde, buildField, buildLsys, buildIfs, buildLattice, buildMolecule, buildPoly, buildHyper, buildCurve, buildGalaxy, build, usesT, LATTICES, MOLECULES, POLY, HYPER, ELEM, hullFaces, odeSetup, rk4run, worldMesh, vertexNormals, validFaces, toOBJ, toSTL, toGLB, toSVG, clipTriangles, IMPVARS, ODEVARS };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+/* Catalog of ready-made generator models, the editing schema for each generator, the descriptive-request matcher and the
+   equation-influence (sensitivity) analysis. Every entry states honestly how it is made: exact | numerical | procedural | artistic. */
+(function (root) {
+'use strict';
+const G = root.GEN, TAU = Math.PI * 2;
+const METHODS = {
+  exact: ['Exact', 'The shape or number follows directly from a closed mathematical definition or standard reference values.'],
+  numerical: ['Numerical', 'The result is computed approximately by an algorithm (grid, integration), so it has a stated numerical error.'],
+  procedural: ['Procedural', 'Built by rules or randomness that imitate a form. It looks like the thing but is not a model of how the real thing works.'],
+  artistic: ['Artistic', 'Chosen for appearance. Not a measurement or a simulation of anything real.'],
+};
+const CATS = [
+  ['math', 'Mathematics and abstract geometry'], ['nature', 'Nature and biology'], ['earth', 'Earth and space'], ['physics', 'Physics and engineering'], ['made', 'Human-made objects'], ['art', 'Art and design'],
+];
+const box = (a) => [-a, a, -a, a, -a, a];
+const sierp = () => { const s = 0.5, T = [[0, 0, 0], [1, 0, 0], [0.5, Math.sqrt(3) / 2, 0], [0.5, Math.sqrt(3) / 6, Math.sqrt(2 / 3)]]; return T.map((t) => ({ m: [s, 0, 0, 0, s, 0, 0, 0, s, t[0] * s, t[1] * s, t[2] * s] })); };
+const menger = () => { const o = [], s = 1 / 3; for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) for (let k = 0; k < 3; k++) { if ((i === 1) + (j === 1) + (k === 1) >= 2) continue; o.push({ m: [s, 0, 0, 0, s, 0, 0, 0, s, i * s, j * s, k * s] }); } return o; };
+const fernMaps = () => [{ m: [0, 0, 0, 0, .16, 0, 0, 0, .16, 0, 0, 0], p: .01 }, { m: [.85, .04, 0, -.04, .85, 0, 0, 0, .85, 0, 1.6, 0], p: .85 }, { m: [.2, -.26, 0, .23, .22, 0, 0, 0, .22, 0, 1.6, 0], p: .07 }, { m: [-.15, .28, 0, .26, .24, 0, 0, 0, .24, 0, .44, 0], p: .07 }];
+const IMP = (f, lvl, a, extra) => Object.assign({ mode: 'implicit', fimp: f, lvl, box3: Array.isArray(a) ? a : box(a), nvox: 56 }, extra || {});
+const CATALOG = {
+  gyroid: { name: 'Gyroid', cat: 'math', method: 'numerical', blurb: 'The level set sin x cos y + sin y cos z + sin z cos x = 0, a close approximation of Schoen\'s gyroid triply periodic minimal surface (the level set is not exactly minimal).', limit: 'Cut by the search box, so it shows two periods.', L: IMP('sin(x)*cos(y)+sin(y)*cos(z)+sin(z)*cos(x)', 0, 3.2, { nvox: 40, color: '#ff9f43' }), kw: 'gyroid minimal surface triply periodic foam lattice sponge' },
+  schwarzp: { name: 'Schwarz P surface', cat: 'math', method: 'numerical', blurb: 'Level set cos x + cos y + cos z = 0, the standard approximation of the Schwarz P minimal surface.', limit: 'Cut by the search box.', L: IMP('cos(x)+cos(y)+cos(z)', 0, 3.2, { nvox: 40, color: '#7bed9f' }), kw: 'schwarz minimal surface periodic' },
+  genus2: { name: 'Double torus', cat: 'math', method: 'numerical', blurb: 'The level set (x²(1−x²) − y²)² + z² = 0.01 thickens a figure-eight curve into a surface with two holes. Euler characteristic should be −2.', limit: 'Needs a fine grid near the crossing.', L: IMP('(x^2*(1-x^2)-y^2)^2+z^2', 0.01, [-1.3, 1.3, -0.7, 0.7, -0.3, 0.3], { nvox: 80, color: '#70a1ff' }), kw: 'double torus genus two holes pretzel' },
+  heart: { name: 'Heart surface', cat: 'math', method: 'numerical', blurb: 'The classic algebraic heart (x² + 9/4 y² + z² − 1)³ − x² z³ − 9/80 y² z³ = 0, computed as an isosurface.', limit: 'A mathematical shape, not an anatomical heart.', L: IMP('(x^2+9/4*y^2+z^2-1)^3-x^2*z^3-9/80*y^2*z^3', 0, [-1.5, 1.5, -1.2, 1.2, -1.5, 1.5], { nvox: 60, color: '#ff4d6d' }), kw: 'heart love valentine' },
+  orbital: { name: 'Hydrogen 2p orbital', cat: 'physics', method: 'exact', blurb: 'The hydrogen 2p_z probability density is proportional to z² e^(−r) (r in Bohr radii). The surface encloses the region where it exceeds 10% of its peak.', limit: 'A probability density has no sharp edge; the 10% level is a drawing convention. Nothing is simulated.', L: IMP('-z^2*exp(-sqrt(x^2+y^2+z^2))', -0.054, [-9, 9, -9, 9, -9, 9], { nvox: 48, color: '#a29bfe' }), kw: 'quantum orbital wavefunction hydrogen electron probability atom p orbital' },
+  interference: { name: 'Two-source wave interference', cat: 'physics', method: 'exact', blurb: 'Height of the sum of two circular waves, z = 0.35 [ sin(4 r₁) + sin(4 r₂) ], with sources at x = ±1. The linear superposition is exact; real waves also decay and reflect.', limit: 'No damping or boundaries are modelled.', L: IMP('z-0.35*(sin(4*sqrt((x-1)^2+y^2))+sin(4*sqrt((x+1)^2+y^2)))', 0, [-3, 3, -3, 3, -1.2, 1.2], { nvox: 56, color: '#74b9ff', colorBy: 'height' }), kw: 'wave interference ripple water double slit sound' },
+  terrain: { name: 'Mountain terrain', cat: 'earth', method: 'procedural', blurb: 'Height z = 0.9 · fbm(0.7x, 0.7y), fractal value noise with 5 octaves, coloured by height.', limit: 'Procedural. It resembles terrain but is not erosion, tectonics or a real place.', L: IMP('z-0.9*fbm(0.7*x,0.7*y,5)', 0, [-3, 3, -3, 3, -1.4, 1.4], { nvox: 56, color: '#8d9a6b', colorBy: 'height' }), kw: 'mountain terrain landscape hills ground relief heightmap valley coast' },
+  planet: { name: 'Rocky planet', cat: 'earth', method: 'procedural', blurb: 'A sphere of radius 1 displaced by 3D noise: r = 1 + 0.18 · (noise(2p) + ½ noise(4p)). Coloured by distance from the centre.', limit: 'Not a geophysical model. No craters, plate tectonics or atmosphere.', L: IMP('sqrt(x^2+y^2+z^2)-1-0.18*(noise3(2*x,2*y,2*z)+0.5*noise3(4*x,4*y,4*z))', 0, 1.6, { nvox: 44, color: '#c28b5b', colorBy: 'radius' }), kw: 'planet moon asteroid rock world sphere bumpy' },
+  blob: { name: 'Noise blob', cat: 'art', method: 'artistic', blurb: 'A sphere pushed in and out by noise, with a smooth organic outline.', limit: 'Artistic only.', L: IMP('x^2+y^2+z^2-1-0.35*noise3(1.5*x,1.5*y,1.5*z)', 0, 1.8, { nvox: 40, color: '#ff7eb6' }), kw: 'blob organic abstract amoeba cloud noise art' },
+  gear: { name: 'Spur gear', cat: 'made', method: 'procedural', blurb: 'A disc with 12 smooth-sided teeth and a centre hole, built as max(r − tooth(θ), |z| − 0.25, 0.35 − r).', limit: 'Schematic teeth, not an involute profile; no pitch, pressure angle or tolerances, so it will not mesh with a real gear.', L: IMP('max(max(sqrt(x^2+y^2)-(1+0.12*tanh(6*sin(12*atan2(y,x)))),abs(z)-0.25),0.35-sqrt(x^2+y^2))', 0, [-1.4, 1.4, -1.4, 1.4, -0.4, 0.4], { nvox: 72, color: '#b2bec3' }), kw: 'gear cog machine mechanical cogwheel part engine' },
+  lorenz: { name: 'Lorenz attractor', cat: 'math', method: 'numerical', blurb: 'dx/dt = σ(y−x), dy/dt = x(ρ−z)−y, dz/dt = xy−βz with σ = 10, ρ = 28, β = 8/3, integrated with RK4.', limit: 'Chaotic: the exact path is only reliable up to the time shown in the dashboard; the overall shape is robust.', L: { mode: 'ode', ode: { eq: ['a*(y-x)', 'x*(b-z)-y', 'x*y-c*z'], y0: [1, 1, 1], dt: 0.005, steps: 14000, inv: '' }, P: { a: 10, b: 28, c: 8 / 3, R: 0, r: 0 }, color: '#00d2ff', colorBy: 'path', cam: { yaw: 60, pitch: 20, dist: 90, fov: 45, tx: 0, ty: 0, tz: 24 } }, kw: 'lorenz attractor chaos butterfly strange chaotic weather' },
+  rossler: { name: 'Rössler attractor', cat: 'math', method: 'numerical', blurb: 'dx/dt = −y−z, dy/dt = x+ay, dz/dt = b+z(x−c) with a = 0.2, b = 0.2, c = 5.7.', limit: 'Chaotic; see the trustworthy-time note.', L: { mode: 'ode', ode: { eq: ['-y-z', 'x+a*y', 'b+z*(x-c)'], y0: [1, 1, 0], dt: 0.01, steps: 20000, inv: '' }, P: { a: 0.2, b: 0.2, c: 5.7, R: 0, r: 0 }, color: '#ff9ff3', colorBy: 'path', cam: { yaw: 45, pitch: 30, dist: 45, fov: 45, tx: 0, ty: 0, tz: 3 } }, kw: 'rossler attractor chaos spiral' },
+  kepler: { name: 'Planetary orbit (Kepler problem)', cat: 'earth', method: 'numerical', blurb: 'A body in the inverse-square gravity of a fixed mass, with GM = 1: acceleration = −r/|r|³. Energy ½v² − 1/r is monitored as the accuracy check.', limit: 'Two bodies only and Newtonian gravity: no other planets, no relativity. Units are dimensionless.', L: { mode: 'ode', ode: { eq: ['vx', 'vy', 'vz', '-x/(x^2+y^2+z^2)^1.5', '-y/(x^2+y^2+z^2)^1.5', '-z/(x^2+y^2+z^2)^1.5'], y0: [1, 0, 0, 0, 0.75, 0.3], dt: 0.005, steps: 6000, inv: '0.5*(vx^2+vy^2+vz^2)-1/sqrt(x^2+y^2+z^2)' }, P: { a: 0, b: 0, c: 0, R: 0, r: 0 }, color: '#feca57', colorBy: 'path', cam: { yaw: 40, pitch: 35, dist: 6, fov: 45, tx: 0, ty: 0, tz: 0 } }, kw: 'orbit planet kepler gravity satellite solar system ellipse comet newton two-body' },
+  trefoil: { name: 'Trefoil knot', cat: 'math', method: 'exact', blurb: 'x = sin u + 2 sin 2u, y = cos u − 2 cos 2u, z = −sin 3u for u from 0 to 2π.', limit: 'A curve with no thickness.', L: { mode: 'curve', crv: { fx: 'sin(u)+2*sin(2*u)', fy: 'cos(u)-2*cos(2*u)', fz: '-sin(3*u)', umin: 0, umax: TAU, n: 500, strands: 1, rungs: 0 }, P: { a: 0, b: 0, c: 0, R: 0, r: 0 }, color: '#55efc4', colorBy: 'path', cam: { yaw: 40, pitch: 35, dist: 12, fov: 45, tx: 0, ty: 0, tz: 0 } }, kw: 'knot trefoil rope loop topology' },
+  lissajous: { name: 'Lissajous curve in 3D', cat: 'art', method: 'exact', blurb: 'x = sin(3u + π/2), y = sin 4u, z = sin 5u.', limit: 'A curve with no thickness.', L: { mode: 'curve', crv: { fx: 'sin(3*u+pi/2)', fy: 'sin(4*u)', fz: 'sin(5*u)', umin: 0, umax: TAU, n: 800, strands: 1, rungs: 0 }, P: { a: 0, b: 0, c: 0, R: 0, r: 0 }, color: '#fd79a8', colorBy: 'path', cam: { yaw: 40, pitch: 30, dist: 5, fov: 45, tx: 0, ty: 0, tz: 0 } }, kw: 'lissajous curve ribbon oscilloscope harmonic' },
+  dna: { name: 'DNA double helix (schematic)', cat: 'nature', method: 'procedural', blurb: 'Two helices of radius 1 and pitch 3.4 (the B-DNA ratio) shifted by 180°, with 10.5 rungs per turn.', limit: 'Schematic only. Real DNA has unequal major and minor grooves and is not a rigid ideal helix; atoms and bases are not modelled.', L: { mode: 'curve', crv: { fx: 'cos(u)', fy: 'sin(u)', fz: '3.4*u/(2*pi)', umin: 0, umax: 4 * Math.PI, n: 420, strands: 2, rungs: 21 }, P: { a: 0, b: 0, c: 0, R: 0, r: 0 }, color: '#48dbfb', colorBy: 'path', cam: { yaw: 30, pitch: 10, dist: 14, fov: 45, tx: 0, ty: 0, tz: 3.4 } }, kw: 'dna helix double gene biology genetic spiral strand' },
+  spring: { name: 'Coil spring', cat: 'made', method: 'exact', blurb: 'A helix x = cos u, y = sin u, z = u/10 over 10 turns, with its exact curve length.', limit: 'Geometry only: no stiffness, wire thickness or loading.', L: { mode: 'curve', crv: { fx: 'cos(u)', fy: 'sin(u)', fz: 'u/10', umin: 0, umax: 20 * Math.PI, n: 1200, strands: 1, rungs: 0 }, P: { a: 0, b: 0, c: 0, R: 0, r: 0 }, color: '#dfe6e9', colorBy: 'path', cam: { yaw: 30, pitch: 15, dist: 14, fov: 45, tx: 0, ty: 0, tz: 3 } }, kw: 'spring coil helix mechanical suspension' },
+  tree: { name: '3D tree', cat: 'nature', method: 'procedural', blurb: 'An L-system: A → F[&+!A][&−!A][^+!A][^−!A], four branches per node, drawn by a 3D turtle with a 28° turn and branches shrinking 20% at each fork.', limit: 'A procedural model of branching, not a simulation of plant growth, light or water. No leaves.', L: { mode: 'lsys', ls: { axiom: 'A', rules: 'A=F[&+!A][&-!A][^+!A][^-!A]', angle: 28, iter: 5, len: 1, shrink: 0.8, scale: 1 }, color: '#8b6b4a', colorBy: 'level', cam: { yaw: 35, pitch: 15, dist: 9, fov: 45, tx: 0, ty: 0, tz: 2.6 } }, kw: 'tree plant branch bush shrub root coral lightning vein river branching' },
+  koch: { name: 'Koch snowflake (L-system)', cat: 'math', method: 'exact', blurb: 'Axiom F++F++F, rule F → F−F++F−F, 60° turns, 4 iterations. Its fractal dimension is ln 4 ÷ ln 3 ≈ 1.2619.', limit: 'The picture is the 4th approximation, not the limit curve.', L: { mode: 'lsys', ls: { axiom: 'F++F++F', rules: 'F=F-F++F-F', angle: 60, iter: 4, len: 1, shrink: 1, scale: 0.3333333 }, color: '#81ecec', colorBy: 'solid', cam: { yaw: 90, pitch: 0, dist: 5, fov: 45, tx: 0, ty: 0, tz: 0.3 } }, kw: 'koch snowflake fractal curve' },
+  fern: { name: 'Barnsley fern', cat: 'nature', method: 'exact', blurb: 'The classic four-map iterated function system, run as a chaos game with 30,000 points.', limit: 'A famous mathematical fractal that looks like a fern. It is not a model of real fern growth.', L: { mode: 'ifs', ifs: { maps: fernMaps() }, gp: { n: 30000 }, color: '#55e6a0', colorBy: 'height', cam: { yaw: 90, pitch: 0, dist: 14, fov: 45, tx: 0, ty: 0, tz: 5 } }, kw: 'fern leaf frond plant barnsley' },
+  sierpinski: { name: 'Sierpinski tetrahedron', cat: 'math', method: 'exact', blurb: 'Four maps of scale ½ toward the corners of a regular tetrahedron. Similarity dimension ln 4 ÷ ln 2 = 2 (exact).', limit: 'A finite sample of the fractal.', L: { mode: 'ifs', ifs: { maps: sierp() }, gp: { n: 40000 }, color: '#fab1a0', colorBy: 'height', cam: { yaw: 35, pitch: 25, dist: 3.6, fov: 45, tx: 0.5, ty: 0.3, tz: 0.35 } }, kw: 'sierpinski tetrahedron pyramid fractal triangle gasket' },
+  menger: { name: 'Menger sponge', cat: 'math', method: 'exact', blurb: 'Twenty maps of scale ⅓ (the cube minus its centre and face centres). Similarity dimension ln 20 ÷ ln 3 ≈ 2.7268 (exact).', limit: 'A finite point sample of the sponge.', L: { mode: 'ifs', ifs: { maps: menger() }, gp: { n: 60000 }, color: '#ffeaa7', colorBy: 'height', cam: { yaw: 35, pitch: 25, dist: 3.4, fov: 45, tx: 0.5, ty: 0.5, tz: 0.5 } }, kw: 'menger sponge cube fractal' },
+  dipole: { name: 'Electric dipole field lines', cat: 'physics', method: 'numerical', blurb: 'Field lines of charges +1 at z = +1 and −1 at z = −1: E = Σ q (r − rᵢ)/|r − rᵢ|³ in units where q/4πε₀ = 1. The field is exact, the lines are traced with RK4.', limit: 'Line density does not show field strength. Lines stop near the charges where the field is singular.', L: { mode: 'field', fld: { P: 'x/(x^2+y^2+(z-1)^2)^1.5-x/(x^2+y^2+(z+1)^2)^1.5', Q: 'y/(x^2+y^2+(z-1)^2)^1.5-y/(x^2+y^2+(z+1)^2)^1.5', R: '(z-1)/(x^2+y^2+(z-1)^2)^1.5-(z+1)/(x^2+y^2+(z+1)^2)^1.5', h: 0.04, steps: 500, bound: 5, unit: true, seeds: { type: 'sphere', n: 24, r: 0.25, cx: 0, cy: 0, cz: 1 } }, P: { a: 0, b: 0, c: 0, R: 0, r: 0 }, color: '#ff9f43', colorBy: 'solid', cam: { yaw: 30, pitch: 10, dist: 9, fov: 45, tx: 0, ty: 0, tz: 0 } }, kw: 'electric field dipole charge electromagnetic coulomb capacitor magnet lines force' },
+  wire: { name: 'Magnetic field of a straight wire', cat: 'physics', method: 'exact', blurb: 'B = (−y, x, 0) ÷ (x² + y²), circles around a long straight current along z (direction only; strength ∝ 1/distance).', limit: 'Ideal infinite wire; units arbitrary.', L: { mode: 'field', fld: { P: '-y/(x^2+y^2)', Q: 'x/(x^2+y^2)', R: '0', h: 0.06, steps: 160, bound: 6, unit: true, seeds: { type: 'line', n: 5, r: 2, cx: 0, cy: 0, cz: 0 } }, P: { a: 0, b: 0, c: 0, R: 0, r: 0 }, color: '#54a0ff', colorBy: 'solid', cam: { yaw: 40, pitch: 35, dist: 9, fov: 45, tx: 0, ty: 0, tz: 0 } }, kw: 'magnetic field wire current ampere electromagnet' },
+  abc: { name: 'ABC flow (fluid streamlines)', cat: 'physics', method: 'numerical', blurb: 'The Arnold–Beltrami–Childress flow u = (A sin z + C cos y, B sin x + A cos z, C sin y + B cos x), an exact steady solution of the Euler equations, with A = 1, B = 0.7, C = 0.43. Streamlines traced by RK4.', limit: 'Incompressible ideal flow on a periodic box. Not a model of an actual pipe, wing or weather.', L: { mode: 'field', fld: { P: 'a*sin(z)+c*cos(y)', Q: 'b*sin(x)+a*cos(z)', R: 'c*sin(y)+b*cos(x)', h: 0.05, steps: 500, bound: 8, unit: false, seeds: { type: 'grid', n: 3, r: 2.5, cx: 0, cy: 0, cz: 0 } }, P: { a: 1, b: 0.7, c: 0.43, R: 0, r: 0 }, color: '#00cec9', colorBy: 'path', cam: { yaw: 35, pitch: 25, dist: 16, fov: 45, tx: 0, ty: 0, tz: 0 } }, kw: 'fluid flow streamline vortex turbulence wind water air current velocity' },
+  fcc: { name: 'Face-centred cubic crystal', cat: 'physics', method: 'exact', blurb: 'Copper, aluminium, gold and many other metals. Atoms at the cube corners and face centres; packing fraction π/(3√2) = 0.7405, coordination 12.', limit: 'Ideal perfect lattice with no defects or thermal motion.', L: { mode: 'lattice', lat: 'fcc', gp: { nx: 2, ny: 2, nz: 2, a: 1 }, color: '#d8895a', cam: { yaw: 35, pitch: 25, dist: 7, fov: 45, tx: 1, ty: 1, tz: 1 } }, kw: 'crystal lattice fcc metal copper gold aluminium unit cell atoms' },
+  bcc: { name: 'Body-centred cubic crystal', cat: 'physics', method: 'exact', blurb: 'Iron at room temperature, chromium, tungsten. Packing fraction π√3/8 = 0.6802, coordination 8.', limit: 'Ideal perfect lattice.', L: { mode: 'lattice', lat: 'bcc', gp: { nx: 2, ny: 2, nz: 2, a: 1 }, color: '#c97a3a', cam: { yaw: 35, pitch: 25, dist: 7, fov: 45, tx: 1, ty: 1, tz: 1 } }, kw: 'bcc iron tungsten crystal lattice' },
+  nacl: { name: 'Rock salt crystal (NaCl)', cat: 'physics', method: 'exact', blurb: 'Two interpenetrating face-centred lattices of Na⁺ and Cl⁻, coordination 6.', limit: 'Ideal perfect lattice; ion sizes are not to scale.', L: { mode: 'lattice', lat: 'nacl', gp: { nx: 2, ny: 2, nz: 2, a: 1 }, color: '#9b6bff', cam: { yaw: 35, pitch: 25, dist: 7, fov: 45, tx: 1, ty: 1, tz: 1 } }, kw: 'salt nacl sodium chloride ionic crystal' },
+  diamond: { name: 'Diamond crystal', cat: 'physics', method: 'exact', blurb: 'Carbon in the diamond cubic structure, coordination 4, packing fraction π√3/16 = 0.3401. Silicon and germanium share it.', limit: 'Ideal perfect lattice.', L: { mode: 'lattice', lat: 'diamond', gp: { nx: 1, ny: 1, nz: 1, a: 1 }, color: '#4a4f57', cam: { yaw: 35, pitch: 25, dist: 5, fov: 45, tx: 0.5, ty: 0.5, tz: 0.5 } }, kw: 'diamond carbon silicon germanium crystal semiconductor' },
+  h2o: { name: 'Water molecule', cat: 'physics', method: 'exact', blurb: 'O–H 95.72 pm, H–O–H 104.52°, the gas-phase equilibrium geometry.', limit: 'Textbook geometry, not a quantum-chemistry calculation; no electron cloud.', L: { mode: 'molecule', mol: 'h2o', color: '#e5483b' }, kw: 'water molecule h2o' },
+  ch4: { name: 'Methane molecule', cat: 'physics', method: 'exact', blurb: 'C–H 108.7 pm with the exact tetrahedral angle 109.47°.', limit: 'Textbook geometry.', L: { mode: 'molecule', mol: 'ch4', color: '#4a4f57' }, kw: 'methane molecule ch4 gas natural' },
+  benzene: { name: 'Benzene molecule', cat: 'physics', method: 'exact', blurb: 'Planar hexagon, C–C 139.7 pm, C–H 108.4 pm.', limit: 'Textbook geometry; the delocalised ring is not drawn.', L: { mode: 'molecule', mol: 'benzene', color: '#4a4f57' }, kw: 'benzene ring aromatic molecule' },
+  co2: { name: 'Carbon dioxide molecule', cat: 'physics', method: 'exact', blurb: 'Linear, C=O 116.3 pm.', limit: 'Textbook geometry.', L: { mode: 'molecule', mol: 'co2', color: '#4a4f57' }, kw: 'carbon dioxide co2 molecule greenhouse' },
+  nh3: { name: 'Ammonia molecule', cat: 'physics', method: 'exact', blurb: 'N–H 101.2 pm, H–N–H 106.7°, a trigonal pyramid.', limit: 'Textbook geometry.', L: { mode: 'molecule', mol: 'nh3', color: '#3b6fe5' }, kw: 'ammonia molecule nh3 nitrogen' },
+  tetra: { name: 'Tetrahedron', cat: 'math', method: 'exact', blurb: 'Regular solid with exact area √3 a² and volume a³ ÷ (6√2).', limit: '', L: { mode: 'poly', poly: 'tetra', gp: { edge: 2 }, color: '#ff7675', cam: { yaw: 35, pitch: 25, dist: 7, fov: 45, tx: 0, ty: 0, tz: 0 } }, kw: 'tetrahedron platonic polyhedra solid pyramid' },
+  cubep: { name: 'Cube', cat: 'math', method: 'exact', blurb: 'Area 6a², volume a³.', limit: '', L: { mode: 'poly', poly: 'cube', gp: { edge: 2 }, color: '#74b9ff', cam: { yaw: 35, pitch: 25, dist: 7, fov: 45, tx: 0, ty: 0, tz: 0 } }, kw: 'cube box platonic polyhedra dice' },
+  octa: { name: 'Octahedron', cat: 'math', method: 'exact', blurb: 'Area 2√3 a², volume √2 a³ ÷ 3.', limit: '', L: { mode: 'poly', poly: 'octa', gp: { edge: 2 }, color: '#55efc4', cam: { yaw: 35, pitch: 25, dist: 7, fov: 45, tx: 0, ty: 0, tz: 0 } }, kw: 'octahedron platonic polyhedra' },
+  icosa: { name: 'Icosahedron', cat: 'math', method: 'exact', blurb: 'Area 5√3 a², volume 5(3+√5) a³ ÷ 12. Twenty equilateral faces.', limit: '', L: { mode: 'poly', poly: 'icosa', gp: { edge: 2 }, color: '#fdcb6e', cam: { yaw: 35, pitch: 25, dist: 8, fov: 45, tx: 0, ty: 0, tz: 0 } }, kw: 'icosahedron platonic polyhedra virus capsid geodesic' },
+  dodeca: { name: 'Dodecahedron', cat: 'math', method: 'exact', blurb: 'Area 3√(25+10√5) a², volume (15+7√5) a³ ÷ 4. Twelve regular pentagons.', limit: '', L: { mode: 'poly', poly: 'dodeca', gp: { edge: 1.4 }, color: '#a29bfe', cam: { yaw: 35, pitch: 25, dist: 8, fov: 45, tx: 0, ty: 0, tz: 0 } }, kw: 'dodecahedron platonic polyhedra' },
+  tesseract: { name: 'Tesseract (4D cube)', cat: 'math', method: 'exact', blurb: 'Sixteen 4D vertices rotated in the x–w and z–w planes and projected to 3D. Press play to see it turn.', limit: 'A 3D shadow of a 4D object; lengths and angles in the picture are not the 4D ones.', L: { mode: 'hyper', hyper: 'tesseract', gp: { w1: 0.6, w2: 0.37, p1: 0.4, p2: 0.2, d: 3.2, ortho: false }, color: '#ffeaa7', colorBy: 'solid' }, kw: 'tesseract hypercube fourth dimension 4d higher dimensional' },
+  cell24: { name: '24-cell', cat: 'math', method: 'exact', blurb: '24 vertices and 96 edges of a regular 4D polytope that has no 3D analogue.', limit: 'A 3D shadow of a 4D object.', L: { mode: 'hyper', hyper: 'cell24', gp: { w1: 0.5, w2: 0.31, p1: 0.3, p2: 0.2, d: 3.4, ortho: false }, color: '#fd79a8', colorBy: 'solid' }, kw: '24-cell polytope fourth dimension' },
+  galaxy: { name: 'Spiral galaxy (procedural)', cat: 'earth', method: 'artistic', blurb: '20,000 points along two logarithmic spiral arms with scatter.', limit: 'Looks like a spiral galaxy. It is not a simulation of stars, gravity or dark matter, and the units are arbitrary.', L: { mode: 'galaxy', gp: { n: 20000, arms: 2, twist: 3, R: 3 }, color: '#a0c4ff', colorBy: 'radius', cam: { yaw: 30, pitch: 50, dist: 9, fov: 45, tx: 0, ty: 0, tz: 0 } }, kw: 'galaxy spiral stars milky way nebula space universe cosmos' },
+};
+const SCHEMAS = {
+  implicit: () => [{ p: 'fimp', l: 'F( x, y, z ) =', t: 'expr' }, { p: 'lvl', l: 'Surface where F equals', t: 'num' }, { p: 'box3.0', l: 'x from', t: 'num' }, { p: 'box3.1', l: 'x to', t: 'num' }, { p: 'box3.2', l: 'y from', t: 'num' }, { p: 'box3.3', l: 'y to', t: 'num' }, { p: 'box3.4', l: 'z from', t: 'num' }, { p: 'box3.5', l: 'z to', t: 'num' }, { p: 'nvox', l: 'Grid cells per side (8 to 100)', t: 'int' }],
+  ode: (L) => { const six = (L.ode.eq || []).length === 6, nm = six ? ['dx/dt', 'dy/dt', 'dz/dt', 'dvx/dt', 'dvy/dt', 'dvz/dt'] : ['dx/dt', 'dy/dt', 'dz/dt'], yn = six ? ['x', 'y', 'z', 'vx', 'vy', 'vz'] : ['x', 'y', 'z']; return nm.map((n, i) => ({ p: 'ode.eq.' + i, l: n + ' =', t: 'expr' })).concat(yn.map((n, i) => ({ p: 'ode.y0.' + i, l: n + '(0)', t: 'num' })), [{ p: 'ode.dt', l: 'Time step', t: 'num' }, { p: 'ode.steps', l: 'Number of steps', t: 'int' }, { p: 'ode.inv', l: 'Quantity that should stay constant (optional)', t: 'expr' }]); },
+  field: () => [{ p: 'fld.P', l: 'P( x, y, z ) =', t: 'expr' }, { p: 'fld.Q', l: 'Q( x, y, z ) =', t: 'expr' }, { p: 'fld.R', l: 'R( x, y, z ) =', t: 'expr' }, { p: 'fld.seeds.type', l: 'Seed points', t: 'sel', o: [['ring', 'Ring'], ['sphere', 'Sphere'], ['grid', 'Grid'], ['line', 'Line']] }, { p: 'fld.seeds.n', l: 'Number (per side for grid)', t: 'int' }, { p: 'fld.seeds.r', l: 'Seed size', t: 'num' }, { p: 'fld.seeds.cx', l: 'Seed centre x', t: 'num' }, { p: 'fld.seeds.cy', l: 'Seed centre y', t: 'num' }, { p: 'fld.seeds.cz', l: 'Seed centre z', t: 'num' }, { p: 'fld.h', l: 'Step length', t: 'num' }, { p: 'fld.steps', l: 'Steps each way', t: 'int' }, { p: 'fld.bound', l: 'Stop beyond distance', t: 'num' }, { p: 'fld.unit', l: 'Unit speed (direction only)', t: 'bool' }],
+  lsys: () => [{ p: 'ls.axiom', l: 'Axiom', t: 'text' }, { p: 'ls.rules', l: 'Rules, one per line, like A=F[+A]', t: 'area' }, { p: 'ls.angle', l: 'Turn angle (degrees)', t: 'num' }, { p: 'ls.iter', l: 'Iterations (0 to 8)', t: 'int' }, { p: 'ls.shrink', l: 'Shrink factor for !', t: 'num' }],
+  ifs: () => [{ p: 'ifs.maps', l: 'Maps as JSON: [{"m":[a,b,c, d,e,f, g,h,i, tx,ty,tz],"p":probability}]', t: 'json' }, { p: 'gp.n', l: 'Points', t: 'int' }],
+  lattice: () => [{ p: 'lat', l: 'Structure', t: 'sel', o: Object.keys(G.LATTICES).map((k) => [k, G.LATTICES[k].name]) }, { p: 'gp.nx', l: 'Cells in x', t: 'int' }, { p: 'gp.ny', l: 'Cells in y', t: 'int' }, { p: 'gp.nz', l: 'Cells in z', t: 'int' }, { p: 'gp.a', l: 'Lattice constant a', t: 'num' }],
+  molecule: () => [{ p: 'mol', l: 'Molecule', t: 'sel', o: Object.keys(G.MOLECULES).map((k) => [k, G.MOLECULES[k].name]) }],
+  poly: () => [{ p: 'poly', l: 'Solid', t: 'sel', o: Object.keys(G.POLY).map((k) => [k, G.POLY[k].name]) }, { p: 'gp.edge', l: 'Edge length a', t: 'num' }],
+  hyper: () => [{ p: 'hyper', l: 'Polytope', t: 'sel', o: Object.keys(G.HYPER).map((k) => [k, G.HYPER[k].name]) }, { p: 'gp.w1', l: 'x–w rotation rate (rad/s)', t: 'num' }, { p: 'gp.w2', l: 'z–w rotation rate (rad/s)', t: 'num' }, { p: 'gp.p1', l: 'x–w start angle (rad)', t: 'num' }, { p: 'gp.p2', l: 'z–w start angle (rad)', t: 'num' }, { p: 'gp.d', l: '4D camera distance', t: 'num' }, { p: 'gp.ortho', l: 'Orthographic 4D projection', t: 'bool' }],
+  curve: () => [{ p: 'crv.fx', l: 'x( u ) =', t: 'expr' }, { p: 'crv.fy', l: 'y( u ) =', t: 'expr' }, { p: 'crv.fz', l: 'z( u ) =', t: 'expr' }, { p: 'crv.umin', l: 'u from', t: 'num' }, { p: 'crv.umax', l: 'u to', t: 'num' }, { p: 'crv.n', l: 'Points', t: 'int' }, { p: 'crv.strands', l: 'Strands (copies turned about z)', t: 'int' }, { p: 'crv.rungs', l: 'Rungs between two strands', t: 'int' }],
+  galaxy: () => [{ p: 'gp.n', l: 'Points', t: 'int' }, { p: 'gp.arms', l: 'Arms', t: 'int' }, { p: 'gp.twist', l: 'Twist', t: 'num' }, { p: 'gp.R', l: 'Radius', t: 'num' }],
+};
+const MODE_NAMES = { implicit: 'Implicit surface F(x, y, z) = level', ode: 'Differential equations (ODE)', field: '3D vector field lines', lsys: 'L-system (branching)', ifs: 'Iterated function system (fractal)', lattice: 'Crystal lattice', molecule: 'Molecule', poly: 'Polyhedron', hyper: '4D polytope', curve: 'Parametric curve', galaxy: 'Point cloud' };
+const BLANK = {
+  implicit: { mode: 'implicit', fimp: 'x^2+y^2+z^2', lvl: 1, box3: box(2), nvox: 48 },
+  ode: { mode: 'ode', ode: { eq: ['-y', 'x', '0.1'], y0: [1, 0, 0], dt: 0.01, steps: 3000, inv: '' } },
+  field: { mode: 'field', fld: { P: '-y', Q: 'x', R: '0.3', h: 0.05, steps: 300, bound: 6, unit: true, seeds: { type: 'ring', n: 8, r: 1, cx: 0, cy: 0, cz: 0 } } },
+  curve: { mode: 'curve', crv: { fx: 'cos(u)', fy: 'sin(u)', fz: 'u/5', umin: 0, umax: 12.566, n: 400, strands: 1, rungs: 0 } },
+  lsys: { mode: 'lsys', ls: { axiom: 'F', rules: 'F=F[+F]F[-F]F', angle: 25, iter: 3, len: 1, shrink: 1, scale: 0.4 } },
+};
+/* ---------- create a solid layer's generator fields from a catalog id ---------- */
+function fromCatalog(id) { const c = CATALOG[id]; if (!c) return null; const L = JSON.parse(JSON.stringify(c.L)); L.gen = id; L.method = c.method; L.genName = c.name; L.P = Object.assign({ a: 1, b: 1, c: 1, R: 2, r: 0.7 }, L.P || {}); return L; }
+function fromBlank(mode) { const L = JSON.parse(JSON.stringify(BLANK[mode] || BLANK.implicit)); L.gen = ''; L.method = 'numerical'; L.genName = MODE_NAMES[mode]; L.P = { a: 1, b: 1, c: 1, R: 2, r: 0.7 }; return L; }
+/* ---------- describe-what-you-want matcher: keyword scoring, never invents ---------- */
+const UNSUPPORTED = [
+  [/\b(car|truck|bus|motorcycle|bicycle|bike|aircraft|airplane|plane|jet|helicopter|ship|boat|train|engine|turbine|robot)\b/, 'vehicles and machines', 'These are designed objects defined by CAD drawings and engineering tolerances, not by a few equations. A believable car or aircraft needs a surface model from a designer or a scan. What can be done honestly: a mechanical component such as the spur gear or the coil spring, or an extrusion you define yourself with an implicit equation.'],
+  [/\b(building|house|bridge|tower|skyscraper|castle|church|cathedral|furniture|chair|table|sofa)\b/, 'buildings and furniture', 'A real building or chair is a set of design decisions (dimensions, materials, structure) that no equation recovers. You can model simple solids and repeating structures with implicit equations, and you can measure a real one from a photograph in the Measurement Lab, but a complete building cannot be generated reliably.'],
+  [/\b(dog|cat|horse|tiger|lion|bird|fish|insect|butterfly|spider|animal|human|person|face|hand|body|skeleton|bone|organ|brain|cell|anatomy|dinosaur)\b/, 'animals, people and anatomy', 'Organisms have no closed-form shape. Realistic models come from scans, medical imaging or an artist, and growth simulations need biological data. Here you can generate branching structures (tree, fern), a DNA helix (schematic), and mathematical forms such as shells or spirals, which are labelled as procedural. Nothing here reproduces a real animal or organ.'],
+  [/\b(fruit|strawberry|apple|banana|orange|vegetable|flower|rose|leaf|mushroom|seed|shell|feather)\b/, 'fruits, flowers, leaves and shells', 'Some natural forms have genuine formulas (the existing parametric surfaces include a torus and a helicoid, and the L-system makes plants), but a specific fruit or flower is not given by one reliable equation. A convincing result needs either your own equations or a calibrated photograph. You can build a rough procedural version from an implicit equation plus noise; it will be labelled artistic.'],
+  [/\b(black hole|nebula|star|sun|supernova|quasar)\b/, 'stars, black holes and nebulae', 'These are physical simulations (general relativity, radiative transfer, hydrodynamics) that need specialised solvers. Here you can draw the spiral galaxy point cloud, planetary orbits (Kepler problem), and any field or surface you define. Those are labelled procedural or numerical, not astrophysical simulations.'],
+  [/\b(cloud|ocean|river|lava|fire|smoke|explosion|storm|tornado|hurricane)\b/, 'clouds, oceans, fire and storms', 'These are turbulent fluid flows. Real results need computational fluid dynamics on large grids (a backend or a GPU solver), which is not part of this editor. What is here: exact flow fields (ABC flow, vortices) traced as streamlines, wave interference surfaces, and noise-based terrain.'],
+];
+function match(text) {
+  const q = String(text || '').toLowerCase().trim(); if (!q) return { hits: [], note: 'Type what you would like to create, for example "mountains", "DNA", "electric field", "crystal of salt" or "chaotic attractor".' };
+  const stem = (w) => (w.length > 3 ? w.replace(/(ies)$/, 'y').replace(/(es)$/, (m) => (/(ss|sh|ch|x)es$/.test(w) ? '' : 'e')).replace(/([^s])s$/, '$1') : w), raw = q.split(/[^a-z0-9\-]+/).filter((w) => w.length > 1), words = raw.concat(raw.map(stem).filter((w, i) => w !== raw[i])), q2 = raw.map(stem).join(' ') + ' ' + q, hits = [];
+  Object.keys(CATALOG).forEach((id) => { const c = CATALOG[id], hay = (' ' + c.kw + ' ' + c.name.toLowerCase() + ' ').replace(/[^a-z0-9\- ]+/g, ' '); let s = 0; const got = []; words.forEach((w) => { if (hay.indexOf(' ' + w + ' ') >= 0) { s += 3; got.push(w); } else if (w.length > 3 && hay.indexOf(' ' + w) >= 0) { s += 1.5; got.push(w); } }); if (s > 0) hits.push({ id, score: s, why: 'matches ' + got.join(', ') }); });
+  hits.sort((a, b) => b.score - a.score);
+  let note = ''; for (const u of UNSUPPORTED) if (u[0].test(q2)) { note = 'Not reliably generated: ' + u[1] + '. ' + u[2]; break; }
+  if (!hits.length && !note) note = 'No generator in this editor matches "' + text + '". That does not mean it is impossible, but nothing here can produce it reliably from a description. Choose a category below, or enter your own equations in the Equation shapes box. Any implicit surface, parametric curve, differential equation or vector field can be typed in directly.';
+  if (hits.length && note) note += ' The closest things available are listed below.';
+  return { hits: hits.slice(0, 6), note };
+}
+/* ---------- how much does each parameter influence the model? central finite difference on a 5% change ---------- */
+function measureOf(m) { if (!m || !m.ok) return null; const s = m.stats; if (m.kind === 'tri') return { name: 'surface area', v: s.area }; if (s.length) return { name: 'curve length', v: s.length }; return { name: 'bounding-box diagonal', v: s.diag }; }
+function influence(L, t, buildFn) {
+  const base = buildFn(L, t), b = measureOf(base); if (!b) return [];
+  const out = [], keys = ['a', 'b', 'c', 'R', 'r']; let fields = []; if (L.mode === 'implicit') fields = [L.fimp]; else if (L.mode === 'ode') fields = L.ode.eq.concat([L.ode.inv || '']); else if (L.mode === 'field') fields = [L.fld.P, L.fld.Q, L.fld.R]; else if (L.mode === 'curve') fields = [L.crv.fx, L.crv.fy, L.crv.fz]; else fields = ['fx' in L ? L.fx + ' ' + L.fy + ' ' + L.fz : ''];
+  const src = fields.join(' ');
+  keys.forEach((k) => {
+    if (!new RegExp('(^|[^A-Za-z0-9_])' + k + '([^A-Za-z0-9_(]|$)').test(src)) return;
+    const v0 = L.P[k], dv = Math.abs(v0) > 1e-9 ? v0 * 0.05 : 0.05, up = JSON.parse(JSON.stringify(L)), dn = JSON.parse(JSON.stringify(L)); up.P[k] = v0 + dv; dn.P[k] = v0 - dv;
+    const mu = measureOf(buildFn(up, t)), md = measureOf(buildFn(dn, t)); if (!mu || !md) { out.push({ k, v0, name: b.name, rel: null, note: 'changing it makes the model fail to build' }); return; }
+    out.push({ k, v0, name: b.name, rel: ((mu.v - md.v) / (2 * dv)) * (Math.abs(v0) > 1e-9 ? v0 : 1) / b.v });
+  });
+  return out;
+}
+G.CATALOG = CATALOG; G.CATS = CATS; G.METHODS = METHODS; G.SCHEMAS = SCHEMAS; G.MODE_NAMES = MODE_NAMES; G.fromCatalog = fromCatalog; G.fromBlank = fromBlank; G.match = match; G.influence = influence; G.measureOf = measureOf; G.BLANK = BLANK; G.UNSUPPORTED = UNSUPPORTED;
 })(typeof window !== 'undefined' ? window : globalThis);
 
 </script>
@@ -7376,68 +7868,164 @@ function dctLines(info) {
 /* ---------- 3D solid layer: a parametric surface rendered with a real model-view-projection pipeline ---------- */
 const M3 = root.M3D; const M3D_NAMES = {}; Object.keys(M3.PRESETS).forEach((k) => { M3D_NAMES[k] = M3.PRESETS[k].name; });
 const SOLID_PERF = {}, SOLID_PICK = {}, SOLID_CACHE = new Map();
-function newSolid(o) {
-  const d = M3.defaults((o && o.kind) || 'torus');
-  return Object.assign(baseLayer('solid'), d, { tr: { tx: 0, ty: 0, tz: 0, rx: 0, ry: 0, rz: 0, sx: 1, sy: 1, sz: 1 }, cam: { yaw: 35, pitch: 25, dist: 7, fov: 45, tx: 0, ty: 0, tz: 0 }, style: 'both', color: '#4f8cff', wire: '#ffffff', axes: true, box: false, spin: 0, w: 700, h: 700 }, o || {});
+/* ---------- generator layers (implicit, ODE, fields, fractals, crystals...) share this mesh contract ---------- */
+const GENM = ['implicit', 'ode', 'field', 'lsys', 'ifs', 'lattice', 'molecule', 'poly', 'hyper', 'curve', 'galaxy'];
+const isGen = (L) => !!L.mode && GENM.indexOf(L.mode) >= 0;
+function genClip(mesh, L) {
+  const c = L.clip; if (!c || !c.on || !mesh.ok) return mesh; const ax = c.axis | 0, pos = Number(c.pos), flip = !!c.flip; if (!isFinite(pos)) return mesh;
+  const out = Object.assign({}, mesh), n = mesh.V.length / 3, g = new Uint8Array(n);
+  if (mesh.kind === 'tri' || (!mesh.kind && mesh.F)) {
+    const r = root.GEN.clipTriangles(mesh.V, mesh.F, ax, pos, flip), st = root.GEN.triStats(r.V, r.F);
+    if (!r.F.length) { return Object.assign({}, mesh, { ok: false, issues: [{ sev: 'error', code: 'clip-empty', msg: 'The section plane removes the whole model.', region: 'section plane', fix: 'Move the plane or flip its side.' }], stats: null }); }
+    out.V = r.V; out.F = r.F; out.good = new Uint8Array(r.V.length / 3).fill(1); out.W = 0; out.H = 0; out.kind = 'tri'; out.stats = st; out.secSegs = r.sectionSegs; out.sectionArea = r.sectionArea;
+    out.issues = mesh.issues.concat([{ sev: 'info', code: 'section', msg: 'Section plane at ' + ['x', 'y', 'z'][ax] + ' = ' + n2(pos, 4) + ' (model coordinates), keeping the ' + (flip ? 'lower' : 'upper') + ' side. Cross-section area ' + n2(r.sectionArea, 5) + ' units² from ' + r.nSection + ' cut edges. Volume is not reported because the cut surface is open.', region: 'section plane', fix: '' }]);
+  } else {
+    let kept = 0; for (let k = 0; k < n; k++) { const v = (mesh.V[k * 3 + ax] - pos) * (flip ? -1 : 1); if (mesh.good[k] && v >= 0) { g[k] = 1; kept++; } } out.good = g;
+    out.issues = mesh.issues.concat([{ sev: 'info', code: 'section', msg: 'Section plane at ' + ['x', 'y', 'z'][ax] + ' = ' + n2(pos, 4) + ' hides ' + (n - kept) + ' of ' + n + ' points. Segments crossing the plane are hidden, not cut.', region: 'section plane', fix: '' }]);
+  }
+  return out;
 }
-function solidUsesT(L) { try { return ['fx', 'fy', 'fz'].some((k) => MX.compile(L[k], M3.VARS).uses('t')) || Math.abs(L.spin || 0) > 0; } catch (e) { return false; } }
+function newSolid(o) {
+  const G0 = root.GEN, gl = o && (o.gen ? G0.fromCatalog(o.gen) : o.mode ? G0.fromBlank(o.mode) : null), d = M3.defaults((o && o.kind) || 'torus');
+  const L = Object.assign(baseLayer('solid'), d, { tr: { tx: 0, ty: 0, tz: 0, rx: 0, ry: 0, rz: 0, sx: 1, sy: 1, sz: 1 }, cam: { yaw: 35, pitch: 25, dist: 7, fov: 45, tx: 0, ty: 0, tz: 0, ortho: false }, style: 'both', color: '#4f8cff', wire: '#ffffff', axes: true, box: false, spin: 0, w: 700, h: 700, mat: 'matte', colorBy: 'solid', bands: 0, shadow: false, grid: false, clip: { on: false, axis: 2, pos: 0, flip: false } }, gl || {}, o || {});
+  if (gl && !gl.cam) { try { const m = solidMesh(L, 0); if (m && m.ok) { const bb = m.stats.bbox, dg = m.stats.diag || bb.diag || 1; L.cam = { yaw: 35, pitch: 25, dist: Math.max(1e-3, dg * 1.45), fov: 45, tx: (bb.lo[0] + bb.hi[0]) / 2, ty: (bb.lo[1] + bb.hi[1]) / 2, tz: (bb.lo[2] + bb.hi[2]) / 2, ortho: false }; } } catch (e) { /* keep default camera */ } }
+  if (gl) L.cam0 = JSON.parse(JSON.stringify(L.cam));
+  if (gl) { L.kind = 'custom'; L.name = gl.genName; if (!gl.cam) L.cam = Object.assign({}, L.cam); L.style = (L.mode === 'lattice' || L.mode === 'molecule' || L.mode === 'ode' || L.mode === 'curve') ? 'solid' : (L.style === 'both' && (L.mode === 'implicit' || L.mode === 'poly') ? 'solid' : L.style); }
+  return L;
+}
+function solidUsesT(L) { try { if (isGen(L)) return root.GEN.usesT(L) || Math.abs(L.spin || 0) > 0; return ['fx', 'fy', 'fz'].some((k) => MX.compile(L[k], M3.VARS).uses('t')) || Math.abs(L.spin || 0) > 0; } catch (e) { return false; } }
 function solidMesh(L, t) {
+  if (isGen(L)) {
+    const tt = root.GEN.usesT(L) ? Math.round(t * 30) / 30 : 0, key = JSON.stringify([L.mode, L.fimp, L.lvl, L.box3, L.nvox, L.ode, L.fld, L.ls, L.ifs, L.lat, L.mol, L.poly, L.hyper, L.crv, L.gp, L.P, tt, L.clip && L.clip.on ? L.clip : 0]), hit = SOLID_CACHE.get(key); if (hit) return hit;
+    let m; try { m = root.GEN.build(L, tt); } catch (e) { m = { ok: false, issues: [{ sev: 'error', code: 'internal', msg: 'The generator stopped with an error: ' + e.message, region: 'whole model', fix: 'Check the equations and sizes.' }], stats: null }; }
+    if (m.ok) m = genClip(m, L); SOLID_CACHE.set(key, m); if (SOLID_CACHE.size > 6) SOLID_CACHE.delete(SOLID_CACHE.keys().next().value); return m;
+  }
   const tt = ['fx', 'fy', 'fz'].some((k) => { try { return MX.compile(L[k], M3.VARS).uses('t'); } catch (e) { return false; } }) ? Math.round(t * 60) / 60 : 0;
-  const key = JSON.stringify([L.fx, L.fy, L.fz, L.umin, L.umax, L.vmin, L.vmax, L.nu, L.nv, L.P, L.kind, tt]), hit = SOLID_CACHE.get(key); if (hit) return hit;
-  const m = M3.buildMesh(L, tt); SOLID_CACHE.set(key, m); if (SOLID_CACHE.size > 8) SOLID_CACHE.delete(SOLID_CACHE.keys().next().value); return m;
+  const key = JSON.stringify([L.fx, L.fy, L.fz, L.umin, L.umax, L.vmin, L.vmax, L.nu, L.nv, L.P, L.kind, tt, L.clip && L.clip.on ? L.clip : 0]), hit = SOLID_CACHE.get(key); if (hit) return hit;
+  let m = M3.buildMesh(L, tt); if (m.ok) m = genClip(m, L); SOLID_CACHE.set(key, m); if (SOLID_CACHE.size > 8) SOLID_CACHE.delete(SOLID_CACHE.keys().next().value); return m;
 }
 function solidModel(L, t) { return M3.modelMatrix(Object.assign({}, L.tr, { rz: L.tr.rz + (L.spin || 0) * t })); }
 function solidScene(L, t, W, H) { const mesh = solidMesh(L, t); if (!mesh.ok) return { mesh }; const M = solidModel(L, t), pr = M3.projectAll(mesh, M, L.cam, W, H); return { mesh, M, pr }; }
 const hex2rgb = (h) => { const m = /^#?([0-9a-f]{6})$/i.exec(h || ''); const n = m ? parseInt(m[1], 16) : 0x4f8cff; return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };
+const CMAP = [[68, 1, 84], [59, 82, 139], [33, 145, 140], [94, 201, 98], [253, 231, 37]];
+function cmap(u) { u = Math.max(0, Math.min(1, u)); const x = u * 4, i = Math.min(3, Math.floor(x)), f = x - i, a = CMAP[i], b = CMAP[i + 1]; return [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f, a[2] + (b[2] - a[2]) * f]; }
+const MATS = { matte: { kd: 1, ks: 0, sh: 1, a: 1, env: 0 }, plastic: { kd: 0.95, ks: 0.55, sh: 40, a: 1, env: 0 }, metal: { kd: 0.3, ks: 1, sh: 55, a: 1, env: 0.75, tint: 1 }, glass: { kd: 0.25, ks: 1, sh: 120, a: 0.3, env: 0.25, fres: 1 }, wood: { kd: 1, ks: 0.1, sh: 12, a: 1, tex: 'wood', base: '#b07f4c' }, stone: { kd: 1, ks: 0.04, sh: 6, a: 1, tex: 'stone', base: '#9a9a94' }, water: { kd: 0.55, ks: 1, sh: 90, a: 0.72, env: 0.35, base: '#2f86c9' }, crystal: { kd: 0.5, ks: 1, sh: 80, a: 0.6, env: 0.4, fres: 1 } };
+function texMul(kind, qx, qy, qz) {
+  const G = root.GEN;
+  switch (kind) {
+    case 'checker': return (Math.floor(qx * 1.5) + Math.floor(qy * 1.5) + Math.floor(qz * 1.5)) & 1 ? 0.62 : 1.05;
+    case 'stripes': return Math.sin(qz * 5) > 0 ? 1.05 : 0.68;
+    case 'noise': return 0.78 + 0.32 * G.noise3(qx * 1.6, qy * 1.6, qz * 1.6);
+    case 'wood': { const r = Math.hypot(qx, qy) * 1.6 + 0.35 * G.noise3(qx * 0.9, qy * 0.9, qz * 0.4), v = r - Math.floor(r); return 0.7 + 0.38 * v; }
+    case 'stone': return 0.72 + 0.26 * (G.noise3(qx * 2, qy * 2, qz * 2) + 0.5 * G.noise3(qx * 5, qy * 5, qz * 5));
+    case 'marble': return 0.66 + 0.34 * (0.5 + 0.5 * Math.sin(qx * 2 + 4 * G.noise3(qx * 0.8, qy * 0.8, qz * 0.8)));
+    default: return 1;
+  }
+}
+const LGT = (() => { const l = [-0.4, 0.5, 0.76], n = Math.hypot(l[0], l[1], l[2]); return [l[0] / n, l[1] / n, l[2] / n]; })();
 function drawSolid(ctx, L, t, o) {
-  const W = L.w, H = L.h, t0 = (typeof performance !== 'undefined' ? performance.now() : 0), sc = solidScene(L, t, W, H);
+  const W = L.w, H = L.h, t0 = (typeof performance !== 'undefined' ? performance.now() : 0), sc = solidScene(L, t, W, H), draft = !!(o && o.draft);
   ctx.save(); ctx.translate(-W / 2, -H / 2);
   if (!sc.mesh.ok) { ctx.fillStyle = 'rgba(200,30,50,.9)'; ctx.font = '600 ' + Math.round(W * 0.04) + 'px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('Cannot draw: ' + (sc.mesh.issues[0] ? sc.mesh.issues[0].msg.slice(0, 60) : 'invalid input'), W / 2, H / 2); ctx.restore(); SOLID_PERF[L.id] = { ms: 0, tris: 0 }; return; }
-  const { mesh, M, pr } = sc, S = pr.s, VE = pr.ve, F = mesh.F, nF = F.length / 3;
+  const { mesh, M, pr } = sc, S = pr.s, VE = pr.ve, F = mesh.F, kind = mesh.kind || 'tri', nF = F ? F.length / 3 : 0, st = mesh.stats;
   ctx.beginPath(); ctx.rect(0, 0, W, H); ctx.clip();
   const lw = Math.max(1, W / 700), world = M3.cameraMatrices(L.cam, W / H);
-  const lineTo3 = (A, B, col, wd, dash) => { const a = M3.apply(world.vp, A[0], A[1], A[2]), c = M3.apply(world.vp, B[0], B[1], B[2]); if (a[3] <= 1e-6 || c[3] <= 1e-6) return; ctx.strokeStyle = col; ctx.lineWidth = wd; ctx.setLineDash(dash || []); ctx.beginPath(); ctx.moveTo((a[0] / a[3] * 0.5 + 0.5) * W, (1 - (a[1] / a[3] * 0.5 + 0.5)) * H); ctx.lineTo((c[0] / c[3] * 0.5 + 0.5) * W, (1 - (c[1] / c[3] * 0.5 + 0.5)) * H); ctx.stroke(); ctx.setLineDash([]); };
-  const st = mesh.stats, ax = Math.max(1, st.diag * 0.7);
-  if (L.axes) { /* axes behind the object are drawn first, so the solid hides them where it should */
+  const scr = (a) => [(a[0] / a[3] * 0.5 + 0.5) * W, (1 - (a[1] / a[3] * 0.5 + 0.5)) * H];
+  const lineTo3 = (A, B, col, wd, dash) => { const a = M3.apply(world.vp, A[0], A[1], A[2]), c = M3.apply(world.vp, B[0], B[1], B[2]); if (a[3] <= 1e-6 || c[3] <= 1e-6) return; const p = scr(a), q = scr(c); ctx.strokeStyle = col; ctx.lineWidth = wd; ctx.setLineDash(dash || []); ctx.beginPath(); ctx.moveTo(p[0], p[1]); ctx.lineTo(q[0], q[1]); ctx.stroke(); ctx.setLineDash([]); };
+  const ax = Math.max(1, st.diag * 0.7), wb = (() => { const lo = st.bbox.lo, hi = st.bbox.hi, C = []; for (let i = 0; i < 8; i++) C.push(M3.apply(M, i & 1 ? hi[0] : lo[0], i & 2 ? hi[1] : lo[1], i & 4 ? hi[2] : lo[2])); return C; })();
+  if (L.grid) { /* floor grid under the model at its lowest world z */
+    let zmin = Infinity, cx0 = 0, cy0 = 0; wb.forEach((c) => { zmin = Math.min(zmin, c[2]); cx0 += c[0] / 8; cy0 += c[1] / 8; }); const ext = Math.max(2, st.diag * 0.9), step = Math.pow(10, Math.floor(Math.log10(ext / 4))) * (ext / 4 / Math.pow(10, Math.floor(Math.log10(ext / 4))) >= 5 ? 5 : ext / 4 / Math.pow(10, Math.floor(Math.log10(ext / 4))) >= 2 ? 2 : 1), n = Math.ceil(ext / step), gx = Math.round(cx0 / step) * step, gy = Math.round(cy0 / step) * step;
+    for (let i = -n; i <= n; i++) { const c = i === 0 ? 'rgba(120,130,160,.7)' : 'rgba(120,130,160,.32)'; lineTo3([gx + i * step, gy - n * step, zmin], [gx + i * step, gy + n * step, zmin], c, lw * 0.8); lineTo3([gx - n * step, gy + i * step, zmin], [gx + n * step, gy + i * step, zmin], c, lw * 0.8); }
+    ctx.fillStyle = 'rgba(120,130,160,.95)'; ctx.font = '600 ' + Math.round(11 * lw) + 'px sans-serif'; ctx.textAlign = 'left'; const lab = M3.apply(world.vp, gx + n * step, gy - n * step, zmin); if (lab[3] > 1e-6) { const p = scr(lab); ctx.fillText('grid ' + n2(step, 3) + ' units', p[0] - 80 * lw, p[1] + 14 * lw); }
+  }
+  if (L.axes) {
     [[[ax, 0, 0], '#ff4d5e', 'x'], [[0, ax, 0], '#3ddc84', 'y'], [[0, 0, ax], '#4da3ff', 'z']].forEach(([p, col, nm]) => {
       lineTo3([0, 0, 0], p, col, lw * 2); const e = M3.apply(world.vp, p[0] * 1.08, p[1] * 1.08, p[2] * 1.08);
       if (e[3] > 1e-6) { ctx.fillStyle = col; ctx.font = '700 ' + Math.round(14 * lw) + 'px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(nm, (e[0] / e[3] * 0.5 + 0.5) * W, (1 - (e[1] / e[3] * 0.5 + 0.5)) * H); }
     });
   }
-  const style = L.style || 'both', base = hex2rgb(L.color);
-  if (style !== 'wire') {
-    const order = new Uint32Array(nF); const dep = new Float32Array(nF); let k = 0;
-    for (let f = 0; f < nF; f++) { const a = F[f * 3], b2 = F[f * 3 + 1], c = F[f * 3 + 2]; dep[f] = (S[a * 4 + 2] + S[b2 * 4 + 2] + S[c * 4 + 2]) / 3; if (S[a * 4 + 3] === 1 && S[b2 * 4 + 3] === 1 && S[c * 4 + 3] === 1) order[k++] = f; }
-    const idx = Array.from(order.subarray(0, k)).sort((p, q) => dep[q] - dep[p]); /* painter's algorithm: far to near */
-    const lx = -0.4, ly = 0.5, lz = 0.76, ll = Math.hypot(lx, ly, lz);
-    for (let i = 0; i < idx.length; i++) {
-      const f = idx[i], a = F[f * 3], b2 = F[f * 3 + 1], c = F[f * 3 + 2];
-      const ux = VE[b2 * 3] - VE[a * 3], uy = VE[b2 * 3 + 1] - VE[a * 3 + 1], uz = VE[b2 * 3 + 2] - VE[a * 3 + 2], vx = VE[c * 3] - VE[a * 3], vy = VE[c * 3 + 1] - VE[a * 3 + 1], vz = VE[c * 3 + 2] - VE[a * 3 + 2];
-      let nx = uy * vz - uz * vy, ny = uz * vx - ux * vz, nz = ux * vy - uy * vx; const nl = Math.hypot(nx, ny, nz) || 1;
-      const sh = 0.22 + 0.78 * Math.abs((nx * lx + ny * ly + nz * lz) / (nl * ll)), r = Math.round(base[0] * sh), g = Math.round(base[1] * sh), bl = Math.round(base[2] * sh), col = 'rgb(' + r + ',' + g + ',' + bl + ')';
-      ctx.fillStyle = col; ctx.strokeStyle = col; ctx.lineWidth = 0.7; ctx.beginPath(); ctx.moveTo(S[a * 4], S[a * 4 + 1]); ctx.lineTo(S[b2 * 4], S[b2 * 4 + 1]); ctx.lineTo(S[c * 4], S[c * 4 + 1]); ctx.closePath(); ctx.fill(); ctx.stroke();
+  const style = L.style || 'both', mat0 = MATS[L.mat] || MATS.matte, base = hex2rgb(mat0.base && (L.colorBy || 'solid') === 'solid' ? mat0.base : L.color), bb = st.bbox, cby = L.colorBy || 'solid', bands = L.bands | 0;
+  const val01 = (x, y, z) => { if (cby === 'height') return (z - bb.lo[2]) / (bb.size[2] || 1); if (cby === 'radius') { const cx = (bb.lo[0] + bb.hi[0]) / 2, cy = (bb.lo[1] + bb.hi[1]) / 2, cz = (bb.lo[2] + bb.hi[2]) / 2; let mx = 0; return Math.hypot(x - cx, y - cy, z - cz) / (Math.hypot(bb.size[0], bb.size[1], bb.size[2]) / 2 || 1); } return NaN; };
+  const bandq = (u) => (bands > 1 ? (Math.floor(u * bands - 1e-9) + 0.5) / bands : u);
+  const pxUnit = (d) => (L.cam.ortho ? (H / 2) / (L.cam.dist * Math.tan(L.cam.fov * Math.PI / 360)) : (H / 2) / (Math.tan(L.cam.fov * Math.PI / 360) * Math.max(1e-6, d))) * ((L.tr.sx + L.tr.sy + L.tr.sz) / 3);
+  /* planar shadow: fixed overhead light, projected onto the floor */
+  const drawShadow = () => {
+    if (!L.shadow || kind !== 'tri' || nF > 90000) return; let zmin = Infinity; wb.forEach((c) => { zmin = Math.min(zmin, c[2]); }); const Ld = [-0.45, -0.3, -1], n = mesh.V.length / 3, SH = new Float32Array(n * 2), ok = new Uint8Array(n);
+    for (let k = 0; k < n; k++) { if (!mesh.good[k]) continue; const w = M3.apply(M, mesh.V[k * 3], mesh.V[k * 3 + 1], mesh.V[k * 3 + 2]), tt = (zmin - w[2]) / Ld[2], p = M3.apply(world.vp, w[0] + tt * Ld[0], w[1] + tt * Ld[1], zmin); if (p[3] <= 1e-6) continue; SH[k * 2] = (p[0] / p[3] * 0.5 + 0.5) * W; SH[k * 2 + 1] = (1 - (p[1] / p[3] * 0.5 + 0.5)) * H; ok[k] = 1; }
+    ctx.fillStyle = 'rgba(0,0,0,.30)'; ctx.beginPath(); const stp = draft && nF > 30000 ? 3 : 1;
+    for (let f = 0; f < nF; f += stp) { const a = F[f * 3], b2 = F[f * 3 + 1], c = F[f * 3 + 2]; if (!ok[a] || !ok[b2] || !ok[c]) continue; const ar = (SH[b2 * 2] - SH[a * 2]) * (SH[c * 2 + 1] - SH[a * 2 + 1]) - (SH[b2 * 2 + 1] - SH[a * 2 + 1]) * (SH[c * 2] - SH[a * 2]); if (ar >= 0) { ctx.moveTo(SH[a * 2], SH[a * 2 + 1]); ctx.lineTo(SH[b2 * 2], SH[b2 * 2 + 1]); ctx.lineTo(SH[c * 2], SH[c * 2 + 1]); } else { ctx.moveTo(SH[a * 2], SH[a * 2 + 1]); ctx.lineTo(SH[c * 2], SH[c * 2 + 1]); ctx.lineTo(SH[b2 * 2], SH[b2 * 2 + 1]); } ctx.closePath(); }
+    ctx.fill();
+  };
+  let drawn = 0;
+  if (kind === 'tri') {
+    drawShadow();
+    const wireOnly = style === 'wire', ghost = style === 'ghost';
+    if (!wireOnly) {
+      const order = new Uint32Array(nF), dep = new Float32Array(nF); let k = 0, stp = draft && nF > 30000 ? Math.ceil(nF / 30000) : 1;
+      for (let f = 0; f < nF; f += stp) { const a = F[f * 3], b2 = F[f * 3 + 1], c = F[f * 3 + 2]; dep[f] = (S[a * 4 + 2] + S[b2 * 4 + 2] + S[c * 4 + 2]) / 3; if (S[a * 4 + 3] === 1 && S[b2 * 4 + 3] === 1 && S[c * 4 + 3] === 1) order[k++] = f; }
+      const idx = Array.from(order.subarray(0, k)).sort((p, q) => dep[q] - dep[p]); /* painter's algorithm: far to near */
+      const texK = L.tex && L.tex !== 'none' ? L.tex : mat0.tex || '', dg = st.diag || bb.diag || 1, ortho = !!L.cam.ortho; let VN = null;
+      if (mesh.smooth && L.smooth !== false) { if (!mesh._N) mesh._N = root.GEN.vertexNormals(mesh.V, F); const Nm = mesh._N, MV = pr.MV, nn = mesh.V.length / 3; VN = new Float32Array(nn * 3); for (let q = 0; q < nn; q++) { const x = Nm[q * 3], y = Nm[q * 3 + 1], z = Nm[q * 3 + 2]; VN[q * 3] = MV[0] * x + MV[1] * y + MV[2] * z; VN[q * 3 + 1] = MV[4] * x + MV[5] * y + MV[6] * z; VN[q * 3 + 2] = MV[8] * x + MV[9] * y + MV[10] * z; } }
+      for (let i = 0; i < idx.length; i++) {
+        const f = idx[i], a = F[f * 3], b2 = F[f * 3 + 1], c = F[f * 3 + 2];
+        const ux = VE[b2 * 3] - VE[a * 3], uy = VE[b2 * 3 + 1] - VE[a * 3 + 1], uz = VE[b2 * 3 + 2] - VE[a * 3 + 2], vx = VE[c * 3] - VE[a * 3], vy = VE[c * 3 + 1] - VE[a * 3 + 1], vz = VE[c * 3 + 2] - VE[a * 3 + 2];
+        let nx = uy * vz - uz * vy, ny = uz * vx - ux * vz, nz = ux * vy - uy * vx; if (VN) { nx = VN[a * 3] + VN[b2 * 3] + VN[c * 3]; ny = VN[a * 3 + 1] + VN[b2 * 3 + 1] + VN[c * 3 + 1]; nz = VN[a * 3 + 2] + VN[b2 * 3 + 2] + VN[c * 3 + 2]; } const nl = Math.hypot(nx, ny, nz) || 1; nx /= nl; ny /= nl; nz /= nl;
+        const ndl = Math.abs(nx * LGT[0] + ny * LGT[1] + nz * LGT[2]); let r, g, bl, alpha = ghost ? 0.3 : mat0.a;
+        let cr = base[0], cg = base[1], cb = base[2];
+        if (cby !== 'solid' || texK) { const mx = (mesh.V[a * 3] + mesh.V[b2 * 3] + mesh.V[c * 3]) / 3, my = (mesh.V[a * 3 + 1] + mesh.V[b2 * 3 + 1] + mesh.V[c * 3 + 1]) / 3, mz = (mesh.V[a * 3 + 2] + mesh.V[b2 * 3 + 2] + mesh.V[c * 3 + 2]) / 3;
+          if (cby !== 'solid') { const u = val01(mx, my, mz); if (isFinite(u)) { const q = cmap(bandq(u)); cr = q[0]; cg = q[1]; cb = q[2]; } }
+          if (texK) { const m = texMul(texK, (mx - (bb.lo[0] + bb.hi[0]) / 2) / dg * 6, (my - (bb.lo[1] + bb.hi[1]) / 2) / dg * 6, (mz - (bb.lo[2] + bb.hi[2]) / 2) / dg * 6); cr *= m; cg *= m; cb *= m; } }
+        const sh = 0.22 + 0.78 * mat0.kd * ndl; r = cr * sh; g = cg * sh; bl = cb * sh;
+        if (mat0.ks > 0 || mat0.env > 0 || mat0.fres) {
+          let vx2 = 0, vy2 = 0, vz2 = 1; if (!ortho) { const px = (VE[a * 3] + VE[b2 * 3] + VE[c * 3]) / 3, py = (VE[a * 3 + 1] + VE[b2 * 3 + 1] + VE[c * 3 + 1]) / 3, pz = (VE[a * 3 + 2] + VE[b2 * 3 + 2] + VE[c * 3 + 2]) / 3, pl = Math.hypot(px, py, pz) || 1; vx2 = -px / pl; vy2 = -py / pl; vz2 = -pz / pl; }
+          const nv = nx * vx2 + ny * vy2 + nz * vz2, sg = nv < 0 ? -1 : 1, fx = nx * sg, fy = ny * sg, fz = nz * sg, nvv = Math.abs(nv);
+          const hx = LGT[0] + vx2, hy = LGT[1] + vy2, hz = LGT[2] + vz2, hl = Math.hypot(hx, hy, hz) || 1, nh = Math.max(0, (fx * hx + fy * hy + fz * hz) / hl), sp = mat0.ks * Math.pow(nh, mat0.sh) * 255;
+          if (mat0.tint) { r += sp * (0.5 + 0.5 * base[0] / 255); g += sp * (0.5 + 0.5 * base[1] / 255); bl += sp * (0.5 + 0.5 * base[2] / 255); } else { r += sp; g += sp; bl += sp; }
+          if (mat0.env) { const rx = 2 * nvv * fx - vx2, ry = 2 * nvv * fy - vy2, e = (0.25 + 0.75 * (ry * 0.5 + 0.5)) * mat0.env; r += cr * e * 0.9 + 40 * e; g += cg * e * 0.9 + 55 * e; bl += cb * e * 0.9 + 80 * e; void rx; }
+          if (mat0.fres) alpha = Math.min(0.92, alpha + Math.pow(1 - nvv, 3) * 0.6);
+        }
+        const col = ghost || alpha < 1 ? 'rgba(' + (r > 255 ? 255 : r | 0) + ',' + (g > 255 ? 255 : g | 0) + ',' + (bl > 255 ? 255 : bl | 0) + ',' + alpha.toFixed(2) + ')' : 'rgb(' + (r > 255 ? 255 : r | 0) + ',' + (g > 255 ? 255 : g | 0) + ',' + (bl > 255 ? 255 : bl | 0) + ')';
+        ctx.fillStyle = col; ctx.strokeStyle = col; ctx.lineWidth = stp > 1 ? 1.4 : 0.7; ctx.beginPath(); ctx.moveTo(S[a * 4], S[a * 4 + 1]); ctx.lineTo(S[b2 * 4], S[b2 * 4 + 1]); ctx.lineTo(S[c * 4], S[c * 4 + 1]); ctx.closePath(); ctx.fill(); if (alpha >= 1 || stp > 1) ctx.stroke(); drawn++;
+      }
     }
-  }
-  if (style !== 'solid') {
-    ctx.strokeStyle = style === 'both' ? 'rgba(255,255,255,.32)' : L.wire; ctx.lineWidth = Math.max(0.6, lw * 0.8); ctx.beginPath();
-    const Wd = mesh.W, Hd = mesh.H;
-    for (let j = 0; j < Hd; j++) for (let i = 0; i < Wd; i++) {
-      const a = j * Wd + i; if (S[a * 4 + 3] !== 1) continue;
-      if (i + 1 < Wd && S[(a + 1) * 4 + 3] === 1) { ctx.moveTo(S[a * 4], S[a * 4 + 1]); ctx.lineTo(S[(a + 1) * 4], S[(a + 1) * 4 + 1]); }
-      if (j + 1 < Hd && S[(a + Wd) * 4 + 3] === 1) { ctx.moveTo(S[a * 4], S[a * 4 + 1]); ctx.lineTo(S[(a + Wd) * 4], S[(a + Wd) * 4 + 1]); }
+    if (style !== 'solid') {
+      ctx.strokeStyle = style === 'both' ? 'rgba(255,255,255,.32)' : ghost ? 'rgba(255,255,255,.55)' : L.wire; ctx.lineWidth = Math.max(0.6, lw * 0.8); ctx.beginPath();
+      const Wd = mesh.W, Hd = mesh.H;
+      if (Wd > 0) { for (let j = 0; j < Hd; j++) for (let i = 0; i < Wd; i++) { const a = j * Wd + i; if (S[a * 4 + 3] !== 1) continue; if (i + 1 < Wd && S[(a + 1) * 4 + 3] === 1) { ctx.moveTo(S[a * 4], S[a * 4 + 1]); ctx.lineTo(S[(a + 1) * 4], S[(a + 1) * 4 + 1]); } if (j + 1 < Hd && S[(a + Wd) * 4 + 3] === 1) { ctx.moveTo(S[a * 4], S[a * 4 + 1]); ctx.lineTo(S[(a + Wd) * 4], S[(a + Wd) * 4 + 1]); } } }
+      else if (nF <= (draft ? 20000 : 60000)) { for (let f = 0; f < nF; f++) { const a = F[f * 3], b2 = F[f * 3 + 1], c = F[f * 3 + 2]; if (S[a * 4 + 3] !== 1 || S[b2 * 4 + 3] !== 1 || S[c * 4 + 3] !== 1) continue; ctx.moveTo(S[a * 4], S[a * 4 + 1]); ctx.lineTo(S[b2 * 4], S[b2 * 4 + 1]); ctx.lineTo(S[c * 4], S[c * 4 + 1]); ctx.lineTo(S[a * 4], S[a * 4 + 1]); } }
+      ctx.stroke();
     }
-    ctx.stroke();
+    if (mesh.secSegs && mesh.secSegs.length) { ctx.strokeStyle = '#ffd23f'; ctx.lineWidth = lw * 2.2; ctx.beginPath(); for (let s = 0; s < mesh.secSegs.length; s += 2) { const a = mesh.secSegs[s], b2 = mesh.secSegs[s + 1]; if (S[a * 4 + 3] !== 1 || S[b2 * 4 + 3] !== 1) continue; ctx.moveTo(S[a * 4], S[a * 4 + 1]); ctx.lineTo(S[b2 * 4], S[b2 * 4 + 1]); } ctx.stroke(); }
+  } else if (kind === 'lines') {
+    const segs = mesh.segs, nS = segs.length / 2, NB = 28, bucket = new Array(NB), nv = mesh.V.length / 3; for (let q = 0; q < NB; q++) bucket[q] = [];
+    for (let s = 0; s < nS; s++) { const a = segs[s * 2], b2 = segs[s * 2 + 1]; if (S[a * 4 + 3] !== 1 || S[b2 * 4 + 3] !== 1) continue; let u = 0; if (cby === 'path') u = a / nv; else if (cby === 'level' && mesh.lev) u = mesh.lev[s] / Math.max(1, mesh.maxLev); else if (cby === 'height') u = (mesh.V[a * 3 + 2] - bb.lo[2]) / (bb.size[2] || 1); else u = NaN; bucket[isFinite(u) ? Math.max(0, Math.min(NB - 1, Math.floor(u * NB))) : 0].push(s); }
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    for (let q = 0; q < NB; q++) { if (!bucket[q].length) continue; let col; const u = (q + 0.5) / NB; if (cby === 'solid') col = 'rgb(' + base.join(',') + ')'; else if (cby === 'level') { const c1 = [123, 90, 58], c2 = [95, 211, 95]; col = 'rgb(' + c1.map((v, i) => Math.round(v + (c2[i] - v) * u)).join(',') + ')'; } else { const cc = cmap(u); col = 'rgb(' + cc.map(Math.round).join(',') + ')'; }
+      ctx.strokeStyle = col; ctx.lineWidth = lw * (cby === 'level' ? 2.2 - 1.4 * u : mesh.segs.length > 12000 ? 1.1 : 1.8); ctx.beginPath(); for (const s of bucket[q]) { const a = segs[s * 2], b2 = segs[s * 2 + 1]; ctx.moveTo(S[a * 4], S[a * 4 + 1]); ctx.lineTo(S[b2 * 4], S[b2 * 4 + 1]); } ctx.stroke(); drawn += bucket[q].length; }
+  } else if (kind === 'points') {
+    const n = mesh.V.length / 3, NB = 28, bucket = new Array(NB); for (let q = 0; q < NB; q++) bucket[q] = []; const stp = draft && n > 30000 ? 2 : 1;
+    for (let k = 0; k < n; k += stp) { if (S[k * 4 + 3] !== 1) continue; const u = val01(mesh.V[k * 3], mesh.V[k * 3 + 1], mesh.V[k * 3 + 2]); bucket[isFinite(u) ? Math.max(0, Math.min(NB - 1, Math.floor(u * NB))) : 0].push(k); }
+    const sz = Math.max(1.1, W / 420);
+    for (let q = 0; q < NB; q++) { if (!bucket[q].length) continue; const cc = cby === 'solid' ? base : cmap((q + 0.5) / NB); ctx.fillStyle = 'rgba(' + cc.map(Math.round).join(',') + ',.82)'; for (const k of bucket[q]) ctx.fillRect(S[k * 4] - sz / 2, S[k * 4 + 1] - sz / 2, sz, sz); drawn += bucket[q].length; }
+  } else if (kind === 'atoms') {
+    const n = mesh.V.length / 3, items = []; for (let k = 0; k < n; k++) if (S[k * 4 + 3] === 1) items.push({ t: 0, k, d: S[k * 4 + 2] });
+    for (let s = 0; s < mesh.segs.length; s += 2) { const a = mesh.segs[s], b2 = mesh.segs[s + 1]; if (S[a * 4 + 3] === 1 && S[b2 * 4 + 3] === 1) items.push({ t: 1, a, b: b2, d: (S[a * 4 + 2] + S[b2 * 4 + 2]) / 2 + 1e-4 }); }
+    items.sort((p, q) => q.d - p.d);
+    items.forEach((it) => {
+      if (it.t === 1) { ctx.strokeStyle = 'rgba(200,205,215,.85)'; ctx.lineWidth = Math.max(1.5, lw * 2.4); ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(S[it.a * 4], S[it.a * 4 + 1]); ctx.lineTo(S[it.b * 4], S[it.b * 4 + 1]); ctx.stroke(); return; }
+      const k = it.k, rr = Math.max(2.5, mesh.rad[k] * pxUnit(S[k * 4 + 2])), x = S[k * 4], y = S[k * 4 + 1], c = hex2rgb(mesh.els && mesh.els.length && L.useElemColors !== false ? mesh.col[k] : L.color), gr = ctx.createRadialGradient(x - rr * 0.35, y - rr * 0.4, rr * 0.1, x, y, rr);
+      gr.addColorStop(0, 'rgb(' + c.map((v) => Math.min(255, v * 0.55 + 140)).map(Math.round).join(',') + ')'); gr.addColorStop(0.55, 'rgb(' + c.join(',') + ')'); gr.addColorStop(1, 'rgb(' + c.map((v) => Math.round(v * 0.35)).join(',') + ')'); ctx.fillStyle = gr; ctx.beginPath(); ctx.arc(x, y, rr, 0, 6.2832); ctx.fill(); drawn++;
+    });
   }
   if (L.box) { /* the model-space bounding box, moved by the model matrix */
-    const lo = st.bbox.lo, hi = st.bbox.hi, C = [];
-    for (let i = 0; i < 8; i++) C.push(M3.apply(M, i & 1 ? hi[0] : lo[0], i & 2 ? hi[1] : lo[1], i & 4 ? hi[2] : lo[2]));
+    const C = wb;
     [[0, 1], [2, 3], [4, 5], [6, 7], [0, 2], [1, 3], [4, 6], [5, 7], [0, 4], [1, 5], [2, 6], [3, 7]].forEach(([p, q]) => lineTo3(C[p], C[q], '#ffd23f', lw, [6 * lw, 4 * lw]));
   }
   const pk = SOLID_PICK[L.id];
   if (pk && pk.length) { pk.forEach((k, n) => { if (S[k * 4 + 3] !== 1) return; ctx.fillStyle = n ? '#3ddc84' : '#ff3d81'; ctx.strokeStyle = '#fff'; ctx.lineWidth = lw * 1.5; ctx.beginPath(); ctx.arc(S[k * 4], S[k * 4 + 1], 6 * lw, 0, 6.2832); ctx.fill(); ctx.stroke(); });
     if (pk.length === 2 && S[pk[0] * 4 + 3] === 1 && S[pk[1] * 4 + 3] === 1) { ctx.strokeStyle = '#fff'; ctx.lineWidth = lw * 1.5; ctx.setLineDash([5 * lw, 4 * lw]); ctx.beginPath(); ctx.moveTo(S[pk[0] * 4], S[pk[0] * 4 + 1]); ctx.lineTo(S[pk[1] * 4], S[pk[1] * 4 + 1]); ctx.stroke(); ctx.setLineDash([]); } }
   ctx.restore();
-  SOLID_PERF[L.id] = { ms: (typeof performance !== 'undefined' ? performance.now() : 0) - t0, tris: nF };
+  SOLID_PERF[L.id] = { ms: (typeof performance !== 'undefined' ? performance.now() : 0) - t0, tris: kind === 'tri' ? nF : drawn };
 }
 /* nearest projected vertex to a point in layer pixels, for the measuring tool */
 function solidPickAt(L, t, px, py) {
@@ -7447,16 +8035,13 @@ function solidPickAt(L, t, px, py) {
 }
 function solidSetPick(L, arr) { SOLID_PICK[L.id] = arr; }
 function solidGetPick(L) { return SOLID_PICK[L.id] || []; }
-function solidVertex(L, t, k) { const m = solidMesh(L, t); if (!m.ok) return null; const M = solidModel(L, t), p = [m.V[k * 3], m.V[k * 3 + 1], m.V[k * 3 + 2]], w = M3.apply(M, p[0], p[1], p[2]); return { local: p, world: [w[0], w[1], w[2]], u: L.umin + (L.umax - L.umin) * (k % m.W) / m.nu, v: L.vmin + (L.vmax - L.vmin) * ((k / m.W) | 0) / m.nv }; }
+function solidVertex(L, t, k) { const m = solidMesh(L, t); if (!m.ok) return null; const M = solidModel(L, t), p = [m.V[k * 3], m.V[k * 3 + 1], m.V[k * 3 + 2]], w = M3.apply(M, p[0], p[1], p[2]); return { local: p, world: [w[0], w[1], w[2]], u: m.W > 0 ? L.umin + (L.umax - L.umin) * (k % m.W) / m.nu : null, v: m.W > 0 ? L.vmin + (L.vmax - L.vmin) * ((k / m.W) | 0) / m.nv : null }; }
 const tagM = (k) => '<span class="tg tg-' + k[0].toLowerCase() + '">' + k + '</span>';
 
 /* convergence study: area on three nested grids (h, h/2, h/4), observed order p = log2( (A2-A1) / (A3-A2) ), Richardson extrapolation */
-function solidConvergence(L, t) {
-  const nu = Math.max(8, L.nu | 0), nv = Math.max(8, L.nv | 0), grids = [[Math.max(4, Math.round(nu / 4)), Math.max(4, Math.round(nv / 4))], [Math.max(4, Math.round(nu / 2)), Math.max(4, Math.round(nv / 2))], [nu, nv]];
-  const tt = solidUsesT(L) ? Math.round(t * 60) / 60 : 0, A = [];
-  for (const g of grids) { const m = M3.buildMesh(Object.assign({}, L, { nu: g[0], nv: g[1] }), tt); if (!m.ok) return { ok: false, why: 'The surface cannot be built, so there is nothing to compare.' }; A.push(m.stats.area); }
-  const ex = M3.exactFor(L), out = { ok: true, grids, areas: A, exact: ex.applies ? ex.area : null };
-  out.errs = ex.applies ? A.map((a) => (a - ex.area) / ex.area) : null;
+function convFromAreas(grids, A, ex) {
+  const out = { ok: true, grids, areas: A, exact: ex && ex.applies ? ex.area : null };
+  out.errs = ex && ex.applies ? A.map((a) => (a - ex.area) / ex.area) : null;
   const d1 = A[1] - A[0], d2 = A[2] - A[1];
   if (Math.abs(d2) < 1e-12 * Math.abs(A[2])) { out.p = null; out.richardson = A[2]; out.note = 'The area no longer changes between grids: converged to the printed precision.'; return out; }
   const ratio = d1 / d2; if (!(ratio > 0)) { out.p = null; out.richardson = null; out.note = 'The area does not approach a limit smoothly (the differences change sign), so no extrapolated value is given. The surface may be folded, self-touching, or too coarse.'; return out; }
@@ -7465,15 +8050,33 @@ function solidConvergence(L, t) {
   else { out.richardson = null; out.note = 'Observed order p = ' + out.p.toFixed(2) + ' is outside the expected range, so no extrapolated value is given.'; }
   return out;
 }
+const CONV_CACHE = new Map();
+function solidConvergence(L, t) {
+  const ck = JSON.stringify([L.mode, L.fimp, L.lvl, L.box3, L.nvox, L.fx, L.fy, L.fz, L.umin, L.umax, L.vmin, L.vmax, L.nu, L.nv, L.P, L.kind, solidUsesT(L) ? Math.round(t * 30) / 30 : 0]), hit = CONV_CACHE.get(ck); if (hit) return hit;
+  const r = solidConvergence0(L, t); CONV_CACHE.set(ck, r); if (CONV_CACHE.size > 6) CONV_CACHE.delete(CONV_CACHE.keys().next().value); return r;
+}
+function solidConvergence0(L, t) {
+  if (isGen(L)) {
+    if (L.mode !== 'implicit') return { ok: false, why: L.mode === 'poly' ? 'This solid uses exact formulas, so there is no discretization to converge. The mesh area and volume are compared with the closed form in the readout.' : 'This generator is not a grid-based surface, so there is no mesh-convergence study. Its own accuracy checks (step-size comparison, conserved quantity, exact lengths) are in the notes above.' };
+    const n = Math.max(12, Math.min(100, L.nvox | 0)), gs = [Math.max(8, Math.round(n / 4)), Math.max(8, Math.round(n / 2)), n], A = [];
+    for (const g of gs) { const m = root.GEN.buildImplicit(Object.assign({}, L, { nvox: g, clip: null }), solidUsesT(L) ? Math.round(t * 30) / 30 : 0); if (!m.ok) return { ok: false, why: 'The surface cannot be built, so there is nothing to compare.' }; A.push(m.stats.area); }
+    const out = convFromAreas(gs.map((g) => [g, g]), A, null); out.note += ' Grids are cells per side.'; return out;
+  }
+  const nu = Math.max(8, L.nu | 0), nv = Math.max(8, L.nv | 0), grids = [[Math.max(4, Math.round(nu / 4)), Math.max(4, Math.round(nv / 4))], [Math.max(4, Math.round(nu / 2)), Math.max(4, Math.round(nv / 2))], [nu, nv]];
+  const tt = solidUsesT(L) ? Math.round(t * 60) / 60 : 0, A = [];
+  for (const g of grids) { const m = M3.buildMesh(Object.assign({}, L, { nu: g[0], nv: g[1] }), tt); if (!m.ok) return { ok: false, why: 'The surface cannot be built, so there is nothing to compare.' }; A.push(m.stats.area); }
+  return convFromAreas(grids, A, M3.exactFor(L));
+}
 function solidReport(L, t) {
-  const mesh = solidMesh(L, t), ex = M3.exactFor(L), perf = SOLID_PERF[L.id] || null, items = mesh.issues.slice();
-  if (perf && perf.ms > 40) items.push({ sev: 'warn', code: 'slow', msg: 'Drawing this took ' + n2(perf.ms, 0) + ' ms for ' + perf.tris + ' triangles, which is slower than 25 frames per second.', region: 'rendering', fix: 'Lower the samples along u and v.' });
+  const mesh = solidMesh(L, t), ex = isGen(L) ? { applies: false, why: (mesh && mesh.info && mesh.info.exact) ? 'see the polyhedron formulas' : 'no closed-form comparison exists for a generated ' + L.mode + ' model, so accuracy is judged by the numerical checks listed here' } : M3.exactFor(L), perf = SOLID_PERF[L.id] || null, items = mesh.issues.slice();
+  if (perf && perf.ms > 40) items.push({ sev: 'warn', code: 'slow', msg: 'Drawing this took ' + n2(perf.ms, 0) + ' ms for ' + perf.tris + ' triangles, which is slower than 25 frames per second.', region: 'rendering', fix: isGen(L) ? 'Lower the resolution, number of points or steps.' : 'Lower the samples along u and v.' });
   if (mesh.ok && ex.applies) { const ea = Math.abs(mesh.stats.area - ex.area) / ex.area; if (ea > 0.02) items.push({ sev: 'warn', code: 'discretization', msg: 'The mesh area differs from the exact ' + ex.name + ' area by ' + n2(ea * 100, 2) + '%. A polygon mesh always sits slightly inside a curved surface; coarse sampling makes the gap larger.', region: 'whole surface', fix: 'Raise the samples to shrink the discretization error.' }); }
   return { mesh, exact: ex, perf, issues: items, hasError: items.some((i) => i.sev === 'error') };
 }
 function mat4Rows(m) { const r = []; for (let i = 0; i < 4; i++) r.push([0, 1, 2, 3].map((j) => n2(m[i * 4 + j], 3)).join('  ')); return '<span class="mx">' + r.join('<br>') + '</span>'; }
 function solidEquations(L, t) {
   const o = [], rep = solidReport(L, t), mesh = rep.mesh, esc2 = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  if (isGen(L)) return genEquations(L, t, o, rep, mesh, esc2);
   o.push('surface: S( u, v ) = ( x, y, z )  with  x = ' + b(esc2(L.fx)) + ',  y = ' + b(esc2(L.fy)) + ',  z = ' + b(esc2(L.fz)));
   o.push('u runs ' + b(n2(L.umin, 3)) + ' → ' + b(n2(L.umax, 3)) + ' in ' + b(L.nu) + ' steps, v runs ' + b(n2(L.vmin, 3)) + ' → ' + b(n2(L.vmax, 3)) + ' in ' + b(L.nv) + ' steps;  parameters R = ' + b(n2(L.P.R, 2)) + ', r = ' + b(n2(L.P.r, 2)) + ', a = ' + b(n2(L.P.a, 2)) + ', b = ' + b(n2(L.P.b, 2)) + ', c = ' + b(n2(L.P.c, 2)) + ', t = ' + b(n2(t, 2) + ' s'));
   if (!mesh.ok) { rep.issues.forEach((i) => o.push('<span class="cap-err">✖ ' + esc2(i.msg) + '</span>')); return o; }
@@ -7492,6 +8095,84 @@ function solidEquations(L, t) {
   else o.push('exact formulas: ' + esc2(ex.why));
   rep.issues.forEach((i) => o.push('<span class="' + (i.sev === 'error' ? 'cap-err' : i.sev === 'warn' ? 'cap-warn' : '') + '">' + (i.sev === 'error' ? '✖ ' : i.sev === 'warn' ? '! ' : 'ℹ ') + esc2(i.msg) + ' <i>Region: ' + esc2(i.region) + '. Fix: ' + esc2(i.fix) + '</i></span>'));
   return o;
+}
+
+const methTag = (m) => '<span class="tg tg-meth tg-' + m + '" title="' + esc2s((root.GEN.METHODS[m] || ['', ''])[1]) + '">' + (root.GEN.METHODS[m] || [m])[0] + '</span>';
+const esc2s = (x) => String(x).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+function genEquations(L, t, o, rep, mesh, esc2) {
+  const G = root.GEN, E = esc2, A = (x) => b(E(x));
+  o.push('method: ' + methTag(L.method || 'numerical') + ' ' + E((G.METHODS[L.method] || ['', ''])[1]) + '  (' + E(G.MODE_NAMES[L.mode] || L.mode) + ')');
+  if (L.mode === 'implicit') o.push('surface: the set of points where  F( x, y, z ) = ' + A(L.fimp) + '  equals  ' + b(n2(L.lvl, 5)) + ',  searched in the box x ' + b(L.box3.slice(0, 2).map((v) => n2(v, 3)).join(' to ')) + ', y ' + b(L.box3.slice(2, 4).map((v) => n2(v, 3)).join(' to ')) + ', z ' + b(L.box3.slice(4).map((v) => n2(v, 3)).join(' to ')));
+  else if (L.mode === 'ode') { const six = L.ode.eq.length === 6, nm = six ? ['x\u2032', 'y\u2032', 'z\u2032', 'vx\u2032', 'vy\u2032', 'vz\u2032'] : ['x\u2032', 'y\u2032', 'z\u2032']; nm.forEach((n, i) => o.push('d' + n.replace('\u2032', '') + ' / dt = ' + A(L.ode.eq[i]) + ',  start value ' + b(n2(L.ode.y0[i], 5)))); o.push('RK4 with step ' + b(n2(L.ode.dt, 5)) + ' for ' + b(L.ode.steps) + ' steps; parameters a = ' + b(n2(L.P.a, 4)) + ', b = ' + b(n2(L.P.b, 4)) + ', c = ' + b(n2(L.P.c, 4)) + (L.ode.inv ? '; conserved quantity ' + A(L.ode.inv) : '')); }
+  else if (L.mode === 'field') o.push('field F = ( P, Q, R ) with  P = ' + A(L.fld.P) + ',  Q = ' + A(L.fld.Q) + ',  R = ' + A(L.fld.R) + ';  lines solve dr/ds = ' + (L.fld.unit !== false ? 'F / |F|' : 'F') + ' from the seed points');
+  else if (L.mode === 'curve') o.push('curve: x( u ) = ' + A(L.crv.fx) + ',  y( u ) = ' + A(L.crv.fy) + ',  z( u ) = ' + A(L.crv.fz) + ',  u from ' + b(n2(L.crv.umin, 4)) + ' to ' + b(n2(L.crv.umax, 4)));
+  else if (L.mode === 'lsys') o.push('L-system: axiom ' + A(L.ls.axiom) + ', rules ' + A(String(L.ls.rules).replace(/\n/g, ';  ')) + ', angle ' + b(n2(L.ls.angle, 4) + '\u00B0') + ', ' + b(L.ls.iter) + ' iterations');
+  else if (L.mode === 'ifs') o.push('IFS: ' + b(L.ifs.maps.length) + ' affine maps  p\u2032 = A p + t,  each applied at random (chaos game)');
+  else if (L.mode === 'lattice') o.push('lattice: ' + b(E(G.LATTICES[L.lat].name)) + ', a = ' + b(n2(L.gp.a, 4)) + ', ' + b(L.gp.nx + ' \u00D7 ' + L.gp.ny + ' \u00D7 ' + L.gp.nz) + ' cells');
+  else if (L.mode === 'molecule') o.push('molecule: ' + b(E(G.MOLECULES[L.mol].name)) + ', reference geometry ' + E(G.MOLECULES[L.mol].ref));
+  else if (L.mode === 'poly') o.push('polyhedron: ' + b(E(G.POLY[L.poly].name)) + ', edge a = ' + b(n2(L.gp.edge, 4)));
+  else if (L.mode === 'hyper') o.push('4D rotation: x\u2013w angle = ' + b(n2((L.gp.w1 || 0) * t + (L.gp.p1 || 0), 4)) + ' rad, z\u2013w angle = ' + b(n2((L.gp.w2 || 0) * t + (L.gp.p2 || 0), 4)) + ' rad;  3D point = ( x, y, z ) \u00D7 d \u00F7 ( d \u2212 w ), d = ' + b(n2(L.gp.d || 3, 3)));
+  else if (L.mode === 'galaxy') o.push('points ( r cos \u03B8, r sin \u03B8, z ) with \u03B8 = arm + twist \u00B7 1.2 \u00B7 ln( 1 + r ) + scatter (fixed random seed)');
+  if (!mesh.ok) { rep.issues.forEach((i) => o.push('<span class="cap-err">\u2716 ' + E(i.msg) + '</span>')); return o; }
+  const s = mesh.stats, kind = mesh.kind, M = solidModel(L, t), cm = M3.cameraMatrices(L.cam, L.w / L.h);
+  o.push('model matrix M = T \u00B7 R<sub>z</sub> \u00B7 R<sub>y</sub> \u00B7 R<sub>x</sub> \u00B7 S:<br>' + mat4Rows(M));
+  o.push('camera: ' + (L.cam.ortho ? b('orthographic') + ' (parallel projection, no perspective shrink; view height = 2 d tan( fov \u00F7 2 ) = ' + b(n2(2 * L.cam.dist * Math.tan(L.cam.fov * Math.PI / 360), 4)) + ' units)' : b('perspective') + ', vertical field of view ' + b(n2(L.cam.fov, 0) + '\u00B0') + ' ' + tagM('Assumed')) + ';  eye distance d = ' + b(n2(L.cam.dist, 3)) + ', yaw ' + b(n2(L.cam.yaw, 0) + '\u00B0') + ', pitch ' + b(n2(L.cam.pitch, 0) + '\u00B0') + '<br>P \u00B7 V =<br>' + mat4Rows(cm.vp));
+  o.push('size: ' + b(s.vertices) + ' vertices' + (kind === 'tri' ? ', ' + b(s.faces) + ' triangles, ' + b(s.edges) + ' edges' : kind === 'lines' ? ', ' + b(s.segments) + ' line segments' : kind === 'atoms' ? ', ' + b(s.segments) + ' bonds' : '') + ' ' + tagM('Measured') + ';  bounding box ' + b(n2(s.bbox.size[0], 3) + ' \u00D7 ' + n2(s.bbox.size[1], 3) + ' \u00D7 ' + n2(s.bbox.size[2], 3)) + ' ' + (L.mode === 'molecule' ? 'pm' : 'model units') + ' ' + tagM('Measured'));
+  if (kind === 'tri') {
+    o.push('surface area \u2248 \u03A3 | ( B \u2212 A ) \u00D7 ( C \u2212 A ) | \u00F7 2 = ' + b(n2(s.area, 5)) + ' units\u00B2 ' + tagM('Estimated'));
+    if (s.volume !== null) o.push('volume \u2248 \u03A3 A \u00B7 ( B \u00D7 C ) \u00F7 6 = ' + b(n2(s.volume, 5)) + ' units\u00B3 ' + tagM('Estimated') + ' (closed, consistently oriented mesh)'); else o.push('volume: ' + b('not computed') + ' ' + tagM('Unknown') + ' because ' + s.volumeWhy);
+    if (s.chi !== null) o.push('Euler characteristic \u03C7 = V \u2212 E + F = ' + b(s.chi) + ' ' + tagM('Measured') + '  (genus ' + (s.chi % 2 === 0 ? b((2 - s.chi) / 2) : '?') + ' if the surface is one connected piece; \u03C7 = 2 sphere, 0 torus, \u22122 double torus)');
+    if (mesh.sectionArea !== undefined) o.push('cross-section area on the cutting plane = ' + b(n2(mesh.sectionArea, 5)) + ' units\u00B2 ' + tagM('Estimated') + ' (shoelace sum over the cut edges)');
+    if (mesh.info && mesh.info.exact) { const e = mesh.info.exact; o.push('exact: ' + b(E(e.eqA)) + ' = ' + b(n2(e.area, 6)) + ',  ' + b(E(e.eqV)) + ' = ' + b(n2(e.volume, 6)) + ' ' + tagM('Computed') + ';  mesh error: area ' + b(n2((s.area - e.area) / e.area * 100, 3) + '%') + (s.volume !== null ? ', volume ' + b(n2((s.volume - e.volume) / e.volume * 100, 3) + '%') : '')); }
+  } else if (s.length) o.push('total length = ' + b(n2(s.length, 5)) + ' units ' + tagM('Estimated') + ' (sum of segment lengths)');
+  if (mesh.info) { const I = mesh.info; if (I.order !== null && I.order !== undefined) o.push('RK4 observed order of accuracy = ' + b(n2(I.order, 3)) + ' (theory 4) ' + tagM('Measured')); if (I.drift !== null && I.drift !== undefined) o.push('conserved quantity changed by ' + b((I.drift * 100).toExponential(2) + '%') + ' over the run ' + tagM('Measured')); if (I.packingFraction) o.push('packing fraction ' + b(E(I.packingEq) + ' = ' + n2(I.packingFraction, 5)) + ', coordination number ' + b(I.coordination) + ' ' + tagM('Computed')); if (I.dimension) o.push('similarity dimension = ln N \u00F7 ln ( 1 / s ) = ' + b(n2(I.dimension, 6)) + ' ' + tagM('Computed')); }
+  const mt = MATS[L.mat] ? L.mat : 'matte';
+  o.push('shading: Blinn\u2013Phong, material ' + b(mt) + (L.tex && L.tex !== 'none' ? ', texture ' + b(L.tex) : '') + (L.colorBy && L.colorBy !== 'solid' ? ', colour by ' + b(L.colorBy) + (L.bands > 1 ? ' in ' + b(L.bands) + ' contour bands' : '') : '') + (L.shadow ? ', planar shadow' : '') + '. This is a ' + b('simulated look') + ' ' + tagM('Assumed') + ', not physically based ray tracing, and has no ambient occlusion or reflections of other objects.');
+  rep.issues.forEach((i) => o.push('<span class="' + (i.sev === 'error' ? 'cap-err' : i.sev === 'warn' ? 'cap-warn' : '') + '">' + (i.sev === 'error' ? '\u2716 ' : i.sev === 'warn' ? '! ' : '\u2139 ') + E(i.msg) + (i.region || i.fix ? ' <i>Region: ' + E(i.region) + (i.fix ? '. Fix: ' + E(i.fix) : '') + '</i>' : '') + '</span>'));
+  return o;
+}
+
+/* ---------- equation influence, exports and the scientific report ---------- */
+function solidInfluence(L, t) {
+  const G = root.GEN, tt = solidUsesT(L) ? Math.round(t * 30) / 30 : 0;
+  const bf = isGen(L) ? (l, q) => { const l2 = l.mode === 'implicit' ? Object.assign({}, l, { nvox: Math.min(36, l.nvox | 0 || 36), clip: null }) : l; return G.build(l2, q); } : (l, q) => M3.buildMesh(l, q);
+  try { return G.influence(L, tt, bf); } catch (e) { return []; }
+}
+const SAFE = (s) => String(s || 'model').replace(/[^\w-]+/g, '-').replace(/^-+|-+$/g, '') || 'model';
+function solidExport(L, t, fmt) {
+  const G = root.GEN, mesh = solidMesh(L, t); if (!mesh.ok) return { err: 'The model cannot be built, so there is nothing to export: ' + (mesh.issues[0] ? mesh.issues[0].msg : 'invalid input') };
+  const M = solidModel(L, t), Wd = G.worldMesh(mesh, M, M3.apply), name = SAFE(L.name || L.genName || L.kind), kind = mesh.kind || 'tri', m2 = Object.assign({}, mesh, { kind });
+  const unit = L.mode === 'molecule' ? 'picometres' : 'arbitrary model units (no real-world scale)';
+  if (fmt === 'obj') return { blob: new Blob([G.toOBJ(m2, Wd, name, 'Math Canvas ' + (L.genName || L.kind) + ' | method: ' + (L.method || 'exact') + ' | units: ' + unit)], { type: 'text/plain' }), name: name + '.obj', note: kind === 'tri' ? '' : 'This model has no faces, so the OBJ holds ' + (m2.segs ? 'line segments' : 'points') + ' only.' };
+  if (fmt === 'stl' || fmt === 'stla') { if (kind !== 'tri') return { err: 'STL stores triangles only. This model is made of ' + (kind === 'points' ? 'points' : kind === 'atoms' ? 'atoms and bonds' : 'lines') + ', so it cannot be exported as STL. Use OBJ or GLB.' }; const r = G.toSTL(m2, Wd, fmt === 'stl', name); const st = mesh.stats; return { blob: new Blob([r], { type: 'model/stl' }), name: name + '.stl', note: st.closed ? (st.orientable ? 'Watertight and consistently oriented: suitable for slicing. Units are arbitrary: scale it in your slicer.' : 'Closed but the face orientation is inconsistent, so a slicer may report errors.') : 'This surface is open (' + st.boundary + ' boundary edges), so it is not watertight and may not print without repair. Units are arbitrary.' }; }
+  if (fmt === 'glb') return { blob: new Blob([G.toGLB(m2, Wd, name)], { type: 'model/gltf-binary' }), name: name + '.glb', note: 'Geometry only, no materials or textures. Units are arbitrary.' };
+  if (fmt === 'svg') { const pr = M3.projectAll(mesh, M, L.cam, L.w, L.h); return { blob: new Blob([G.toSVG(m2, pr.s, L.w, L.h, L.style === 'wire' ? 'wire' : L.style === 'solid' ? 'solid' : 'both', hex2rgb(L.color))], { type: 'image/svg+xml' }), name: name + '.svg', note: 'A vector snapshot for the current camera. Surfaces are flat-shaded and sorted back to front, so intersecting surfaces may overlap incorrectly.' }; }
+  if (fmt === 'json') {
+    const keep = {}; ['kind', 'fx', 'fy', 'fz', 'umin', 'umax', 'vmin', 'vmax', 'nu', 'nv', 'P', 'mode', 'gen', 'genName', 'method', 'fimp', 'lvl', 'box3', 'nvox', 'ode', 'fld', 'ls', 'ifs', 'lat', 'mol', 'poly', 'hyper', 'crv', 'gp', 'tr', 'cam', 'style', 'color', 'mat', 'tex', 'colorBy', 'bands', 'shadow', 'grid', 'axes', 'box', 'spin', 'clip', 'name'].forEach((k) => { if (L[k] !== undefined) keep[k] = L[k]; });
+    const st = mesh.stats, rep = solidReport(L, t);
+    return { blob: new Blob([JSON.stringify({ format: 'math-canvas-model', version: 1, generated: new Date().toISOString(), units: unit, method: L.method || (isGen(L) ? 'numerical' : 'exact'), model: keep, result: st ? { vertices: st.vertices, faces: st.faces, area: st.area, volume: st.volume, eulerCharacteristic: st.chi, boundingBox: st.bbox, closed: st.closed } : null, notes: rep.issues.map((i) => ({ severity: i.sev, code: i.code, message: i.msg, region: i.region, fix: i.fix })) }, null, 2)], { type: 'application/json' }), name: name + '.model.json', note: 'Reopen it with "Open a model file" in the Add tab.' };
+  }
+  if (fmt === 'report') return { blob: new Blob([solidReportHTML(L, t)], { type: 'text/html' }), name: name + '-report.html', note: 'Open it in a browser and use Print to save a PDF.' };
+  return { err: 'Unknown export format.' };
+}
+function solidReportHTML(L, t) {
+  const G = root.GEN, rep = solidReport(L, t), lines = solidEquations(L, t), cv = (() => { try { return solidConvergence(L, t); } catch (e) { return { ok: false, why: 'not available' }; } })(), inf = (() => { try { return solidInfluence(L, t); } catch (e) { return []; } })(), cat = L.gen && G.CATALOG[L.gen], esc3 = (x) => String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  let h = '<!doctype html><html lang="en"><head><meta charset="utf-8"><title>' + esc3(L.name || '3D model') + ' report</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{font:15px/1.55 system-ui,sans-serif;max-width:820px;margin:24px auto;padding:0 16px;color:#1c2030}h1{font-size:24px}h2{font-size:17px;margin-top:26px;border-bottom:1px solid #dde;padding-bottom:4px}.tg{display:inline-block;font:600 11px sans-serif;padding:1px 7px;border-radius:99px;background:#eef;color:#336}li{margin:7px 0}.mx{font:12px monospace;white-space:nowrap}.cap-err{color:#b3202f}.cap-warn{color:#8a5a00}code{background:#f2f3f7;padding:1px 4px;border-radius:4px}</style></head><body>';
+  h += '<h1>' + esc3(L.name || L.genName || '3D model') + '</h1><p>Generated ' + new Date().toISOString().slice(0, 10) + ' by Math Canvas at animation time t = ' + n2(t, 2) + ' s. Method: ' + methTag(L.method || (isGen(L) ? 'numerical' : 'exact')) + ' ' + esc3((G.METHODS[L.method] || ['', 'Exact parametric surface sampled on a grid.'])[1]) + '</p>';
+  if (cat) h += '<h2>What this is</h2><p>' + esc3(cat.blurb) + '</p>' + (cat.limit ? '<p><b>Limitations:</b> ' + esc3(cat.limit) + '</p>' : '');
+  h += '<h2>Equations, numerical methods and measured results</h2><ul>' + lines.map((l) => '<li>' + l + '</li>').join('') + '</ul>';
+  h += '<h2>Accuracy checks</h2>';
+  if (cv.ok) h += '<p>Grid refinement: areas ' + cv.areas.map((a, i) => cv.grids[i][0] + '×' + cv.grids[i][1] + ' → ' + n2(a, 5)).join('; ') + '. ' + esc3(cv.note) + (cv.richardson ? ' Extrapolated area ≈ ' + n2(cv.richardson, 5) + '.' : '') + '</p>'; else h += '<p>' + esc3(cv.why || 'No grid-convergence study applies to this model.') + '</p>';
+  if (inf.length) h += '<h2>How each parameter influences the model</h2><p>Relative change in ' + esc3(inf[0].name) + ' per +1% change of the parameter (central difference over ±5%):</p><ul>' + inf.map((q) => '<li><code>' + q.k + '</code> = ' + n2(q.v0, 4) + ': ' + (q.rel === null ? esc3(q.note) : (q.rel >= 0 ? '+' : '') + n2(q.rel, 3) + '%') + '</li>').join('') + '</ul>';
+  h += '<h2>Assumptions and honesty notes</h2><ul><li>Coordinates and lengths are in arbitrary model units unless a unit is stated above. Nothing here is a measurement of a real object.</li><li>The picture uses a simulated Blinn–Phong look drawn with a painter\'s algorithm. It is not physically based rendering, and intersecting surfaces can be mis-ordered.</li><li>A mathematical shape is not a physical simulation. Only the model\'s stated method counts as its evidence.</li></ul>';
+  h += '<h2>Notes from the checker</h2><ul>' + rep.issues.map((i) => '<li class="' + (i.sev === 'error' ? 'cap-err' : i.sev === 'warn' ? 'cap-warn' : '') + '"><b>' + i.sev + ' ' + esc3(i.code) + ':</b> ' + esc3(i.msg) + (i.fix ? ' <i>Fix: ' + esc3(i.fix) + '</i>' : '') + '</li>').join('') + '</ul></body></html>';
+  return h;
+}
+function solidImport(text) {
+  let j; try { j = JSON.parse(text); } catch (e) { return { err: 'That file is not valid JSON.' }; }
+  if (!j || j.format !== 'math-canvas-model' || !j.model) return { err: 'That file is not a Math Canvas model (expected "format": "math-canvas-model").' };
+  if (j.version > 1) return { err: 'That model was saved by a newer version (' + j.version + '). Update the app to open it.' };
+  return { model: j.model };
 }
 
 function qualityReport(L, t, P) {
@@ -7918,7 +8599,7 @@ function sceneEquations(L, t) {
   return o;
 }
 
-root.MC = { solidConvergence, drawSolid, newSolid, solidReport, solidEquations, solidPickAt, solidSetPick, solidGetPick, solidVertex, solidUsesT, realismReport, realismApply, realismSolve, dctFit, dctLines, multiPreset, MULTI_PRESETS, exportError, newScene, sceneRender, sceneEquations, sceneSun, hhmm, S_PRESETS, BLENDS, MASKS, dominantColors, qualityReport, layerEquations, pageEquations, uid, PRESETS, FONTS, SWATCHES, GRADIENTS, TEMPLATES, IN_OPTS, OUT_OPTS, LOOP_OPTS, MEDIA, STROKE_ONLY,
+root.MC = { solidInfluence, solidExport, solidImport, solidReportHTML, solidIsGen: isGen, solidConvergence, drawSolid, newSolid, solidReport, solidEquations, solidPickAt, solidSetPick, solidGetPick, solidVertex, solidUsesT, realismReport, realismApply, realismSolve, dctFit, dctLines, multiPreset, MULTI_PRESETS, exportError, newScene, sceneRender, sceneEquations, sceneSun, hhmm, S_PRESETS, BLENDS, MASKS, dominantColors, qualityReport, layerEquations, pageEquations, uid, PRESETS, FONTS, SWATCHES, GRADIENTS, TEMPLATES, IN_OPTS, OUT_OPTS, LOOP_OPTS, MEDIA, STROKE_ONLY,
   fontOf, fontCss, addImage, addVideo, newText, newShape, newMedia, newMath, newGraph, newDoodle, speechSegments, timeLines, viewLayer, newAudio, addAudio, layerGain, designFlaws, layerBox, textInk, kfAt, kfMotion, newKeyframe, kfSorted, graphData, graphEquations, layerLabel, layoutText, refitText,
   animState, motionEquations, fxParamsAt, layerEnd, isVisible, toLocal, fromLocal, hitTest, renderFrame, syncVideos,
   newProject, fitMedia, fromTemplate, isPlainPhoto, coverRect, clamp };
@@ -7990,12 +8671,15 @@ function bind(panel) {
       const L = U.selLayer(); if (!L || L.type !== 'solid') return; L['f' + t.id.slice(1)] = t.value; const rep = MC.solidReport(L, U.t), er = $('#sErr'), bad = rep.issues.filter((i) => i.sev === 'error');
       if (er) { er.className = bad.length ? 'cap-err' : 'fine'; er.textContent = bad.length ? bad[0].msg + ' Fix: ' + bad[0].fix : 'Looks good. The shape, readout and dashboard update as you type.'; }
       refreshEqs(); solidSoon(); U.redraw(true); U.schedFinal();
+    } else if (t.matches('[data-gp]') && t.type !== 'checkbox' && t.tagName !== 'SELECT') { genSet(t, false);
     } else if (t.matches('#textBox')) {
       const L = U.selLayer(); if (!L) return; L.text = t.value; MC.refitText(L); U.redraw(true); sync(t); U.schedFinal();
     }
   });
   panel.addEventListener('change', (e) => {
     const t = e.target;
+    if (t.id === 'gModel') { switchModel(t.value); return; }
+    if (t.matches('[data-gp]')) { genSet(t, true); return; }
     if (t.matches('[data-ctl],[data-colin],#textBox,#gf,#gf2,#sx,#sy,#sz')) { U.commit(); if (t.matches('[data-colin]')) markColors(); U.P.buildLayers(); U.P.buildTimeline(); }
   });
   panel.addEventListener('click', (e) => {
@@ -8430,7 +9114,7 @@ function buildEdit() {
     else if (L.type === 'math') { h += acc('main', 'Math art', mathHTML(L), true); h += acc('style', 'Frame shape, border and shadow', styleHTML(L), false); }
     else if (L.type === 'audio') h += acc('main', 'Music', audioHTML(L), true);
     else if (L.type === 'doodle') h += acc('main', 'Doodle', doodleHTML(L), true);
-    else if (L.type === 'solid') { h += acc('main', '3D shape and equations', solidHTML(L), true); h += acc('srange', 'Ranges and sampling', solidMore(L), false); h += acc('sparam', 'Parameters R, r, a, b, c', solidParams(L), false); h += acc('smove', 'Move, turn, stretch and camera', solidMove(L), false); h += acc('sread', 'Maths readout', eqbox(() => MC.solidEquations(L, U.t)), false); h += acc('sdash', 'Error dashboard', '<div id="sDash"></div>', true); h += acc('style', 'Frame shape, border and shadow', styleHTML(L), false); }
+    else if (L.type === 'solid') { const g = MC.solidIsGen(L); h += acc('main', g ? 'Model and equations' : '3D shape and equations', solidHTML(L), true); if (!g) h += acc('srange', 'Ranges and sampling', solidMore(L), false); h += acc('sparam', g ? 'Parameters a, b, c, R, r (use them in your equations)' : 'Parameters R, r, a, b, c', solidParams(L), g); h += acc('slook', 'Material, colour, shadow and views', lookHTML(L), false); h += acc('ssec', 'Section plane and cross-section', secHTML(L), false); h += acc('smove', 'Move, turn, stretch and camera', solidMove(L), false); h += acc('sread', 'Maths readout', eqbox(() => MC.solidEquations(L, U.t)), false); h += acc('sinf', 'How each parameter shapes the model', infHTML(L), false); h += acc('sdash', 'Error dashboard', '<div id="sDash"></div>', true); h += acc('sexp', 'Export this 3D model', expHTML(L), false); h += acc('style', 'Frame shape, border and shadow', styleHTML(L), false); }
     else if (L.type === 'scene') { h += acc('main', 'Realistic scene', sceneHTML(L), true); h += acc('style', 'Frame shape, border and shadow', styleHTML(L), false); }
     else h += mediaHTML(L);
     h += acc('arrange', 'Position and size', arrangeHTML(L), false);
@@ -8460,25 +9144,25 @@ function dashHTML(L) {
   h += '<p class="fine">Mathematical error (the mesh versus the exact shape), measurement uncertainty, model error (the camera and light assumptions) and how it looks to you are different things. They are reported separately and are never combined into one score.</p>';
   return h;
 }
-function refreshSolidDash() { const el = $('#sDash'), L = U.selLayer(); if (el && L && L.type === 'solid') el.innerHTML = dashHTML(L); const m = $('#sMeasure'); if (m && L && L.type === 'solid') m.innerHTML = measureHTML(L); }
+function refreshSolidDash() { const el = $('#sDash'), L = U.selLayer(); if (el && L && L.type === 'solid') el.innerHTML = dashHTML(L); const inf0 = $('#sInfOut'); if (inf0) inf0.innerHTML = ''; const m = $('#sMeasure'); if (m && L && L.type === 'solid') m.innerHTML = measureHTML(L); }
 function measureHTML(L) {
   const pk = MC.solidGetPick(L); if (!pk.length) return '<p class="fine">Tap a point on the shape in the viewer above to read its coordinates. Tap a second point to measure the straight-line distance between them.</p>';
   const v = pk.map((k) => MC.solidVertex(L, U.t, k)).filter(Boolean); let h = '';
-  v.forEach((q, i) => { h += '<p><b>Point ' + (i + 1) + '</b>: u = ' + FS.fmt(q.u, 0.001) + ', v = ' + FS.fmt(q.v, 0.001) + ';  ( x, y, z ) = ( ' + q.world.map((x) => FS.fmt(x, 0.001)).join(', ') + ' ) <span class="tg tg-m">Measured</span></p>'; });
+  v.forEach((q, i) => { h += '<p><b>Point ' + (i + 1) + '</b>: ' + (q.u === null ? '' : 'u = ' + FS.fmt(q.u, 0.001) + ', v = ' + FS.fmt(q.v, 0.001) + ';  ') + '( x, y, z ) = ( ' + q.world.map((x) => FS.fmt(x, 0.001)).join(', ') + ' ) <span class="tg tg-m">Measured</span></p>'; });
   if (v.length === 2) { const d = Math.hypot(v[0].world[0] - v[1].world[0], v[0].world[1] - v[1].world[1], v[0].world[2] - v[1].world[2]); h += '<p><b>Distance</b> = √( Δx² + Δy² + Δz² ) = ' + FS.fmt(d, 0.0001) + ' units <span class="tg tg-m">Measured</span> <span class="tg tg-a">Assumed</span> The unit is whatever you decide one step is; nothing here fixes it to metres.</p>'; }
   return h;
 }
-function drawSolidView() {
+function drawSolidView(draft) {
   const cv = $('#solidView'), L = U.selLayer(); if (!cv || !L || L.type !== 'solid') return;
   const cw = Math.max(200, cv.parentNode.clientWidth || 320), ch = Math.round(cw * L.h / L.w), dpr = Math.min(2, window.devicePixelRatio || 1);
   if (cv.width !== Math.round(cw * dpr) || cv.height !== Math.round(ch * dpr)) { cv.width = Math.round(cw * dpr); cv.height = Math.round(ch * dpr); cv.style.width = cw + 'px'; cv.style.height = ch + 'px'; }
   const ctx = cv.getContext('2d'); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.fillStyle = '#0f1117'; ctx.fillRect(0, 0, cv.width, cv.height);
-  const k = cv.width / L.w; ctx.setTransform(k, 0, 0, k, cv.width / 2, cv.height / 2); MC.drawSolid(ctx, L, U.t, {});
+  const k = cv.width / L.w; ctx.setTransform(k, 0, 0, k, cv.width / 2, cv.height / 2); MC.drawSolid(ctx, L, U.t, { draft: !!draft });
 }
 function initSolidView() {
   const cv = $('#solidView'), L = U.selLayer(); if (!cv || !L || L.type !== 'solid') return; drawSolidView(); refreshSolidDash();
   cv.style.touchAction = 'none'; const ptr = new Map(); let moved = 0, t0 = 0, pinch = 0;
-  const upd = () => { drawSolidView(); U.redraw(true); sync(); refreshEqs(); U.schedFinal(); };
+  const upd = () => { drawSolidView(true); U.redraw(true); sync(); refreshEqs(); U.schedFinal(); };
   const panBy = (dx, dy) => { const c = L.cam, d = Math.PI / 180, y = c.yaw * d, p = c.pitch * d, s = c.dist * Math.tan(c.fov * d / 2) * 2 / cv.clientHeight; const rx = -Math.sin(y), ry = Math.cos(y), ux = -Math.sin(p) * Math.cos(y), uy = -Math.sin(p) * Math.sin(y), uz = Math.cos(p); c.tx += (-dx * rx + dy * ux) * s; c.ty += (-dx * ry + dy * uy) * s; c.tz += dy * uz * s; };
   cv.addEventListener('pointerdown', (e) => { cv.setPointerCapture(e.pointerId); ptr.set(e.pointerId, [e.clientX, e.clientY]); moved = 0; t0 = Date.now(); if (ptr.size === 2) { const a = [...ptr.values()]; pinch = Math.hypot(a[0][0] - a[1][0], a[0][1] - a[1][1]); } });
   cv.addEventListener('pointermove', (e) => {
@@ -8490,12 +9174,13 @@ function initSolidView() {
   });
   const end = (e) => { const was = ptr.has(e.pointerId); ptr.delete(e.pointerId); pinch = 0; if (!was) return;
     if (moved < 6 && Date.now() - t0 < 400 && ptr.size === 0) { const r = cv.getBoundingClientRect(), px = (e.clientX - r.left) / r.width * L.w, py = (e.clientY - r.top) / r.height * L.h, k = MC.solidPickAt(L, U.t, px, py), pk = MC.solidGetPick(L).slice(); if (k >= 0) { if (pk.length >= 2) pk.length = 0; pk.push(k); MC.solidSetPick(L, pk); } else MC.solidSetPick(L, []); drawSolidView(); U.redraw(false); refreshSolidDash(); }
-    else { U.commit(); } };
+    else { U.commit(); drawSolidView(); } };
   cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end);
   cv.addEventListener('contextmenu', (e) => e.preventDefault());
   cv.addEventListener('wheel', (e) => { e.preventDefault(); L.cam.dist = Math.max(0.5, Math.min(60, L.cam.dist * Math.exp(e.deltaY * 0.001))); upd(); }, { passive: false });
 }
 function solidHTML(L) {
+  if (MC.solidIsGen(L)) return genHTML(L);
   let h = '<p class="how">A real 3D pipeline: your three equations make a grid of points, the points become triangles, a model matrix moves them, a view matrix and a perspective projection flatten them onto the page. Every step and every number is listed under Maths readout.</p>';
   h += chips(Object.keys(M3.PRESETS).map((k) => ({ label: M3.PRESETS[k].name, tip: 'Load this surface', run: () => { const keep = { x: L.x, y: L.y, w: L.w, h: L.h, tr: L.tr, cam: L.cam, style: L.style, color: L.color }; Object.assign(L, M3.defaults(k), keep); MC.solidSetPick(L, []); U.redraw(false); U.commit(); buildEdit(); } })));
   h += '<div class="solidview"><canvas id="solidView" aria-label="Interactive 3D viewer. Drag to orbit, pinch or scroll to zoom."></canvas></div><p class="fine">Drag to orbit. Two fingers, or Shift-drag, to pan. Pinch or scroll to zoom. Tap a point to measure.</p>';
@@ -8503,7 +9188,7 @@ function solidHTML(L) {
   h += '<div id="sMeasure" class="eqs plain"></div>';
   h += ['x', 'y', 'z'].map((k) => '<div class="row"><div class="rl"><label for="s' + k + '">' + k + '( u, v ) =</label></div><input type="text" id="s' + k + '" class="txt" value="' + esc(L['f' + k]) + '" spellcheck="false" autocomplete="off"></div>').join('');
   h += '<div id="sErr" class="fine">Use u, v, t (seconds), a, b, c, R, r, pi, + − * / ^ and sin cos tan sqrt exp ln abs and more. Add t to make it move while the video plays.</div>';
-  h += seg('Draw as', [['solid', 'Solid'], ['wire', 'Wireframe'], ['both', 'Both']], () => L.style, (v) => { L.style = v; });
+  h += seg('Draw as', [['solid', 'Solid'], ['wire', 'Wireframe'], ['both', 'Both'], ['ghost', 'Transparent']], () => L.style, (v) => { L.style = v; });
   h += colors('Color', () => L.color, (v) => { L.color = v; });
   h += seg('Axes and box', [['0', 'Neither'], ['1', 'Axes'], ['2', 'Axes + box']], () => (L.axes ? (L.box ? '2' : '1') : '0'), (v) => { L.axes = v !== '0'; L.box = v === '2'; });
   return h;
@@ -8531,6 +9216,63 @@ function solidMove(L) {
   h += slider('Field of view', 15, 100, 1, () => L.cam.fov, (v) => { L.cam.fov = v; }, (v) => Math.round(v) + '°');
   h += '<p class="fine">A wider field of view exaggerates perspective. The 45° default is an assumption; change it to match a real camera if you are placing the shape into a photo.</p>';
   return h;
+}
+
+/* ---------- generator layers: model chooser, schema-driven equation fields, material, section, export ---------- */
+const GENKEYS = ['cam0', 'kind', 'mode', 'gen', 'genName', 'method', 'fimp', 'lvl', 'lvlAuto', 'box3', 'nvox', 'ode', 'fld', 'ls', 'ifs', 'lat', 'mol', 'poly', 'hyper', 'crv', 'gp', 'P', 'cam', 'style', 'color', 'colorBy', 'bands', 'clip', 'name'];
+function getAt(L, path) { return path.split('.').reduce((o, k) => (o == null ? o : o[k]), L); }
+function setAt(L, path, v) { const ks = path.split('.'); let o = L; for (let i = 0; i < ks.length - 1; i++) { if (o[ks[i]] == null) o[ks[i]] = /^\d+$/.test(ks[i + 1]) ? [] : {}; o = o[ks[i]]; } o[ks[ks.length - 1]] = v; }
+function fieldHTML(L, f, i) {
+  const id = 'gp' + i, v = getAt(L, f.p), reb = f.rebuild ? ' data-rebuild="1"' : '';
+  if (f.t === 'bool') return '<label class="chk"><input type="checkbox" id="' + id + '" data-gp="' + f.p + '" data-gt="bool"' + (v ? ' checked' : '') + reb + '> ' + esc(f.l) + '</label>';
+  if (f.t === 'sel') return '<div class="row"><div class="rl"><label for="' + id + '">' + esc(f.l) + '</label></div><select id="' + id + '" class="txt" data-gp="' + f.p + '" data-gt="sel"' + reb + '>' + f.o.map((q) => '<option value="' + esc(q[0]) + '"' + (String(v) === String(q[0]) ? ' selected' : '') + '>' + esc(q[1]) + '</option>').join('') + '</select></div>';
+  if (f.t === 'area' || f.t === 'json') { const val = f.t === 'json' ? JSON.stringify(v) : v; return '<div class="row"><div class="rl"><label for="' + id + '">' + esc(f.l) + '</label></div><textarea id="' + id + '" class="txt" rows="' + (f.t === 'json' ? 5 : 3) + '" spellcheck="false" data-gp="' + f.p + '" data-gt="' + f.t + '">' + esc(val == null ? '' : val) + '</textarea></div>'; }
+  return '<div class="row"><div class="rl"><label for="' + id + '">' + esc(f.l) + '</label></div><input type="text" id="' + id + '" class="txt" value="' + esc(v == null ? '' : v) + '" spellcheck="false" autocomplete="off" data-gp="' + f.p + '" data-gt="' + f.t + '"' + (f.t === 'num' || f.t === 'int' ? ' inputmode="decimal"' : '') + '></div>';
+}
+function genHTML(L) {
+  const G = root.GEN, c = L.gen && G.CATALOG[L.gen], m = L.method || 'numerical';
+  let h = '<p class="how"><span class="tg tg-meth tg-' + m + '" title="' + esc(G.METHODS[m][1]) + '">' + G.METHODS[m][0] + '</span> ' + esc(c ? c.blurb : (G.MODE_NAMES[L.mode] || '') + ' from your own equations. Edit them below and the model rebuilds.') + '</p>';
+  if (c && c.limit) h += '<p class="fine"><b>Limits:</b> ' + esc(c.limit) + '</p>';
+  h += '<div class="row"><div class="rl"><label for="gModel">Switch to another ready-made model</label></div><select id="gModel" class="txt"><option value="">' + (c ? esc(c.name) : 'Custom model') + ' (current)</option>' + G.CATS.map((k) => '<optgroup label="' + esc(k[1]) + '">' + Object.keys(G.CATALOG).filter((id) => G.CATALOG[id].cat === k[0]).map((id) => '<option value="' + id + '">' + esc(G.CATALOG[id].name) + '</option>').join('') + '</optgroup>').join('') + '</select></div>';
+  h += '<div class="solidview"><canvas id="solidView" aria-label="Interactive 3D viewer. Drag to orbit, pinch or scroll to zoom."></canvas></div><p class="fine">Drag to orbit. Two fingers, or Shift-drag, to pan. Pinch or scroll to zoom. Tap a point to measure.</p>';
+  const defCam = L.cam0 ? JSON.parse(JSON.stringify(L.cam0)) : c && c.L.cam ? JSON.parse(JSON.stringify(c.L.cam)) : { yaw: 35, pitch: 25, dist: 7, fov: 45, tx: 0, ty: 0, tz: 0 };
+  h += '<div class="chips">' + btn('Reset camera', () => { L.cam = Object.assign({}, defCam, { ortho: !!L.cam.ortho }); U.redraw(false); U.commit(); buildEdit(); }, 'chip') + btn('Front', () => { Object.assign(L.cam, { yaw: 90, pitch: 0 }); U.redraw(false); U.commit(); buildEdit(); }, 'chip') + btn('Top', () => { Object.assign(L.cam, { yaw: 90, pitch: 89 }); U.redraw(false); U.commit(); buildEdit(); }, 'chip') + btn('Side', () => { Object.assign(L.cam, { yaw: 0, pitch: 0 }); U.redraw(false); U.commit(); buildEdit(); }, 'chip') + btn(L.cam.ortho ? 'Use perspective' : 'Use orthographic', () => { L.cam.ortho = !L.cam.ortho; U.redraw(false); U.commit(); buildEdit(); }, 'chip', 'Orthographic: parallel projection, no perspective shrink, good for measuring') + btn('Clear measurements', () => { MC.solidSetPick(L, []); U.redraw(false); drawSolidView(); refreshSolidDash(); }, 'chip') + '</div>';
+  h += '<div id="sMeasure" class="eqs plain"></div>';
+  const fs = root.GEN.SCHEMAS[L.mode](L); h += fs.map((f, i) => fieldHTML(L, f, i)).join('');
+  h += '<div id="gErr" class="fine">Use x, y, z' + (L.mode === 'curve' ? ', u' : '') + ', t (seconds), a, b, c, R, r, pi, + − * / ^ and sin cos tan sqrt exp ln abs atan2 min max, plus noise, noise3, fbm, erf, gauss. Only a safe maths parser runs: nothing you type is executed as code.</div>';
+  h += seg('Draw as', [['solid', 'Solid'], ['wire', 'Wireframe'], ['both', 'Both'], ['ghost', 'Transparent']], () => L.style, (v) => { L.style = v; });
+  h += colors('Color', () => L.color, (v) => { L.color = v; });
+  h += seg('Axes and box', [['0', 'Neither'], ['1', 'Axes'], ['2', 'Axes + box']], () => (L.axes ? (L.box ? '2' : '1') : '0'), (v) => { L.axes = v !== '0'; L.box = v === '2'; });
+  return h;
+}
+function lookHTML(L) {
+  const g = MC.solidIsGen(L), colBy = [['solid', 'One colour'], ['height', 'Height (z)'], ['radius', 'Distance from centre']].concat(g && ['ode', 'field', 'curve'].indexOf(L.mode) >= 0 ? [['path', 'Along the path']] : []).concat(g && L.mode === 'lsys' ? [['level', 'Branch level']] : []);
+  const fs = [{ p: 'mat', l: 'Material', t: 'sel', o: [['matte', 'Matte'], ['plastic', 'Plastic'], ['metal', 'Metal (simulated)'], ['glass', 'Glass (simulated)'], ['wood', 'Wood'], ['stone', 'Stone'], ['water', 'Water (simulated)'], ['crystal', 'Crystal (simulated)']] }, { p: 'tex', l: 'Procedural texture', t: 'sel', o: [['none', 'None'], ['checker', 'Checker'], ['stripes', 'Stripes'], ['noise', 'Noise'], ['wood', 'Wood rings'], ['stone', 'Stone'], ['marble', 'Marble']] }, { p: 'colorBy', l: 'Colour by', t: 'sel', o: colBy }, { p: 'bands', l: 'Contour bands (0 = smooth colour map)', t: 'int' }, { p: 'shadow', l: 'Planar shadow on the floor', t: 'bool' }, { p: 'grid', l: 'Floor grid', t: 'bool' }];
+  return '<p class="fine">Look only: these change how the model is drawn, never the model or its measurements. Shading is a simulated Blinn–Phong look with a fixed light. There is no ray tracing, true reflection, refraction or ambient occlusion, so “metal”, “glass” and “water” are approximations of appearance. The colour map is viridis; with contour bands it becomes a filled contour plot of the chosen quantity.</p>' + fs.map((f, i) => fieldHTML(L, f, 200 + i)).join('');
+}
+function secHTML(L) {
+  const ax = (L.clip && L.clip.axis) | 0, bb = (() => { try { return MC.solidReport(Object.assign({}, L, { clip: { on: false } }), U.t).mesh.stats.bbox; } catch (e) { return null; } })();
+  const lo = bb ? bb.lo[ax] : -5, hi = bb ? bb.hi[ax] : 5;
+  let h = '<p class="fine">Cut the model with a plane in its own (model) coordinates. For a surface, the cut edge is drawn in yellow and the cross-section area is reported in the readout.</p>';
+  h += fieldHTML(L, { p: 'clip.on', l: 'Cut the model with a plane', t: 'bool' }, 300) + fieldHTML(L, { p: 'clip.axis', l: 'Plane is perpendicular to', t: 'sel', rebuild: true, o: [['0', 'x axis'], ['1', 'y axis'], ['2', 'z axis']] }, 301) + fieldHTML(L, { p: 'clip.flip', l: 'Keep the lower side instead', t: 'bool' }, 302);
+  h += slider('Plane position', lo, hi, (hi - lo) / 400 || 0.01, () => (L.clip ? L.clip.pos : 0), (v) => { if (!L.clip) L.clip = { on: false, axis: 2, pos: 0, flip: false }; L.clip.pos = v; }, (v) => FS.fmt(v, (hi - lo) / 400 || 0.01));
+  return h;
+}
+function infHTML(L) { return '<p class="fine">Changes each parameter by ±5% and rebuilds the model to see which one moves its size most. It is a finite-difference sensitivity, computed on a coarser grid for speed, so treat it as a guide.</p>' + btn('Calculate influence', () => { const el = $('#sInfOut'); if (!el) return; el.innerHTML = '<p class="fine">Working…</p>'; setTimeout(() => { const r = MC.solidInfluence(L, U.t); el.innerHTML = r.length ? '<table class="gtab">' + '<tr><td><b>Parameter</b></td><td><b>Relative change in ' + esc(r[0].name) + ' per +1% change of the parameter</b></td></tr>' + r.map((q) => '<tr><td>' + q.k + ' = ' + FS.fmt(q.v0, 0.001) + '</td><td>' + (q.rel === null ? esc(q.note) : (q.rel >= 0 ? '+' : '') + FS.fmt(q.rel, 0.001) + ' %') + '</td></tr>').join('') + '</table><p class="fine">' + gtag('Estimated') + ' Only parameters that appear in your equations are listed. Equations that do not use a, b, c, R or r have no sliders to influence them.</p>' : '<p class="fine">None of the parameters a, b, c, R, r appear in the equations, so there is nothing to vary. Add one (for example replace a number by <b>a</b>) and recalculate.</p>'; }, 20); }, 'chip') + '<div id="sInfOut"></div>'; }
+function expHTML(L) {
+  const run = (fmt) => () => { const r = MC.solidExport(L, U.t, fmt), nt = $('#xNote'); if (r.err) { if (nt) { nt.className = 'cap-err'; nt.textContent = r.err; } U.lastExportError = r.err; refreshSolidDash(); return; } U.lastExportError = ''; U.saveFile(r.blob, r.name); if (nt) { nt.className = 'fine'; nt.textContent = 'Saved ' + r.name + '. ' + (r.note || ''); } };
+  return '<p class="fine">Exports the current frame of this model after your section plane and move/turn/stretch. Units are arbitrary. For a picture or a video use Export at the top.</p><div class="chips">' + btn('OBJ', run('obj'), 'chip', 'Wavefront OBJ: vertices, normals, faces or lines') + btn('GLB', run('glb'), 'chip', 'glTF 2.0 binary: opens in most 3D viewers') + btn('STL', run('stl'), 'chip', 'Binary STL for 3D printing; needs a closed surface') + btn('SVG', run('svg'), 'chip', 'Vector snapshot of the current view') + btn('Model JSON', run('json'), 'chip', 'Equations, parameters, camera and results; reopen later') + btn('Science report', run('report'), 'chip', 'Equations, methods, accuracy checks, assumptions and limits') + '</div><div id="xNote" class="fine"></div>';
+}
+function genSet(t, final) {
+  const L = U.selLayer(); if (!L || L.type !== 'solid') return; const path = t.dataset.gp, ty = t.dataset.gt, er = $('#gErr'); let v;
+  if (ty === 'bool') v = t.checked; else if (ty === 'int') { const n = parseInt(t.value, 10); v = isFinite(n) && /^\s*-?\d+\s*$/.test(t.value) ? n : t.value; } else if (ty === 'num') { const f = parseFloat(t.value); v = isFinite(f) && /^\s*[-+]?(\d+\.?\d*|\.\d+)(e[-+]?\d+)?\s*$/i.test(t.value) ? f : t.value; } else if (ty === 'json') { try { v = JSON.parse(t.value); } catch (e) { if (er) { er.className = 'cap-err'; er.textContent = 'Not valid JSON yet: ' + e.message; } return; } } else if (ty === 'sel' && /^\d+$/.test(t.value) && /^clip\.axis$/.test(path)) v = parseInt(t.value, 10); else v = t.value;
+  setAt(L, path, v); if (/^(mat|tex|colorBy)$/.test(path) === false && path.indexOf('clip') !== 0) MC.solidSetPick(L, []);
+  const rep = MC.solidReport(L, U.t), bad = rep.issues.filter((i) => i.sev === 'error');
+  if (er) { er.className = bad.length ? 'cap-err' : 'fine'; er.textContent = bad.length ? bad[0].msg + (bad[0].fix ? ' Fix: ' + bad[0].fix : '') : 'Looks good. The model, readout and dashboard update as you edit.'; }
+  refreshEqs(); solidSoon(); U.redraw(!final); U.schedFinal(); if (final) { U.commit(); if (t.dataset.rebuild) buildEdit(); }
+}
+function switchModel(id) {
+  const L = U.selLayer(); if (!L || L.type !== 'solid' || !id) return; const N = MC.newSolid({ gen: id }); GENKEYS.forEach((k) => { if (N[k] !== undefined) L[k] = JSON.parse(JSON.stringify(N[k])); }); L.clip = { on: false, axis: 2, pos: 0, flip: false }; delete L.lvlAuto; MC.solidSetPick(L, []); U.redraw(false); U.commit(); buildEdit(); U.P.buildLayers();
 }
 /* ---------- Layers tab ---------- */
 const GLYPH = { text: 'T', shape: '◆', math: '∿', image: '▣', video: '▶', graph: 'ƒ', audio: '♪', doodle: '✎', scene: '☀', solid: '\u25C8' };
@@ -10104,11 +10846,24 @@ U.addScene = function (key) {
   U.toast(key === 'lapse' ? 'Added behind everything. Press play: the sun crosses the sky.' : 'Added behind everything. Add text or a subject on top.');
 };
 document.addEventListener('click', (e) => { const b = e.target.closest('button[data-addscene]'); if (b) U.addScene(b.dataset.addscene); });
-U.addSolid = function (kind) {
-  const P = U.project, side = Math.min(P.W, P.H) * 0.9, L = MC.newSolid({ kind, w: side, h: side, x: (P.W - side) / 2, y: (P.H - side) / 2 });
+U.addSolid = function (kind, over) {
+  const P = U.project, side = Math.min(P.W, P.H) * 0.9, base = { w: side, h: side, x: (P.W - side) / 2, y: (P.H - side) / 2 }; kind = String(kind);
+  const L = MC.newSolid(Object.assign(kind.indexOf('gen:') === 0 ? { gen: kind.slice(4) } : kind.indexOf('mode:') === 0 ? { mode: kind.slice(5) } : { kind }, over || {}, base));
   P.layers.push(L); U.commit(); U.sel = L.id; U.P.buildEdit(); U.P.buildLayers(); U.P.buildTimeline(); U.redraw(false); U.setTab('edit');
-  U.toast('3D shape added. Orbit it in the viewer, edit its equations, or press play after adding a spin.');
+  U.toast(kind.indexOf('gen:') === 0 || kind.indexOf('mode:') === 0 ? 'Model added. Change its equations, material and section in the Edit tab.' : '3D shape added. Orbit it in the viewer, edit its equations, or press play after adding a spin.');
 };
+(function () {
+  const G = window.GEN, esc = (x) => String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); if (!G) return;
+  const tag = (m) => '<span class="tg tg-meth tg-' + m + '" title="' + esc(G.METHODS[m][1]) + '">' + G.METHODS[m][0] + '</span>';
+  const cats = document.getElementById('genCats'); if (cats) cats.innerHTML = G.CATS.map((k) => { const ids = Object.keys(G.CATALOG).filter((id) => G.CATALOG[id].cat === k[0]); return '<details class="gcat"><summary>' + esc(k[1]) + ' (' + ids.length + ')</summary><div class="gl">' + ids.map((id) => '<button type="button" data-addsolid="gen:' + id + '" title="' + esc(G.CATALOG[id].blurb) + '"><b>' + esc(G.CATALOG[id].name) + '</b><br>' + tag(G.CATALOG[id].method) + '</button>').join('') + '</div></details>'; }).join('') + '<details class="gcat"><summary>Existing parametric surfaces</summary><p class="fine">The seven surfaces x(u, v), y(u, v), z(u, v) above: torus, sphere, cylinder, Möbius strip, helicoid, rippling surface and Klein bottle, with exact area and volume where they apply.</p></details>';
+  const find = () => {
+    const q = document.getElementById('genDesc'), out = document.getElementById('genResult'); if (!q || !out) return; const r = G.match(q.value);
+    out.innerHTML = (r.note ? '<p class="' + (r.hits.length ? 'fine' : 'cap-warn') + '">' + esc(r.note) + '</p>' : '') + r.hits.map((h) => { const c = G.CATALOG[h.id]; return '<div class="gi"><div><b>' + esc(c.name) + '</b> ' + tag(c.method) + '<div class="fine">' + esc(c.blurb) + (c.limit ? ' <b>Limits:</b> ' + esc(c.limit) : '') + '</div></div><button type="button" class="btn sm" data-addsolid="gen:' + h.id + '">Add</button></div>'; }).join('');
+  };
+  const fb = document.getElementById('genFind'), fq = document.getElementById('genDesc'); if (fb) fb.addEventListener('click', find); if (fq) fq.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); find(); } });
+  const op = document.getElementById('genOpen'), fi = document.getElementById('genFile');
+  if (op && fi) { op.addEventListener('click', () => fi.click()); fi.addEventListener('change', () => { const f = fi.files && fi.files[0]; if (!f) return; if (f.size > 2e6) { U.toast('That file is too large for a model file.'); fi.value = ''; return; } f.text().then((tx) => { const r = MC.solidImport(tx); if (r.err) { U.toast(r.err); return; } const KEEP = ['kind', 'fx', 'fy', 'fz', 'umin', 'umax', 'vmin', 'vmax', 'nu', 'nv', 'P', 'mode', 'gen', 'genName', 'method', 'fimp', 'lvl', 'box3', 'nvox', 'ode', 'fld', 'ls', 'ifs', 'lat', 'mol', 'poly', 'hyper', 'crv', 'gp', 'tr', 'cam', 'style', 'color', 'mat', 'tex', 'colorBy', 'bands', 'shadow', 'grid', 'axes', 'box', 'spin', 'clip', 'name'], over = {}; KEEP.forEach((k) => { if (r.model[k] !== undefined) over[k] = r.model[k]; }); delete over.gen; U.addSolid(over.mode ? 'mode:' + over.mode : over.kind || 'torus', over); U.toast('Model file opened.'); }).catch(() => U.toast('Could not read that file.')); fi.value = ''; }); }
+})();
 document.addEventListener('click', (e) => { const b = e.target.closest('button[data-addsolid]'); if (b) U.addSolid(b.dataset.addsolid); });
 /* ----- doodles ----- */
 const dood = { on: false, L: null, color: '#ff2d95', size: 14, stroke: null };

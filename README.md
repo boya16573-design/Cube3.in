@@ -37,12 +37,28 @@ MIT. See [LICENSE](LICENSE). Bundled libraries are listed in [THIRD-PARTY.md](TH
 
 ## What's new
 
+- **Equation explorer**: implicit surfaces, differential equations, field lines, fractals, crystals, molecules, polyhedra and 4D shapes from your own equations or 42 ready-made models, with section planes, materials, OBJ/STL/GLB/SVG export and a science report. See below.
 - **Measurement Lab**: distance, angle, area and circle tools, real units only from a flat reference with 95% intervals, perspective flattening, video point tracking, checkerboard camera calibration, 3D math lab with an error dashboard. See below.
 - **Realism check**: upload a photo and the page measures it in linear light (exposure, black and white points, colour balance, saturation, sharpening halos, lens falloff), shows the equations and numbers, and offers one-tap fixes.
 - **Paint it from a real formula**: repaints a photo as a sum of cosine waves (a 2-D discrete cosine transform) and prints the formula, with the largest measured coefficients and the error in dB, under the picture.
 - **Show the math under the picture**: puts the photo on top and its equations in a panel below, exported with the picture.
 - **Phone editor layout**: full-screen dark editor with a fixed centre playhead, a bottom tool row and tabs, and a keyboard tool bar for text.
 - Frame-perfect video, linear-light colour maths, full-resolution Lanczos export, project files, ZIP export, multi-variable graphs and more scenes.
+
+## Equation explorer (universal generators)
+
+Open the **Add** tab, then **Equation explorer**. Type an equation or choose a ready-made model; every model says how it is made: **Exact**, **Numerical**, **Procedural** or **Artistic**.
+
+**Implemented and tested** (`node tests/gen3d.test.js`, `node tests/gen-catalog.test.js`)
+- Implicit surfaces F(x, y, z) = level by marching tetrahedra, with grid-refinement convergence, Euler characteristic, area, volume and warnings when the surface is cut by the box (sphere area and volume within 2% of exact; double torus gives chi = -2).
+- Differential equations: classical Runge-Kutta 4 for 3D and 6D systems (Lorenz, Rossler, Kepler), observed order of accuracy, conserved-quantity drift, a flag for the time after which a chaotic path can no longer be trusted, blow-up detection.
+- 3D vector-field lines (dipole, wire, ABC flow), L-systems, iterated function systems with exact similarity dimension, parametric curves with Richardson-extrapolated length, crystal lattices (packing fractions checked against textbook values), molecules from reference geometry (bond lengths and angles checked), the five Platonic solids (area, volume and V - E + F checked against closed forms), 4D polytopes with exact rotation and projection, procedural terrain, planet and galaxy.
+- Safe expression parser only; nothing typed is executed as JavaScript. Extra functions: noise, noise3, fbm, erf, gauss.
+- Orthographic and perspective cameras, section plane with cross-section area, floor grid, planar shadow, simulated Blinn-Phong materials, procedural textures, colour maps and contour bands, transparent view.
+- Export: OBJ, binary STL (with a watertight warning), GLB, SVG snapshot, model JSON (reopenable), HTML science report with equations, methods, accuracy checks, parameter sensitivity and limits.
+- A "describe what you want" box that matches keywords to the catalog and says plainly when something (a car, an animal, a building) cannot be generated reliably from equations.
+
+**Not implemented**: Web Workers (generation runs on the main thread), Three.js/WebGL and true PBR (shadows are a flat planar projection, no ambient occlusion or ray-traced reflections), fluid/finite-element simulation, 3D reconstruction from one photograph, animation file export of the 3D view beyond the existing video export, and anything needing a server.
 
 ## Measurement Lab (scientific measurement mode)
 

@@ -1,0 +1,24 @@
+// Every catalog entry must build, and the key ones must match exact facts.  Run: node tests/gen-catalog.test.js
+require('../src/studio-expr.js'); require('../src/m3d.js'); require('../src/gen3d.js'); require('../src/gen-catalog.js');
+const G = globalThis.GEN; let pass = 0, fail = 0;
+const t = (n, f) => { try { f(); pass++; console.log('  ok   ' + n); } catch (e) { fail++; console.log('  FAIL ' + n + '\n       ' + e.message); } };
+const eq = (a, b, tol, m) => { if (!(Math.abs(a - b) <= tol)) throw new Error((m || '') + ' expected ' + b + ' ± ' + tol + ', got ' + a); };
+const ok = (c, m) => { if (!c) throw new Error(m || 'assertion failed'); };
+const ids = Object.keys(G.CATALOG);
+ids.forEach((id) => t('builds: ' + id, () => { const L = G.fromCatalog(id), t0 = Date.now(), m = G.build(L, 0.3); ok(m && m.ok, m && m.issues.map((i) => i.msg).join(' | ')); ok(m.V.length > 0); ok(Date.now() - t0 < 6000, 'slow ' + (Date.now() - t0)); ok(['numerical', 'exact', 'procedural', 'artistic'].includes(L.method)); }));
+t('double torus has Euler characteristic -2', () => { const m = G.build(G.fromCatalog('genus2'), 0); eq(m.stats.chi, -2, 0); ok(m.stats.closed); });
+t('heart is a closed sphere-like surface (chi 2)', () => { const m = G.build(G.fromCatalog('heart'), 0); ok(m.stats.closed); eq(m.stats.chi, 2, 0); });
+t('Kepler: energy drift small, RK4', () => { const m = G.build(G.fromCatalog('kepler'), 0); ok(m.info.drift < 1e-4, 'drift ' + m.info.drift); });
+t('Kepler orbit: periapsis radius = exact value', () => { const m = G.build(G.fromCatalog('kepler'), 0); let mn = 1e9; for (let k = 0; k < m.V.length; k += 3) mn = Math.min(mn, Math.hypot(m.V[k], m.V[k + 1], m.V[k + 2])); const v2 = 0.75 ** 2 + 0.3 ** 2, E = v2 / 2 - 1, h = Math.hypot(0 * 0.3 - 0 * 0.75, 0, 1 * 0.75) , h2 = (1 * 0.75) ** 2 + (1 * 0.3) ** 2, e = Math.sqrt(1 + 2 * E * h2), rp = h2 / (1 + e); eq(mn, rp, 2e-3); });
+t('dipole field lines are traced', () => { const m = G.build(G.fromCatalog('dipole'), 0); ok(m.ok && m.stats.segments > 500); });
+t('Menger sponge dimension ln20/ln3', () => { const m = G.build(G.fromCatalog('menger'), 0); eq(m.info.dimension, Math.log(20) / Math.log(3), 1e-12); });
+t('Barnsley fern stays inside its known bounding box', () => { const m = G.build(G.fromCatalog('fern'), 0), b = m.stats.bbox; ok(b.lo[0] > -3 && b.hi[0] < 3 && b.lo[1] > -0.1 && b.hi[1] < 10.1); });
+t('DNA: strands and rungs', () => { const m = G.build(G.fromCatalog('dna'), 0); ok(m.segs.length / 2 > 800); });
+t('section area of a sphere cut at z=0.3', () => { const s = G.buildImplicit({ fimp: 'x^2+y^2+z^2', lvl: 1, box3: [-1.5, 1.5, -1.5, 1.5, -1.5, 1.5], nvox: 60, P: {} }, 0), c = G.clipTriangles(s.V, s.F, 2, 0.3, false); eq(c.sectionArea / (Math.PI * (1 - 0.09)), 1, 0.02); });
+t('hydrogen orbital has two lobes (chi 4... two spheres)', () => { const m = G.build(G.fromCatalog('orbital'), 0); ok(m.ok && m.stats.closed); eq(m.stats.chi, 4, 0); });
+t('matcher: salt -> nacl', () => { const r = G.match('crystal of salt'); ok(r.hits[0].id === 'nacl'); });
+t('matcher: attractor -> lorenz', () => { ok(G.match('a chaotic attractor').hits.some((h) => h.id === 'lorenz')); });
+t('matcher: car is refused honestly', () => { const r = G.match('a red sports car'); ok(/Not reliably generated/.test(r.note) && /CAD/.test(r.note)); });
+t('matcher: nonsense gives a limit message', () => { const r = G.match('xyzzy qwerty'); ok(!r.hits.length && /No generator/.test(r.note)); });
+t('influence: torus-like implicit responds to R', () => { const L = G.fromBlank('implicit'); L.fimp = 'x^2+y^2+z^2-R^2'; L.lvl = 0; L.box3 = [-4, 4, -4, 4, -4, 4]; L.nvox = 50; L.P.R = 2; const r = G.influence(L, 0, G.build); ok(r.length === 1 && Math.abs(r[0].rel - 2) < 0.15, JSON.stringify(r)); });
+console.log('\n' + pass + ' passed, ' + fail + ' failed'); process.exit(fail ? 1 : 0);
