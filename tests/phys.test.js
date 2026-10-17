@@ -1,0 +1,12 @@
+global.window=global;require('../src/units.js');require('../src/phys.js');
+let p=0,f=0;const ok=(n,c)=>{c?p++:(f++,console.log('FAIL',n))};
+const V=PHYS.validate();V.forEach(r=>{ok(r.name+' (got '+r.got+' ref '+r.ref+')',r.pass)});
+let r=PHYS.solve('projectile',{speed:'0 m/s'});ok('zero speed ok',r.ok);
+r=PHYS.solve('projectile',{speed:'20 kg'});ok('dim error',!r.ok&&/dimension/.test(r.errors[0]));
+r=PHYS.solve('projectile',{angle:'120 deg'});ok('angle error',!r.ok);
+r=PHYS.solve('relativity',{v:'3.1e8 m/s'});ok('superluminal rejected',!r.ok);
+r=PHYS.solve('projectile',{speed:'20'});ok('defaults reported',r.ok&&r.defaults.length>0);
+const base=PHYS.readInputs(PHYS.BY.projectile,{}).v;const u=PHYS.propagate('projectile',base,{speed:0.5},300,1);
+const R0=PHYS.solve('projectile',{}).outputs[1].v;ok('MC mean near nominal',Math.abs(u.out['Range'].mean-R0)/R0<0.02);
+ok('MC sd ≈ analytic 2*R*σ/v',Math.abs(u.out['Range'].sd-2*R0*0.5/20)/(2*R0*0.5/20)<0.2);
+console.log('phys pass',p,'fail',f);process.exit(f?1:0);

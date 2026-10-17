@@ -90,7 +90,7 @@ const lab = document.createElement('div'); lab.id = 'lab'; lab.hidden = true; la
 lab.innerHTML = `
 <header class="lb-top">
   <div class="lb-brand"><i></i><span>Scientific Reality Editor</span></div>
-  <nav class="lb-hub" id="lbHub" role="tablist" aria-label="Workspaces"><button role="tab" data-hub="design" aria-selected="false">Design</button><button role="tab" data-hub="photo" aria-selected="true">Photo Lab</button><button role="tab" data-hub="video" aria-selected="false">Video Lab</button><button role="tab" data-hub="calib" aria-selected="false">Calibration</button><button role="tab" data-hub="3d" aria-selected="false">3D Lab</button><button role="tab" data-hub="const" aria-selected="false">Constants</button></nav>
+  <nav class="lb-hub" id="lbHub" role="tablist" aria-label="Workspaces"><button role="tab" data-hub="design" aria-selected="false">Design</button><button role="tab" data-hub="photo" aria-selected="true">Photo Lab</button><button role="tab" data-hub="video" aria-selected="false">Video Lab</button><button role="tab" data-hub="calib" aria-selected="false">Calibration</button><button role="tab" data-hub="3d" aria-selected="false">3D Lab</button><button role="tab" data-hub="const" aria-selected="false">Constants</button><button role="tab" data-hub="reality" aria-selected="false">Reality Engine</button></nav>
   <button type="button" id="lbOpen" title="Open a photo or video file">Open</button>
   <button type="button" data-guide title="Open the quick guide">Guide</button>
   <button type="button" id="lbFromDesign" title="Use the photo selected in the design">From design</button>
@@ -534,7 +534,7 @@ function markStrip() { const el = $('#lbStrip'); if (!el.classList.contains('on'
 
 /* ------------------------------------------------------------------ workspace tabs (Photo Lab / Video Lab / Calibration / 3D Lab) */
 function setHub(h, quiet) {
-  if (h === '3d' || h === 'design' || h === 'const') { if (window.HUB) window.HUB.go(h); else closeLab(); return; }
+  if (h === '3d' || h === 'design' || h === 'const' || h === 'reality') { if (window.HUB) window.HUB.go(h); else closeLab(); return; }
   S.hub = h; $$('#lbHub button').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.hub === h))); $('#lbFile').accept = h === 'video' ? 'video/*' : h === 'photo' ? 'image/*' : 'image/*,video/*';
   const pane = { photo: 'res', video: 'trk', calib: 'cal' }[h]; const tb = $$('.lb-tabs button').find((b) => b.dataset.pane === pane); if (tb) tb.click();
   if (!quiet && h === 'video' && S.src && S.src.kind !== 'video') toast('Open a video file to use the Video Lab. Photos can be measured in the Photo Lab.');
@@ -586,5 +586,14 @@ $('#lbClose').onclick = closeLab;
 document.addEventListener('click', (e) => { if (e.target.closest('#labBtn') || e.target.closest('[data-openlab]')) openLab(); });
 new ResizeObserver(() => { if (!lab.hidden) { const had = W; resize(); if (!had) fitView(); } }).observe($('#lbStage'));
 (function () { const b = document.getElementById('labBtn'); const mq = window.matchMedia('(max-width:760px)'); const f = () => { if (b) b.textContent = mq.matches ? 'Lab' : 'Photo & Video Lab'; }; f(); (mq.addEventListener ? mq.addEventListener('change', f) : mq.addListener(f)); })();
-window.MLAB = { setHub, open: openLab, close: closeLab, state: S, setSource, readFile, setTool, exportData, trackCSV, runTrack, addTrack, detectGrid, CV, renderPanes, makeItem, addItem, lab };
+/* Tracked points as time/position observations for the Reality Engine. Metres only when a calibrated plane exists; otherwise pixels (scale unknown). */
+function trackObservations(i) {
+  const t = S.tracks[i || 0]; if (!t) return { ok: false, reason: 'No tracked point yet. In the Video Lab, open a video, add a track point and run tracking.' };
+  const good = t.samples.filter((s) => s.ok !== false && isFinite(s.x) && isFinite(s.y)); if (good.length < 4) return { ok: false, reason: 'Only ' + good.length + ' usable tracked frames. At least 4 are needed (10 or more is better).' };
+  const pl = planeObj(); let samples, unit, scaled = false;
+  if (pl && X.LEN[pl.unit]) { const k = X.LEN[pl.unit]; samples = good.map((s) => { const q = X.applyH(pl.H, ptsForGeometry([[s.x, s.y]])[0]); return { t: s.t - good[0].t, x: q[0] * k, y: q[1] * k }; }); unit = 'm'; scaled = true; }
+  else samples = good.map((s) => ({ t: s.t - good[0].t, x: s.x, y: -s.y })), unit = 'px';
+  return { ok: true, name: t.name, samples, unit, scaled, source: scaled ? 'Calibrated plane (' + pl.unit + ' converted to metres). Assumes the motion lies in that plane.' : 'Pixels: no calibrated plane, so absolute size and speed are unknown.', fps: S.fps || null };
+}
+window.MLAB = { trackObservations, setHub, open: openLab, close: closeLab, state: S, setSource, readFile, setTool, exportData, trackCSV, runTrack, addTrack, detectGrid, CV, renderPanes, makeItem, addItem, lab };
 })();

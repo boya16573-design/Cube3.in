@@ -1,0 +1,14 @@
+global.window=global;require('../src/units.js');require('../src/phys.js');require('../src/nlq.js');
+let p=0,f=0;const ok=(n,c)=>{c?p++:(f++,console.log('FAIL',n))};
+let q=NLQ.answer('Estimate the trajectory of a ball thrown at 20 m/s at 40 degrees');
+ok('proj ok',q.ok&&q.model==='projectile');ok('speed',q.raw.speed==='20 m/s');ok('angle',/^40 deg/.test(q.raw.angle));
+const R=q.result.outputs.find(o=>o.name==='Range').v;ok('range',Math.abs(R-400*Math.sin(80*Math.PI/180)/9.80665)<1e-9);
+ok('defaults disclosed',q.result.defaults.length>0&&q.result.defaults.some(d=>/Gravity/.test(d)));
+q=NLQ.answer('A ball is thrown at 20 m/s');ok('asks angle',!q.ok&&/Launch angle/.test(q.reason));
+q=NLQ.answer('throw a ball at 15 m/s at 30 degrees from a 10 m cliff');ok('height',q.ok&&q.raw.h0==='10 m');
+q=NLQ.answer('pendulum 2 m long released at 20 degrees');ok('pend',q.ok&&q.model==='pendulum'&&q.raw.L==='2 m');
+q=NLQ.answer('time dilation at 0.9c for 1 s');ok('rel',q.ok&&Math.abs(q.result.outputs[1].v-1/Math.sqrt(1-0.81))<1e-9);
+q=NLQ.answer('what is the meaning of life');ok('unsupported',!q.ok);
+q=NLQ.answer('ball thrown at 20 kg at 40 degrees');ok('wrongunit',!q.ok);
+q=NLQ.answer('escape velocity of a satellite');ok('orbit defaults',q.ok&&q.model==='orbit');
+console.log('nlq pass',p,'fail',f);process.exit(f?1:0);

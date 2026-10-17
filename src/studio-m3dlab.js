@@ -76,7 +76,7 @@ root.innerHTML = `
 <header class="hd">
   <div><div class="logo">Math<b>3D</b></div><div class="sub">Create 3D Objects • Visualize Real Mathematics • Edit • Animate</div></div>
   <span class="sub">Powered by real math</span>
-  <nav class="ws" id="m3Ws" role="tablist" aria-label="Workspaces"><button role="tab" data-ws="design">Design</button><button role="tab" data-ws="photo">Photo Lab</button><button role="tab" data-ws="video">Video Lab</button><button role="tab" data-ws="calib">Calibration</button><button role="tab" data-ws="3d" aria-selected="true">3D Lab</button><button role="tab" data-ws="const">Constants</button></nav>
+  <nav class="ws" id="m3Ws" role="tablist" aria-label="Workspaces"><button role="tab" data-ws="design">Design</button><button role="tab" data-ws="photo">Photo Lab</button><button role="tab" data-ws="video">Video Lab</button><button role="tab" data-ws="calib">Calibration</button><button role="tab" data-ws="3d" aria-selected="true">3D Lab</button><button role="tab" data-ws="const">Constants</button><button role="tab" data-ws="reality">Reality Engine</button></nav>
   <nav class="pills" role="tablist" aria-label="Views">
     <button role="tab" data-view="3d" aria-selected="true">3D</button><button role="tab" data-view="anim" aria-selected="false">Animation</button><button role="tab" data-view="edit" aria-selected="false">Editor</button><button role="tab" data-view="math" aria-selected="false">Math</button><button role="tab" data-view="exp" aria-selected="false">Export</button>
   </nav>
@@ -467,6 +467,8 @@ function useMeasured(metres, unc, id) {
 }
 const HUB = { go(n) {
   if (n === 'design') { close(); if (window.MLAB) window.MLAB.close(); return; }
+  if (n === 'reality') { close(); if (window.MLAB) window.MLAB.close(); if (window.REAL) window.REAL.open(); return; }
+  if (window.REAL) window.REAL.close();
   if (n === '3d' || n === 'const') { if (window.MLAB) window.MLAB.close(); open(); setView(n === 'const' ? 'const' : '3d'); return; }
   close(); if (window.MLAB) { window.MLAB.open(); window.MLAB.setHub(n); }
 } };
