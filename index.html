@@ -344,7 +344,7 @@ body.kbOpen .panel,body.kbOpen #mathbar{display:none!important}
 body.phone .tg-m{background:#12301f;color:#7be0a8}body.phone .tg-e{background:#3a2c0c;color:#ffd27a}body.phone .tg-a{background:#1c2548;color:#a9bbff}body.phone .tg-u{background:#2a2c33;color:#bbb}
 .tg-meth{background:#e6e0fb;color:#3d2a8c}.tg-exact{background:#d9f3e4;color:#14663f}.tg-numerical{background:#dfe6fb;color:#2b3f9e}.tg-procedural{background:#fdeccb;color:#8a5a00}.tg-artistic{background:#fbe0ec;color:#8a1f55}
 body.phone .tg-meth{background:#2a2250;color:#cdbfff}body.phone .tg-exact{background:#12301f;color:#7be0a8}body.phone .tg-numerical{background:#1c2548;color:#a9bbff}body.phone .tg-procedural{background:#3a2c0c;color:#ffd27a}body.phone .tg-artistic{background:#3d1a2c;color:#ffb3d2}
-.chk{display:flex;gap:8px;align-items:center;font-size:13px;margin:9px 0;cursor:pointer}.chk input{width:18px;height:18px}
+.eqpreview{margin:8px 0;padding:9px 11px;border-radius:10px;background:#f3f4fa;color:#1c2030;font:13px/1.65 'DejaVu Sans Mono',Menlo,monospace;overflow-x:auto}.eqpreview b{display:block;font:600 11px var(--f-body);text-transform:uppercase;letter-spacing:.06em;opacity:.65;margin-bottom:3px}.eqpreview div{white-space:nowrap}body.phone .eqpreview{background:#1b1e29;color:#e8ecff}.eqmini{font:11px/1.35 'DejaVu Sans Mono',Menlo,monospace;opacity:.75;margin-top:3px;word-break:break-word;white-space:normal}.chk{display:flex;gap:8px;align-items:center;font-size:13px;margin:9px 0;cursor:pointer}.chk input{width:18px;height:18px}
 .genres{margin:8px 0}.genres .gi{display:flex;gap:8px;align-items:flex-start;justify-content:space-between;border:1px solid var(--line,#e5e7ee);border-radius:10px;padding:8px 10px;margin:6px 0;font-size:12.5px}.genres .gi b{font-size:13px}.gcat summary{cursor:pointer;font-weight:600;padding:7px 0}.gcat .gl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.gcat .gl button{text-align:left;font-size:12.5px;padding:7px 9px;border:1px solid var(--line,#e5e7ee);border-radius:9px;background:transparent;color:inherit;cursor:pointer;min-height:44px}.gcat .gl button:hover{border-color:#6b4bd8}
 .solidview{border-radius:12px;overflow:hidden;background:#0f1117;margin:6px 0;line-height:0}.solidview canvas{display:block;width:100%;touch-action:none;cursor:grab}
 .g3{font-size:26px;line-height:1.1;display:block}
@@ -360,7 +360,9 @@ body.phone .tg-meth{background:#2a2250;color:#cdbfff}body.phone .tg-exact{backgr
     <div><h1>Math Canvas</h1><p class="tag">Design posts, thumbnails and short videos. Every effect and motion is a formula you can see.</p></div>
   </div>
   <div class="topacts">
-    <button id="labBtn" class="btn" type="button" title="Measure photos and videos with real maths and honest uncertainty">Measurement Lab</button>
+    <button id="guideBtn" class="btn" type="button" title="A one-minute guide: measure, build, combine">Guide</button>
+    <button id="m3Btn" class="btn" type="button" title="Math3D: build 3D shapes from real equations, measure, animate and export">3D Lab</button>
+    <button id="labBtn" class="btn" type="button" title="Measure photos and videos with real maths and honest uncertainty">Photo &amp; Video Lab</button>
     <button id="projects" class="btn" type="button">Projects</button>
     <input id="projName" class="pname" type="text" value="Untitled" maxlength="40" aria-label="Project name" spellcheck="false">
     <button id="undo" class="btn" type="button" disabled aria-label="Undo" title="Undo (Ctrl+Z)">Undo</button>
@@ -5211,7 +5213,103 @@ function influence(L, t, buildFn) {
   });
   return out;
 }
-G.CATALOG = CATALOG; G.CATS = CATS; G.METHODS = METHODS; G.SCHEMAS = SCHEMAS; G.MODE_NAMES = MODE_NAMES; G.fromCatalog = fromCatalog; G.fromBlank = fromBlank; G.match = match; G.influence = influence; G.measureOf = measureOf; G.BLANK = BLANK; G.UNSUPPORTED = UNSUPPORTED;
+
+/* ---------- equations as typeset-style lines (HTML with superscripts) and as plain text for drawing on the picture ---------- */
+const escH = (x) => String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+const EQV = ['x', 'y', 'z', 't', 'a', 'b', 'c', 'R', 'r', 'u', 'v', 'vx', 'vy', 'vz'];
+function pretty(src) { try { return root.MX.show(root.MX.compile(String(src), EQV).tree); } catch (e) { return escH(src); } }
+function eqLines(L) {
+  const P = pretty, n = (v) => (isFinite(+v) ? String(+(+v).toPrecision(5)) : escH(v)), o = [];
+  switch (L.mode) {
+    case 'implicit': o.push('F( x, y, z ) = ' + P(L.fimp), 'surface:  F( x, y, z ) = ' + n(L.lvl)); break;
+    case 'ode': { const six = (L.ode.eq || []).length === 6, nm = six ? ['dx/dt', 'dy/dt', 'dz/dt', 'dvx/dt', 'dvy/dt', 'dvz/dt'] : ['dx/dt', 'dy/dt', 'dz/dt']; nm.forEach((q, i) => o.push(q + ' = ' + P(L.ode.eq[i]))); if (L.ode.inv) o.push('conserved:  ' + P(L.ode.inv)); o.push('method: Runge–Kutta 4, step ' + n(L.ode.dt)); break; }
+    case 'field': o.push('P( x, y, z ) = ' + P(L.fld.P), 'Q( x, y, z ) = ' + P(L.fld.Q), 'R( x, y, z ) = ' + P(L.fld.R), 'lines:  dr/ds = ' + (L.fld.unit !== false ? 'F / |F|' : 'F')); break;
+    case 'curve': o.push('x( u ) = ' + P(L.crv.fx), 'y( u ) = ' + P(L.crv.fy), 'z( u ) = ' + P(L.crv.fz), 'u from ' + n(L.crv.umin) + ' to ' + n(L.crv.umax)); break;
+    case 'lsys': o.push('axiom:  ' + escH(L.ls.axiom), String(L.ls.rules).split(/\n|;/).filter(Boolean).map((q) => 'rule:  ' + escH(q.replace('=', ' → '))).join('\n'), 'turn angle ' + n(L.ls.angle) + '°, ' + n(L.ls.iter) + ' iterations'); break;
+    case 'ifs': o.push('p′ = A<sub>k</sub> p + t<sub>k</sub>,  k chosen at random,  ' + L.ifs.maps.length + ' maps'); break;
+    case 'lattice': { const T = G.LATTICES[L.lat]; o.push(T.name + ',  a = ' + n(L.gp.a)); if (T.pfEq) o.push('packing fraction = ' + T.pfEq + ' = ' + n(T.pf)); break; }
+    case 'molecule': o.push(G.MOLECULES[L.mol].name, G.MOLECULES[L.mol].ref); break;
+    case 'poly': { const T = G.POLY[L.poly]; o.push(T.name + ',  edge a = ' + n(L.gp.edge), T.eqA, T.eqV); break; }
+    case 'hyper': o.push('rotate x–w and z–w planes; ( x, y, z ) → ( x, y, z ) · d / ( d − w ),  d = ' + n(L.gp.d)); break;
+    case 'galaxy': o.push('θ = arm + twist · 1.2 · ln( 1 + r ) + scatter,   point = ( r cos θ, r sin θ, z )'); break;
+    default: if (L.fx !== undefined) o.push('x( u, v ) = ' + P(L.fx), 'y( u, v ) = ' + P(L.fy), 'z( u, v ) = ' + P(L.fz));
+  }
+  return o.join('\n').split('\n').filter(Boolean);
+}
+const SUP = { 0: '⁰', 1: '¹', 2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷', 8: '⁸', 9: '⁹', '-': '⁻' };
+function plain(html) { return String(html).replace(/<sup>(-?\d+)<\/sup>/g, (m, d) => d.split('').map((c) => SUP[c] || c).join('')).replace(/<sup>(.*?)<\/sup>/g, '^($1)').replace(/<sub>(.*?)<\/sub>/g, '_$1').replace(/<[^>]+>/g, '').replace(/&lt;/g, '<').replace(/&amp;/g, '&'); }
+const EQC = new Map();
+function eqPlain(L) { const k = JSON.stringify([L.mode, L.fimp, L.lvl, L.ode, L.fld, L.crv, L.ls, L.ifs, L.lat, L.mol, L.poly, L.hyper, L.fx, L.fy, L.fz, L.gp && L.gp.edge, L.gp && L.gp.a, L.gp && L.gp.d]); let r = EQC.get(k); if (!r) { try { r = eqLines(L).map(plain); } catch (e) { r = []; } EQC.set(k, r); if (EQC.size > 20) EQC.delete(EQC.keys().next().value); } return r; }
+G.eqLines = eqLines; G.eqPlain = eqPlain; G.plainEq = plain; G.CATALOG = CATALOG; G.CATS = CATS; G.METHODS = METHODS; G.SCHEMAS = SCHEMAS; G.MODE_NAMES = MODE_NAMES; G.fromCatalog = fromCatalog; G.fromBlank = fromBlank; G.match = match; G.influence = influence; G.measureOf = measureOf; G.BLANK = BLANK; G.UNSUPPORTED = UNSUPPORTED;
+})(typeof window !== 'undefined' ? window : globalThis);
+
+/* Real-world constants for Math Canvas. Values are CODATA 2022 (NIST) or exact by definition; mathematical constants to 12+ digits.
+   Each entry: id (the name usable inside equations), name, value, u (standard uncertainty, same unit; 0 when exact), unit, kind. */
+(function (root) {
+'use strict';
+const PHI = (1 + Math.sqrt(5)) / 2;
+const LIST = [
+  /* mathematical */
+  { id: 'pi', sym: 'π', name: 'Pi', v: Math.PI, u: 0, unit: '', cat: 'Mathematical', note: 'circumference ÷ diameter of any circle' },
+  { id: 'e', sym: 'e', name: "Euler's number", v: Math.E, u: 0, unit: '', cat: 'Mathematical', note: 'base of natural growth: lim (1 + 1/n)ⁿ' },
+  { id: 'phi', sym: 'φ', name: 'Golden ratio', v: PHI, u: 0, unit: '', cat: 'Mathematical', note: '(1 + √5) ÷ 2; satisfies φ² = φ + 1; ratio of consecutive Fibonacci numbers' },
+  { id: 'tau', sym: 'τ', name: 'Tau', v: 2 * Math.PI, u: 0, unit: '', cat: 'Mathematical', note: '2π, one full turn in radians' },
+  { id: 'sqrt2', sym: '√2', name: 'Pythagoras’ constant', v: Math.SQRT2, u: 0, unit: '', cat: 'Mathematical', note: 'diagonal of a unit square' },
+  { id: 'sqrt5', sym: '√5', name: 'Square root of 5', v: Math.sqrt(5), u: 0, unit: '', cat: 'Mathematical', note: 'appears in the golden ratio' },
+  { id: 'gammaE', sym: 'γ', name: 'Euler–Mascheroni constant', v: 0.5772156649015329, u: 0, unit: '', cat: 'Mathematical', note: 'lim (1 + 1/2 + … + 1/n − ln n)' },
+  { id: 'feigD', sym: 'δ', name: 'Feigenbaum constant', v: 4.669201609102990, u: 0, unit: '', cat: 'Mathematical', note: 'ratio of successive period-doubling gaps on the road to chaos' },
+  { id: 'zeta3', sym: 'ζ(3)', name: "Apéry's constant", v: 1.2020569031595942, u: 0, unit: '', cat: 'Mathematical', note: '1 + 1/8 + 1/27 + …' },
+  { id: 'catalan', sym: 'G', name: "Catalan's constant", v: 0.915965594177219, u: 0, unit: '', cat: 'Mathematical', note: '1 − 1/9 + 1/25 − 1/49 + …' },
+  { id: 'khinchin', sym: 'K₀', name: "Khinchin's constant", v: 2.6854520010653064, u: 0, unit: '', cat: 'Mathematical', note: 'geometric mean of continued-fraction terms of almost every number' },
+  /* dimensionless physical */
+  { id: 'alpha', sym: 'α', name: 'Fine-structure constant', v: 7.2973525643e-3, u: 1.1e-12, unit: '', cat: 'Dimensionless', note: 'strength of electromagnetism: α = e² ÷ (4π ε₀ ħ c) ≈ 1/137.036' },
+  { id: 'mpOverMe', sym: 'mₚ/mₑ', name: 'Proton-to-electron mass ratio', v: 1836.152673426, u: 3.2e-8, unit: '', cat: 'Dimensionless', note: 'how much heavier a proton is than an electron' },
+  /* defined exactly by the SI */
+  { id: 'cLight', sym: 'c', name: 'Speed of light in vacuum', v: 299792458, u: 0, unit: 'm/s', cat: 'Fundamental (exact)', note: 'defines the metre' },
+  { id: 'planck', sym: 'h', name: 'Planck constant', v: 6.62607015e-34, u: 0, unit: 'J·s', cat: 'Fundamental (exact)', note: 'energy of a photon = h × frequency' },
+  { id: 'qElec', sym: 'e', name: 'Elementary charge', v: 1.602176634e-19, u: 0, unit: 'C', cat: 'Fundamental (exact)', note: 'charge of a proton' },
+  { id: 'kBoltz', sym: 'k_B', name: 'Boltzmann constant', v: 1.380649e-23, u: 0, unit: 'J/K', cat: 'Fundamental (exact)', note: 'links temperature to energy' },
+  { id: 'nAvog', sym: 'N_A', name: 'Avogadro constant', v: 6.02214076e23, u: 0, unit: '1/mol', cat: 'Fundamental (exact)', note: 'particles in one mole' },
+  { id: 'gStd', sym: 'g₀', name: 'Standard gravity', v: 9.80665, u: 0, unit: 'm/s²', cat: 'Fundamental (exact)', note: 'conventional value of gravity at Earth’s surface' },
+  /* measured */
+  { id: 'hbar', sym: 'ħ', name: 'Reduced Planck constant', v: 6.62607015e-34 / (2 * Math.PI), u: 0, unit: 'J·s', cat: 'Derived (exact)', note: 'h ÷ 2π' },
+  { id: 'gGrav', sym: 'G', name: 'Newtonian gravitational constant', v: 6.67430e-11, u: 1.5e-15, unit: 'm³/(kg·s²)', cat: 'Measured', note: 'the least precisely known fundamental constant' },
+  { id: 'mElec', sym: 'mₑ', name: 'Electron mass', v: 9.1093837139e-31, u: 2.8e-40, unit: 'kg', cat: 'Measured', note: '' },
+  { id: 'mProt', sym: 'mₚ', name: 'Proton mass', v: 1.67262192595e-27, u: 5.2e-37, unit: 'kg', cat: 'Measured', note: '' },
+  { id: 'eps0', sym: 'ε₀', name: 'Vacuum electric permittivity', v: 8.8541878188e-12, u: 1.4e-21, unit: 'F/m', cat: 'Measured', note: 'now measured because α is measured' },
+  { id: 'mu0', sym: 'μ₀', name: 'Vacuum magnetic permeability', v: 1.25663706127e-6, u: 2.0e-16, unit: 'N/A²', cat: 'Measured', note: '' },
+  { id: 'bohrR', sym: 'a₀', name: 'Bohr radius', v: 5.29177210544e-11, u: 8.2e-21, unit: 'm', cat: 'Measured', note: 'size of the lowest hydrogen orbit' },
+  { id: 'rydberg', sym: 'R∞', name: 'Rydberg constant', v: 10973731.568157, u: 1.2e-5, unit: '1/m', cat: 'Measured', note: 'sets the wavelengths of hydrogen light' },
+];
+const BY = {}; LIST.forEach((c) => { BY[c.id] = c; });
+/* make every constant usable inside equations (constants cannot clash with the variables u v t a b c R r x y z, which are single letters) */
+if (root.MX && root.MX.CONST) LIST.forEach((c) => { if (!(c.id in root.MX.CONST)) root.MX.CONST[c.id] = c.v; });
+
+/* Consistency checks: recompute one constant from others and compare with the stored value. Differences are in parts per million. */
+function checks() {
+  const V = (id) => BY[id].v, ppm = (a, b) => (a - b) / b * 1e6, out = [];
+  const add = (name, formula, calc, ref, unit, tol) => { const z = ref === 0; out.push({ name, formula, calc, ref, unit, ppm: z ? 0 : ppm(calc, ref), abs: z, ok: z ? Math.abs(calc) < 1e-12 : Math.abs(ppm(calc, ref)) <= (tol || 1), tol: tol || 1 }); };
+  const c = V('cLight'), h = V('planck'), hb = V('hbar'), q = V('qElec'), e0 = V('eps0'), me = V('mElec'), al = V('alpha');
+  add('Fine-structure constant α', 'e² ÷ (4π ε₀ ħ c)', q * q / (4 * Math.PI * e0 * hb * c), al, '');
+  add('Bohr radius a₀', '4π ε₀ ħ² ÷ (mₑ e²)', 4 * Math.PI * e0 * hb * hb / (me * q * q), V('bohrR'), 'm');
+  add('Bohr radius a₀ (via α)', 'ħ ÷ (mₑ c α)', hb / (me * c * al), V('bohrR'), 'm');
+  add('Rydberg constant R∞', 'α² mₑ c ÷ (2h)', al * al * me * c / (2 * h), V('rydberg'), '1/m');
+  add('Hydrogen ground-state energy', '½ mₑ c² α²', 0.5 * me * c * c * al * al / q, 13.605693122990, 'eV', 1);
+  add('Electron speed in the lowest Bohr orbit', 'α c', al * c, 2187691.26379, 'm/s', 1);
+  add('Vacuum permeability μ₀', '1 ÷ (ε₀ c²)', 1 / (e0 * c * c), V('mu0'), 'N/A²');
+  const GMsun = 1.32712440018e20, AU = 1.495978707e11, Tsid = 2 * Math.PI * Math.sqrt(AU * AU * AU / GMsun) / 86400;
+  add('Earth orbital period (Kepler)', '2π √(a³ ÷ GM☉), a = 1 AU', Tsid, 365.25636, 'days', 300);
+  add('Golden ratio identity', 'φ² − φ − 1', PHI * PHI - PHI - 1, 0, '', 1e9);
+  let a = 1, b = 1; for (let i = 0; i < 40; i++) { const t = a + b; a = b; b = t; }
+  add('Fibonacci ratio F₄₁ ÷ F₄₀ → φ', 'F(n+1) ÷ F(n)', b / a, PHI, '', 1);
+  return out;
+}
+/* Golden angle and Bohr-model numbers used by the simulation panel */
+const goldenAngle = () => 2 * Math.PI / (PHI * PHI);
+function bohr(n) { const c = V0('cLight'), al = V0('alpha'), a0 = V0('bohrR'); return { n, r: n * n * a0, v: al * c / n, E: -13.605693122990 / (n * n), beta: al / n }; }
+function V0(id) { return BY[id].v; }
+function fmt(c) { const x = c.v, s = Math.abs(x) >= 1e5 || Math.abs(x) < 1e-3 ? x.toExponential(10).replace(/\.?0+e/, 'e') : String(+x.toPrecision(13)); return s; }
+root.CONSTS = { LIST, BY, checks, goldenAngle, bohr, fmt, PHI };
 })(typeof window !== 'undefined' ? window : globalThis);
 
 </script>
@@ -7887,7 +7985,8 @@ function genClip(mesh, L) {
 }
 function newSolid(o) {
   const G0 = root.GEN, gl = o && (o.gen ? G0.fromCatalog(o.gen) : o.mode ? G0.fromBlank(o.mode) : null), d = M3.defaults((o && o.kind) || 'torus');
-  const L = Object.assign(baseLayer('solid'), d, { tr: { tx: 0, ty: 0, tz: 0, rx: 0, ry: 0, rz: 0, sx: 1, sy: 1, sz: 1 }, cam: { yaw: 35, pitch: 25, dist: 7, fov: 45, tx: 0, ty: 0, tz: 0, ortho: false }, style: 'both', color: '#4f8cff', wire: '#ffffff', axes: true, box: false, spin: 0, w: 700, h: 700, mat: 'matte', colorBy: 'solid', bands: 0, shadow: false, grid: false, clip: { on: false, axis: 2, pos: 0, flip: false } }, gl || {}, o || {});
+  const L = Object.assign(baseLayer('solid'), d, { tr: { tx: 0, ty: 0, tz: 0, rx: 0, ry: 0, rz: 0, sx: 1, sy: 1, sz: 1 }, cam: { yaw: 35, pitch: 25, dist: 7, fov: 45, tx: 0, ty: 0, tz: 0, ortho: false }, style: 'both', color: '#4f8cff', wire: '#ffffff', axes: true, box: false, spin: 0, w: 700, h: 700, mat: 'matte', colorBy: 'solid', bands: 0, shadow: false, grid: false, showEq: false, clip: { on: false, axis: 2, pos: 0, flip: false } }, gl || {}, o || {});
+  if (gl) L.showEq = true;
   if (gl && !gl.cam) { try { const m = solidMesh(L, 0); if (m && m.ok) { const bb = m.stats.bbox, dg = m.stats.diag || bb.diag || 1; L.cam = { yaw: 35, pitch: 25, dist: Math.max(1e-3, dg * 1.45), fov: 45, tx: (bb.lo[0] + bb.hi[0]) / 2, ty: (bb.lo[1] + bb.hi[1]) / 2, tz: (bb.lo[2] + bb.hi[2]) / 2, ortho: false }; } } catch (e) { /* keep default camera */ } }
   if (gl) L.cam0 = JSON.parse(JSON.stringify(L.cam));
   if (gl) { L.kind = 'custom'; L.name = gl.genName; if (!gl.cam) L.cam = Object.assign({}, L.cam); L.style = (L.mode === 'lattice' || L.mode === 'molecule' || L.mode === 'ode' || L.mode === 'curve') ? 'solid' : (L.style === 'both' && (L.mode === 'implicit' || L.mode === 'poly') ? 'solid' : L.style); }
@@ -8024,6 +8123,9 @@ function drawSolid(ctx, L, t, o) {
   const pk = SOLID_PICK[L.id];
   if (pk && pk.length) { pk.forEach((k, n) => { if (S[k * 4 + 3] !== 1) return; ctx.fillStyle = n ? '#3ddc84' : '#ff3d81'; ctx.strokeStyle = '#fff'; ctx.lineWidth = lw * 1.5; ctx.beginPath(); ctx.arc(S[k * 4], S[k * 4 + 1], 6 * lw, 0, 6.2832); ctx.fill(); ctx.stroke(); });
     if (pk.length === 2 && S[pk[0] * 4 + 3] === 1 && S[pk[1] * 4 + 3] === 1) { ctx.strokeStyle = '#fff'; ctx.lineWidth = lw * 1.5; ctx.setLineDash([5 * lw, 4 * lw]); ctx.beginPath(); ctx.moveTo(S[pk[0] * 4], S[pk[0] * 4 + 1]); ctx.lineTo(S[pk[1] * 4], S[pk[1] * 4 + 1]); ctx.stroke(); ctx.setLineDash([]); } }
+  if (L.showEq) { /* the equations printed on the picture, so exports carry them */
+    const lines = root.GEN.eqPlain(L).slice(0, 7); if (lines.length) { const fs = Math.max(11, Math.round(W * 0.027)), pad = fs * 0.6, bh = lines.length * fs * 1.3 + pad * 1.4; ctx.fillStyle = 'rgba(15,17,23,.74)'; ctx.fillRect(0, H - bh, W, bh); ctx.fillStyle = '#f4f6ff'; ctx.font = '500 ' + fs + 'px "DejaVu Sans Mono", Menlo, monospace'; ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic'; lines.forEach((ln, i) => { let t2 = ln; while (t2.length > 4 && ctx.measureText(t2).width > W - pad * 2) t2 = t2.slice(0, -2); if (t2 !== ln) t2 += '…'; ctx.fillText(t2, pad, H - bh + pad * 0.7 + fs * (i + 1) * 1.3 - fs * 0.2); }); }
+  }
   ctx.restore();
   SOLID_PERF[L.id] = { ms: (typeof performance !== 'undefined' ? performance.now() : 0) - t0, tris: kind === 'tri' ? nF : drawn };
 }
@@ -9238,6 +9340,7 @@ function genHTML(L) {
   const defCam = L.cam0 ? JSON.parse(JSON.stringify(L.cam0)) : c && c.L.cam ? JSON.parse(JSON.stringify(c.L.cam)) : { yaw: 35, pitch: 25, dist: 7, fov: 45, tx: 0, ty: 0, tz: 0 };
   h += '<div class="chips">' + btn('Reset camera', () => { L.cam = Object.assign({}, defCam, { ortho: !!L.cam.ortho }); U.redraw(false); U.commit(); buildEdit(); }, 'chip') + btn('Front', () => { Object.assign(L.cam, { yaw: 90, pitch: 0 }); U.redraw(false); U.commit(); buildEdit(); }, 'chip') + btn('Top', () => { Object.assign(L.cam, { yaw: 90, pitch: 89 }); U.redraw(false); U.commit(); buildEdit(); }, 'chip') + btn('Side', () => { Object.assign(L.cam, { yaw: 0, pitch: 0 }); U.redraw(false); U.commit(); buildEdit(); }, 'chip') + btn(L.cam.ortho ? 'Use perspective' : 'Use orthographic', () => { L.cam.ortho = !L.cam.ortho; U.redraw(false); U.commit(); buildEdit(); }, 'chip', 'Orthographic: parallel projection, no perspective shrink, good for measuring') + btn('Clear measurements', () => { MC.solidSetPick(L, []); U.redraw(false); drawSolidView(); refreshSolidDash(); }, 'chip') + '</div>';
   h += '<div id="sMeasure" class="eqs plain"></div>';
+  h += '<div class="eqpreview" id="gEqs" aria-label="Equations">' + eqPreviewHTML(L) + '</div>';
   const fs = root.GEN.SCHEMAS[L.mode](L); h += fs.map((f, i) => fieldHTML(L, f, i)).join('');
   h += '<div id="gErr" class="fine">Use x, y, z' + (L.mode === 'curve' ? ', u' : '') + ', t (seconds), a, b, c, R, r, pi, + − * / ^ and sin cos tan sqrt exp ln abs atan2 min max, plus noise, noise3, fbm, erf, gauss. Only a safe maths parser runs: nothing you type is executed as code.</div>';
   h += seg('Draw as', [['solid', 'Solid'], ['wire', 'Wireframe'], ['both', 'Both'], ['ghost', 'Transparent']], () => L.style, (v) => { L.style = v; });
@@ -9245,9 +9348,10 @@ function genHTML(L) {
   h += seg('Axes and box', [['0', 'Neither'], ['1', 'Axes'], ['2', 'Axes + box']], () => (L.axes ? (L.box ? '2' : '1') : '0'), (v) => { L.axes = v !== '0'; L.box = v === '2'; });
   return h;
 }
+function eqPreviewHTML(L) { try { return '<b>Equations</b>' + root.GEN.eqLines(L).map((l) => '<div>' + l + '</div>').join(''); } catch (e) { return ''; } }
 function lookHTML(L) {
   const g = MC.solidIsGen(L), colBy = [['solid', 'One colour'], ['height', 'Height (z)'], ['radius', 'Distance from centre']].concat(g && ['ode', 'field', 'curve'].indexOf(L.mode) >= 0 ? [['path', 'Along the path']] : []).concat(g && L.mode === 'lsys' ? [['level', 'Branch level']] : []);
-  const fs = [{ p: 'mat', l: 'Material', t: 'sel', o: [['matte', 'Matte'], ['plastic', 'Plastic'], ['metal', 'Metal (simulated)'], ['glass', 'Glass (simulated)'], ['wood', 'Wood'], ['stone', 'Stone'], ['water', 'Water (simulated)'], ['crystal', 'Crystal (simulated)']] }, { p: 'tex', l: 'Procedural texture', t: 'sel', o: [['none', 'None'], ['checker', 'Checker'], ['stripes', 'Stripes'], ['noise', 'Noise'], ['wood', 'Wood rings'], ['stone', 'Stone'], ['marble', 'Marble']] }, { p: 'colorBy', l: 'Colour by', t: 'sel', o: colBy }, { p: 'bands', l: 'Contour bands (0 = smooth colour map)', t: 'int' }, { p: 'shadow', l: 'Planar shadow on the floor', t: 'bool' }, { p: 'grid', l: 'Floor grid', t: 'bool' }];
+  const fs = [{ p: 'mat', l: 'Material', t: 'sel', o: [['matte', 'Matte'], ['plastic', 'Plastic'], ['metal', 'Metal (simulated)'], ['glass', 'Glass (simulated)'], ['wood', 'Wood'], ['stone', 'Stone'], ['water', 'Water (simulated)'], ['crystal', 'Crystal (simulated)']] }, { p: 'tex', l: 'Procedural texture', t: 'sel', o: [['none', 'None'], ['checker', 'Checker'], ['stripes', 'Stripes'], ['noise', 'Noise'], ['wood', 'Wood rings'], ['stone', 'Stone'], ['marble', 'Marble']] }, { p: 'colorBy', l: 'Colour by', t: 'sel', o: colBy }, { p: 'bands', l: 'Contour bands (0 = smooth colour map)', t: 'int' }, { p: 'showEq', l: 'Print the equations on the picture', t: 'bool' }, { p: 'shadow', l: 'Planar shadow on the floor', t: 'bool' }, { p: 'grid', l: 'Floor grid', t: 'bool' }];
   return '<p class="fine">Look only: these change how the model is drawn, never the model or its measurements. Shading is a simulated Blinn–Phong look with a fixed light. There is no ray tracing, true reflection, refraction or ambient occlusion, so “metal”, “glass” and “water” are approximations of appearance. The colour map is viridis; with contour bands it becomes a filled contour plot of the chosen quantity.</p>' + fs.map((f, i) => fieldHTML(L, f, 200 + i)).join('');
 }
 function secHTML(L) {
@@ -9269,6 +9373,7 @@ function genSet(t, final) {
   setAt(L, path, v); if (/^(mat|tex|colorBy)$/.test(path) === false && path.indexOf('clip') !== 0) MC.solidSetPick(L, []);
   const rep = MC.solidReport(L, U.t), bad = rep.issues.filter((i) => i.sev === 'error');
   if (er) { er.className = bad.length ? 'cap-err' : 'fine'; er.textContent = bad.length ? bad[0].msg + (bad[0].fix ? ' Fix: ' + bad[0].fix : '') : 'Looks good. The model, readout and dashboard update as you edit.'; }
+  const pv = $('#gEqs'); if (pv) pv.innerHTML = eqPreviewHTML(L);
   refreshEqs(); solidSoon(); U.redraw(!final); U.schedFinal(); if (final) { U.commit(); if (t.dataset.rebuild) buildEdit(); }
 }
 function switchModel(id) {
@@ -10854,11 +10959,12 @@ U.addSolid = function (kind, over) {
 };
 (function () {
   const G = window.GEN, esc = (x) => String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); if (!G) return;
+  const eq1 = (id) => { try { const l = G.eqPlain(G.fromCatalog(id)); return l.slice(0, 2).join('  ·  ').slice(0, 90); } catch (e) { return ''; } };
   const tag = (m) => '<span class="tg tg-meth tg-' + m + '" title="' + esc(G.METHODS[m][1]) + '">' + G.METHODS[m][0] + '</span>';
-  const cats = document.getElementById('genCats'); if (cats) cats.innerHTML = G.CATS.map((k) => { const ids = Object.keys(G.CATALOG).filter((id) => G.CATALOG[id].cat === k[0]); return '<details class="gcat"><summary>' + esc(k[1]) + ' (' + ids.length + ')</summary><div class="gl">' + ids.map((id) => '<button type="button" data-addsolid="gen:' + id + '" title="' + esc(G.CATALOG[id].blurb) + '"><b>' + esc(G.CATALOG[id].name) + '</b><br>' + tag(G.CATALOG[id].method) + '</button>').join('') + '</div></details>'; }).join('') + '<details class="gcat"><summary>Existing parametric surfaces</summary><p class="fine">The seven surfaces x(u, v), y(u, v), z(u, v) above: torus, sphere, cylinder, Möbius strip, helicoid, rippling surface and Klein bottle, with exact area and volume where they apply.</p></details>';
+  const cats = document.getElementById('genCats'); if (cats) cats.innerHTML = G.CATS.map((k) => { const ids = Object.keys(G.CATALOG).filter((id) => G.CATALOG[id].cat === k[0]); return '<details class="gcat"><summary>' + esc(k[1]) + ' (' + ids.length + ')</summary><div class="gl">' + ids.map((id) => '<button type="button" data-addsolid="gen:' + id + '" title="' + esc(G.CATALOG[id].blurb) + '"><b>' + esc(G.CATALOG[id].name) + '</b><br>' + tag(G.CATALOG[id].method) + '<div class="eqmini">' + esc(eq1(id)) + '</div></button>').join('') + '</div></details>'; }).join('') + '<details class="gcat"><summary>Existing parametric surfaces</summary><p class="fine">The seven surfaces x(u, v), y(u, v), z(u, v) above: torus, sphere, cylinder, Möbius strip, helicoid, rippling surface and Klein bottle, with exact area and volume where they apply.</p></details>';
   const find = () => {
     const q = document.getElementById('genDesc'), out = document.getElementById('genResult'); if (!q || !out) return; const r = G.match(q.value);
-    out.innerHTML = (r.note ? '<p class="' + (r.hits.length ? 'fine' : 'cap-warn') + '">' + esc(r.note) + '</p>' : '') + r.hits.map((h) => { const c = G.CATALOG[h.id]; return '<div class="gi"><div><b>' + esc(c.name) + '</b> ' + tag(c.method) + '<div class="fine">' + esc(c.blurb) + (c.limit ? ' <b>Limits:</b> ' + esc(c.limit) : '') + '</div></div><button type="button" class="btn sm" data-addsolid="gen:' + h.id + '">Add</button></div>'; }).join('');
+    out.innerHTML = (r.note ? '<p class="' + (r.hits.length ? 'fine' : 'cap-warn') + '">' + esc(r.note) + '</p>' : '') + r.hits.map((h) => { const c = G.CATALOG[h.id]; return '<div class="gi"><div><b>' + esc(c.name) + '</b> ' + tag(c.method) + '<div class="eqmini">' + esc(eq1(h.id)) + '</div><div class="fine">' + esc(c.blurb) + (c.limit ? ' <b>Limits:</b> ' + esc(c.limit) : '') + '</div></div><button type="button" class="btn sm" data-addsolid="gen:' + h.id + '">Add</button></div>'; }).join('');
   };
   const fb = document.getElementById('genFind'), fq = document.getElementById('genDesc'); if (fb) fb.addEventListener('click', find); if (fq) fq.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); find(); } });
   const op = document.getElementById('genOpen'), fi = document.getElementById('genFile');
@@ -11189,7 +11295,7 @@ const fmt = (v, d) => { if (!fin(v)) return '–'; const a = Math.abs(v); const 
 
 /* ------------------------------------------------------------------ styles */
 const css = `
-#lab{position:fixed;inset:0;z-index:90;display:grid;grid-template-columns:56px 1fr 340px;grid-template-rows:48px 1fr 56px;grid-template-areas:"top top top" "tools stage side" "tools time side";background:#080c11;color:#d6e2ee;font:13px/1.45 var(--f-body);--lb-bg:#080c11;--lb-panel:#0e141b;--lb-panel2:#121a23;--lb-line:#1d2936;--lb-muted:#7f92a7;--lb-acc:#22d3ee;--lb-acc2:#0e7490}
+#lab{position:fixed;inset:0;z-index:90;display:grid;grid-template-columns:56px 1fr 340px;grid-template-rows:48px 1fr auto;grid-template-areas:"top top top" "tools stage side" "tools time side";background:#080c11;color:#d6e2ee;font:13px/1.45 var(--f-body);--lb-bg:#080c11;--lb-panel:#0e141b;--lb-panel2:#121a23;--lb-line:#1d2936;--lb-muted:#7f92a7;--lb-acc:#22d3ee;--lb-acc2:#0e7490}
 #lab[hidden]{display:none}
 #lab *{box-sizing:border-box}
 #lab button{font:inherit;color:inherit;background:var(--lb-panel2);border:1px solid var(--lb-line);border-radius:6px;padding:5px 10px;cursor:pointer;min-height:30px}
@@ -11242,11 +11348,16 @@ const css = `
 #lab .mbox{background:var(--lb-panel);border:1px solid var(--lb-line);border-radius:10px;max-width:min(1100px,100%);max-height:100%;overflow:auto;padding:14px;width:100%}
 #lab .mbox canvas{max-width:100%;background:#05080c;border-radius:6px;display:block;touch-action:none}
 #lab .spin{display:inline-block;width:12px;height:12px;border:2px solid #1d2936;border-top-color:var(--lb-acc);border-radius:50%;animation:lbs .8s linear infinite;vertical-align:-2px;margin-right:6px}
+#lab .lb-hub{display:flex;gap:2px;margin:0 6px}#lab .lb-hub button{border:0;border-radius:0;background:transparent;border-bottom:2px solid transparent;padding:6px 12px;min-height:44px;font-size:13px}#lab .lb-hub button[aria-selected=true]{border-bottom-color:var(--lb-acc);color:#e6f0ff;background:#0d1a38}
+#lab .lb-strip{flex-basis:100%;display:none;height:52px;gap:2px;overflow-x:auto;align-items:stretch}#lab .lb-strip.on{display:flex}#lab .lb-strip canvas{flex:1 0 64px;min-width:64px;height:100%;border:1px solid var(--lb-line);border-radius:4px;cursor:pointer;background:#05080c}#lab .lb-strip canvas.cur{border-color:var(--lb-acc);box-shadow:0 0 0 1px var(--lb-acc)}
+#lab .lb-time{flex-wrap:wrap;padding-top:4px;padding-bottom:4px}
+#lab .tabs2{display:flex;gap:2px;border-bottom:1px solid var(--lb-line);margin:6px 0}#lab .tabs2 button{border:0;border-radius:0;background:transparent;border-bottom:2px solid transparent;padding:4px 10px;min-height:28px}#lab .tabs2 button[aria-selected=true]{border-bottom-color:var(--lb-acc)}
+#lab canvas.perv{width:100%;border:1px solid var(--lb-line);border-radius:6px;background:#05080c;display:block}
 @keyframes lbs{to{transform:rotate(360deg)}}
 #lab .tip{position:relative}
 .lb-launch{margin-left:0}
 @media (max-width:860px){
- #lab{grid-template-columns:1fr;grid-template-rows:44px 1fr 52px 46px auto;grid-template-areas:"top" "stage" "tools" "time" "side"}
+ #lab{grid-template-columns:1fr;grid-template-rows:44px 1fr 52px auto auto;grid-template-areas:"top" "stage" "tools" "time" "side"}
  #lab .lb-tools{flex-direction:row;overflow-x:auto;border-right:0;border-top:1px solid var(--lb-line);padding:4px 6px}
  #lab .lb-tools button{min-width:44px;min-height:40px}
  #lab .lb-side{max-height:44vh;border-left:0;border-top:1px solid var(--lb-line)}
@@ -11263,8 +11374,10 @@ const st = document.createElement('style'); st.textContent = css; document.head.
 const lab = document.createElement('div'); lab.id = 'lab'; lab.hidden = true; lab.setAttribute('role', 'dialog'); lab.setAttribute('aria-modal', 'true'); lab.setAttribute('aria-label', 'Measurement Lab');
 lab.innerHTML = `
 <header class="lb-top">
-  <div class="lb-brand"><i></i><span>Measurement Lab</span></div>
+  <div class="lb-brand"><i></i><span>Scientific Reality Editor</span></div>
+  <nav class="lb-hub" id="lbHub" role="tablist" aria-label="Workspaces"><button role="tab" data-hub="design" aria-selected="false">Design</button><button role="tab" data-hub="photo" aria-selected="true">Photo Lab</button><button role="tab" data-hub="video" aria-selected="false">Video Lab</button><button role="tab" data-hub="calib" aria-selected="false">Calibration</button><button role="tab" data-hub="3d" aria-selected="false">3D Lab</button><button role="tab" data-hub="const" aria-selected="false">Constants</button></nav>
   <button type="button" id="lbOpen" title="Open a photo or video file">Open</button>
+  <button type="button" data-guide title="Open the quick guide">Guide</button>
   <button type="button" id="lbFromDesign" title="Use the photo selected in the design">From design</button>
   <input type="file" id="lbFile" accept="image/*,video/*" hidden>
   <span class="lb-sp"></span>
@@ -11277,6 +11390,7 @@ lab.innerHTML = `
   <button type="button" data-tool="dist" title="Distance between two points (D)"><b>↔</b>Distance</button>
   <button type="button" data-tool="angle" title="Angle at the middle of three points (A)"><b>∠</b>Angle</button>
   <button type="button" data-tool="poly" title="Polygon: area and perimeter (P). Double-click to finish."><b>⬡</b>Area</button>
+  <button type="button" data-tool="box" title="Rectangle: width, height and area from two opposite corners (B)"><b>▭</b>Rectangle</button>
   <button type="button" data-tool="circle" title="Circle through 3 or more points (C)"><b>○</b>Circle</button>
   <button type="button" data-tool="plane" title="Mark a flat object of known size to get real units (R)"><b>▦</b>Scale</button>
   <button type="button" data-tool="rect" title="Four-corner perspective correction (F)"><b>▱</b>Flatten</button>
@@ -11290,18 +11404,18 @@ lab.innerHTML = `
   <div class="lb-zoom"><button type="button" id="lbZm" aria-label="Zoom out">−</button><button type="button" id="lbZf" aria-label="Fit to screen">Fit</button><button type="button" id="lbZ1" aria-label="Actual pixels">1:1</button><button type="button" id="lbZp" aria-label="Zoom in">+</button></div>
 </main>
 <footer class="lb-time" id="lbTime">
-  <button type="button" id="lbPlay" aria-label="Play or pause" disabled>▶</button><button type="button" id="lbPrev" aria-label="Previous frame" disabled>◀▮</button><input type="range" id="lbScrub" min="0" max="1" step="0.001" value="0" disabled aria-label="Video position"><button type="button" id="lbNext" aria-label="Next frame" disabled>▮▶</button><span class="t" id="lbTt">no video</span>
+  <button type="button" id="lbPlay" aria-label="Play or pause" disabled>▶</button><button type="button" id="lbPrev" aria-label="Previous frame" disabled>◀▮</button><input type="range" id="lbScrub" min="0" max="1" step="0.001" value="0" disabled aria-label="Video position"><button type="button" id="lbNext" aria-label="Next frame" disabled>▮▶</button><span class="t" id="lbTt">no video</span><div class="lb-strip" id="lbStrip" aria-label="Video frames. Click a frame to jump there."></div>
 </footer>
 <aside class="lb-side" aria-label="Properties and results">
-  <div class="lb-tabs" role="tablist"><button role="tab" aria-selected="true" data-pane="res">Results</button><button role="tab" aria-selected="false" data-pane="cal">Scale</button><button role="tab" aria-selected="false" data-pane="adj">Adjust</button><button role="tab" aria-selected="false" data-pane="trk">Track</button><button role="tab" aria-selected="false" data-pane="help">Help</button></div>
-  <div class="lb-pane on" id="pane-res"></div><div class="lb-pane" id="pane-cal"></div><div class="lb-pane" id="pane-adj"></div><div class="lb-pane" id="pane-trk"></div><div class="lb-pane" id="pane-help"></div>
+  <div class="lb-tabs" role="tablist"><button role="tab" aria-selected="true" data-pane="res">Results</button><button role="tab" aria-selected="false" data-pane="cal">Scale</button><button role="tab" aria-selected="false" data-pane="adj">Adjust</button><button role="tab" aria-selected="false" data-pane="per">Persp.</button><button role="tab" aria-selected="false" data-pane="trk">Track</button><button role="tab" aria-selected="false" data-pane="help">Help</button></div>
+  <div class="lb-pane on" id="pane-res"></div><div class="lb-pane" id="pane-cal"></div><div class="lb-pane" id="pane-adj"></div><div class="lb-pane" id="pane-per"></div><div class="lb-pane" id="pane-trk"></div><div class="lb-pane" id="pane-help"></div>
 </aside>
 <div class="modal" id="lbModal" hidden><div class="mbox" id="lbMBox"></div></div>
 `;
 document.body.appendChild(lab);
 
 /* ------------------------------------------------------------------ state */
-const S = { src: null, view: { s: 1, tx: 0, ty: 0 }, tool: 'pan', pts: [], items: [], sel: -1, plane: null, quad: null, adjust: { ev: 0, c: 0, b: 0 }, crop: null, cmp: { on: false, pos: 0.5 }, sigma: 1.5, disp: 'auto', prof: null, undist: true, tracks: [], fps: null, fpsAssumed: 30, tracking: false, camViews: [], camRes: null, n: 0, hist: [], redo: [], busy: '' };
+const S = { hub: 'photo', src: null, view: { s: 1, tx: 0, ty: 0 }, tool: 'pan', pts: [], items: [], sel: -1, plane: null, quad: null, adjust: { ev: 0, c: 0, b: 0, sat: 0, sh: 0 }, crop: null, cmp: { on: false, pos: 0.5 }, sigma: 1.5, disp: 'auto', prof: null, undist: true, tracks: [], fps: null, fpsAssumed: 30, tracking: false, camViews: [], camRes: null, n: 0, hist: [], redo: [], busy: '' };
 let cv, ctx, W = 0, H = 0, DPR = 1, proc = null, procKey = '', raf = 0, drag = null, hover = null;
 const toast = (m) => { try { MCU.toast(m); } catch (e) { /* ignore */ } };
 const cvx = () => $('#lbCv');
@@ -11309,17 +11423,18 @@ const cvx = () => $('#lbCv');
 /* ------------------------------------------------------------------ undo / redo */
 const snapState = () => JSON.stringify({ items: S.items, plane: S.plane, quad: S.quad, adjust: S.adjust, crop: S.crop, n: S.n });
 function pushHist() { S.hist.push(snapState()); if (S.hist.length > 80) S.hist.shift(); S.redo = []; updHist(); }
-function restore(js) { const o = JSON.parse(js); S.items = o.items; S.plane = o.plane; S.quad = o.quad; S.adjust = o.adjust; S.crop = o.crop; S.n = o.n; if (S.plane) S.plane.H = planeH(); S.sel = -1; S.pts = []; remeasure(); renderAll(); }
+function restore(js) { const o = JSON.parse(js); S.items = o.items; S.plane = o.plane; S.quad = o.quad; S.adjust = Object.assign({ ev: 0, c: 0, b: 0, sat: 0, sh: 0 }, o.adjust); S.crop = o.crop; S.n = o.n; if (S.plane) S.plane.H = planeH(); S.sel = -1; S.pts = []; remeasure(); renderAll(); }
 function updHist() { $('#lbUndo').disabled = !S.hist.length; $('#lbRedo').disabled = !S.redo.length; }
 $('#lbUndo').onclick = () => { if (!S.hist.length) return; S.redo.push(snapState()); restore(S.hist.pop()); updHist(); };
 $('#lbRedo').onclick = () => { if (!S.redo.length) return; S.hist.push(snapState()); restore(S.redo.pop()); updHist(); };
-$('#lbReset').onclick = () => { if (!S.src) return; if (!S.items.length && !S.plane && !S.quad && !S.crop && !S.adjust.ev && !S.adjust.c && !S.adjust.b) return; pushHist(); S.items = []; S.plane = null; S.quad = null; S.crop = null; S.adjust = { ev: 0, c: 0, b: 0 }; S.pts = []; S.sel = -1; S.tracks = []; renderAll(); toast('Measurements and settings for this file were cleared. Undo brings them back.'); };
+$('#lbReset').onclick = () => { if (!S.src) return; if (!S.items.length && !S.plane && !S.quad && !S.crop && !S.adjust.ev && !S.adjust.c && !S.adjust.b && !S.adjust.sat && !S.adjust.sh) return; pushHist(); S.items = []; S.plane = null; S.quad = null; S.crop = null; S.adjust = { ev: 0, c: 0, b: 0, sat: 0, sh: 0 }; S.pts = []; S.sel = -1; S.tracks = []; renderAll(); toast('Measurements and settings for this file were cleared. Undo brings them back.'); };
 
 /* ------------------------------------------------------------------ source handling */
 function setSource(src) {
   if (S.src && S.src.kind === 'video' && S.src.url) { try { S.src.v.pause(); S.src.v.removeAttribute('src'); S.src.v.load(); URL.revokeObjectURL(S.src.url); } catch (e) { /* ignore */ } }
-  S.src = src; S.items = []; S.plane = null; S.quad = null; S.crop = null; S.adjust = { ev: 0, c: 0, b: 0 }; S.pts = []; S.sel = -1; S.tracks = []; S.hist = []; S.redo = []; S.fps = null; S.n = 0; proc = null; procKey = ''; updHist();
+  S.src = src; S.items = []; S.plane = null; S.quad = null; S.crop = null; S.adjust = { ev: 0, c: 0, b: 0, sat: 0, sh: 0 }; S.pts = []; S.sel = -1; S.tracks = []; S.hist = []; S.redo = []; S.fps = null; S.n = 0; proc = null; procKey = ''; updHist();
   $('#lbEmpty').hidden = true; fitView(); setTool('pan'); renderAll();
+  S.per = null; buildStrip(); if (S.hub !== 'calib') setHub(src.kind === 'video' ? 'video' : 'photo', true); if (S.hub === 'video' && src.kind === 'video') { const tb = $$('.lb-tabs button').find((b) => b.dataset.pane === 'res'); if (tb) tb.click(); }
   const isV = src.kind === 'video'; ['#lbPlay', '#lbPrev', '#lbNext', '#lbScrub'].forEach((q) => { $(q).disabled = !isV; }); $('#lbScrub').max = isV ? src.dur : 1; syncTime();
   if (isV) { estimateFps(src.v); }
 }
@@ -11355,9 +11470,11 @@ function zoomBy(f, cx, cy) { S.view = X.zoomAt(S.view, cx === undefined ? W / 2 
 $('#lbZp').onclick = () => zoomBy(1.4); $('#lbZm').onclick = () => zoomBy(1 / 1.4); $('#lbZf').onclick = () => { fitView(); draw(); }; $('#lbZ1').onclick = () => { if (!S.src) return; const c = cropRect(), cx = c.x + c.w / 2, cy = c.y + c.h / 2; S.view = { s: 1 / DPR * DPR, tx: W / 2 - cx, ty: H / 2 - cy }; draw(); };
 
 /* ------------------------------------------------------------------ pixels: adjustments */
-const adjDefault = () => !S.adjust.ev && !S.adjust.c && !S.adjust.b;
+const adjDefault = () => !S.adjust.ev && !S.adjust.c && !S.adjust.b && !S.adjust.sat && !S.adjust.sh;
 function lut() { const a = S.adjust, k = Math.pow(2, a.ev), cf = 1 + a.c / 100, o = new Uint8ClampedArray(256); for (let i = 0; i < 256; i++) { let v = i / 255; v = v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); v *= k; v = v <= 0.0031308 ? v * 12.92 : 1.055 * Math.pow(v, 1 / 2.4) - 0.055; v = v * 255; v = (v - 128) * cf + 128 + a.b * 2.55; o[i] = v; } return o; }
-function adjustedCanvas(srcEl, w, h, cw, ch, sx, sy, sw, sh) { const c = document.createElement('canvas'); c.width = cw; c.height = ch; const x = c.getContext('2d', { willReadFrequently: true }); x.imageSmoothingEnabled = true; x.drawImage(srcEl, sx, sy, sw, sh, 0, 0, cw, ch); if (!adjDefault()) { const d = x.getImageData(0, 0, cw, ch), L = lut(); for (let i = 0; i < d.data.length; i += 4) { d.data[i] = L[d.data[i]]; d.data[i + 1] = L[d.data[i + 1]]; d.data[i + 2] = L[d.data[i + 2]]; } x.putImageData(d, 0, 0); } return c; }
+/* unsharp mask: out = in + amount * (in - 3x3 box blur), alpha untouched. A display aid only; it adds no real detail. */
+function sharpenData(d, w, h, amt) { const a = d.data, o = new Uint8ClampedArray(a); for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++) { const i = (y * w + x) * 4; for (let c = 0; c < 3; c++) { const b = (a[i + c - 4 - w * 4] + a[i + c - w * 4] + a[i + c + 4 - w * 4] + a[i + c - 4] + a[i + c] + a[i + c + 4] + a[i + c - 4 + w * 4] + a[i + c + w * 4] + a[i + c + 4 + w * 4]) / 9; o[i + c] = a[i + c] + amt * (a[i + c] - b); } } a.set(o); }
+function adjustedCanvas(srcEl, w, h, cw, ch, sx, sy, sw, sh) { const c = document.createElement('canvas'); c.width = cw; c.height = ch; const x = c.getContext('2d', { willReadFrequently: true }); x.imageSmoothingEnabled = true; x.drawImage(srcEl, sx, sy, sw, sh, 0, 0, cw, ch); if (!adjDefault()) { const d = x.getImageData(0, 0, cw, ch), L = lut(); const sk = 1 + (S.adjust.sat || 0) / 100, dd = d.data; for (let i = 0; i < dd.length; i += 4) { let r = L[dd[i]], g = L[dd[i + 1]], b2 = L[dd[i + 2]]; if (sk !== 1) { const y = 0.2126 * r + 0.7152 * g + 0.0722 * b2; r = y + (r - y) * sk; g = y + (g - y) * sk; b2 = y + (b2 - y) * sk; } dd[i] = r; dd[i + 1] = g; dd[i + 2] = b2; } if (S.adjust.sh) sharpenData(d, cw, ch, S.adjust.sh / 100 * 1.6); x.putImageData(d, 0, 0); } return c; }
 const srcEl = () => (S.src.kind === 'video' ? S.src.v : S.src.el);
 
 /* ------------------------------------------------------------------ plane (reference) and measurement */
@@ -11387,7 +11504,7 @@ function draw() {
   const a = im([0, 0]), b = im([W, H]); const x0 = Math.max(c.x, Math.floor(a[0])), y0 = Math.max(c.y, Math.floor(a[1])), x1 = Math.min(c.x + c.w, Math.ceil(b[0])), y1 = Math.min(c.y + c.h, Math.ceil(b[1]));
   if (x1 > x0 && y1 > y0) {
     const sw = x1 - x0, sh = y1 - y0, cw = Math.max(1, Math.min(Math.ceil(sw * V.s), W)), ch = Math.max(1, Math.min(Math.ceil(sh * V.s), H)), el = srcEl();
-    const key = [S.src.kind === 'video' ? S.src.v.currentTime : 0, x0, y0, x1, y1, cw, ch, S.adjust.ev, S.adjust.c, S.adjust.b].join('|');
+    const key = [S.src.kind === 'video' ? S.src.v.currentTime : 0, x0, y0, x1, y1, cw, ch, S.adjust.ev, S.adjust.c, S.adjust.b, S.adjust.sat || 0, S.adjust.sh || 0].join('|');
     try { ctx.imageSmoothingEnabled = V.s < 3; const dx = x0 * V.s + V.tx, dy = y0 * V.s + V.ty, dw = sw * V.s, dh = sh * V.s;
       if (S.cmp.on && !adjDefault()) { const px = S.cmp.pos * W; ctx.save(); ctx.beginPath(); ctx.rect(0, 0, px, H); ctx.clip(); ctx.drawImage(el, x0, y0, sw, sh, dx, dy, dw, dh); ctx.restore(); ctx.save(); ctx.beginPath(); ctx.rect(px, 0, W - px, H); ctx.clip(); ctx.drawImage(adjCached(key, el, cw, ch, x0, y0, sw, sh), dx, dy, dw, dh); ctx.restore(); ctx.strokeStyle = '#22d3ee'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(px, 0); ctx.lineTo(px, H); ctx.stroke(); ctx.fillStyle = '#22d3ee'; ctx.fillRect(px - 12, H / 2 - 14, 24, 28); ctx.fillStyle = '#05080c'; ctx.font = '600 11px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('◀▶', px, H / 2 + 4); ctx.textAlign = 'left'; ctx.fillStyle = '#fff'; ctx.fillText('ORIGINAL', 10, 18); ctx.fillText('ADJUSTED', W - 70, 18); }
       else if (adjDefault()) ctx.drawImage(el, x0, y0, sw, sh, dx, dy, dw, dh); else ctx.drawImage(adjCached(key, el, cw, ch, x0, y0, sw, sh), dx, dy, dw, dh);
@@ -11417,13 +11534,13 @@ function overlays() {
   if (S.pts.length) { const P = S.pts.map(sc); c.strokeStyle = COL.pend; c.lineWidth = 1.4; c.setLineDash([4, 3]); c.beginPath(); P.forEach((p, i) => (i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1]))); if (hover && S.pts.length && ['dist', 'angle', 'poly', 'circle', 'plane', 'rect'].includes(S.tool)) c.lineTo(hover[0], hover[1]); c.stroke(); c.setLineDash([]); P.forEach((p) => cross(c, p, COL.pend, 6)); }
   if (drag && drag.kind === 'crop') { const a = sc(drag.a), b = sc(drag.b); c.strokeStyle = '#22d3ee'; c.setLineDash([5, 4]); c.strokeRect(a[0], a[1], b[0] - a[0], b[1] - a[1]); c.setLineDash([]); }
   // magnifier while placing a point
-  if (hover && ['dist', 'angle', 'poly', 'circle', 'plane', 'rect', 'track'].includes(S.tool) && !drag) magnifier(c, hover);
+  if (hover && ['box', 'dist', 'angle', 'poly', 'circle', 'plane', 'rect', 'track'].includes(S.tool) && !drag) magnifier(c, hover);
 }
 function magnifier(c, h) { if (!S.src || S.view.s > 6) return; const p = im(h), R = 44, z = 4; const x = h[0] > W - 120 ? h[0] - 100 : h[0] + 30, y = h[1] < 110 ? h[1] + 30 : h[1] - 100; c.save(); c.beginPath(); c.arc(x + R / 2 + 20, y + R / 2 + 20, R, 0, 7); c.clip(); c.fillStyle = '#000'; c.fillRect(x - 30, y - 30, 2 * R + 20, 2 * R + 20); c.imageSmoothingEnabled = false; try { c.drawImage(srcEl(), p[0] - R / z, p[1] - R / z, 2 * R / z, 2 * R / z, x + 20 - R / 2, y + 20 - R / 2, 2 * R, 2 * R); } catch (e) { /* ignore */ } c.restore(); const cx = x + R / 2 + 20, cy = y + R / 2 + 20; c.strokeStyle = '#22d3ee'; c.lineWidth = 1; c.beginPath(); c.arc(cx, cy, R, 0, 7); c.moveTo(cx - 8, cy); c.lineTo(cx + 8, cy); c.moveTo(cx, cy - 8); c.lineTo(cx, cy + 8); c.stroke(); }
 
 /* ------------------------------------------------------------------ interaction */
-const need = { dist: 2, angle: 3, plane: 4, rect: 4, poly: 0, circle: 0 };
-const HINT = { pan: 'Drag to move. Scroll or pinch to zoom. Drag any point to adjust it.', dist: 'Click the two ends of the distance.', angle: 'Click the first arm end, the corner of the angle, then the second arm end.', poly: 'Click the corners. Double-click, Enter or the Finish button closes the shape.', circle: 'Click 3 or more points on the circle edge, then double-click or press Enter.', plane: 'Click the four corners of a flat object of known size: top-left, top-right, bottom-right, bottom-left.', rect: 'Click four corners of a flat region: top-left, top-right, bottom-right, bottom-left. Drag them to fine-tune.', crop: 'Drag a rectangle to crop the view. Measurements keep their original-picture coordinates.', track: 'Click the point to follow. It must sit on a corner or textured spot, not a flat area.' };
+const need = { box: 2, dist: 2, angle: 3, plane: 4, rect: 4, poly: 0, circle: 0 };
+const HINT = { box: 'Click two opposite corners of the rectangle. Its width, height, area and perimeter are measured.', pan: 'Drag to move. Scroll or pinch to zoom. Drag any point to adjust it.', dist: 'Click the two ends of the distance.', angle: 'Click the first arm end, the corner of the angle, then the second arm end.', poly: 'Click the corners. Double-click, Enter or the Finish button closes the shape.', circle: 'Click 3 or more points on the circle edge, then double-click or press Enter.', plane: 'Click the four corners of a flat object of known size: top-left, top-right, bottom-right, bottom-left.', rect: 'Click four corners of a flat region: top-left, top-right, bottom-right, bottom-left. Drag them to fine-tune.', crop: 'Drag a rectangle to crop the view. Measurements keep their original-picture coordinates.', track: 'Click the point to follow. It must sit on a corner or textured spot, not a flat area.' };
 function setTool(t) { S.tool = t; S.pts = []; $$('#lbTools button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.tool === t))); cvx().style.cursor = t === 'pan' ? 'grab' : 'crosshair'; updateHint(); if (t === 'plane' || t === 'rect') { renderPanes(); } draw(); }
 function updateHint() { const h = $('#lbHint'); if (S.busy || !S.src) { h.hidden = !S.busy; return; } const n = S.pts.length, need2 = need[S.tool]; h.hidden = false; h.textContent = HINT[S.tool] + (need2 ? '  (' + n + ' of ' + need2 + ')' : n ? '  (' + n + ' placed)' : ''); }
 $$('#lbTools button').forEach((b) => { b.onclick = () => setTool(b.dataset.tool); });
@@ -11470,6 +11587,7 @@ function clickAt(p, e) {
   S.pts.push(q); const n = S.pts.length;
   if (t === 'dist' && n === 2) addItem('distance', S.pts.slice());
   else if (t === 'angle' && n === 3) addItem('angle', S.pts.slice());
+  else if (t === 'box' && n === 2) { const a = S.pts[0], b = S.pts[1]; if (Math.abs(a[0] - b[0]) < 2 || Math.abs(a[1] - b[1]) < 2) { S.pts = []; toast('A rectangle needs two corners that differ in both directions.'); } else addItem('polygon', [a, [b[0], a[1]], b, [a[0], b[1]]]); }
   else if (t === 'plane' && n === 4) { startPlane(S.pts.slice()); S.pts = []; }
   else if (t === 'rect' && n === 4) { pushHist(); S.quad = S.pts.slice(); S.pts = []; setTool('pan'); renderAll(); $$('.lb-tabs button')[1].click(); }
   else if ((t === 'poly' || t === 'circle') && dbl && n >= 4) { S.pts.pop(); finishShape(); }
@@ -11483,14 +11601,14 @@ window.addEventListener('keydown', (e) => {
   if (k === 'enter' && (S.tool === 'poly' || S.tool === 'circle')) { finishShape(); e.preventDefault(); return; }
   if ((e.ctrlKey || e.metaKey) && k === 'z') { e.shiftKey ? $('#lbRedo').click() : $('#lbUndo').click(); e.preventDefault(); return; }
   if (e.ctrlKey || e.metaKey || e.altKey) return;
-  const map = { h: 'pan', d: 'dist', a: 'angle', p: 'poly', c: 'circle', r: 'plane', f: 'rect', x: 'crop', t: 'track' }; if (map[k]) { setTool(map[k]); e.preventDefault(); return; }
+  const map = { b: 'box', h: 'pan', d: 'dist', a: 'angle', p: 'poly', c: 'circle', r: 'plane', f: 'rect', x: 'crop', t: 'track' }; if (map[k]) { setTool(map[k]); e.preventDefault(); return; }
   if (k === 'delete' || k === 'backspace') { if (S.sel >= 0) { pushHist(); S.items.splice(S.sel, 1); S.sel = -1; renderAll(); e.preventDefault(); } return; }
   if (S.src && S.src.kind === 'video') { if (k === ',' || k === 'arrowleft') { stepFrame(-1); e.preventDefault(); } else if (k === '.' || k === 'arrowright') { stepFrame(1); e.preventDefault(); } else if (k === ' ') { togglePlay(); e.preventDefault(); } }
   if (k === '0') { fitView(); draw(); } else if (k === '+' || k === '=') zoomBy(1.4); else if (k === '-') zoomBy(1 / 1.4);
 });
 
 /* ------------------------------------------------------------------ video transport */
-function syncTime() { const s = S.src; if (!s || s.kind !== 'video') { $('#lbTt').textContent = s ? 'photo' : 'no video'; return; } const t = s.v.currentTime; $('#lbScrub').value = t; $('#lbTt').textContent = t.toFixed(3) + ' s / ' + s.dur.toFixed(2) + ' s  frame ≈ ' + Math.round(t / frameDt()) + '  ' + (S.fps ? S.fps.toFixed(2) + ' fps measured' : S.fpsAssumed + ' fps assumed'); }
+function syncTime() { markStrip(); const s = S.src; if (!s || s.kind !== 'video') { $('#lbTt').textContent = s ? 'photo' : 'no video'; return; } const t = s.v.currentTime; $('#lbScrub').value = t; $('#lbTt').textContent = t.toFixed(3) + ' s / ' + s.dur.toFixed(2) + ' s  frame ≈ ' + Math.round(t / frameDt()) + '  ' + (S.fps ? S.fps.toFixed(2) + ' fps measured' : S.fpsAssumed + ' fps assumed'); }
 function seekTo(t) { return new Promise((res) => { const v = S.src.v; t = Math.max(0, Math.min(S.src.dur, t)); if (Math.abs(v.currentTime - t) < 1e-6) { res(); return; } const done = () => { v.removeEventListener('seeked', done); res(); }; v.addEventListener('seeked', done); v.currentTime = t; }); }
 async function stepFrame(n) { if (!S.src || S.src.kind !== 'video') return; S.src.v.pause(); await seekTo(S.src.v.currentTime + n * frameDt()); syncTime(); draw(); renderPanes(true); }
 function togglePlay() { const v = S.src && S.src.v; if (!v) return; if (v.paused) { v.play(); $('#lbPlay').textContent = '❚❚'; loop(); } else { v.pause(); $('#lbPlay').textContent = '▶'; } }
@@ -11567,7 +11685,7 @@ $('#lbExport').onclick = (e) => { const ex = $('#lbMenu'); if (ex) { ex.remove()
 const tag = (k) => '<span class="k k-' + k + '" title="' + { measured: 'Read directly from pixels or the player', calculated: 'Computed exactly from measured numbers by a formula', calibrated: 'Converted with your scale reference or a camera calibration', estimated: 'Inferred with a model; has an interval', assumed: 'A default or a number you supplied', unknown: 'Cannot be determined from what is known', invalid: 'The input is not a valid shape' }[k] + '">' + k + '</span>';
 function startPlane(corners) { pushHist(); S.plane = { corners, w: 29.7, h: 21, unit: 'cm' }; S.plane.H = planeH(); const q = X.checkQuad(corners, S.src.w, S.src.h); S.planeIssues = q; setTool('pan'); $$('.lb-tabs button')[1].click(); renderAll(); }
 function renderAll() { renderPanes(); updateHint(); draw(); }
-function renderPanes(light) { if (lab.hidden) return; renderRes(); if (!light || true) { renderCal(); renderAdj(); renderTrk(); renderHelp(); } }
+function renderPanes(light) { if (lab.hidden) return; renderRes(); if (!light || true) { renderCal(); renderAdj(); renderPer(); renderTrk(); renderHelp(); } }
 function renderRes() {
   const p = $('#pane-res'); if (!S.src) { p.innerHTML = '<p class="fine">Open a photo or video to begin.</p>'; return; }
   const s = S.src; let h = '<h3>File</h3><table><tr><td>Name</td><td>' + esc(s.name) + '</td></tr><tr><td>Size</td><td>' + s.w + ' × ' + s.h + ' px  (' + (s.w / s.h).toFixed(4) + ')</td></tr>' + (s.size ? '<tr><td>File</td><td>' + esc(s.type || '?') + ', ' + (s.size / 1048576).toFixed(2) + ' MB</td></tr>' : '') + (s.kind === 'video' ? '<tr><td>Length</td><td>' + s.dur.toFixed(3) + ' s</td></tr><tr><td>Frame rate</td><td>' + (S.fps ? S.fps.toFixed(2) + ' fps ' + tag('measured') : S.fpsAssumed + ' fps ' + tag('assumed')) + '</td></tr>' : '');
@@ -11581,14 +11699,15 @@ function renderRes() {
     if (m.kind === 'invalid') h += '<p class="err">' + esc(v.sub) + '</p>'; else { if (v.unc) h += '<div>95% interval ' + fmt(v.unc.lo) + ' to ' + fmt(v.unc.hi) + ' ' + tag('estimated') + '</div><div class="fine">± ' + fmt(v.unc.sd, 2) + ' (1 sd) from click error σ = ' + m.sigma + ' px</div>'; if (v.pxline && m.value !== null) h += '<div class="fine">in the picture: ' + esc(v.pxline) + ' ' + tag('measured') + '</div>'; if (m.value2) h += '<div class="fine">' + (m.type === 'polygon' ? 'perimeter' : 'area') + ': ' + fmt(m.value2.value) + ' ' + esc(m.value2.unit) + '</div>'; else if (m.px2) h += '<div class="fine">' + (m.type === 'polygon' ? 'perimeter' : 'area') + ' in pixels: ' + fmt(m.px2.value) + ' ' + esc(m.px2.unit) + '</div>';
       (m.issues || []).forEach((t) => { h += '<div class="warn">' + esc(t) + '</div>'; }); if (m.notes && m.notes.length) h += '<details><summary>Assumptions and limits</summary>' + m.notes.map((t) => '<p class="fine">' + esc(t) + '</p>').join('') + '</details>'; }
     h += '</div>'; });
+  if (S.sel >= 0 && S.items[S.sel]) h += detailsHTML(S.items[S.sel]);
   if (S.items.length) h += '<div class="row2"><button type="button" id="lbCsv">Export CSV</button><button type="button" id="lbPng">Annotated PNG</button></div>';
   p.innerHTML = h; $$('.card[data-i]', p).forEach((c) => { c.onclick = (e) => { if (e.target.closest('[data-del]')) return; S.sel = +c.dataset.i; renderPanes(); draw(); }; }); $$('[data-del]', p).forEach((b) => { b.onclick = () => { pushHist(); S.items.splice(+b.dataset.del, 1); S.sel = -1; renderAll(); }; });
-  const d = $('#lbDisp'); if (d) d.onchange = () => { S.disp = d.value; renderAll(); }; const c1 = $('#lbCsv'); if (c1) c1.onclick = () => exportData('csv'); const c2 = $('#lbPng'); if (c2) c2.onclick = () => exportData('png');
+  bindDetails(p); const d = $('#lbDisp'); if (d) d.onchange = () => { S.disp = d.value; renderAll(); }; const c1 = $('#lbCsv'); if (c1) c1.onclick = () => exportData('csv'); const c2 = $('#lbPng'); if (c2) c2.onclick = () => exportData('png');
 }
 function renderCal() {
   const p = $('#pane-cal'); if (!S.src) { p.innerHTML = '<p class="fine">Open a photo or video first.</p>'; return; }
   const pl = S.plane; let h = '<h3>Scale from a flat object</h3><p class="fine">Mark the four corners of a flat object of known size (a sheet of paper, a card, a tile) lying on the same flat surface as what you want to measure. Lengths, areas and angles are then computed on that plane. A single scale for the whole picture would be wrong for things at other depths.</p><button type="button" id="calMark" ' + (S.tool === 'plane' ? 'class="on"' : '') + '>' + (pl ? 'Mark the corners again' : 'Mark four corners') + '</button>';
-  if (pl) { h += '<div class="row2"><div><label for="plW">Width (top edge)</label><input type="number" id="plW" min="0" step="any" value="' + pl.w + '"></div><div><label for="plH">Height (side edge)</label><input type="number" id="plH" min="0" step="any" value="' + pl.h + '"></div></div><label for="plU">Unit</label><select id="plU">' + ['mm', 'cm', 'm', 'in', 'ft'].map((u) => '<option' + (pl.unit === u ? ' selected' : '') + '>' + u + '</option>').join('') + '</select><p class="fine">The default is an A4 sheet, 29.7 × 21 cm. Enter your real object’s size. If it is wrong, every real-world number is wrong by the same factor.</p>'; (S.planeIssues || []).forEach((i) => { h += '<p class="' + (i.sev === 'error' ? 'err' : 'warn') + '">' + esc(i.msg) + '</p>'; }); if (pl && !pl.H) h += '<p class="err">These four corners do not define a plane mapping (degenerate). Mark them again.</p>'; h += '<button type="button" id="plClear">Remove the scale</button>'; }
+  if (pl) { h += '<div class="row2"><div><label for="plW">Width (top edge)</label><input type="number" id="plW" min="0" step="any" value="' + pl.w + '"></div><div><label for="plH">Height (side edge)</label><input type="number" id="plH" min="0" step="any" value="' + pl.h + '"></div></div><label for="plU">Unit</label><select id="plU">' + ['mm', 'cm', 'm', 'in', 'ft'].map((u) => '<option' + (pl.unit === u ? ' selected' : '') + '>' + u + '</option>').join('') + '</select><label for="plPre">Or pick a standard size</label><select id="plPre"><option value="">Choose…</option><option value="297,210">A4 paper, 297 × 210 mm</option><option value="420,297">A3 paper, 420 × 297 mm</option><option value="210,148">A5 paper, 210 × 148 mm</option><option value="279.4,215.9">US Letter, 279.4 × 215.9 mm</option><option value="85.6,53.98">Bank / ID card (ISO 7810 ID-1), 85.60 × 53.98 mm</option></select><p class="fine">The default is an A4 sheet, 29.7 × 21 cm. Enter your real object’s size. If it is wrong, every real-world number is wrong by the same factor.</p>'; (S.planeIssues || []).forEach((i) => { h += '<p class="' + (i.sev === 'error' ? 'err' : 'warn') + '">' + esc(i.msg) + '</p>'; }); if (pl && !pl.H) h += '<p class="err">These four corners do not define a plane mapping (degenerate). Mark them again.</p>'; h += '<button type="button" id="plClear">Remove the scale</button>'; }
   h += '<h3>Click accuracy</h3><label for="sig">Typical error when placing a point (pixels)</label><input type="number" id="sig" min="0.1" max="20" step="0.1" value="' + S.sigma + '"><p class="fine">Used for the 95% intervals. About 0.5 to 1 px when zoomed in on sharp corners, 2 px or more on soft edges or a phone screen. The intervals do not include lens distortion, a wrong reference size, or points that are not on the reference surface.</p>';
   h += '<h3>Camera calibration (checkerboard)</h3>' + (S.prof ? '<div class="card"><b>' + esc(S.prof.name) + '</b> ' + tag('calibrated') + '<br><span class="fine">fx ' + fmt(S.prof.cal.K.fx, 5) + ', fy ' + fmt(S.prof.cal.K.fy, 5) + ', cx ' + fmt(S.prof.cal.K.cx, 5) + ', cy ' + fmt(S.prof.cal.K.cy, 5) + ' px; k1 ' + fmt(S.prof.cal.dist.k1, 3) + ', k2 ' + fmt(S.prof.cal.dist.k2, 3) + '; RMS reprojection error ' + S.prof.cal.rms.toFixed(3) + ' px; ' + S.prof.cal.size.w + ' × ' + S.prof.cal.size.h + '</span><label style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="undistOn" ' + (S.undist ? 'checked' : '') + ' style="width:auto"> Remove lens distortion from measured points</label>' + (sameSize() ? '' : '<p class="warn">This picture is ' + S.src.w + ' × ' + S.src.h + ' but the calibration is ' + S.prof.cal.size.w + ' × ' + S.prof.cal.size.h + ', so it is NOT applied. A calibration is only valid for the same camera, lens, zoom and resolution.</p>') + '<button type="button" id="profDrop">Stop using this profile</button></div>' : '<p class="fine">No camera profile. Calibration measures the lens: focal length, optical centre and radial distortion, with a reprojection-error report.</p>');
   h += '<button type="button" id="camOpen">' + (S.prof ? 'Calibrate again' : 'Calibrate a camera…') + '</button> <button type="button" id="profLoad">Load profile…</button><input type="file" id="profFile" accept=".json,application/json" hidden>' + profilesHTML();
@@ -11599,6 +11718,7 @@ function renderCal() {
   on('#calMark', () => setTool('plane')); on('#plClear', () => { pushHist(); S.plane = null; S.planeIssues = null; remeasure(); renderAll(); }); on('#profDrop', () => { S.prof = null; remeasure(); renderAll(); }); on('#camOpen', openCam); on('#profLoad', () => $('#profFile', p).click()); on('#rcGo', doRectify); on('#rcClr', () => { pushHist(); S.quad = null; renderAll(); });
   const chg = (id, f) => { const e = $(id, p); if (e) e.onchange = f; };
   const plChange = () => { const w = +$('#plW').value, hh = +$('#plH').value; if (!(w > 0 && hh > 0)) { toast('Width and height must both be greater than zero.'); renderCal(); return; } pushHist(); S.plane.w = w; S.plane.h = hh; S.plane.unit = $('#plU').value; remeasure(); renderAll(); };
+  const pre = $('#plPre'); if (pre) pre.onchange = () => { if (!pre.value) return; const [w, hh] = pre.value.split(',').map(Number); pushHist(); S.plane.w = w; S.plane.h = hh; S.plane.unit = 'mm'; remeasure(); renderAll(); };
   chg('#plW', plChange); chg('#plH', plChange); chg('#plU', plChange); chg('#sig', () => { const v = +$('#sig').value; if (!(v > 0)) return; S.sigma = v; remeasure(); renderAll(); }); chg('#undistOn', () => { S.undist = $('#undistOn').checked; remeasure(); renderAll(); });
   const pf = $('#profFile', p); if (pf) pf.onchange = (e) => { const f = e.target.files[0]; e.target.value = ''; if (!f) return; f.text().then((t) => { try { const o = JSON.parse(t); if (!o.cal || !o.cal.K || !o.cal.dist) throw new Error('This is not a camera profile file.'); S.prof = o; remeasure(); renderAll(); toast('Loaded camera profile ' + o.name + '.'); } catch (er) { toast('Could not load that profile: ' + er.message); } }); };
   $$('[data-prof]', p).forEach((b) => { b.onclick = () => { const l = loadProfiles(); const o = l[+b.dataset.prof]; if (o) { S.prof = o; remeasure(); renderAll(); } }; });
@@ -11609,9 +11729,9 @@ function profilesHTML() { const l = loadProfiles(); if (!l.length) return ''; re
 function renderAdj() {
   const p = $('#pane-adj'); if (!S.src) { p.innerHTML = '<p class="fine">Open a photo or video first.</p>'; return; } const a = S.adjust;
   const sl = (id, lab2, min, max, step, v, unit) => '<label for="' + id + '">' + lab2 + ' <output id="o-' + id + '" style="float:right;color:#9fe9f7">' + v + unit + '</output></label><input type="range" id="' + id + '" min="' + min + '" max="' + max + '" step="' + step + '" value="' + v + '">';
-  p.innerHTML = '<h3>Display adjustments</h3>' + sl('adEv', 'Exposure (stops)', -3, 3, 0.05, a.ev, ' EV') + sl('adC', 'Contrast', -80, 80, 1, a.c, '') + sl('adB', 'Brightness', -80, 80, 1, a.b, '') + '<label style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="adCmp" style="width:auto" ' + (S.cmp.on ? 'checked' : '') + '> Before / after slider</label><button type="button" id="adReset">Reset adjustments</button><p class="fine">These change how the picture looks on screen and in the annotated export. They do <b>not</b> change any measurement, and they cannot recover detail the camera never captured: brightening a dark photo raises noise along with the signal. Exposure is applied in linear light.</p><h3>Crop</h3><p class="fine">' + (S.crop ? 'Cropped to ' + S.crop.w + ' × ' + S.crop.h + ' px starting at (' + S.crop.x + ', ' + S.crop.y + '). Measurements keep original-picture coordinates.' : 'Use the Crop tool on the left and drag a rectangle.') + '</p>' + (S.crop ? '<button type="button" id="cropClr">Remove crop</button>' : '');
+  p.innerHTML = '<h3>Display adjustments</h3>' + sl('adEv', 'Exposure (stops)', -3, 3, 0.05, a.ev, ' EV') + sl('adC', 'Contrast', -80, 80, 1, a.c, '') + sl('adB', 'Brightness', -80, 80, 1, a.b, '') + sl('adS', 'Saturation', -100, 100, 1, a.sat || 0, '') + sl('adSh', 'Sharpness', 0, 100, 1, a.sh || 0, '') + '<label style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="adCmp" style="width:auto" ' + (S.cmp.on ? 'checked' : '') + '> Before / after slider</label><button type="button" id="adReset">Reset adjustments</button><p class="fine">These change how the picture looks on screen and in the annotated export. They do <b>not</b> change any measurement, and they cannot recover detail the camera never captured: brightening a dark photo raises noise along with the signal. Exposure is applied in linear light.</p><h3>Crop</h3><p class="fine">' + (S.crop ? 'Cropped to ' + S.crop.w + ' × ' + S.crop.h + ' px starting at (' + S.crop.x + ', ' + S.crop.y + '). Measurements keep original-picture coordinates.' : 'Use the Crop tool on the left and drag a rectangle.') + '</p>' + (S.crop ? '<button type="button" id="cropClr">Remove crop</button>' : '');
   const bindS = (id, key) => { const e = $(id, p); if (!e) return; e.oninput = () => { S.adjust[key] = +e.value; $('#o-' + e.id).textContent = e.value + (key === 'ev' ? ' EV' : ''); proc = null; schedule(); }; e.onchange = () => { pushHist(); }; };
-  bindS('#adEv', 'ev'); bindS('#adC', 'c'); bindS('#adB', 'b'); const cm = $('#adCmp', p); cm.onchange = () => { S.cmp.on = cm.checked; draw(); }; $('#adReset', p).onclick = () => { pushHist(); S.adjust = { ev: 0, c: 0, b: 0 }; proc = null; renderAll(); }; const cc = $('#cropClr', p); if (cc) cc.onclick = () => { pushHist(); S.crop = null; fitView(); renderAll(); };
+  bindS('#adEv', 'ev'); bindS('#adC', 'c'); bindS('#adB', 'b'); bindS('#adS', 'sat'); bindS('#adSh', 'sh'); const cm = $('#adCmp', p); cm.onchange = () => { S.cmp.on = cm.checked; draw(); }; $('#adReset', p).onclick = () => { pushHist(); S.adjust = { ev: 0, c: 0, b: 0, sat: 0, sh: 0 }; proc = null; renderAll(); }; const cc = $('#cropClr', p); if (cc) cc.onclick = () => { pushHist(); S.crop = null; fitView(); renderAll(); };
 }
 function renderTrk() {
   const p = $('#pane-trk'); if (!S.src) { p.innerHTML = '<p class="fine">Open a video first.</p>'; return; } if (S.src.kind !== 'video') { p.innerHTML = '<h3>Tracking</h3><p class="fine">Open a video (MP4 or WebM) to track points through its frames.</p>'; return; }
@@ -11633,6 +11753,78 @@ function renderHelp() {
     + '<h3>Capturing checkerboard photos for lens calibration</h3><ol style="padding-left:18px"><li>Print a checkerboard (for example 10 × 7 squares, giving 9 × 6 inner corners) and glue it to something perfectly flat.</li><li>Measure one square with a ruler and use that number.</li><li>Take 10 to 20 photos with the same camera, lens, zoom and resolution you will measure with. Do not use auto-zoom or digital stabilisation.</li><li>Tilt the board about 20 to 45 degrees in different directions, and place it in the centre, the corners and the edges of the frame.</li><li>Keep it sharp, evenly lit, without glare, and fully visible.</li></ol>'
     + '<h3>What this does not do</h3><p class="fine">It does not recover 3D scenes, hidden surfaces, or real sizes from a single photo without a reference. Brightness and contrast do not add detail. Flattening corrects one plane only. There is no cloud processing: everything stays on your device.</p><h3>Keys</h3><p class="fine">H move, D distance, A angle, P area, C circle, R scale, F flatten, X crop, T track, Enter finish shape, Esc cancel, Delete remove, Ctrl+Z undo, , and . step frames, 0 fit, + and − zoom.</p>';
 }
+
+/* ------------------------------------------------------------------ measurement details (Value / Uncertainty / Info) */
+let detTab = 'v';
+function detailsHTML(m) {
+  const v = valueText(m), typ = { distance: 'Distance', angle: 'Angle', polygon: 'Area', circle: 'Circle', polyline: 'Path' }[m.type] || m.type;
+  let h = '<h3>Measurement details: ' + esc(m.id) + '</h3><div class="tabs2" id="lbDetT"><button data-dt="v" aria-selected="' + (detTab === 'v') + '">Value</button><button data-dt="u" aria-selected="' + (detTab === 'u') + '">Uncertainty</button><button data-dt="i" aria-selected="' + (detTab === 'i') + '">Info</button></div>';
+  if (m.kind === 'invalid') return h + '<p class="err">' + esc(v.sub) + '</p>';
+  const isPx = m.value === null || m.value === undefined;
+  if (detTab === 'v') h += '<table><tr><td>' + typ + '</td><td><b>' + esc(v.main) + '</b></td></tr>' + (!isPx && m.px ? '<tr><td>In the picture</td><td>' + fmt(m.px.value) + ' ' + esc(m.px.unit) + '</td></tr>' : '') + (S.plane ? '<tr><td>Scale used</td><td>flat reference ' + fmt(S.plane.w) + ' × ' + fmt(S.plane.h) + ' ' + esc(S.plane.unit) + '</td></tr>' : '<tr><td>Scale used</td><td>none (pixels only)</td></tr>') + '<tr><td>Result</td><td>' + tag(m.kind) + '</td></tr></table>';
+  else if (detTab === 'u') h += v.unc ? '<table><tr><td>Uncertainty (1 sd)</td><td>± ' + fmt(v.unc.sd, 2) + (v.v ? ' (' + (v.unc.sd / Math.abs(v.v) * 100).toFixed(2) + '%)' : '') + '</td></tr><tr><td>95% interval</td><td>' + fmt(v.unc.lo) + ' … ' + fmt(v.unc.hi) + '</td></tr><tr><td>Click error σ</td><td>' + m.sigma + ' px ' + tag('assumed') + '</td></tr></table><p class="fine">Found by repeating the measurement many times with every clicked point nudged by random error of σ pixels (Monte Carlo). It covers clicking error only, not lens distortion or a wrong reference size.</p>' : '<p class="fine">No uncertainty is shown for this value.</p>';
+  else h += '<p class="fine">' + (m.notes && m.notes.length ? m.notes.map(esc).join('</p><p class="fine">') : 'Computed from the picture coordinates of ' + m.pts.length + ' clicked points.') + '</p>' + (m.issues && m.issues.length ? m.issues.map((t) => '<div class="warn">' + esc(t) + '</div>').join('') : '');
+  if (m.type === 'distance' && !isPx && X.LEN[m.unit] && m.value > 0) h += '<button type="button" id="lbTo3D" style="width:100%;margin-top:8px" title="Open the 3D Lab with a sphere whose diameter is this measured distance">Make a 3D sphere from this distance</button>';
+  return h;
+}
+function sendTo3D(m) { if (!window.M3LAB || !(m.value > 0) || !X.LEN[m.unit]) return; const metres = m.value * X.LEN[m.unit], u = m.unc ? m.unc.sd * X.LEN[m.unit] : 0; closeLab(); window.M3LAB.useMeasured(metres, u, m.id); }
+function bindDetails(p) { const sb = $('#lbTo3D', p); if (sb) sb.onclick = () => sendTo3D(S.items[S.sel]);  $$('#lbDetT button', p).forEach((b) => { b.onclick = () => { detTab = b.dataset.dt; renderRes(); }; }); }
+
+/* ------------------------------------------------------------------ perspective analysis (vanishing points from detected straight lines) */
+function renderPer() {
+  const p = $('#pane-per'); if (!p) return; if (!S.src) { p.innerHTML = '<p class="fine">Open a photo or video first.</p>'; return; }
+  let h = '<h3>Perspective analysis</h3><p class="fine">Detects straight edges in the current picture and finds where parallel lines in the real scene appear to meet (vanishing points). It works best on boxy scenes: rooms, buildings, tables.</p><button type="button" id="perGo" class="on">' + (S.per ? 'Analyze again' : 'Analyze perspective') + '</button>';
+  if (S.perBusy) h += ' <span class="fine"><span class="spin"></span>analyzing…</span>';
+  const r = S.per;
+  if (r) {
+    h += '<canvas class="perv" id="perCv" width="640" height="' + Math.round(640 * r.h / r.w) + '" aria-label="Detected lines and vanishing points"></canvas><table><tr><td>Straight lines found</td><td>' + r.lines.length + '</td></tr><tr><td>Edge pixels</td><td>' + r.edges + '</td></tr></table><h3>Vanishing points</h3>';
+    if (!r.vps.length) h += '<p class="fine">None found. ' + tag('unknown') + '</p>';
+    r.vps.forEach((q, i) => { const pct = q.of ? Math.round(q.inliers / q.of * 100) : 0; h += '<div class="card"><b style="color:' + PCOL[i % 3] + '">VP' + (i + 1) + '</b> ' + (q.finite ? '' : '<span class="k k-estimated">at infinity: lines nearly parallel</span>') + '<table><tr><td>Position (px)</td><td>' + (q.finite ? fmt(q.x, 5) + ', ' + fmt(q.y, 5) : 'beyond the picture') + '</td></tr><tr><td>Supporting lines</td><td>' + q.inliers + ' of ' + q.of + ' (' + pct + '%)</td></tr><tr><td>Fit residual</td><td>' + (q.rms * 1000).toFixed(1) + ' / 1000</td></tr></table></div>'; });
+    h += '<p class="fine">“Supporting lines” is the share of detected lines that agree with that point. It is a consistency score, not a probability.</p>';
+    if (r.focal) h += '<table><tr><td>Focal length (35 mm equiv.)</td><td>≈ ' + fmt(r.focal.mm35, 3) + ' mm ' + tag('estimated') + '</td></tr>' + (r.exifFocal ? '<tr><td>From file metadata</td><td>' + fmt(r.exifFocal.px / Math.max(S.src.w, S.src.h) * 36, 3) + ' mm ' + tag('measured') + '</td></tr>' : '') + '</table>';
+    h += '<details><summary>Show details</summary>' + (r.issues || []).map((i) => '<p class="' + (i.sev === 'warn' ? 'warn' : 'fine') + '">' + esc(i.msg) + ' <i>' + esc(i.fix || '') + '</i></p>').join('') + '</details>';
+  }
+  p.innerHTML = h; const go = $('#perGo', p); if (go) go.onclick = runPer; if (r) drawPer(r);
+}
+const PCOL = ['#f87171', '#4ade80', '#60a5fa'];
+function runPer() {
+  if (!S.src || S.perBusy) return; S.perBusy = true; renderPer();
+  setTimeout(() => {
+    try {
+      const el = srcEl(), k = Math.min(1, 960 / Math.max(S.src.w, S.src.h)), cw = Math.max(8, Math.round(S.src.w * k)), ch = Math.max(8, Math.round(S.src.h * k)), c = document.createElement('canvas'); c.width = cw; c.height = ch; const x = c.getContext('2d', { willReadFrequently: true }); x.drawImage(el, 0, 0, cw, ch);
+      const rep = G.analyze(x.getImageData(0, 0, cw, ch).data, cw, ch, S.src.meta || {}), sc2 = S.src.w / cw;
+      const thumb = document.createElement('canvas'); thumb.width = 640; thumb.height = Math.round(640 * S.src.h / S.src.w); thumb.getContext('2d').drawImage(c, 0, 0, thumb.width, thumb.height);
+      S.per = { w: S.src.w, h: S.src.h, gW: rep.W, gH: rep.H, lines: rep.lines, edges: rep.edges, issues: rep.issues, thumb, focal: rep.focal ? { mm35: rep.focal.mm35 } : null, exifFocal: rep.exifFocal ? { px: rep.exifFocal.px * (S.src.w / S.src.w) } : null, vps: rep.vpsPx.map((q) => ({ x: q.x * sc2, y: q.y * sc2, finite: q.finite && isFinite(q.x) && isFinite(q.y), inliers: q.inliers, of: q.of, rms: q.rms })) };
+    } catch (e) { toast('Perspective analysis failed: ' + e.message); }
+    S.perBusy = false; renderPer();
+  }, 30);
+}
+function drawPer(r) {
+  const cvp = $('#perCv'); if (!cvp) return; const c = cvp.getContext('2d'), W2 = cvp.width, H2 = cvp.height; c.drawImage(r.thumb, 0, 0); c.fillStyle = 'rgba(5,8,12,.35)'; c.fillRect(0, 0, W2, H2);
+  const k = W2 / r.gW, cx = W2 / 2, cy = H2 / 2; c.lineWidth = 1; c.strokeStyle = 'rgba(34,211,238,.55)';
+  r.lines.slice(0, 60).forEach((l) => { const ct = Math.cos(l.theta), st2 = Math.sin(l.theta), rho = l.rho * k, d = Math.max(W2, H2) * 2; c.beginPath(); c.moveTo(cx + ct * rho - st2 * d, cy + st2 * rho + ct * d); c.lineTo(cx + ct * rho + st2 * d, cy + st2 * rho - ct * d); c.stroke(); });
+  r.vps.forEach((q, i) => { if (!q.finite) return; const x = q.x / r.w * W2, y = q.y / r.h * H2; if (x < -W2 || x > 2 * W2 || y < -H2 || y > 2 * H2) return; const xx = Math.max(8, Math.min(W2 - 8, x)), yy = Math.max(8, Math.min(H2 - 8, y)); c.fillStyle = PCOL[i % 3]; c.beginPath(); c.arc(xx, yy, 7, 0, 7); c.fill(); c.fillStyle = '#fff'; c.font = '600 11px sans-serif'; c.fillText('VP' + (i + 1) + (xx !== x || yy !== y ? ' →' : ''), xx + 10, yy + 4); });
+}
+
+/* ------------------------------------------------------------------ video frame strip */
+let stripTok = 0;
+function buildStrip() {
+  const el = $('#lbStrip'); el.innerHTML = ''; el.classList.remove('on'); const s = S.src; if (!s || s.kind !== 'video' || !s.url) return;
+  el.classList.add('on'); const tok = ++stripTok, N = 14, v2 = document.createElement('video'); v2.muted = true; v2.preload = 'auto'; v2.src = s.url;
+  const cvs = []; for (let i = 0; i < N; i++) { const c = document.createElement('canvas'); c.width = 96; c.height = Math.max(24, Math.round(96 * s.h / s.w)); c.dataset.t = String(s.dur * (i + 0.5) / N); c.title = (+c.dataset.t).toFixed(2) + ' s'; c.onclick = async () => { if (!S.src || S.src !== s) return; s.v.pause(); await seekTo(+c.dataset.t); syncTime(); draw(); }; el.appendChild(c); cvs.push(c); }
+  const seekOnce = (t) => new Promise((res) => { let done = false; const f = () => { if (done) return; done = true; v2.removeEventListener('seeked', f); res(); }; v2.addEventListener('seeked', f); v2.currentTime = t; setTimeout(f, 1500); });
+  (async () => { try { if (v2.readyState < 2) await new Promise((r) => { v2.onloadeddata = r; v2.onerror = r; setTimeout(r, 4000); }); for (let i = 0; i < N; i++) { if (tok !== stripTok || S.src !== s) break; await seekOnce(+cvs[i].dataset.t); try { cvs[i].getContext('2d').drawImage(v2, 0, 0, cvs[i].width, cvs[i].height); } catch (e) { /* skip */ } } } catch (e) { /* strip is optional */ } v2.removeAttribute('src'); v2.load(); })();
+}
+function markStrip() { const el = $('#lbStrip'); if (!el.classList.contains('on') || !S.src || S.src.kind !== 'video') return; const t = S.src.v.currentTime; let best = null, bd = 1e9; Array.from(el.children).forEach((c) => { const d = Math.abs(+c.dataset.t - t); if (d < bd) { bd = d; best = c; } c.classList.remove('cur'); }); if (best) best.classList.add('cur'); }
+
+/* ------------------------------------------------------------------ workspace tabs (Photo Lab / Video Lab / Calibration / 3D Lab) */
+function setHub(h, quiet) {
+  if (h === '3d' || h === 'design' || h === 'const') { if (window.HUB) window.HUB.go(h); else closeLab(); return; }
+  S.hub = h; $$('#lbHub button').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.hub === h))); $('#lbFile').accept = h === 'video' ? 'video/*' : h === 'photo' ? 'image/*' : 'image/*,video/*';
+  const pane = { photo: 'res', video: 'trk', calib: 'cal' }[h]; const tb = $$('.lb-tabs button').find((b) => b.dataset.pane === pane); if (tb) tb.click();
+  if (!quiet && h === 'video' && S.src && S.src.kind !== 'video') toast('Open a video file to use the Video Lab. Photos can be measured in the Photo Lab.');
+}
+$$('#lbHub button').forEach((b) => { b.onclick = () => setHub(b.dataset.hub); });
 $$('.lb-tabs button').forEach((b) => { b.onclick = () => { $$('.lb-tabs button').forEach((x) => x.setAttribute('aria-selected', String(x === b))); $$('.lb-pane').forEach((x) => x.classList.toggle('on', x.id === 'pane-' + b.dataset.pane)); }; });
 
 /* ------------------------------------------------------------------ camera calibration dialog */
@@ -11678,8 +11870,547 @@ function closeLab() { lab.hidden = true; document.body.style.overflow = ''; if (
 $('#lbClose').onclick = closeLab;
 document.addEventListener('click', (e) => { if (e.target.closest('#labBtn') || e.target.closest('[data-openlab]')) openLab(); });
 new ResizeObserver(() => { if (!lab.hidden) { const had = W; resize(); if (!had) fitView(); } }).observe($('#lbStage'));
-(function () { const b = document.getElementById('labBtn'); const mq = window.matchMedia('(max-width:760px)'); const f = () => { if (b) b.textContent = mq.matches ? 'Lab' : 'Measurement Lab'; }; f(); (mq.addEventListener ? mq.addEventListener('change', f) : mq.addListener(f)); })();
-window.MLAB = { open: openLab, close: closeLab, state: S, setSource, readFile, setTool, exportData, trackCSV, runTrack, addTrack, detectGrid, CV, renderPanes, makeItem, addItem, lab };
+(function () { const b = document.getElementById('labBtn'); const mq = window.matchMedia('(max-width:760px)'); const f = () => { if (b) b.textContent = mq.matches ? 'Lab' : 'Photo & Video Lab'; }; f(); (mq.addEventListener ? mq.addEventListener('change', f) : mq.addListener(f)); })();
+window.MLAB = { setHub, open: openLab, close: closeLab, state: S, setSource, readFile, setTool, exportData, trackCSV, runTrack, addTrack, detectGrid, CV, renderPanes, makeItem, addItem, lab };
+})();
+
+</script>
+<script>
+/* Math3D 3D Lab: a dark dashboard for building a parametric surface from real equations, watching its numbers, animating and exporting it.
+   Everything shown is computed from the actual mesh (area, volume, bounding box, Euler characteristic) with exact formulas beside it where they exist. */
+(function () {
+'use strict';
+const MC = window.MC, M3 = window.M3D, MX = window.MX, MCU = window.MCU;
+const $ = (s, r) => (r || document).querySelector(s), $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const n2 = (v, d) => (typeof v === 'number' && isFinite(v) ? (v !== 0 && Math.abs(v) < Math.pow(10, -(d == null ? 2 : d)) * 5 ? v.toPrecision(3) : v.toFixed(d == null ? 2 : d)) : '–');
+const toast = (m) => { try { MCU.toast(m); } catch (e) { /* ignore */ } };
+const TAU = Math.PI * 2;
+const evalExpr = (src, sc) => MX.compile(src, M3.VARS).fn(M3.VARS.map((k) => (sc && sc[k] != null ? sc[k] : 0)));
+
+const css = `
+#m3{position:fixed;inset:0;z-index:91;overflow:auto;background:#070b14;color:#d5def0;font:13px/1.45 var(--f-body,system-ui,sans-serif);--bg:#070b14;--pn:#0f1626;--pn2:#141c30;--ln:#1f2a44;--ac:#3b82f6;--ac2:#22d3ee;--mu:#8696b6;--ok:#34d399;--bad:#f87171;--wr:#fbbf24}
+#m3[hidden]{display:none}#m3 *{box-sizing:border-box}
+#m3 button{font:inherit;color:inherit;background:var(--pn2);border:1px solid var(--ln);border-radius:6px;padding:5px 10px;cursor:pointer;min-height:30px}
+#m3 button:hover{border-color:#34508a}#m3 button:focus-visible,#m3 input:focus-visible,#m3 select:focus-visible,#m3 textarea:focus-visible{outline:2px solid var(--ac2);outline-offset:1px}
+#m3 button.on,#m3 button[aria-pressed=true],#m3 button[aria-selected=true]{background:#13306b;border-color:var(--ac);color:#e6f0ff}
+#m3 button.go{background:linear-gradient(90deg,#2563eb,#7c3aed);border-color:transparent;color:#fff;font-weight:600}
+#m3 button:disabled{opacity:.45;cursor:default}
+#m3 header.hd{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:14px;padding:8px 14px;background:rgba(10,15,28,.96);border-bottom:1px solid var(--ln);flex-wrap:wrap}
+#m3 .logo{font:700 20px var(--f-body,system-ui);letter-spacing:.01em;color:#fff}#m3 .logo b{color:var(--ac)}
+#m3 .sub{color:var(--mu);font-size:11.5px}
+#m3 nav.ws{display:flex;gap:2px;flex-wrap:wrap}#m3 nav.ws button{border:0;border-radius:0;background:transparent;border-bottom:2px solid transparent;padding:8px 10px}#m3 nav.ws button[aria-selected=true]{border-bottom-color:var(--ac2);background:#0b2a35;color:#d9f6ff}
+#m3 nav.pills{display:flex;gap:2px;margin-left:auto;flex-wrap:wrap}
+#m3 nav.pills button{border:0;border-radius:0;background:transparent;border-bottom:2px solid transparent;padding:8px 12px}
+#m3 nav.pills button[aria-selected=true]{border-bottom-color:var(--ac);background:#0d1a38}
+#m3 .wrap{padding:10px 14px 24px;display:grid;gap:10px}
+#m3 .main{display:grid;grid-template-columns:300px minmax(0,1fr) 340px;gap:10px}
+#m3 .row2{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+#m3 section.pn{background:var(--pn);border:1px solid var(--ln);border-radius:10px;padding:10px 12px;min-width:0}
+#m3 section.pn[hidden]{display:none}
+#m3 h3{margin:0 0 8px;font:600 12px var(--f-body,system-ui);letter-spacing:.05em;color:#cfe0ff}
+#m3 h4{margin:10px 0 4px;font:600 11px var(--f-body,system-ui);color:var(--mu);letter-spacing:.06em;text-transform:uppercase}
+#m3 label{display:block;color:#b4c3df;margin:6px 0 2px}
+#m3 input[type=range]{width:100%;accent-color:var(--ac)}
+#m3 input[type=number],#m3 input[type=text],#m3 select,#m3 textarea{width:100%;background:#0a1020;color:#e6eefc;border:1px solid var(--ln);border-radius:6px;padding:5px 8px;min-height:30px;font:12px ui-monospace,Menlo,Consolas,monospace}
+#m3 textarea{min-height:112px;resize:vertical;line-height:1.5}
+#m3 .shapes label{display:flex;align-items:center;gap:8px;margin:2px 0;padding:6px 8px;border-radius:7px;border:1px solid transparent;cursor:pointer}
+#m3 .shapes label:has(input:checked){background:#10224a;border-color:var(--ac)}
+#m3 .sl{display:flex;justify-content:space-between;color:#b4c3df;margin-top:6px}#m3 .sl output{color:#7dd3fc;font-family:ui-monospace,Menlo,monospace}
+#m3 .view{position:relative;background:radial-gradient(ellipse at 50% 40%,#101a33,#070b14);border:1px solid var(--ln);border-radius:10px;min-height:380px;height:clamp(380px,52vh,560px);overflow:hidden;touch-action:none}
+#m3 .view canvas{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab}
+#m3 .vtabs{position:absolute;left:8px;top:8px;display:flex;gap:3px;z-index:2}
+#m3 .vtabs button{padding:3px 9px;min-height:26px;background:rgba(15,22,38,.88)}
+#m3 .fps{position:absolute;right:10px;top:10px;font:11px ui-monospace,monospace;color:var(--ok);background:rgba(7,11,20,.8);padding:2px 7px;border-radius:5px;z-index:2}
+#m3 .xyz{position:absolute;right:10px;bottom:48px;font:11px ui-monospace,monospace;color:#9fd0ff;background:rgba(7,11,20,.8);padding:2px 7px;border-radius:5px;z-index:2}
+#m3 .tools{position:absolute;left:50%;transform:translateX(-50%);bottom:8px;display:flex;gap:3px;z-index:2;max-width:calc(100% - 16px);flex-wrap:wrap;justify-content:center}
+#m3 .tools button{padding:3px 9px;min-height:28px;background:rgba(15,22,38,.9)}
+#m3 .eq{font:13px/1.7 Cambria,'Times New Roman',serif;color:#e4ecff}#m3 .eq i{color:#93c5fd}
+#m3 .mx{display:inline-block;font:12px/1.35 ui-monospace,Menlo,monospace;border-left:2px solid #4b5f8f;border-right:2px solid #4b5f8f;padding:1px 7px;margin:2px 4px;border-radius:4px;vertical-align:middle;white-space:pre;color:#cfe0ff}
+#m3 table{width:100%;border-collapse:collapse;font-size:12px}#m3 td{padding:3px 0;border-bottom:1px solid #18223b}#m3 td:last-child{text-align:right;color:#8ec5ff;font-family:ui-monospace,Menlo,monospace}
+#m3 .ok{color:var(--ok)}#m3 .bad{color:var(--bad)}#m3 .wr{color:var(--wr)}#m3 .mu{color:var(--mu)}
+#m3 .tg{display:inline-block;font:600 10px var(--f-body,system-ui);padding:0 6px;border-radius:999px;border:1px solid currentColor;vertical-align:1px;margin-left:4px}
+#m3 .tg.m{color:#22d3ee}#m3 .tg.c{color:#a78bfa}#m3 .tg.a{color:#fb923c}
+#m3 .two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#m3 .mtabs{display:flex;gap:2px;border-bottom:1px solid var(--ln);margin:-4px 0 8px}
+#m3 .mtabs button{border:0;border-radius:0;background:transparent;border-bottom:2px solid transparent;padding:5px 10px}
+#m3 .mtabs button[aria-selected=true]{border-bottom-color:var(--ac)}
+#m3 .log{font:11.5px/1.6 ui-monospace,Menlo,monospace;max-height:170px;overflow:auto;background:#080d1a;border:1px solid var(--ln);border-radius:6px;padding:6px 8px}
+#m3 .log .e{color:var(--bad)}#m3 .log .w{color:var(--wr)}#m3 .log .i{color:#7dd3fc}
+#m3 .errbox{border:1px solid #7f1d1d;background:#2a0f14;border-radius:6px;padding:7px 9px;margin-top:6px}
+#m3 canvas.pv{width:100%;aspect-ratio:16/9;background:#080d1a;border:1px solid var(--ln);border-radius:6px;display:block}
+#m3 .bar{height:6px;background:#0a1020;border-radius:4px;overflow:hidden;margin-top:6px}#m3 .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#2563eb,#7c3aed)}
+#m3 .crow{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:10px}#m3 .crow[hidden]{display:none}@media (max-width:900px){#m3 .crow{grid-template-columns:minmax(0,1fr)}}
+#m3 td.n{text-align:left;color:#d5def0;font-family:inherit}#m3 .ct td{vertical-align:top}#m3 .ct td:nth-child(2){text-align:left;color:#d5def0;font-family:inherit}#m3 .ct td:nth-child(3){text-align:right;white-space:nowrap}#m3 .sim{display:block;width:100%;text-align:left;margin:4px 0;padding:8px 10px}#m3 .sim small{display:block;color:var(--mu)}
+@media (min-width:1101px){#m3[data-cols=none] .main{grid-template-columns:minmax(0,1fr)}#m3[data-cols=l] .main{grid-template-columns:300px minmax(0,1fr)}#m3[data-cols=r] .main{grid-template-columns:minmax(0,1fr) 340px}}
+#m3 .col[hidden]{display:none}
+@media (max-width:1100px){#m3 .main{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}#m3 .view{grid-column:1/-1;order:-1}#m3 .row2{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:640px){#m3 .xyz{bottom:auto;top:40px}#m3 .main{grid-template-columns:minmax(0,1fr)}#m3 .wrap{padding:8px 10px 20px}#m3 nav.pills{margin-left:0;width:100%}#m3 nav.pills button{flex:1;padding:8px 4px}#m3 .view{min-height:300px;height:56vh}}
+`;
+const st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
+
+const root = document.createElement('div'); root.id = 'm3'; root.hidden = true; root.setAttribute('role', 'dialog'); root.setAttribute('aria-modal', 'true'); root.setAttribute('aria-label', 'Math3D 3D Lab');
+root.innerHTML = `
+<header class="hd">
+  <div><div class="logo">Math<b>3D</b></div><div class="sub">Create 3D Objects • Visualize Real Mathematics • Edit • Animate</div></div>
+  <span class="sub">Powered by real math</span>
+  <nav class="ws" id="m3Ws" role="tablist" aria-label="Workspaces"><button role="tab" data-ws="design">Design</button><button role="tab" data-ws="photo">Photo Lab</button><button role="tab" data-ws="video">Video Lab</button><button role="tab" data-ws="calib">Calibration</button><button role="tab" data-ws="3d" aria-selected="true">3D Lab</button><button role="tab" data-ws="const">Constants</button></nav>
+  <nav class="pills" role="tablist" aria-label="Views">
+    <button role="tab" data-view="3d" aria-selected="true">3D</button><button role="tab" data-view="anim" aria-selected="false">Animation</button><button role="tab" data-view="edit" aria-selected="false">Editor</button><button role="tab" data-view="math" aria-selected="false">Math</button><button role="tab" data-view="exp" aria-selected="false">Export</button>
+  </nav>
+  <button type="button" id="m3Measure" title="Send a picture of this view to the Photo Lab so you can measure it">Measure this view</button>
+  <button type="button" data-guide title="Open the quick guide">Guide</button>
+  <button type="button" id="m3Add" title="Put this model into your design">Add to design</button>
+  <button type="button" id="m3Close" aria-label="Close the 3D Lab">Close</button>
+</header>
+<div class="wrap">
+ <div class="main">
+  <div id="colL" class="col" style="display:grid;gap:10px;align-content:start">
+   <section class="pn" data-v="3d edit math anim"><h3>1. Choose Shape / Enter Equation</h3><div class="shapes" id="m3Shapes"></div></section>
+   <section class="pn" data-v="3d edit math"><h3 id="m3PName">Parameters</h3><div id="m3Params"></div></section>
+   <section class="pn" data-v="3d anim"><h3>Animation</h3><div id="m3Anim"></div></section>
+  </div>
+  <div class="view" id="m3View">
+   <div class="vtabs" id="m3Mode"><button data-mode="both" class="on">3D View</button><button data-mode="wire">Wireframe</button><button data-mode="solid">Solid</button><button data-mode="points">Points</button></div>
+   <div class="fps" id="m3Fps">FPS –</div><div class="xyz" id="m3Xyz">x: – y: – z: –</div>
+   <canvas id="m3Cv" tabindex="0" aria-label="3D view. Drag to rotate, scroll to zoom."></canvas>
+   <div class="tools" id="m3Tools"><button data-t="rot" class="on">Rotate</button><button data-t="pan">Pan</button><button data-t="zoom">Zoom</button><button data-t="reset">Reset</button><button data-t="shot">Screenshot</button></div>
+  </div>
+  <div id="colR" class="col" style="display:grid;gap:10px;align-content:start">
+   <section class="pn" data-v="3d math"><h3>Mathematical Model</h3><div id="m3Model"></div></section>
+   <section class="pn" data-v="3d math edit"><h3>Real-time Calculations</h3><div id="m3Calc"></div></section>
+  </div>
+ </div>
+ <div class="crow" id="m3ConstRow">
+  <section class="pn" data-v="const"><h3>Real-world constants</h3><p class="mu" style="margin:0 0 6px">Values: NIST CODATA 2022, or exact by definition. Click <b>Use</b> to type the name into the Live Math Editor, then press Apply Changes.</p>
+   <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px"><input type="text" id="m3CSearch" placeholder="Search: alpha, golden, light…" aria-label="Search constants" style="flex:1;min-width:140px"><select id="m3CCat" aria-label="Category" style="width:auto"><option value="">All kinds</option></select></div>
+   <div id="m3CList" style="max-height:420px;overflow:auto"></div></section>
+  <div style="display:grid;gap:10px;align-content:start;min-width:0">
+   <section class="pn" data-v="const"><h3>Simulations that use the constants</h3><div id="m3Sims"></div></section>
+   <section class="pn" data-v="const"><h3>Sunflower seeds: the golden angle</h3><canvas class="pv" id="m3Sun" width="480" height="300" aria-label="Sunflower seed pattern"></canvas><div class="sl"><span>Turn per seed</span><output id="m3SunO"></output></div><input type="range" id="m3SunA" min="130" max="145" step="0.0005" aria-label="Turn per seed in degrees"><div class="sl"><span>Seeds</span><output id="m3SunNO">800</output></div><input type="range" id="m3SunN" min="100" max="2500" step="10" value="800" aria-label="Number of seeds"><div class="mu" id="m3SunT" style="margin-top:4px"></div></section>
+   <section class="pn" data-v="const"><h3>Hydrogen atom (Bohr model) from the constants</h3><div id="m3Bohr"></div></section>
+  </div>
+ </div>
+ <div class="row2">
+  <section class="pn" data-v="3d anim exp"><h3>Animation Preview</h3><canvas class="pv" id="m3Pv" width="480" height="270"></canvas>
+   <div style="display:flex;gap:8px;align-items:center;margin-top:6px"><button type="button" id="m3Play" aria-label="Play or pause" style="min-width:36px">⏸</button><span class="mu" id="m3Tm" style="font-family:ui-monospace,monospace">0:00 / 0:10</span></div>
+   <h4>Frame Controls</h4><div class="sl"><span>Frame</span><output id="m3FrO">0 / 600</output></div><input type="range" id="m3Fr" min="0" max="600" step="1" value="0" aria-label="Frame">
+   <div class="sl"><span>Speed</span><output id="m3SpO">1.0x</output></div><input type="range" id="m3Sp" min="0.1" max="3" step="0.1" value="1" aria-label="Playback speed">
+   <h4>Video Export</h4><div class="two"><div><label for="m3Fmt">Format</label><select id="m3Fmt"><option value="mp4">MP4 (H.264)</option><option value="webm">WebM</option></select></div><div><label for="m3Res">Resolution</label><select id="m3Res"><option value="720">720p</option><option value="1080" selected>1080p</option><option value="480">480p</option></select></div></div>
+   <button type="button" class="go" id="m3Vid" style="width:100%;margin-top:8px">Export Video</button><div class="bar"><i id="m3VidBar"></i></div><div class="mu" id="m3VidSt" style="margin-top:4px;font-size:12px" aria-live="polite"></div></section>
+  <section class="pn" data-v="3d math"><h3>Real-time Math Measurement</h3><div class="mtabs" id="m3MTabs"><button data-mt="s" aria-selected="true">Surface</button><button data-mt="d" aria-selected="false">Dimensions</button><button data-mt="p" aria-selected="false">Properties</button></div><div id="m3Meas"></div></section>
+  <section class="pn" data-v="3d edit const"><h3>Live Math Editor</h3><div id="m3Edit"></div></section>
+ </div>
+  <section class="pn" data-v="const"><h3>Consistency checks: can the constants rebuild each other?</h3><p class="mu" style="margin:0 0 6px">Each row recomputes one constant from others with the formula shown, then compares with the published value.</p><div id="m3Checks"></div></section>
+ <section class="pn" data-v="3d edit anim math exp const"><h3>Math &amp; Rendering Logs</h3><div class="log" id="m3Log" role="log" aria-live="polite"></div><div id="m3Err"></div></section>
+ <section class="pn" data-v="exp"><h3>Export the model</h3><p class="mu">Exports use the exact mesh shown on screen. STL and OBJ are in the model's own units.</p><div id="m3Exp" style="display:flex;gap:6px;flex-wrap:wrap"></div></section>
+</div>`;
+document.body.appendChild(root);
+
+/* ------------------------------------------------------------------ shapes */
+const SHAPES = [
+  { k: 'torus', name: 'Torus (doughnut)', sl: [['R', 'Major Radius R', 0.5, 5, 0.05, 2.5], ['r', 'Minor Radius r', 0.1, 3, 0.05, 1.0]], seg: ['Tube Segments (u)', 'Radial Segments (v)', 64, 32] },
+  { k: 'sphere', name: 'Sphere', sl: [['R', 'Radius R', 0.3, 4, 0.05, 1.8]], seg: ['Longitude Segments (u)', 'Latitude Segments (v)', 48, 24] },
+  { k: 'klein', name: 'Klein Bottle', sl: [['R', 'Radius R', 0.8, 4, 0.05, 2], ['r', 'Tube size r', 0.3, 3, 0.05, 1]], seg: ['Segments (u)', 'Segments (v)', 80, 40] },
+  { k: 'mobius', name: 'Möbius Strip', sl: [['R', 'Radius R', 0.8, 4, 0.05, 1.8], ['w', 'Strip width', 0.2, 2, 0.05, 0.8]], seg: ['Segments (u)', 'Segments (v)', 96, 8] },
+  { k: 'cylinder', name: 'Cylinder', sl: [['R', 'Radius R', 0.3, 4, 0.05, 1.2], ['h', 'Height', 0.4, 6, 0.1, 2.4]], seg: ['Segments (u)', 'Segments (v)', 48, 6] },
+  { k: 'custom', name: 'Custom Equation', sl: [['a', 'Parameter a', -3, 3, 0.05, 1], ['b', 'Parameter b', -3, 3, 0.05, 0.5]], seg: ['Segments (u)', 'Segments (v)', 64, 48] },
+];
+const CUSTOM0 = { fx: 'cos(u)*(2 + cos(v))', fy: 'sin(u)*(2 + cos(v))', fz: 'sin(v) + a*sin(3*u)*0.3', umin: 0, umax: TAU, vmin: 0, vmax: TAU };
+const A = { shape: 'torus', vals: {}, nu: 64, nv: 32, mode: 'both', tool: 'rot', L: null, T: 0, playing: true, speed: 1, sp: [0.5, 0.5, 0.2], logs: [], custom: Object.assign({}, CUSTOM0), mt: 's', view: '3d', drag: null, frames: 0, fpsT: 0, fps: 0, vid: null, errs: [] };
+const log = (lvl, msg) => { const d = new Date(), ts = [d.getHours(), d.getMinutes(), d.getSeconds()].map((v) => String(v).padStart(2, '0')).join(':'); A.logs.push({ lvl, msg, ts }); if (A.logs.length > 60) A.logs.shift(); renderLog(); };
+function renderLog() { const el = $('#m3Log'); if (!el) return; el.innerHTML = A.logs.map((l) => '<div class="' + l.lvl + '">[' + l.ts + '] [' + { i: 'INFO', w: 'WARN', e: 'ERROR' }[l.lvl] + '] ' + esc(l.msg) + '</div>').join(''); el.scrollTop = el.scrollHeight; }
+const shapeDef = (k) => SHAPES.find((s) => s.k === (k || A.shape));
+
+function shapeEqs(k) {
+  const P = A.vals;
+  switch (k) {
+    case 'torus': return { fx: '(R + r*cos(v))*cos(u)', fy: '(R + r*cos(v))*sin(u)', fz: 'r*sin(v)', umin: 0, umax: TAU, vmin: 0, vmax: TAU };
+    case 'sphere': return { fx: 'R*sin(v)*cos(u)', fy: 'R*sin(v)*sin(u)', fz: 'R*cos(v)', umin: 0, umax: TAU, vmin: 0, vmax: Math.PI };
+    case 'klein': return { fx: '(R + r*cos(u/2)*sin(v) - r*sin(u/2)*sin(2*v))*cos(u)', fy: '(R + r*cos(u/2)*sin(v) - r*sin(u/2)*sin(2*v))*sin(u)', fz: 'r*sin(u/2)*sin(v) + r*cos(u/2)*sin(2*v)', umin: 0, umax: TAU, vmin: 0, vmax: TAU };
+    case 'mobius': return { fx: '(R + v*cos(u/2))*cos(u)', fy: '(R + v*cos(u/2))*sin(u)', fz: 'v*sin(u/2)', umin: 0, umax: TAU, vmin: -P.w / 2, vmax: P.w / 2 };
+    case 'cylinder': return { fx: 'R*cos(u)', fy: 'R*sin(u)', fz: 'v', umin: 0, umax: TAU, vmin: -P.h / 2, vmax: P.h / 2 };
+    default: return Object.assign({}, A.custom);
+  }
+}
+function applyToLayer() {
+  const L = A.L, e = shapeEqs(A.shape), P = A.vals;
+  Object.assign(L, { fx: e.fx, fy: e.fy, fz: e.fz, umin: e.umin, umax: e.umax, vmin: e.vmin, vmax: e.vmax, nu: A.nu, nv: A.nv, kind: A.shape === 'custom' ? 'custom' : A.shape });
+  L.P = { R: P.R != null ? P.R : 1, r: P.r != null ? P.r : 0.6, a: P.a != null ? P.a : 0, b: P.b != null ? P.b : 0, c: 0 };
+  if (A.shape === 'mobius' || A.shape === 'cylinder') L.P.r = 0.6;
+}
+function fitCamera() {
+  const rep = MC.solidReport(A.L, 0); if (!rep.mesh || !rep.mesh.ok) return; const s = rep.mesh.stats, bb = s.bbox;
+  A.L.cam = Object.assign(A.L.cam, { dist: Math.max(1, (s.diag || 4) * 1.7), tx: (bb.lo[0] + bb.hi[0]) / 2, ty: (bb.lo[1] + bb.hi[1]) / 2, tz: (bb.lo[2] + bb.hi[2]) / 2 });
+  A.cam0 = JSON.parse(JSON.stringify(A.L.cam));
+}
+function selectShape(k, keep) {
+  A.shape = k; const d = shapeDef(); A.vals = {}; d.sl.forEach((s) => { A.vals[s[0]] = s[5]; }); A.nu = d.seg[2]; A.nv = d.seg[3];
+  if (!A.L) { A.L = MC.newSolid({ kind: 'torus' }); Object.assign(A.L, { style: 'both', color: '#3b82f6', wire: '#bcd2ff', axes: false, grid: false, shadow: false, mat: 'plastic', colorBy: 'solid', bands: 0, spin: 0, showEq: false }); A.L.cam = { yaw: 35, pitch: 25, dist: 9, fov: 45, tx: 0, ty: 0, tz: 0, ortho: false }; }
+  A.L.tr = { tx: 0, ty: 0, tz: 0, rx: 0, ry: 0, rz: 0, sx: 1, sy: 1, sz: 1 };
+  applyToLayer(); if (!keep) fitCamera(); buildLeft(); refresh(true); log('i', 'Shape set to ' + d.name + '. Equations: ' + (A.shape === 'custom' ? 'custom (edit them in the Live Math Editor)' : 'exact parametric form'));
+}
+
+/* ------------------------------------------------------------------ left column */
+const sv = (v, step) => (Math.abs(v) < 0.1 && v !== 0 && step < 1 ? (+v).toPrecision(3) : (+v).toFixed(step < 1 ? (step < 0.1 ? 2 : 1) : 0));
+function slider(id, label, min, max, step, v, unit) { return '<div class="sl"><label for="' + id + '" style="margin:0">' + label + '</label><output id="o_' + id + '">' + sv(v, step) + (unit || '') + '</output></div><input type="range" id="' + id + '" min="' + min + '" max="' + max + '" step="' + step + '" value="' + v + '">'; }
+function buildLeft() {
+  const d = shapeDef();
+  $('#m3Shapes').innerHTML = SHAPES.map((s) => '<label><input type="radio" name="m3shape" value="' + s.k + '"' + (s.k === A.shape ? ' checked' : '') + '> ' + esc(s.name) + '</label>').join('');
+  $('#m3PName').textContent = (d.k === 'custom' ? 'Custom' : d.name.replace(/ \(.*/, '')) + ' Parameters';
+  $('#m3Params').innerHTML = d.sl.map((s) => { const v = A.vals[s[0]], tiny = v > 0 && v < s[2]; return slider('m3p_' + s[0], s[1], tiny ? v * 0.1 : s[2], Math.max(s[3], v * 1.2), tiny ? v / 200 : s[4], v); }).join('') + slider('m3nu', d.seg[0], 6, 160, 1, A.nu) + slider('m3nv', d.seg[1], 3, 96, 1, A.nv);
+  $('#m3Anim').innerHTML = ['X', 'Y', 'Z'].map((a, i) => slider('m3s' + i, 'Rotation Speed ' + a, -3, 3, 0.05, A.sp[i], ' rad/s')).join('') + '<label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="m3Auto" style="width:auto"' + (A.playing ? ' checked' : '') + '> Auto Rotate</label>';
+  $$('input[name=m3shape]', root).forEach((r) => { r.onchange = () => selectShape(r.value); });
+  d.sl.forEach((s) => { const e = $('#m3p_' + s[0]); e.oninput = () => { A.vals[s[0]] = +e.value; $('#o_m3p_' + s[0]).textContent = sv(+e.value, +e.step); applyToLayer(); refresh(true); }; e.onchange = () => { fitCamera(); refresh(true); A.logNow = true; }; });
+  [['m3nu', 'nu'], ['m3nv', 'nv']].forEach(([id, key]) => { const e = $('#' + id); e.oninput = () => { A[key] = +e.value; $('#o_' + id).textContent = e.value; applyToLayer(); refresh(true); }; e.onchange = () => { A.logNow = true; refresh(true); }; });
+  [0, 1, 2].forEach((i) => { const e = $('#m3s' + i); e.oninput = () => { A.sp[i] = +e.value; $('#o_m3s' + i).textContent = (+e.value).toFixed(2) + ' rad/s'; refresh(true); }; });
+  $('#m3Auto').onchange = (e) => { A.playing = e.target.checked; syncPlay(); };
+}
+
+/* ------------------------------------------------------------------ mesh facts */
+function meshFacts() {
+  const rep = MC.solidReport(A.L, 0), m = rep.mesh; if (!m || !m.ok) return { rep, ok: false };
+  const V = m.V, F = m.F, s = m.stats; let vol = 0, cx = 0, cy = 0, cz = 0, ar = 0, sx = 0, sy = 0, sz = 0;
+  for (let i = 0; i < F.length; i += 3) {
+    const a = F[i] * 3, b = F[i + 1] * 3, c = F[i + 2] * 3, ax = V[a], ay = V[a + 1], az = V[a + 2], bx = V[b], by = V[b + 1], bz = V[b + 2], qx = V[c], qy = V[c + 1], qz = V[c + 2];
+    const dv = (ax * (by * qz - bz * qy) - ay * (bx * qz - bz * qx) + az * (bx * qy - by * qx)) / 6; vol += dv; cx += dv * (ax + bx + qx) / 4; cy += dv * (ay + by + qy) / 4; cz += dv * (az + bz + qz) / 4;
+    const ux = bx - ax, uy = by - ay, uz = bz - az, wx = qx - ax, wy = qy - ay, wz = qz - az, ca = Math.hypot(uy * wz - uz * wy, uz * wx - ux * wz, ux * wy - uy * wx) / 2; ar += ca; sx += ca * (ax + bx + qx) / 3; sy += ca * (ay + by + qy) / 3; sz += ca * (az + bz + qz) / 3;
+  }
+  const closed = !!s.closed, com = closed && Math.abs(vol) > 1e-9 ? [cx / vol, cy / vol, cz / vol] : [sx / ar, sy / ar, sz / ar];
+  const nV = V.length / 3, nF = F.length / 3, bytes = V.byteLength + F.byteLength;
+  const ex = A.shape === 'custom' ? { applies: false } : M3.exactFor(A.L);
+  const chi = s.chi, genus = closed && isFinite(chi) ? (2 - chi) / 2 : null;
+  return { rep, ok: true, m, s, nV, nF, bytes, closed, com, comKind: closed ? 'centre of volume' : 'centre of surface area', area: s.area, volume: closed ? Math.abs(s.volume != null ? s.volume : vol) : null, ex, chi, genus, bb: s.bbox };
+}
+const nf = (v, d) => (typeof v === 'number' && isFinite(v) ? v.toLocaleString('en-US', { maximumFractionDigits: d == null ? 0 : d }) : '–');
+
+/* ------------------------------------------------------------------ right column */
+function paramLine() { const P = A.vals, d = shapeDef(); return d.sl.map((s) => '<i>' + s[0] + '</i> = ' + n2(P[s[0]], 2)).join(', '); }
+function renderModel(f) {
+  const e = shapeEqs(A.shape), P = A.vals, nice = (s) => esc(s).replace(/\*/g, '·').replace(/\bpi\b/g, 'π');
+  const ang = [A.sp[0], A.sp[1], A.sp[2]].map((w) => w * A.T), c = Math.cos(ang[0]), s = Math.sin(ang[0]), sc = 1;
+  const rng = (a, b) => (Math.abs(b - TAU) < 1e-9 ? '2π' : Math.abs(b - Math.PI) < 1e-9 ? 'π' : n2(b, 2)) , lo = (a) => (Math.abs(a) < 1e-9 ? '0' : n2(a, 2));
+  $('#m3Model').innerHTML = '<h4 style="margin-top:0">' + esc(shapeDef().name.replace(/ \(.*/, '')) + ' parametric equation</h4><div class="eq">x(u,v) = ' + nice(e.fx) + '<br>y(u,v) = ' + nice(e.fy) + '<br>z(u,v) = ' + nice(e.fz) + '</div>'
+    + '<div class="mu">u ∈ [' + lo(e.umin) + ', ' + rng(e.umin, e.umax) + '], v ∈ [' + lo(e.vmin) + ', ' + rng(e.vmin, e.vmax) + '] &nbsp; ' + paramLine() + '</div>'
+    + '<h4>Rotation Matrix R<sub>x</sub>(a) <span class="mu">for animation</span></h4><div class="eq"><span class="mx">1    0     0\n0   cos a  −sin a\n0   sin a   cos a</span><br>= <span class="mx">' + [['1.00', '0.00', '0.00'], ['0.00', n2(c), n2(-s)], ['0.00', n2(s), n2(c)]].map((r) => r.map((v) => v.padStart(5)).join('  ')).join('\n') + '</span></div><div class="mu">a = ' + n2(ang[0] % TAU, 3) + ' rad  (ω<sub>x</sub> × t, t = ' + n2(A.T, 2) + ' s)</div>'
+    + '<h4>Scaling Matrix S(s)</h4><div class="eq"><span class="mx">s  0  0\n0  s  0\n0  0  s</span><br>= <span class="mx">' + ['1.00  0.00  0.00', '0.00  1.00  0.00', '0.00  0.00  1.00'].join('\n') + '</span></div><div class="mu">s = ' + n2(sc, 2) + ' (uniform scale; model matrix M = R<sub>z</sub>R<sub>y</sub>R<sub>x</sub>S)</div>';
+}
+function renderCalc(f) {
+  if (!f.ok) { $('#m3Calc').innerHTML = '<div class="bad">Calculation failed. See the log below.</div>'; return; }
+  $('#m3Calc').innerHTML = '<table><tr><td>Vertices</td><td>' + nf(f.nV) + '</td></tr><tr><td>Faces (triangles)</td><td>' + nf(f.nF) + '</td></tr><tr><td>Mesh memory <span class="tg a">Estimated</span></td><td>' + (f.bytes / 1048576).toFixed(2) + ' MB</td></tr><tr><td>Last build</td><td>' + n2(A.buildMs, 0) + ' ms</td></tr></table><div class="ok" style="margin-top:6px">✔ Calculation complete</div>';
+}
+function dimSvg(bb) {
+  const w = bb.size[0], d = bb.size[1], h = bb.size[2], m = Math.max(w, d, h) || 1, k = 70 / m, X = w * k, Y = d * k, Z = h * k, ox = 14, oy = 24 + Z, c = 0.5;
+  const p = (x, y, z) => [ox + x + y * c, oy - z - y * c * 0.6];
+  const P = [p(0, 0, 0), p(X, 0, 0), p(X, Y, 0), p(0, Y, 0), p(0, 0, Z), p(X, 0, Z), p(X, Y, Z), p(0, Y, Z)];
+  const ed = [[0, 1], [1, 2], [2, 3], [3, 0], [4, 5], [5, 6], [6, 7], [7, 4], [0, 4], [1, 5], [2, 6], [3, 7]];
+  return '<svg viewBox="0 0 150 130" width="100%" height="110" aria-label="Bounding box" style="max-width:190px"><g stroke="#4b6fc4" fill="none" stroke-width="1.2">' + ed.map((e) => '<line x1="' + P[e[0]][0].toFixed(1) + '" y1="' + P[e[0]][1].toFixed(1) + '" x2="' + P[e[1]][0].toFixed(1) + '" y2="' + P[e[1]][1].toFixed(1) + '"/>').join('') + '</g><g fill="#8ec5ff" font-size="9" font-family="monospace"><text x="' + (P[0][0] + X / 2 - 8).toFixed(0) + '" y="' + (P[0][1] + 11).toFixed(0) + '">' + n2(w, 2) + '</text><text x="' + (P[1][0] + 6).toFixed(0) + '" y="' + (P[1][1] - 2 - Y * 0.15).toFixed(0) + '">' + n2(d, 2) + '</text><text x="2" y="' + (P[0][1] - Z / 2).toFixed(0) + '">' + n2(h, 2) + '</text></g></svg>';
+}
+function renderMeas(f) {
+  const el = $('#m3Meas'); if (!f.ok) { el.innerHTML = '<div class="bad">No mesh to measure.</div>'; return; }
+  let h = '';
+  if (A.mt === 's') {
+    const ea = f.ex && f.ex.applies ? Math.abs(f.area - f.ex.area) / f.ex.area * 100 : null, ev = f.ex && f.ex.applies && f.volume != null ? Math.abs(f.volume - f.ex.volume) / f.ex.volume * 100 : null;
+    h = '<table><tr><td>Surface Area <span class="tg m">Measured</span></td><td>≈ ' + n2(f.area, 3) + '</td></tr>'
+      + '<tr><td>Volume ' + (f.volume != null ? '<span class="tg m">Measured</span>' : '') + '</td><td>' + (f.volume != null ? '≈ ' + n2(f.volume, 3) : 'not closed') + '</td></tr>'
+      + '<tr><td>Center of Mass <span class="tg c">Calculated</span></td><td>(' + f.com.map((v) => n2(Math.abs(v) < 5e-4 ? 0 : v, 2)).join(', ') + ')</td></tr></table>'
+      + '<div class="mu" style="margin-top:4px">' + f.comKind + (f.closed ? '' : ' (open surface, so it has no enclosed volume)') + '</div>'
+      + (f.ex && f.ex.applies ? '<div style="margin-top:6px"><b>Exact:</b> ' + f.ex.eqA + ' = ' + n2(f.ex.area, 3) + ', ' + f.ex.eqV + ' = ' + n2(f.ex.volume, 3) + '<br><span class="mu">mesh error: area ' + n2(ea, 3) + '%, volume ' + n2(ev, 3) + '% (a polygon mesh sits slightly inside a curve; more segments shrink it)</span></div>' : '<div class="mu" style="margin-top:6px">No closed-form formula is known for this equation, so the numbers are mesh estimates.</div>');
+  } else if (A.mt === 'd') {
+    const b = f.bb; h = '<div class="two"><table><tr><td>Bounding box</td><td>' + b.size.map((v) => n2(v, 2)).join(' × ') + '</td></tr><tr><td>Diagonal</td><td>' + n2(f.s.diag || Math.hypot(...b.size), 3) + '</td></tr><tr><td>x range</td><td>' + n2(b.lo[0], 2) + ' … ' + n2(b.hi[0], 2) + '</td></tr><tr><td>y range</td><td>' + n2(b.lo[1], 2) + ' … ' + n2(b.hi[1], 2) + '</td></tr><tr><td>z range</td><td>' + n2(b.lo[2], 2) + ' … ' + n2(b.hi[2], 2) + '</td></tr></table><div>' + dimSvg(b) + '</div></div>';
+  } else {
+    h = '<table><tr><td>Closed surface</td><td>' + (f.closed ? 'yes' : 'no') + '</td></tr><tr><td>Euler characteristic χ</td><td>' + (isFinite(f.chi) ? f.chi : '–') + '</td></tr><tr><td>Genus</td><td>' + (f.genus != null ? f.genus : 'n/a') + '</td></tr><tr><td>Vertices − edges + faces</td><td>' + nf(f.s.vertices) + ' − ' + nf(f.s.edges) + ' + ' + nf(f.s.faces) + '</td></tr><tr><td>Orientable</td><td>' + (A.shape === 'mobius' || A.shape === 'klein' ? 'no (one-sided)' : 'yes') + '</td></tr></table>' + (A.shape === 'klein' ? '<div class="wr" style="margin-top:6px">A Klein bottle cannot exist in 3D without passing through itself, so its mesh self-intersects; area is meaningful, volume is not.</div>' : '');
+  }
+  el.innerHTML = h;
+}
+
+/* ------------------------------------------------------------------ editor */
+function codeText() {
+  const e = shapeEqs(A.shape), P = A.vals, names = shapeDef().sl.map((s) => s[0]);
+  return 'x = ' + e.fx + '\ny = ' + e.fy + '\nz = ' + e.fz + '\nu = ' + n2(e.umin, 4) + ' .. ' + n2(e.umax, 4) + '\nv = ' + n2(e.vmin, 4) + ' .. ' + n2(e.vmax, 4);
+}
+function renderEdit() {
+  const P = A.vals, names = ['R', 'r', 'a', 'b'];
+  $('#m3Edit').innerHTML = '<div class="mu" style="margin-bottom:4px">function surface(u, v, R, r, a, b) → [x, y, z]</div><textarea id="m3Code" spellcheck="false" aria-label="Surface equations">' + esc(codeText()) + '</textarea>'
+    + '<h4>Edit Values</h4><div class="two" style="grid-template-columns:repeat(4,1fr)"><div><label for="m3eR">R</label><input type="number" step="0.1" id="m3eR" value="' + (A.L.P.R) + '"></div><div><label for="m3er">r</label><input type="number" step="0.1" id="m3er" value="' + (A.L.P.r) + '"></div><div><label for="m3eu">u</label><input type="number" step="0.1" id="m3eu" value="1"></div><div><label for="m3ev">v</label><input type="number" step="0.1" id="m3ev" value="1"></div></div>'
+    + '<div id="m3Pt" class="mu" style="margin-top:6px;font-family:ui-monospace,monospace"></div><div style="display:flex;gap:8px;align-items:center;margin-top:8px"><button type="button" class="go" id="m3Apply">Apply Changes</button><span id="m3Valid" aria-live="polite"></span></div>';
+  const chk = () => { const r = parseCode($('#m3Code').value); $('#m3Valid').innerHTML = r.ok ? '<span class="ok">✔ Code is valid</span>' : '<span class="bad">✖ ' + esc(r.err) + '</span>'; return r; };
+  $('#m3Code').oninput = chk; chk();
+  const pt = () => { try { const u = +$('#m3eu').value, v = +$('#m3ev').value, R = +$('#m3eR').value, r = +$('#m3er').value, e = shapeEqs(A.shape), sc = { u, v, t: 0, R, r, a: A.L.P.a, b: A.L.P.b, c: 0 }, ev = (s) => evalExpr(s, sc); $('#m3Pt').textContent = 'S(u, v) = (' + [e.fx, e.fy, e.fz].map((s) => n2(ev(s), 4)).join(', ') + ')'; } catch (er) { $('#m3Pt').textContent = ''; } };
+  ['m3eu', 'm3ev', 'm3eR', 'm3er'].forEach((id) => { $('#' + id).oninput = pt; }); pt();
+  $('#m3Apply').onclick = () => {
+    const r = chk(); const R = +$('#m3eR').value, rr = +$('#m3er').value;
+    if (!r.ok) { log('e', 'Apply failed: ' + r.err); return; }
+    if (isFinite(R)) { if (A.vals.R != null) A.vals.R = R; } if (isFinite(rr)) { if (A.vals.r != null) A.vals.r = rr; }
+    const was = A.shape; if (r.changed || A.shape === 'custom') { A.custom = r.eq; if (A.shape !== 'custom') { A.shape = 'custom'; const d = shapeDef(); A.vals = { a: 1, b: 0.5 }; A.nu = A.nu || 64; } }
+    if (A.shape === 'custom') { A.L.P.R = isFinite(R) ? R : 1; A.L.P.r = isFinite(rr) ? rr : 0.6; }
+    applyToLayer(); if (A.shape === 'custom') { A.L.P.R = isFinite(R) ? R : A.L.P.R; A.L.P.r = isFinite(rr) ? rr : A.L.P.r; }
+    fitCamera(); buildLeft(); refresh(true); log('i', 'Applied changes' + (was !== A.shape ? ' (switched to Custom Equation)' : '') + '.');
+  };
+}
+function parseCode(txt) {
+  const eq = Object.assign({}, shapeEqs(A.shape)), want = ['x', 'y', 'z']; let changed = false;
+  const lines = txt.split(/\n/).map((s) => s.trim()).filter(Boolean);
+  for (const ln of lines) {
+    const m = /^([xyz])\s*=\s*(.+)$/i.exec(ln);
+    if (m) { try { const c = MX.compile(m[2], M3.VARS); if (!c) throw new Error('empty'); } catch (e) { return { ok: false, err: 'Cannot read ' + m[1] + ' = … (' + String(e.message || e).slice(0, 70) + ')' }; } const key = 'f' + m[1].toLowerCase(); if (eq[key] !== m[2]) changed = true; eq[key] = m[2]; continue; }
+    const r = /^([uv])\s*=\s*(.+?)\s*\.\.\s*(.+)$/i.exec(ln);
+    if (r) { let lo, hi; try { lo = evalExpr(r[2], { }); hi = evalExpr(r[3], { }); } catch (e) { return { ok: false, err: 'Cannot read the range for ' + r[1] }; } if (!isFinite(lo) || !isFinite(hi) || lo >= hi) return { ok: false, err: r[1] + ' range must have a smaller start than end' }; const k1 = r[1].toLowerCase() + 'min', k2 = r[1].toLowerCase() + 'max'; if (Math.abs(eq[k1] - lo) > 1e-9 || Math.abs(eq[k2] - hi) > 1e-9) changed = true; eq[k1] = lo; eq[k2] = hi; continue; }
+    return { ok: false, err: 'Line not understood: "' + ln.slice(0, 40) + '". Use x = …, y = …, z = …, u = a .. b, v = a .. b.' };
+  }
+  if (!want.every((k) => eq['f' + k])) return { ok: false, err: 'x, y and z are all needed' };
+  return { ok: true, eq, changed };
+}
+
+/* ------------------------------------------------------------------ issues/log from real checks */
+const torusFix = (i) => (A.shape === 'torus' && /R > r/.test(i.msg) ? () => { A.vals.r = +(A.vals.R * 0.4).toFixed(2); applyToLayer(); buildLeft(); refresh(true); } : null);
+function checkIssues(f) {
+  const out = [];
+  if (!f.ok) { f.rep.issues.filter((i) => i.sev === 'error').forEach((i) => out.push({ sev: 'error', msg: i.msg, fix: i.fix, act: torusFix(i) })); if (!out.length) out.push({ sev: 'error', msg: 'The surface could not be built.', fix: 'Check the equations.' }); return out; }
+  if (A.shape === 'klein') out.push({ sev: 'warn', msg: 'A Klein bottle in 3D self-intersects; its volume is not defined.', fix: '' });
+  f.rep.issues.filter((i) => i.sev !== 'info' && i.code !== 'slow').forEach((i) => out.push({ sev: i.sev === 'error' ? 'error' : 'warn', msg: i.msg, fix: i.fix, act: torusFix(i) }));
+  return out;
+}
+function renderIssues(list) {
+  const el = $('#m3Err'); el.innerHTML = list.filter((i) => i.sev !== 'info').map((i, k) => '<div class="errbox"><b class="' + (i.sev === 'error' ? 'bad' : 'wr') + '">' + (i.sev === 'error' ? 'Real Error' : 'Warning') + ':</b> ' + esc(i.msg) + (i.fix ? '<div class="mu">' + esc(i.fix) + '</div>' : '') + (i.act ? '<button type="button" data-fix="' + k + '" style="margin-top:4px">Fix</button>' : '') + '</div>').join('');
+  $$('[data-fix]', el).forEach((b) => { b.onclick = () => { list[+b.dataset.fix].act(); log('i', 'Fix applied.'); }; });
+  const sig = list.map((i) => i.sev + i.msg).join('|'); if (sig !== A.issueSig) { A.issueSig = sig; list.forEach((i) => log(i.sev === 'error' ? 'e' : 'w', i.msg)); }
+}
+
+/* ------------------------------------------------------------------ viewer */
+const cv = $('#m3Cv'), ctx = cv.getContext('2d'), pv = $('#m3Pv'), pctx = pv.getContext('2d');
+function sizeCanvas() { const r = cv.parentElement.getBoundingClientRect(), k = Math.min(2, window.devicePixelRatio || 1), w = Math.max(200, Math.round(r.width * k)), h = Math.max(200, Math.round(r.height * k)); if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; } }
+function applyRotation(T) { const d = 180 / Math.PI; A.L.tr.rx = (A.sp[0] * T * d) % 360; A.L.tr.ry = (A.sp[1] * T * d) % 360; A.L.tr.rz = (A.sp[2] * T * d) % 360; }
+function floorGrid(c, L, W, H, ext) {
+  const cm = M3.cameraMatrices(L.cam, W / H), z = -ext * 1.05, n = 8, step = ext * 2 / n; c.lineWidth = Math.max(1, W / 900);
+  const pr = (x, y, zz) => { const a = M3.apply(cm.vp, x, y, zz); return a[3] > 1e-6 ? [(a[0] / a[3] * 0.5 + 0.5) * W, (1 - (a[1] / a[3] * 0.5 + 0.5)) * H] : null; };
+  for (let i = -n / 2; i <= n / 2; i++) { c.strokeStyle = i === 0 ? 'rgba(96,130,210,.5)' : 'rgba(96,130,210,.22)'; [[[i * step, -ext, z], [i * step, ext, z]], [[-ext, i * step, z], [ext, i * step, z]]].forEach(([p, q]) => { const a = pr(...p), b = pr(...q); if (a && b) { c.beginPath(); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); c.stroke(); } }); }
+}
+function gizmo(c, W, H, cam) {
+  const d = Math.PI / 180, th = cam.yaw * d, ph = cam.pitch * d, R = [-Math.sin(th), Math.cos(th), 0], U = [-Math.sin(ph) * Math.cos(th), -Math.sin(ph) * Math.sin(th), Math.cos(ph)], k = Math.min(W, H) * 0.07, ox = k * 1.9, oy = H - k * 1.9;
+  [['X', [1, 0, 0], '#f87171'], ['Y', [0, 1, 0], '#4ade80'], ['Z', [0, 0, 1], '#60a5fa']].forEach(([n, v, col]) => { const x = ox + (v[0] * R[0] + v[1] * R[1] + v[2] * R[2]) * k, y = oy - (v[0] * U[0] + v[1] * U[1] + v[2] * U[2]) * k; c.strokeStyle = col; c.lineWidth = Math.max(2, W / 450); c.beginPath(); c.moveTo(ox, oy); c.lineTo(x, y); c.stroke(); c.fillStyle = col; c.font = '600 ' + Math.round(k * 0.5) + 'px sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(n, x + (x - ox) * 0.22, y + (y - oy) * 0.22); });
+}
+function drawScene(c, W, H, draft) {
+  const L = A.L; L.w = W; L.h = H;
+  const g = c.createRadialGradient(W / 2, H * 0.4, 10, W / 2, H / 2, Math.max(W, H) * 0.75); g.addColorStop(0, '#12203f'); g.addColorStop(1, '#070b14'); c.fillStyle = g; c.fillRect(0, 0, W, H);
+  const rep0 = MC.solidReport(L, 0), ok = rep0.mesh && rep0.mesh.ok, ext = ok ? Math.max(1, (rep0.mesh.stats.diag || 4) * 0.5) : 3;
+  floorGrid(c, L, W, H, ext);
+  if (A.mode === 'points') {
+    if (ok) { const M = M3.modelMatrix(L.tr), pr = M3.projectAll(rep0.mesh, M, L.cam, W, H), n = pr.s.length / 4, r = Math.max(1.4, W / 520); let zmin = Infinity, zmax = -Infinity; for (let k = 0; k < n; k++) if (pr.s[k * 4 + 3] === 1) { zmin = Math.min(zmin, pr.s[k * 4 + 2]); zmax = Math.max(zmax, pr.s[k * 4 + 2]); } const step = draft && n > 6000 ? 3 : 1; for (let k = 0; k < n; k += step) { if (pr.s[k * 4 + 3] !== 1) continue; const t = (pr.s[k * 4 + 2] - zmin) / (zmax - zmin || 1); c.fillStyle = 'rgba(' + Math.round(150 - 90 * t) + ',' + Math.round(210 - 80 * t) + ',255,' + (0.95 - 0.55 * t).toFixed(2) + ')'; c.fillRect(pr.s[k * 4] - r, pr.s[k * 4 + 1] - r, 2 * r, 2 * r); } }
+  } else { L.style = A.mode; c.save(); c.translate(W / 2, H / 2); try { MC.drawSolid(c, L, 0, { draft }); } catch (e) { /* shown in log */ } c.restore(); }
+  gizmo(c, W, H, L.cam);
+}
+let dirty = true, lastDraw = 0, raf = 0, lastT = 0;
+function refresh(full) { dirty = true; A.full = A.full || !!full; }
+function frame(ts) {
+  raf = requestAnimationFrame(frame); if (root.hidden) return;
+  const dt = lastT ? Math.min(0.1, (ts - lastT) / 1000) : 0; lastT = ts;
+  if (A.playing && !A.vid) { A.T += dt * A.speed; if (A.T >= 10) A.T -= 10; syncFrame(); dirty = true; }
+  if (!dirty) return; dirty = false;
+  sizeCanvas(); applyRotation(A.T);
+  const t0 = performance.now(); drawScene(ctx, cv.width, cv.height, !!A.drag);
+  if (A.full) { A.full = false; const b0 = performance.now(); const f = meshFacts(); A.buildMs = performance.now() - b0; A.facts = f; renderModel(f); renderCalc(f); renderMeas(f); renderIssues(checkIssues(f)); if (f.ok && (A.logNow || !A.lastMeshLog || performance.now() - A.lastMeshLog > 3000)) { A.logNow = false; A.lastMeshLog = performance.now(); log('i', 'Mesh built: ' + nf(f.nV) + ' vertices, ' + nf(f.nF) + ' faces, area ≈ ' + n2(f.area, 3) + (f.volume != null ? ', volume ≈ ' + n2(f.volume, 3) : '')); } }
+  else if (A.playing && ts - (A.mdl || 0) > 250) { A.mdl = ts; renderModel(A.facts || {}); }
+  pctx.drawImage(cv, 0, 0, pv.width, pv.height);
+  A.frames++; if (ts - A.fpsT > 700) { A.fps = A.frames * 1000 / (ts - A.fpsT); A.frames = 0; A.fpsT = ts; $('#m3Fps').textContent = 'FPS ' + Math.min(60, Math.round(A.fps)); }
+}
+function syncFrame() { const fr = Math.round(A.T * 60); $('#m3Fr').value = fr; $('#m3FrO').textContent = fr + ' / 600'; const s = Math.floor(A.T); $('#m3Tm').textContent = '0:' + String(s).padStart(2, '0') + ' / 0:10'; }
+function syncPlay() { $('#m3Play').textContent = A.playing ? '⏸' : '▶'; const c = $('#m3Auto'); if (c) c.checked = A.playing; }
+$('#m3Play').onclick = () => { A.playing = !A.playing; syncPlay(); };
+$('#m3Fr').oninput = (e) => { A.T = +e.target.value / 60; A.playing = false; syncPlay(); syncFrame(); refresh(); renderModel(A.facts || {}); };
+$('#m3Sp').oninput = (e) => { A.speed = +e.target.value; $('#m3SpO').textContent = A.speed.toFixed(1) + 'x'; };
+
+/* interaction */
+$('#m3Mode').onclick = (e) => { const b = e.target.closest('[data-mode]'); if (!b) return; A.mode = b.dataset.mode; $$('#m3Mode button').forEach((x) => x.classList.toggle('on', x === b)); refresh(); };
+$('#m3Tools').onclick = (e) => {
+  const b = e.target.closest('[data-t]'); if (!b) return; const t = b.dataset.t;
+  if (t === 'reset') { A.L.cam = JSON.parse(JSON.stringify(A.cam0)); A.T = 0; syncFrame(); refresh(); return; }
+  if (t === 'shot') { cv.toBlob((bl) => { if (bl) MCU.saveFile(bl, 'math3d-' + A.shape + '.png'); }, 'image/png'); log('i', 'Screenshot saved.'); return; }
+  A.tool = t; $$('#m3Tools button').forEach((x) => x.classList.toggle('on', x.dataset.t === t));
+};
+const pt = (e) => { const r = cv.getBoundingClientRect(); return [(e.clientX - r.left) * cv.width / r.width, (e.clientY - r.top) * cv.height / r.height]; };
+cv.addEventListener('pointerdown', (e) => { cv.setPointerCapture(e.pointerId); A.drag = { x: e.clientX, y: e.clientY, tool: e.shiftKey ? 'pan' : A.tool }; cv.style.cursor = 'grabbing'; });
+cv.addEventListener('pointermove', (e) => {
+  const c = A.L.cam;
+  if (A.drag) { const dx = e.clientX - A.drag.x, dy = e.clientY - A.drag.y; A.drag.x = e.clientX; A.drag.y = e.clientY;
+    if (A.drag.tool === 'rot') { c.yaw -= dx * 0.4; c.pitch = Math.max(-89, Math.min(89, c.pitch + dy * 0.4)); }
+    else if (A.drag.tool === 'zoom') c.dist = Math.max(0.5, c.dist * Math.exp(dy * 0.01));
+    else { const d = Math.PI / 180, th = c.yaw * d, ph = c.pitch * d, k = c.dist * 0.0022, R = [-Math.sin(th), Math.cos(th), 0], U = [-Math.sin(ph) * Math.cos(th), -Math.sin(ph) * Math.sin(th), Math.cos(ph)]; c.tx += (-dx * R[0] + dy * U[0]) * k * 1.6; c.ty += (-dx * R[1] + dy * U[1]) * k * 1.6; c.tz += (dy * U[2]) * k * 1.6; }
+    refresh(); return; }
+  try { const p = pt(e), k = MC.solidPickAt(A.L, 0, p[0], p[1]); if (k >= 0) { const v = MC.solidVertex(A.L, 0, k).world; $('#m3Xyz').textContent = 'x: ' + n2(v[0], 2) + ' y: ' + n2(v[1], 2) + ' z: ' + n2(v[2], 2); } } catch (er) { /* none */ }
+});
+const endDrag = () => { if (A.drag) { A.drag = null; cv.style.cursor = 'grab'; refresh(); } };
+cv.addEventListener('pointerup', endDrag); cv.addEventListener('pointercancel', endDrag);
+cv.addEventListener('wheel', (e) => { e.preventDefault(); const c = A.L.cam; c.dist = Math.max(0.5, c.dist * Math.exp(e.deltaY * 0.0012)); refresh(); }, { passive: false });
+cv.addEventListener('keydown', (e) => { const c = A.L.cam; const k = { ArrowLeft: () => (c.yaw += 5), ArrowRight: () => (c.yaw -= 5), ArrowUp: () => (c.pitch = Math.min(89, c.pitch + 5)), ArrowDown: () => (c.pitch = Math.max(-89, c.pitch - 5)), '+': () => (c.dist *= 0.9), '-': () => (c.dist *= 1.1) }[e.key]; if (k) { e.preventDefault(); k(); refresh(); } });
+if (window.ResizeObserver) new ResizeObserver(() => refresh()).observe(cv.parentElement);
+
+/* tabs */
+$('#m3MTabs').onclick = (e) => { const b = e.target.closest('[data-mt]'); if (!b) return; A.mt = b.dataset.mt; $$('#m3MTabs button').forEach((x) => x.setAttribute('aria-selected', String(x === b))); if (A.facts) renderMeas(A.facts); };
+function setView(v) { A.view = v; $$('#m3Ws button').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.ws === (v === 'const' ? 'const' : '3d')))); const cr = $('#m3ConstRow'); if (cr) cr.hidden = v !== 'const'; $$('nav.pills button', root).forEach((b) => b.setAttribute('aria-selected', String(b.dataset.view === v))); $$('[data-v]', root).forEach((s) => { s.hidden = !s.dataset.v.split(' ').includes(v); }); const vis = (id) => $$('section.pn', $(id)).some((x) => !x.hidden); const l = vis('#colL'), r = vis('#colR'); $('#colL').hidden = !l; $('#colR').hidden = !r; root.dataset.cols = l && r ? 'lr' : l ? 'l' : r ? 'r' : 'none'; refresh(); }
+root.querySelector('nav.pills').onclick = (e) => { const b = e.target.closest('[data-view]'); if (b) setView(b.dataset.view); };
+
+/* ------------------------------------------------------------------ exports */
+function buildExports() {
+  const fm = [['obj', 'OBJ'], ['stl', 'STL (binary)'], ['glb', 'GLB'], ['svg', 'SVG'], ['json', 'JSON model'], ['report', 'HTML report']];
+  $('#m3Exp').innerHTML = fm.map((f) => '<button type="button" data-ex="' + f[0] + '">' + f[1] + '</button>').join('') + '<button type="button" data-ex="png">PNG picture</button>';
+  $('#m3Exp').onclick = (e) => {
+    const b = e.target.closest('[data-ex]'); if (!b) return; const k = b.dataset.ex;
+    if (k === 'png') { cv.toBlob((bl) => bl && MCU.saveFile(bl, 'math3d-' + A.shape + '.png')); return; }
+    try { const r = MC.solidExport(A.L, 0, k); if (r.err) { log('e', r.err); toast(r.err); return; } MCU.saveFile(r.blob, r.name || ('math3d-' + A.shape + '.' + (k === 'report' ? 'html' : k))); log('i', 'Exported ' + k.toUpperCase() + '.'); } catch (er) { log('e', 'Export failed: ' + er.message); }
+  };
+}
+async function exportVideo() {
+  if (A.vid) { A.vid.cancel = true; return; }
+  const H = +$('#m3Res').value, W = Math.round(H * 16 / 9 / 2) * 2, fps = 30, dur = 10, N = fps * dur, st = $('#m3VidSt'), bar = $('#m3VidBar'), want = $('#m3Fmt').value;
+  A.vid = { cancel: false }; $('#m3Vid').textContent = 'Cancel export'; bar.style.width = '0'; st.textContent = 'Preparing…';
+  const off = document.createElement('canvas'); off.width = W; off.height = H; const oc = off.getContext('2d'), keepW = A.L.w, keepH = A.L.h, saveT = A.T, wasPlaying = A.playing;
+  try {
+    if (!(window.VideoEncoder && window.VideoFrame)) throw new Error('This browser has no video encoder (WebCodecs). Try Chrome, Edge or Safari 16.4+.');
+    const bitrate = Math.round(Math.min(30e6, Math.max(2e6, W * H * fps * 0.1)));
+    const tries = (want === 'mp4' ? [['mp4', 'avc', 'avc1.640034'], ['mp4', 'avc', 'avc1.640028'], ['mp4', 'avc', 'avc1.4D0028']] : []).concat([['webm', 'V_VP9', 'vp09.00.10.08'], ['webm', 'V_VP8', 'vp8']]); let pick = null;
+    for (const [box, mc, codec] of tries) { try { const s = await VideoEncoder.isConfigSupported({ codec, width: W, height: H, bitrate, framerate: fps }); if (s && s.supported) { pick = { box, mc, codec }; break; } } catch (e) { /* next */ } }
+    if (!pick) throw new Error('No supported video codec for ' + W + '×' + H + '.');
+    const MUX = pick.box === 'mp4' ? window.Mp4Muxer : window.WebMMuxer; if (!MUX) throw new Error('Video muxer missing.');
+    const target = new MUX.ArrayBufferTarget(), muxer = new MUX.Muxer(pick.box === 'mp4' ? { target, video: { codec: 'avc', width: W, height: H, frameRate: fps }, fastStart: 'in-memory', firstTimestampBehavior: 'offset' } : { target, video: { codec: pick.mc, width: W, height: H, frameRate: fps }, firstTimestampBehavior: 'offset' });
+    let encErr = null; const enc = new VideoEncoder({ output: (c, m) => muxer.addVideoChunk(c, m), error: (e) => { encErr = e; } }); enc.configure(Object.assign({ codec: pick.codec, width: W, height: H, bitrate, framerate: fps }, pick.box === 'mp4' ? { avc: { format: 'avc' } } : {}));
+    const frameCam = JSON.parse(JSON.stringify(A.L.cam));
+    for (let f = 0; f < N; f++) {
+      if (A.vid.cancel) throw new Error('cancelled'); if (encErr) throw encErr;
+      applyRotation(f / fps); drawScene(oc, W, H, false);
+      const vf = new VideoFrame(off, { timestamp: Math.round(f * 1e6 / fps), duration: Math.round(1e6 / fps) }); enc.encode(vf, { keyFrame: f % (fps * 2) === 0 }); vf.close();
+      while (enc.encodeQueueSize > 6) await new Promise((r) => setTimeout(r, 3));
+      if (f % 6 === 0) { bar.style.width = (f / N * 100).toFixed(0) + '%'; st.textContent = 'Rendering frame ' + (f + 1) + ' of ' + N + ' (' + W + '×' + H + ')'; await new Promise((r) => setTimeout(r, 0)); }
+    }
+    await enc.flush(); muxer.finalize(); const bl = new Blob([target.buffer], { type: pick.box === 'mp4' ? 'video/mp4' : 'video/webm' });
+    bar.style.width = '100%'; st.textContent = 'Done: ' + (bl.size / 1048576).toFixed(1) + ' MB ' + pick.box.toUpperCase() + ', ' + W + '×' + H + ', ' + dur + ' s at ' + fps + ' fps' + (pick.box !== want ? ' (MP4 was not available here, so WebM was used)' : '');
+    A.lastVideo = { size: bl.size, box: pick.box, W, H, N }; await MCU.saveFile(bl, 'math3d-' + A.shape + '.' + pick.box); log('i', 'Video exported: ' + pick.box + ' ' + W + '×' + H + ', ' + N + ' frames.');
+  } catch (e) { if (String(e.message) === 'cancelled') { st.textContent = 'Export cancelled.'; log('w', 'Video export cancelled.'); } else { st.textContent = 'Could not export: ' + e.message; log('e', 'Video export failed: ' + e.message); } bar.style.width = '0'; }
+  A.vid = null; A.L.w = keepW; A.L.h = keepH; A.T = saveT; $('#m3Vid').textContent = 'Export Video'; refresh();
+}
+$('#m3Vid').onclick = exportVideo;
+
+
+/* ------------------------------------------------------------------ constants & real-world simulations */
+const CN = window.CONSTS;
+function renderConsts() {
+  if (!CN) return; const q = ($('#m3CSearch').value || '').toLowerCase().trim(), cat = $('#m3CCat').value;
+  const rows = CN.LIST.filter((c) => (!cat || c.cat === cat) && (!q || new RegExp('(^|[^a-z0-9])' + q.replace(/[^a-z0-9 ]/g, ''), 'i').test(c.id + ' ' + c.name + ' ' + c.sym + ' ' + c.note + ' ' + c.cat)));
+  $('#m3CList').innerHTML = rows.length ? '<table class="ct">' + rows.map((c) => '<tr><td style="width:2.4em;font:600 15px Cambria,serif;color:#93c5fd">' + esc(c.sym) + '</td><td><b>' + esc(c.name) + '</b> <code style="color:var(--mu)">' + c.id + '</code><div class="mu" style="font-size:11.5px">' + esc(c.note) + '</div></td><td>' + CN.fmt(c) + (c.unit ? ' ' + esc(c.unit) : '') + '<div class="mu" style="font-size:11px">' + (c.u ? '± ' + c.u.toExponential(1) + ' (measured)' : (c.cat === 'Mathematical' ? 'exact math' : 'exact')) + '</div></td><td><button type="button" data-use="' + c.id + '">Use</button></td></tr>').join('') + '</table>' : '<p class="mu">No constant matches.</p>';
+  $$('[data-use]', $('#m3CList')).forEach((b) => { b.onclick = () => { const ta = $('#m3Code'); if (!ta) return; const foc = document.activeElement === ta, i = foc ? ta.selectionStart : ta.value.length; ta.value = ta.value.slice(0, i) + b.dataset.use + ta.value.slice(foc ? ta.selectionEnd : i); ta.focus(); ta.dispatchEvent(new Event('input')); log('i', 'Inserted constant ' + b.dataset.use + ' = ' + CN.fmt(CN.BY[b.dataset.use]) + '.'); }; });
+}
+function renderChecks() {
+  if (!CN) return; const f = (v, u) => (Math.abs(v) >= 1e5 || (Math.abs(v) < 1e-3 && v !== 0) ? v.toExponential(9) : String(+v.toPrecision(11))) + (u ? ' ' + u : '');
+  $('#m3Checks').innerHTML = '<table class="ct"><tr><td class="mu">Quantity</td><td class="mu">Formula</td><td class="mu">Rebuilt</td><td class="mu">Published</td><td class="mu">Difference</td></tr>' + CN.checks().map((k) => '<tr><td>' + esc(k.name) + '</td><td>' + esc(k.formula) + '</td><td style="text-align:right">' + f(k.calc, k.unit) + '</td><td style="text-align:right">' + f(k.ref, k.unit) + '</td><td style="text-align:right;white-space:nowrap" class="' + (k.ok ? 'ok' : 'bad') + '">' + (k.abs ? '|' + k.calc.toExponential(1) + '|' : (k.ppm >= 0 ? '+' : '') + k.ppm.toFixed(3) + ' ppm') + ' ' + (k.ok ? '✔' : '✖') + '</td></tr>').join('') + '</table><p class="mu" style="margin-top:6px">ppm = parts per million. The Earth-orbit row differs a little more because it uses a round published period and a simple two-body model.</p>';
+}
+function applyPreset(id) {
+  if (id === 'torus') { selectShape('torus'); A.vals.R = +CN.PHI.toFixed(6); A.vals.r = 1; applyToLayer(); buildLeft(); refresh(true); log('i', 'Golden torus: R ÷ r = φ = ' + CN.PHI.toFixed(9) + '.'); return; }
+  const sh = { fx: 'phi^(2*u/pi)*cos(u)*(1 + 0.35*cos(v))', fy: 'phi^(2*u/pi)*sin(u)*(1 + 0.35*cos(v))', fz: 'phi^(2*u/pi)*0.35*sin(v)', umin: 0, umax: 4 * Math.PI, vmin: 0, vmax: TAU };
+  A.custom = sh; selectShape('custom'); A.nu = 160; A.nv = 28; applyToLayer(); fitCamera(); buildLeft(); refresh(true); log('i', 'Golden nautilus: each quarter turn multiplies the radius by φ = ' + CN.PHI.toFixed(9) + '.');
+}
+function renderSims() {
+  $('#m3Sims').innerHTML = '<button type="button" class="sim" data-sim="torus"><b>Golden torus</b><small>A doughnut whose big radius is φ times its tube radius. Area and volume are compared with the exact formulas.</small></button><button type="button" class="sim" data-sim="shell"><b>Golden nautilus shell</b><small>A tube that follows a logarithmic spiral growing by exactly φ every quarter turn: radius = φ^(2u/π).</small></button><button type="button" class="sim" data-sim="fs"><b>Fine-structure ripple</b><small>An artistic use: a doughnut with round(1/α) = 137 ripples around it, amplitude 20α. It shows the equation can use α; it does not model physics.</small></button>';
+  $$('[data-sim]', $('#m3Sims')).forEach((b) => { b.onclick = () => { const k = b.dataset.sim; if (k === 'fs') { A.custom = { fx: 'cos(u)*(2 + cos(v))', fy: 'sin(u)*(2 + cos(v))', fz: 'sin(v) + alpha*20*sin(round(1/alpha)*u)', umin: 0, umax: TAU, vmin: 0, vmax: TAU }; selectShape('custom'); A.nu = 720; A.nv = 48; applyToLayer(); fitCamera(); buildLeft(); refresh(true); log('i', 'Ripple count = round(1/α) = ' + Math.round(1 / CN.BY.alpha.v) + '.'); } else applyPreset(k === 'torus' ? 'torus' : 'shell'); renderEdit(); setTimeout(() => { A.L.cam.dist *= 1; refresh(true); }, 0); }; });
+}
+function renderBohr() {
+  if (!CN) return; $('#m3Bohr').innerHTML = '<table class="ct"><tr><td class="mu">n</td><td class="mu" style="text-align:right">Radius n²a₀</td><td class="mu" style="text-align:right">Speed αc/n</td><td class="mu" style="text-align:right">Energy</td></tr>' + [1, 2, 3, 4, 5, 6].map((n) => { const b = CN.bohr(n); return '<tr><td>' + n + '</td><td style="text-align:right">' + (b.r * 1e9).toPrecision(5) + ' nm</td><td style="text-align:right">' + (b.v / 1000).toFixed(1) + ' km/s <span class="mu">(' + (b.beta * 100).toFixed(3) + '% of c)</span></td><td style="text-align:right">' + b.E.toFixed(4) + ' eV</td></tr>'; }).join('') + '</table><p class="mu" style="margin-top:6px">Built only from a₀ and α (and E₁ = ½mₑc²α²). The speed ratio in the lowest orbit is α itself: electron speed ÷ light speed = 1/137.036. Real atoms follow quantum mechanics; the Bohr model gives these radii and energies correctly for hydrogen but not the orbit pictures.</p>';
+}
+const sun = $('#m3Sun'), sx = sun.getContext('2d');
+function drawSun() {
+  const deg = +$('#m3SunA').value, N = +$('#m3SunN').value, W = sun.width, H = sun.height, R = Math.min(W, H) / 2 - 6; sx.fillStyle = '#080d1a'; sx.fillRect(0, 0, W, H); const th = deg * Math.PI / 180;
+  for (let n = 1; n <= N; n++) { const r = R * Math.sqrt(n / N), a = n * th; sx.fillStyle = 'hsl(' + (200 + 140 * n / N) + ',85%,' + (45 + 25 * n / N) + '%)'; sx.beginPath(); sx.arc(W / 2 + r * Math.cos(a), H / 2 + r * Math.sin(a), Math.max(1.1, R * 0.018 * Math.sqrt(1 - n / N * 0.6)), 0, 7); sx.fill(); }
+  const g = CN ? CN.goldenAngle() * 180 / Math.PI : 137.5077640500; $('#m3SunO').textContent = deg.toFixed(4) + '°'; $('#m3SunNO').textContent = N;
+  $('#m3SunT').textContent = Math.abs(deg - g) < 0.002 ? 'This is the golden angle 360°/φ² = ' + g.toFixed(10) + '°: seeds fill the disc evenly with no gaps.' : 'Golden angle is ' + g.toFixed(4) + '°. Other angles line seeds up in spokes and leave gaps. Drag back to find it.';
+}
+function initConsts() {
+  if (!CN) return; const cats = Array.from(new Set(CN.LIST.map((c) => c.cat))); $('#m3CCat').innerHTML = '<option value="">All kinds</option>' + cats.map((c) => '<option>' + esc(c) + '</option>').join('');
+  $('#m3CSearch').oninput = renderConsts; $('#m3CCat').onchange = renderConsts; $('#m3SunA').value = (CN.goldenAngle() * 180 / Math.PI).toFixed(4); $('#m3SunA').oninput = $('#m3SunN').oninput = drawSun;
+  renderConsts(); renderChecks(); renderSims(); renderBohr(); drawSun();
+}
+
+/* ------------------------------------------------------------------ open / close */
+function open() {
+  root.hidden = false; document.body.style.overflow = 'hidden';
+  if (!A.L) { buildExports(); selectShape('torus'); renderEdit(); initConsts(); setView('3d'); syncFrame(); syncPlay(); log('i', 'Math3D 3D Lab ready. Every number here is computed from the equations you see.'); }
+  A.L.cam && refresh(true); if (!raf) raf = requestAnimationFrame(frame); setTimeout(() => $('#m3Close').focus(), 0);
+}
+function close() { root.hidden = true; document.body.style.overflow = ''; if (A.vid) A.vid.cancel = true; const b = $('#m3Btn'); if (b) b.focus(); }
+$('#m3Close').onclick = close;
+$('#m3Ws').onclick = (e) => { const b = e.target.closest('[data-ws]'); if (b) HUB.go(b.dataset.ws); };
+$('#m3Measure').onclick = () => { try { const c = document.createElement('canvas'); c.width = cv.width; c.height = cv.height; c.getContext('2d').drawImage(cv, 0, 0); close(); window.MLAB.open(); window.MLAB.setSource({ kind: 'image', el: c, w: c.width, h: c.height, name: 'math3d-' + A.shape + '-view.png', size: 0, type: 'image/png', meta: {} }); toast('This view is now in the Photo Lab. Distances are in picture pixels; mark a scale to turn them into real units.'); } catch (e) { toast('Could not send the view: ' + e.message); } };
+function useMeasured(metres, unc, id) {
+  open(); selectShape('sphere'); A.vals.R = +(metres / 2).toPrecision(6); applyToLayer(); buildLeft(); fitCamera(); refresh(true); setView('3d'); A.logNow = true;
+  log('i', 'From your measurement ' + id + ': diameter = ' + metres.toPrecision(5) + ' m' + (unc ? ' ± ' + unc.toPrecision(2) + ' m (1 sd)' : '') + ', so sphere radius R = ' + A.vals.R + ' m.');
+  toast('Sphere made from your measurement. Radius ' + A.vals.R + ' m.');
+}
+const HUB = { go(n) {
+  if (n === 'design') { close(); if (window.MLAB) window.MLAB.close(); return; }
+  if (n === '3d' || n === 'const') { if (window.MLAB) window.MLAB.close(); open(); setView(n === 'const' ? 'const' : '3d'); return; }
+  close(); if (window.MLAB) { window.MLAB.open(); window.MLAB.setHub(n); }
+} };
+window.HUB = HUB;
+$('#m3Add').onclick = () => { try { const L = JSON.parse(JSON.stringify(A.L)); const n = MCU.addSolid(A.shape === 'custom' ? 'torus' : A.shape, { fx: L.fx, fy: L.fy, fz: L.fz, umin: L.umin, umax: L.umax, vmin: L.vmin, vmax: L.vmax, nu: L.nu, nv: L.nv, P: L.P, kind: L.kind, name: 'Math3D ' + shapeDef().name.replace(/ \(.*/, '') }); close(); toast('Added to your design.'); } catch (e) { toast('Could not add: ' + e.message); } };
+root.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !e.defaultPrevented) close(); });
+document.addEventListener('click', (e) => { if (e.target.closest('#m3Btn') || e.target.closest('[data-open3d]')) open(); });
+window.M3LAB = { useMeasured, applyPreset, renderConsts, open, close, state: A, setShape: selectShape, facts: meshFacts, setView, refresh, exportVideo, parseCode };
+})();
+
+</script>
+<script>
+/* First-run guide: three short steps (Measure, Build, Combine) with buttons that jump straight to the right workspace.
+   A small card is offered on a person's first visit; the Guide buttons reopen the full guide any time. Nothing blocks the app. */
+(function () {
+'use strict';
+const KEY = 'mc-guide-seen-v1';
+const css = `
+#guide{position:fixed;inset:0;z-index:120;display:flex;align-items:center;justify-content:center;padding:14px;background:rgba(3,6,12,.78);font:14px/1.5 var(--f-body,system-ui,sans-serif);color:#d5def0}
+#guide[hidden]{display:none}#guide *{box-sizing:border-box}
+#guide .gbox{width:min(920px,100%);max-height:100%;overflow:auto;background:#0f1626;border:1px solid #1f2a44;border-radius:14px;padding:18px 20px}
+#guide h2{text-transform:none;letter-spacing:0;margin:0 0 2px;font:700 22px var(--f-body,system-ui);color:#fff}#guide .gsub{color:#8696b6;margin:0 0 14px}
+#guide .gsteps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+#guide .gcard{background:#141c30;border:1px solid #1f2a44;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px}
+#guide .gn{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
+#guide h3{text-transform:none;letter-spacing:0;margin:0;font:600 16px var(--f-body,system-ui);color:#e6f0ff}
+#guide ol{margin:0;padding-left:18px;color:#b4c3df}#guide li{margin:3px 0}
+#guide .gnote{color:#8696b6;font-size:12.5px;margin:0}
+#guide button{font:inherit;color:inherit;background:#141c30;border:1px solid #1f2a44;border-radius:8px;padding:8px 12px;cursor:pointer;min-height:36px}
+#guide button:hover{border-color:#34508a}#guide button:focus-visible{outline:2px solid #22d3ee;outline-offset:2px}
+#guide button.go{background:linear-gradient(90deg,#2563eb,#7c3aed);border-color:transparent;color:#fff;font-weight:600;margin-top:auto}
+#guide .gfoot{display:flex;gap:10px;align-items:center;margin-top:14px;flex-wrap:wrap}#guide .gfoot span{flex:1;color:#8696b6;font-size:12.5px;min-width:200px}
+#gnudge{position:fixed;left:14px;bottom:14px;z-index:60;max-width:300px;background:#0f1626;border:1px solid #34508a;border-radius:12px;padding:12px 14px;color:#d5def0;font:13px/1.45 var(--f-body,system-ui,sans-serif);box-shadow:0 8px 30px rgba(0,0,0,.4)}
+#gnudge[hidden]{display:none}#gnudge b{color:#fff}#gnudge .r{display:flex;gap:8px;margin-top:8px}
+#gnudge button{font:inherit;color:inherit;background:#141c30;border:1px solid #1f2a44;border-radius:8px;padding:6px 10px;cursor:pointer;min-height:32px}#gnudge button.go{background:#2563eb;border-color:transparent;color:#fff}
+#gnudge button:focus-visible{outline:2px solid #22d3ee;outline-offset:2px}
+@media (max-width:760px){#guide .gsteps{grid-template-columns:minmax(0,1fr)}#guide h2{font-size:19px}#gnudge{left:10px;right:10px;max-width:none;bottom:70px}}
+`;
+const st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
+const g = document.createElement('div'); g.id = 'guide'; g.hidden = true; g.setAttribute('role', 'dialog'); g.setAttribute('aria-modal', 'true'); g.setAttribute('aria-label', 'Quick guide');
+g.innerHTML = `<div class="gbox"><h2>Welcome. Three things you can do here</h2><p class="gsub">Everything runs on your device. Nothing is uploaded. About one minute to read.</p>
+<div class="gsteps">
+ <div class="gcard"><div class="gn">1</div><h3>Measure something real</h3><ol><li>Open a photo (or a video).</li><li>Put a flat object of known size on the same surface, such as an A4 sheet or a bank card.</li><li><b>Scale</b> tool: click its four corners and pick the size.</li><li><b>Distance</b> tool: click the two ends of what you want to measure.</li></ol><p class="gnote">You get a number with an honest ± range, not a guess.</p><button type="button" class="go" data-g="photo">Open the Photo Lab</button></div>
+ <div class="gcard"><div class="gn">2</div><h3>Build a shape from maths</h3><ol><li>Pick a shape, or choose <b>Custom Equation</b> and type x, y, z.</li><li>Drag the sliders and spin it.</li><li>Watch area and volume, with the exact formula beside them.</li><li>Open <b>Constants</b> to use φ, α, c and more in your equations.</li></ol><p class="gnote">Every number is computed from the equations you can see.</p><button type="button" class="go" data-g="3d">Open the 3D Lab</button></div>
+ <div class="gcard"><div class="gn">3</div><h3>Combine them</h3><ol><li>In the Photo Lab, select a distance and press <b>Make a 3D sphere from this distance</b>.</li><li>In the 3D Lab, press <b>Measure this view</b> to measure a render.</li><li>Press <b>Add to design</b> to put the shape on your poster or video.</li></ol><p class="gnote">The tab bar at the top moves between all workspaces.</p><button type="button" class="go" data-g="design">Go to the design editor</button></div>
+</div>
+<div class="gfoot"><span>Tip: the Guide button in the top bar brings this back any time.</span><button type="button" data-g="close">Close</button></div></div>`;
+document.body.appendChild(g);
+const nudge = document.createElement('div'); nudge.id = 'gnudge'; nudge.hidden = true; nudge.setAttribute('role', 'region'); nudge.setAttribute('aria-label', 'First visit tip');
+nudge.innerHTML = '<b>New here?</b> A one-minute guide shows how to measure a photo, build a 3D shape from equations, and combine them.<div class="r"><button type="button" class="go" data-g="open">Show the guide</button><button type="button" data-g="later">Not now</button></div>';
+document.body.appendChild(nudge);
+const seen = () => { try { return localStorage.getItem(KEY) === '1'; } catch (e) { return false; } };
+const mark = () => { try { localStorage.setItem(KEY, '1'); } catch (e) { /* ignore */ } };
+let prevFocus = null;
+function open() { prevFocus = document.activeElement; nudge.hidden = true; g.hidden = false; mark(); const b = g.querySelector('.go'); if (b) b.focus(); }
+function close() { g.hidden = true; if (prevFocus && prevFocus.focus) { try { prevFocus.focus(); } catch (e) { /* ignore */ } } }
+function go(n) { close(); if (n === 'design') { if (window.HUB) window.HUB.go('design'); return; } if (window.HUB) window.HUB.go(n); }
+document.addEventListener('click', (e) => {
+  const t = e.target.closest('[data-g],[data-guide],#guideBtn'); if (!t) return;
+  if (t.id === 'guideBtn' || t.hasAttribute('data-guide')) { open(); return; }
+  const k = t.dataset.g; if (k === 'open') open(); else if (k === 'later') { nudge.hidden = true; mark(); } else if (k === 'close') close(); else go(k);
+});
+g.addEventListener('keydown', (e) => { if (e.key === 'Escape') { close(); e.stopPropagation(); } if (e.key === 'Tab') { const f = Array.from(g.querySelectorAll('button')); if (!f.length) return; const i = f.indexOf(document.activeElement); if (e.shiftKey && i <= 0) { f[f.length - 1].focus(); e.preventDefault(); } else if (!e.shiftKey && i === f.length - 1) { f[0].focus(); e.preventDefault(); } } });
+/* offer once, only to a real first-time visitor (never during automated tests) */
+if (!navigator.webdriver && !seen()) setTimeout(() => { if (g.hidden && !seen()) nudge.hidden = false; }, 1500);
+window.GUIDE = { open, close, go };
 })();
 
 </script>
